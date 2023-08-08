@@ -1,0 +1,156 @@
+
+layout: basic
+title: Data Modeling with Appian Records
+topic-group: B
+weight: 100
+
+Overview
+Appian Records give you the power to access all of your enterprise data in a single location, regardless of where your data lives.
+With a single point of management, you can easily build interfaces, reports, and other interactive elements that put important business data at your users' fingertips. But how do you know which data you need to build a useful app?
+Data modeling can help you confirm the business needs your application will serve because you will need to collect information from stakeholders to build your data model. We recommend investing time in comprehensive data design before you start building other aspects of your application (such as the interfaces users will interact with).
+This page explains how to model data using the latest Appian Records features, some of which require that you enable data sync on your record types. To see the biggest benefits of working with your data in Appian, it is recommended that you enable data sync for your new record types to accelerate your application design. Your application can use any combination of record types regardless of whether they have data sync enabled.
+Benefits of data modeling
+There are several advantages to data modeling that will make your eventual development process simpler. Here are a few reasons why building a data model is a recommended way to start the app-building process.
+Enable work with stakeholders
+First, the model should be used as a communication tool with business stakeholders to confirm your understanding of the application’s data requirements. By showing how the model allows the application to collect and relate data from a number of sources, stakeholders can better understand the value of the application and provide input into the interfaces and other end-user-facing elements required to make the application useful.
+Plan your application
+A well-defined, stakeholder-approved model can then act as a map for the rest of the application. Whether you're building as a solo developer or as part of a team, the data model's representation of the way information is stored and flows through different parts of the application is a critical aspect to understand.
+On development teams, the model provides a central and accessible view of the most important part of an application: your business data. When all developers are able to make design decisions based on a shared understanding of the data, application development will take less time and be more responsive to changing requirements.
+Verify your data needs
+Finally, your model helps ensure that you can answer necessary questions using queries against your data and then quickly build reports using the answers. Appian has many features that make queries easy to build and update, and those features work best with a foundation of data that is crafted to show relationships in previously siloed information.
+What is a data model?
+A data model is a representation of all of the information available for your application. The model includes:
+
+The sources of your data, such as databases or web services.
+The record types you want to create using those sources.
+The relationships between your data. This is how you will connect currently siloed data to expand your users' ability to understand and work with that data.
+The fields available in the record type that will be used in queries throughout the application. These can be source fields or custom record fields.
+
+A data model should be examined from two perspectives: a conceptual angle and a logical angle. Each provides a different level of detail important to the design and how the model informs the application.
+Conceptual data model
+The conceptual angle is a high-level view of your data model. In it, you draw the basic connections between the data available in your app. Using a tool of your choice, you can quickly assemble a sketch of your data model. For example, a retail application might have a conceptual model like this: 
+{% include zoompic.html url="images/data_modeling/concept-view.png" alt="Conceptual view of data model" %}
+The concept can serve as reference for business stakeholders. It will allow them to confirm that the model is organizing and connecting data correctly.
+Logical data model
+Once you have constructed a concept, you can enhance the level of detail with a logical angle of the data model. This more comprehensive explanation of the model shows the specific fields available on each record type, the common fields for establishing relationships between them, and any filtering or security that needs to be applied to keep the data secure.
+In your sketch, you could add Customer fields, including the common fields relating Customers to their Orders and State, as well as the user types that should be able to access Customer data in the application (in this case, salespeople, customer service reps, and managers).
+{% include zoompic.html url="images/data_modeling/logical-view.png" alt="Logical view of data model" %}
+Record type data model
+Once you've built your logical model, create your record types based on your data model. This lets you realize both the conceptual and logical levels and then enhance it with other low-code data features.
+On the Data Model page of the record type, you can see and interact with the model.
+{% include zoompic.html url="images/data_modeling/data-model-page.png" %}
+The relationship diagram shows all of the logical connections you've established between record types, and the suggested relationships can help you find even more ways to intelligently link your data. The Data Structure table gives logical details, including the data types of each field and the common fields used to relate your data.
+Data modeling best practices
+As you start to build your data model in Appian, consider the following best practices.
+Design for extensibility and expansion of your model
+Each record type represents a business concept in your application, so it should be scoped so you can create, change, and delete record data without needing to duplicate those changes in related record types.
+As you examine your source data, notice where relatively stable data may be shared between two or more record types, and consider using a reference record type to hold this data. A reference record type is a record type that contains reference data. In a database, this is often called a lookup table.
+For example, if you have Customer and Warehouse record types, basic location data like state or province, postal code, and country can be stored in a reference record type since it's unlikely to change.
+Here are some ways reference record types make application development easier:
+
+You don't need to repeatedly store actual location data for each Customer or Warehouse, but you can refer to it if needed for an interface or report.
+Maintenance is easier because there is a single place to update data that rarely changes.
+When you add a new record type that needs location information, you can quickly add a record type relationship and continue building new features. This shared data can be used to build a report that lets users explore customer and warehouse data in each region.
+
+Choose whether to enable data sync based on your app's needs
+For many applications, creating your record type with data sync enabled offers the best performance and allows you to use the full suite of features available for records. Still, there are some instances where a record type does not need to have data sync enabled to make a part of your app meet user needs.
+Imagine you are building a fleet management app. Two of the user personas for this app are fleet supervisors and service managers, and each has different ways of interacting with the fleet data.
+
+
+User Persona
+Requirements
+
+
+Fleet supervisor
+A dashboard with an overview of all vehicles, including the vehicles in service, those needing repairs, and any currently in the repair shop.
+
+
+Up-to-date data about vehicle statuses since they can change throughout the day.
+
+
+Service manager
+A report displaying quarterly updates about their department, including the number and types of repairs performed on the vehicles in the fleet.
+
+
+Data is static after each repair is complete and is not accessed on a daily basis.
+
+
+Record types powering this application might include Vehicles, Repair Requests, and Employees (representing the drivers and mechanics interacting with the vehicles). Each of these record types has data sync enabled so they can relate to the others using record type relationships. Data sync will also keep the data fresh by syncing any vehicle updates that occur during the workday. The fleet supervisor's dynamic dashboard would be easiest to build using record types with data sync enabled.
+Because repair data is created every time a vehicle is in the shop, this expansive data source contains more than 3 million rows. Since the service manager will infrequently query the historical data and the source exceeds the row limit, you could build a Completed Repairs record type that does not have data sync enabled for this data. The interface can still query the data source so users can search for information.
+You may also choose to not enable data sync due to data sovereignty restrictions, including privacy concerns for health, financial, or other protected data. Record types without data sync enabled can still take advantage of Appian's flexible platform to bring together data in powerful applications regardless of where that data lives.
+Work with large datasets
+You can use any database, Salesforce, or web service as the source of your record type. When you enable data sync on a record type, you sync up to 2,000,000 rows of data. While Appian allows you to sync significant amounts of data per record type, very large datasets may require you to adapt your model to work within Appian's current constraints. To ensure you have flexible access to the data needed for your application, consider using source filters to divide up large datasets into multiple record types, each with a specific purpose.
+Imagine your data source is a database table with seven million rows of client appointment data. You could create multiple record types from this source, some with data sync enabled and some without, to use different aspects of the data:
+
+Record types by appointment status:
+Use the status of the appointment to filter the data into Pending/Active Appointments and All Appointments. The Pending/Active Appointments should have data sync enabled because your users will need to see new and recent records and updates to those records to complete their tasks.
+
+An All Appointments record type could be configured without data sync enabled to give users on-demand access to the archive of appointments. This record type would not be used for more complex interfaces requiring relationships.
+
+
+Record types by time period:
+
+Use the date of the appointment to filter this year's data into one record type with data sync enabled.
+
+Create additional record types for previous years. Since this data is unlikely to change, those record types could be configured without data sync enabled.
+
+
+Record types by location:
+
+Use the address of the appointment to filter the data into HQ Appointments and Appointments for other corporate locations (such as NYC Appointments and London Appointments).
+Create a Virtual Appointments record type for those without an address.
+
+Creating multiple record types from the same data increases the complexity of your model; this may result in a higher maintenance burden over the life of the application. The flexibility of record types lets you decide what combination of data will work best for your application so you can meet the needs of your stakeholders.
+Protect sensitive data with record-level security
+Enterprise data often includes information that must be protected for business, privacy, or regulatory reasons. For example, you may want to restrict customer information to the salesperson working with a client, or you may need to allow only managers and executives to view company financial data. As you construct your data model, identify the information that requires protection and the users or groups that are allowed to access it. When you build the record type that includes sensitive data, you can then configure security controls to ensure protected record data can only be viewed by certain users or groups.
+To learn more about the security features available for record types with data sync enabled, see Record-Level Security.
+Data model development checklist
+To help you follow Appian's recommended process for designing your data model, use the following checklist to ensure you've met the baseline requirements.
+
+[ ] Stakeholder needs have been researched, understood, and reflected in the model's design.
+[ ] Each business concept has its own record type.
+[ ] Data sync is enabled whenever possible; data sync is required to use record type relationships, custom record fields, record-level security, and other powerful features.
+[ ] For datasets with more than 2 million entries, multiple record types are created with different source filters.
+[ ] Reference data is split into its own record type and uses record type relationships to connect to larger business concepts.
+[ ] Custom record fields are defined to easily reuse calculations.
+[ ] Data security requirements are implemented using record-level security.
+[ ] All username or group fields are converted to an Appian data type (User or Group).
+
+Sample data model
+Now that you've reviewed the best practices and recommendations, let's look at a sample data model that leverages a large dataset, multiple record types, and numerous low-code data features.
+We've been tasked with combining information from multiple sources to construct a retail store management app. This app will be used by employees in a few different roles (sales, customer service, and managers), and each role has its own functional and reporting requirements for the app. Let's examine these roles and look at what the data model needs to include for each.
+The sales team needs to track each sale made by individual team members (represented as Employees). They also want to see which products are most popular and who the most active customers are in a given time period. A salesperson needs the following information:
+{:style="width:60%;display:block;margin-left:auto;margin-right:auto"}
+The customer service team must track each support request through their established workflow and they want to discover what products are returned or exchanged and at what rate. The data needs of a user in this role are similar to the sales role, but instead of employee data, they need to access the support cases for orders.
+{:style="width:60%;display:block;margin-left:auto;margin-right:auto"}
+The store's management team wants to know which salesperson has the most sales in a given time period and how many requests each customer service representative resolves each week. The management team is not responsible for product inventory or customer relationships, so their data needs are simpler than the other roles.
+{:style="width:37%;display:block;margin-left:auto;margin-right:auto"}
+The retail application could be built using five record types with sync enabled to cover the major business concepts. Data sync is needed for these record types to establish relationships between them. These relationships are then used to quickly build the interfaces and reports for each persona.
+
+Customer record type: Contains customer details like name, address, and phone number.
+Support Case record type: Contains case details like when the case was opened and closed and how it was resolved.
+Order Line record type: Contains product quantity, unit price, discounts, and the total for the line. This acts as the join table to connect the Order and Product and establish a many-to-many relationship.
+Employee record type: Contains employee details like name, tenure, and role. Depending on their role, an employee could have related data for orders or customer support requests.
+Order record type: Contains references to a Customer, an Employee, and one or more Products, plus information like the order date and time.
+
+In addition, some data is stored in separate reference record types. This allows data like the list of employee roles or support case resolutions to change as needed. The reference record types in our model are indicated with an italicized label.
+
+Role record type: Contains the names of the roles an employee can fill (like salesperson and support agent).
+Case Resolution type: Contains the types of case resolutions (such as refunded and exchanged).
+Product record type: Contains product name, cost, and attributes like size and color.
+
+{% include zoompic.html url="images/data_modeling/complete-model.png" alt="Complete sample data model"  border="-nb" %}
+How to get started in Appian
+To begin implementing your own data model, start by creating a record type. Once you create the design object, learn how to configure the new record type by:
+
+Choosing the source of your record type
+Enabling data sync
+Filtering your source data
+Adding relationships
+Creating custom record fields
+Adding a search and user filters on the record list
+Defining record views
+Adding record actions
+Configuring record-level security
+
+For a guided experience creating and configuring a record type, see the Appian Records Tutorial.

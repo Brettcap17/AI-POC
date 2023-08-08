@@ -1,0 +1,44 @@
+
+layout: basic
+title: Appian Records
+permalink: Record_Type_Object.html
+type: Home
+
+
+appian-style-trainingbox
+Design Appian Records
+New to using records? Check out this course to learn about important terms and record features, as well as best practices to use when design your record type.
+
+Today, businesses are challenged to build applications focused on specific business requirements and user experiences using data that is spread across the enterprise.
+As a result of siloed systems and data architectures, enterprises can have difficulty integrating disparate data sources while maintaining data security. Even once connected to the data sources, queries to the source data may be slow and require database expertise for costly, on-going maintenance. This can lead to even seemingly small app changes taking longer to complete since you need to consider performance impacts in addition to the logistics of re-architecting your app.
+Appian Records provide a solution to this siloed and costly data management experience. Using Appian Records, you can converge your system data into a single point of management within your application. With your data in a central location, you can easily adjust your data model, define how users view your data, and integrate enterprise processes so users can take informed action when viewing the data. Not only does this speed up development, it makes maintaining your objects easier since you can use record data seamlessly throughout your application.
+How to use Appian Records
+To leverage Appian Record functionality, it all starts with a record type object.
+The record type is the design object you'll use to answer questions like:
+- What data defines my records?
+- Who can see the records?
+- What perspectives will users want to see when they view the records?
+- What do users want to do from the records?
+To configure the record type object, you'll define the record data, create a record list, configure record views and related actions, and define security. 
+Record data
+Appian's vision is to unite people, process, and data in a seamless platform for low-code automation across the enterprise. That's why Appian Records capture more than just fields and values, because we understand that data is more than just rows in a table; it represents that intersection of people and process.
+To create this more comprehensive view of your enterprise, it all starts with building the record data for your records. Simply choose data from an existing source and we'll create a set of record fields for your record data. Or perhaps you need to create a source for your record type? Use our guided experience to generate a source at the same time that you're creating your record type. Once you've selected a source, you can adjust your record fields, and even extend your data set by creating custom record fields that calculate and transform your data to fit your business needs.
+After setting up your record data, set yourself up for faster app development and smarter data by establishing record type relationships. These relationships allow you to easily reference related record data from other record types without building extensive queries or database views.
+Not only is record data a better version of your data, our low-code data modeling capabilities make it easy for any Appian developer to build advanced data structures.
+Record list
+Once you've configured your record data, you want to consider how users will view and navigate a set of records. For example, in a Support Case record type, users may want to see all support cases that are currently open and overdue so they can help close those cases.
+To easily display multiple records, you can create a record list. The record list is a single, drillable list that users can search and filter to find records. You can choose which data appear in the list, provide filters so users can control how they view the records, and add record list actions so they can take action directly from the list of records.
+Not only is the record list a navigational tool, you can also reuse the record list as a display element throughout your applications. You can reference the record list as a page in a site, or you can use the record type as the source of a read-only grid to automatically display your record list configuration.
+Record views and related actions
+Now that users can interact with a set of records, you'll want to create a way for them to drill into and act upon each record. 
+In Appian, each row of your enterprise data is represented as a record. But a record is more than just a row of data. Records provide a more comprehensive view of your data by using record views to surface different insights about your data depending on a user's interests and needs. For example, in a support case record, you could create one record view for a support engineer that details the case issue and type, and another record view for a case manager that contains the customer's satisfaction score and case history.
+From the context of these views, you can add related actions so users can start enterprise processes to update, add, or remove information about the record. Using record views and related actions, you can unite people, process, and data in one place.
+Security
+In the last part of your configuration, you'll want to secure your records so they're only available to the appropriate users. 
+To determine who can view which records, you can apply record-level security on your record type's with data sync enabled. Record-level security allows you to configure your security requirements more dynamically by using record fields, related record fields, groups, and more in your configurations. Once you apply record-level security, it will be automatically enforced anywhere you reference your records.
+But as mentioned above, records are more than just a row of data---they're a combination of data, record views, and actions. To ensure that only the right users have access to the right data, we make it easy to secure each element of your record: from the records themselves, to their views, and the actions that allow users to add, update, or delete those records. 
+Learn more about security in Appian Records.
+How to get started
+To get started using Appian Records, create a record type. 
+Once you create the design object, choose the source of your record type and enable data sync if possible.
+For a guided experience creating a record type, see the Record Tutorial.

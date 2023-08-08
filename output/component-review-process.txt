@@ -1,0 +1,51 @@
+
+layout: "basic"
+title: "Component Review Process"
+topic-group: "Review Process"
+weight: 100
+
+Appian reviews all component plug-ins to ensure they meet our standards and those of our customers. This page explains the review process and the steps you'll go through to get your component plug-in approved for use in applications.
+Why review components?
+Allowing developers to extend Appian by creating new components is an incredibly powerful concept that lets customers build even more powerful applications. We've put a lot of effort into creating an extensible platform, and we want to make sure our developers and our customers succeed. 
+We also want to make sure that Appian continues to be the fastest way to create enterprise software. That means we don't expect you to build a new component for every application. In fact, it should be the exception. By reviewing every component plug-in we want to help you make the most of your time, developing only the most valuable components that add broad capabilities to the growing Appian ecosystem.
+Pre-approval
+You don't have to tell us what you plan to build, but if you do we'll let you know if it's something that might violate our review guidelines. While we can't guarantee final approval until you submit your completed plug-in, this is the best way to make sure you're on track before you start.
+You can request a pre-approval from the AppMarket Submissions Site.
+Submission
+Once you've built and tested your component, you'll submit it for review. Use the following checklist to help the review process go as smoothly and quickly as possible:
+
+Test your component using the final package you will submit
+Make sure all metadata in your plug-in manifest is correct:
+Your vendor identity must be complete and accurate.
+If you provide support for your plug-in make sure customers know how to contact you.
+Note all browsers and mobile devices that will be supported, and test with them.
+Document the expected behavior and any non-obvious features
+The more detail you can fit in component and parameter descriptions the better. Remember that developers will only have the information you provide to guide them.
+Include any login credentials or system access needed to review your component.
+Check that your plug-in meets the review guidelines.
+
+When you're ready to submit your plug-in, use the AppMarket submission form. Make sure to provide:
+
+The complete plug-in package (including any related connected systems plug-ins)
+A sample application that demonstrates the capabilities of your component
+Information from the checklist above
+Source code for the plug-in
+
+Approval
+If your component plug-in is approved you'll receive a copy of your plug-in signed by Appian. Your plug-in will then be able to run on any Appian instance.
+Your plug-in will also be listed in the Appian AppMarket so that customers can download it and use it in their applications.
+Rejection and resubmission
+If your component plug-in is not approved, we'll send you a detailed report explaining why. You can use the report to update your plug-in and resubmit.
+If we believe we would never approve your component because of fundamental design violations the submission will be rejected. Make sure to get your idea pre-approved to avoid this situation!
+After approval
+Additional releases
+Once listed in the AppMarket, customers will be able to use your component in their applications, and you'll start hearing feedback when they do. When you decide to release a new version make sure to read our guidance on what type of version change to make. New versions will need to be built in your developer instance and submitted for review using the same process as your initial release.
+AppMarket feedback
+We'll also be monitoring feedback on your component plug-in as it's used by customers. We may reach out to you to address any concerns, such as:
+
+Crashes or bugs
+Security or performance issues
+Behavior that doesn't match the documented purpose of the component
+Lack of support response (for plug-ins that claim to be supported)
+
+Our goal is to work with you to ensure your component is available and provides value. However, Appian reserves the right to remove your plug-in from the AppMarket at any time and for any reason.

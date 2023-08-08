@@ -1,0 +1,200 @@
+
+layout: basic
+title: Reference a Record Type in your Applications
+title_short: Reference a Record Type
+topic-group: D
+weight: 90
+
+This page describes how to reference a record type and its related properties in an expression and interface.
+Overview
+You can directly reference the record type object in your expression or interface using the recordType! domain. This domain prefix is a direct object reference that removes the need to create a constant to reference your record type (except in specific use cases).
+Record type object references also allow you to reference fields, filters, actions, and relationships configured in the record type for use in an expression, interface, and more. 
+In addition to the sections below, see the following topics for more information:
+
+Where to use records
+Build Reports from Records
+Casting record data
+
+Reference a record type
+You can use the recordType! domain to reference a record type in functions, like a!queryRecordType() and urlforrecord(), and components, like the Record Link component or the Record Picker component. 
+For example, recordType! is used to reference the Case record type in the a!queryRecordType() function to return data from select record fields and related record fields.
+{% include zoompic.html url="images/record_type_queryrecordtype_function_example.png" style="width: 35%;" %}
+It's easy to construct your record type references since the recordType! leverages typeahead to suggest a selection of existing record types. If you already know the name of your record type, you can even skip entering the domain and simply type the name of the record type for the domain and record type object reference to appear.
+{% include zoompic.html url="images/typeahead-records.gif" style="width: 60%;" %}
+
+appian-style-note
+If you are unable to reference a specific record type, make sure that you have Viewer permission to the record type.
+
+The record type object reference combined with . dot notation allows you to directly access properties of the record type like fields, actions, filters, and relationships in your functions or expressions. 
+{% include zoompic.html url="images/record_type_employee_fields_lozenge_autosuggest.png" border="-nb" style="width:60%;" %}
+You can reference any of the record type properties in an interface or expression. We'll discuss how to reference each record property in the subsequent sections.
+Reference record fields
+The fields property allows you to reference any record field configured in the record type. If your record type has data sync enabled, this includes custom record fields.
+You may use record field references in a query to return specific field values, or in an interface component to display record field values in a report.
+To reference a record field:
+1. Enter the recordType! domain and select your record type.
+2. Enter . after recordType!<Record Type Name> to autosuggest the record type properties.
+3. Select fields to access the hierarchical menu of record fields configured in the record type.
+4. Select a record field from the dropdown to append to the fields property. 
+For example, the reference below refers to the closedon field on the Case record type.  
+{% include zoompic.html url="images/record_type_employee_fields_lozenge_firstname.png" border="-nb" %} 
+When referencing a record field in a process variable, activity class parameter, rule input, or record variable, you can use dot notation to index into your selected field. Appian will then automatically format the field reference as needed.
+For example, if you have a rule input of type record data type, you can reference individual record fields by using dot notation (.) to index into the rule input and select a record field or related record field. The field reference will be automatically wrapped in brackets.
+{% include zoompic.html url="images/autocomplete.gif" %}
+When you highlight a record field from the dropdown, Appian automatically provides additional information about the record field key, including:
+
+Full record type field reference
+Field name
+Field data type
+
+When using a record type field reference, Appian will automatically shorten the reference to improve the readability of your expressions. To display the full reference, simply hover over it.
+Reference a relationship
+The relationships property allows you to reference related record fields from any relationships defined on your record type. You can also use this property to index into relationships defined on your related record types so you can select fields from record types that are not directly related to the base record type.
+You may reference a record type relationship in a query to return related record data, or in an interface component to display related record data among your record fields (like in a grid or chart).
+To reference related record fields from a record type relationship: 
+1. Enter the recordType! domain and select your record type.
+2. Enter . after recordType!<Record Type Name> to autosuggest the record type properties.
+3. Select relationships to access the hierarchical menu of record type relationships configured in the record type.
+4. Select a relationship from the dropdown to append to the relationships property.
+{% include zoompic.html url="images/record_type_order_lozenge_customer_relationship_details.png" border="-nb" %}
+
+
+Enter . after the recordType!<Record Type Name>.relationships.<Relationship Name> to autosuggest the fields and relationships property on the related record type:
+Select fields to select a related record field. 
+
+Select relationships to index into the relationships available on the related record type. 
+For example, the reference below refers to the accountmanager field on the related record type Customer.
+{% include zoompic.html url="images/record_type_order_lozenge_customer_relationship_field_details.png" border="-nb" %}
+
+
+When you highlight a relationship from the dropdown, the following information is presented:
+
+Shortened record type relationship reference
+Relationship name
+Related record type name
+Relationship type
+Full record type relationship reference
+Properties on the related record type that can be indexed into
+
+When you highlight a related record field from the dropdown, the following information is presented:
+- Shortened related record field reference
+- Related record field name
+- Related record field data type
+- Full record type relationship reference
+Reference a record action
+The actions property allows you to reference any record list actions or related actions defined on your record type. You may use this property to configure a Record Action component.
+To reference a record action:
+1. Enter the recordType! domain and select your record type.
+2. Enter . after recordType!<Record Type Name> to autosuggest the record type properties.
+3. Select actions to access the hierarchical menu of actions configured in the record type.
+4. Select a record action from the dropdown to append to the actions property. 
+For example, the reference below refers to the **Update Case** related record action on the Case record type.
+
+{% include zoompic.html url="images/record_type_employee_actions_lozenge_update.png" border="-nb" %}
+
+When you highlight a record action from the dropdown, Appian automatically provides additional information about it, including:
+
+Full record type action reference
+Action description
+Record type name
+Action name
+Process model that supports the record action
+Action context
+Visibility setting
+
+When using a record type action reference, Appian will automatically shorten the reference to improve the readability of your expressions. To display the full reference, simply hover over it. 
+Reference a user filter
+The filters property allows you to reference any user filters configured in the record type. You may use this property when adding a user filter on a read-only grid.
+To reference a user filter:
+1. Enter the recordType! domain and select your record type.
+2. Enter . after recordType!<Record Type Name> to autosuggest the record type properties.
+3. Select filters to access the hierarchical menu of user filters configured in the record type.
+4. Select a user filter from the dropdown to append to the filters property.   
+For example, the reference below refers to the **Status** user filter configured on the Case record type.
+
+{:.screenshot}
+When using a record type user filter reference, Appian will automatically shorten the reference to improve the readability of your expressions. To display the full reference, simply hover over it.
+Reference record values in the record type
+In some cases, you may need to reference record values within the record type itself. For example, if you want the record title to display the customer name, you'd need to reference data within the recordType!Customer.fields.name field so the correct name is listed on each record header.
+To reference record values within the record type, use the rv! domain prefix. The rv! domain allows you to reference individual field values for a record, or the record's identifier. 
+You can only use this domain within the record type object, and you can use it to configure: 
+- A record view definition expression.
+- An expression for the record title on a record view.
+- A feed-style list expression.
+- A related record action's context.
+To reference a record value in the record type object, use the rv! domain followed by either record or identifier.
+Use rv!record
+rv!record allows you to reference the data within a specific record field. To use this, you must follow this domain with a field reference wrapped in bracket notation (like rv!record[recordType!<Case.fields.title]). 
+You'll use this when you want to pass a record's values into a record view, or if you want to populate a record title with a field value.
+For example, rv!record is used to define the Record Title so the appropriate customer name appears on each record header.
+{% include zoompic.html url="images/grid_howto/record_type_field_reference_rv_example.png" %}
+
+appian-style-tip
+For record types that use a process model as the source, you can use rv!record with a record type field reference wrapped in bracket notation to point to a process or a specific process model property. Learn more.
+
+Use rv!identifer
+rv!identifier allows you to reference a record's ID. You'll often use this when you want to pass a record into an interface or process model.
+For example, rv!identifier is used in the Context of a related record action to pass an individual record ID into a process model.
+{% include zoompic.html url="images/rv-identifiers-example.png" %}
+Reference record data in an interface
+All record type objects have their own unique data type, which is specific to each record type and automatically generated when the record type is created. The record data type allows you to easily access the data associated with a specific record type and use field references to call the record data into your expressions and interfaces.
+For interfaces connected to a record type, such as record views, you can pull in record data by using the record data type as a rule input in your interface. 
+{% include zoompic.html url="images/records-rule-input.png" %}
+Once you configure the rule input, you can reference your record fields in the interface by calling the rule input followed by a record field reference wrapped in brackets. 
+For example, the expression below uses ri!record to call the rule input containing the record data type for the Case record type. Then, the rule input is followed by a record field reference to Case record type to display the case status in a text field.
+sail
+a!textField(
+  label: "Customer",
+  labelPosition: "JUSTIFIED",
+  value: a!defaultValue(
+      ri!record[recordType!Case.fields.status],
+      "–"
+      ),
+   readOnly: true
+),
+After you configure the interface, you can add it as a record view and seamlessly pull the record data into the rule input using rv!record. 
+{% include zoompic.html url="images/record-view-call-interface.png" %}
+For examples of how to use record data types as rule inputs in interfaces and views, see Create a Record View.
+Reference record data in a process model
+INCLUDE PAGE: 
+Use a record type constructor
+You can use a record type constructor to create a single record in your expression. The record type constructor allows you to map each value to a particular field reference or relationship reference in the record type. 
+To create a record type constructor:
+1. In an expression rule, enter a record type reference followed by parentheses. 
+For example: recordType!Case()
+
+In between the parentheses, enter the record field references followed by a : colon and its corresponding data value on the right.
+
+For example:
+sail
+   recordType!Case(
+      recordType!Case.fields.id: 1,
+      recordType!Case.fields.status: "Open",
+      recordType!issueType: "Shipping"
+   )
+
+If you have record type relationships, you can create related record data by referencing the record type relationship followed by a : colon and the related record type reference on the right. You'll create a nested constructor to define the related record data.
+
+For example:
+sail
+   recordType!Case(
+      recordType!Case.fields.id: 1,
+      recordType!Case.fields.status: "Open",
+      recordType!Case.fields.issueType: "Shipping",
+      recordType!Case.relationships.customer: recordType!Customer(
+         recordType!Customer.fields.firstName: "Amy",
+         recordType!Customer.fields.lastName: "Smith",
+         recordType!Customer.fields.title: "Manager"
+      )
+   )
+
+Click TEST RULE to view the data output.
+
+For example:
+{:.screenshot}
+When to use a constant
+There are specific use cases that still require you to use a constant to indirectly reference a record type. 
+For example, you must use a constant or expression rule to reference a record type in an existing process model. See Working with Data in Process for more information.
+
+appian-style-note
+You cannot reference record fields or record actions using a constant.

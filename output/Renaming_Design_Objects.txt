@@ -1,0 +1,51 @@
+
+layout: basic
+title: Renaming Design Objects
+title_short: Renaming Objects
+topic: Designer
+topic-group: Design Objects
+type: How To
+weight: 500
+
+Overview
+All design object types in Appian can be renamed except for custom data types.
+The follow objects can be renamed from their respective designers:
+
+Site
+Process Model
+Record Type
+Web API
+Data Store
+Expression Rule
+Interface
+
+Object types that are referenced inside the expression definitions of other objects can be renamed by using the Rename action in Appian Designer. These object types include:
+
+Constant
+Decision
+Expression Rule
+Integration
+Interface
+
+All other object types can be renamed in-line from their Properties dialogs in Appian Designer.
+Rename action in Appian Designer
+The Rename action is available in Appian Designer from the More toolbar menu for objects types referenced inside expression definitions as listed above.
+{:.screenshot}
+In most cases, the Rename dialog will allow you to update these objects names immediately, and there will be no further action---all of the dependents of the renamed object will be updated automatically. In a few special cases, you will need to take extra steps to complete the rename. 
+The rename takes effect for all versions of the object. Renaming an object doesn't create a new version of the object, it just updates the existing version.
+{:.screenshot}
+You cannot rename an object to a name that is already used on the system. You can rename your object to the same name with different casing though.
+Special considerations
+There are two edge cases where you might have to update some of the renamed object's dependents manually:
+
+The dependent is still referencing the renamed object's old name after the rename action occurred. This could happen in the unlikely event that you added the object's reference to the dependent before the object was created.
+The dependent was being edited by another user while the rename occurred.
+
+In both scenarios, the Rename dialog will indicate that there are additional actions for you to take.
+Manual Updates
+{:.screenshot}
+After the rename, Appian searches the expressions of all objects on the system to make sure there are no leftover instances of the object's old name. If any are found, they will be displayed with the part of the expression that includes the old name. These will need to be updated manually. These old references will cause the dependent object to throw an error because the old object name can no longer be found. This search also includes comments in your expression definitions that might need to be updated.
+You can click the refresh list link in the warning message box to rerun the search as you are manually updating the references to verify your progress.
+Currently open dependents
+{:.screenshot}
+If any of the renamed object's direct dependents are being edited by another developer during the rename, they will be displayed after the rename. The dialog will indicate which user is currently editing the object so that you can coordinate the update with them.

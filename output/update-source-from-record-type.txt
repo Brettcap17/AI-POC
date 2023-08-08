@@ -1,0 +1,105 @@
+
+layout: basic
+title: Update a Source from Your Record Type
+title_short: Update a Source
+topic-group: B
+weight: 301
+
+This page describes how to update a database table at the same time that you update a record type.
+Overview
+Updating relational database tables usually involves specialized knowledge of SQL commands and best data practices. With codeless data modeling in Appian, however, it's not just database administrators who can configure database tables. In this streamlined process, any developer can update database tables while updating a record type.
+You can use a guided experience to update a table in any MariaDB databases connected to your Appian environment. If you generated a source for your record type, you'll find this experience familiar.
+
+appian-style-note
+To take full advantage of codeless data modeling, you'll need permissions to update the table in your selected database. If you don't have those permissions, you can still use the guided experience to generate a database script, which you'll then need to run in the database yourself.
+
+To update a database table from a record type:
+1. Start the guided experience.
+2. Modify the data structure.
+3. Modify record type relationships.
+4. (Optional) Prevent table update. 
+5. Save your changes.
+6. (Optional) Download the auto-generated database script.
+7. Click FINISH.
+Start the guided experience
+To start the guided experience:
+
+In the record type, go to Data Model.
+Click ADD SOURCE FIELDS. This option is only available if the latest full sync for the record type was successful.
+
+{:.screenshot}
+Modify the data structure
+By default, the Fields tab is active. In this tab, you can modify the fields in your record type.
+Add a choice list field
+A choice list field allows you to create reference data that represents a list of static values (for example, the status fields "Not Started", "In Progress" and "Done"). You can then allow your end users to select from this list of choices in your interfaces or reports. 
+When you create a choice list field, Appian creates a related record type to store the static values you define, and adds a common field to the current record type that links to the new related record type.
+INCLUDE PAGE: add-new-choice-field
+Add a field
+INCLUDE PAGE: add-single-source-field
+Add multiple fields
+INCLUDE PAGE: add-multiple-source-fields
+Configure field properties
+INCLUDE PAGE: configure-source-field-properties
+Reorder fields
+INCLUDE PAGE: reorder-source-fields
+Remove a field
+To remove a field:
+
+Click  in the field row. The Remove <name> field? dialog displays
+
+This dialog lists any objects that rely on that field. For example, the list could include:
+   - A record type object if you're removing a common field that enforces a relationship to another record type.
+   - An interface object if the interface references the field you're removing.
+
+Click DELETE ANYWAY to remove the field.
+Update the affected objects. For example, you might then remove the record type relationship or remove the field reference in the interface object. To quickly identify objects that might contain broken references, you can view the Health Dashboard.
+
+Modify record type relationships
+Record type relationships allow you to reference related data from your record type, which makes development faster and easier.
+You can modify relationships elsewhere in the data model configuration, but modifying a relationship here has many benefits.  A relationship requires that your record type contains a common field that's used in both your record type and the related record type. If you modify a relationship at this point, Appian can update that common field in the source database, so the relationship is represented accurately in both the source and the record type. Also, if you're adding a relationship, Appian can automatically generate a common field for you based on the relationship type you select.
+
+appian-style-note
+If you added a choice list field, the relationship to your new related record type is already configured. 
+
+In the Relationships tab, you can add or remove record type relationships.
+Add a relationship
+To add a record type relationship:
+
+Go to the Relationships tab.
+Click NEW RELATIONSHIP.
+Search for and select a record type in the Record Type Relationship field.
+Click NEXT. The Add Relationship to <Record Type> dialog displays. For example:
+
+{:.screenshot style="width: 80%"}
+INCLUDE PAGE: add-relationship-source-field
+Remove a relationship
+To remove a relationship:
+
+Go to the Relationships tab.
+Click  in the relationship row. The Remove <name> relationship? dialog displays. This dialog lists the objects that rely on the relationship to function.
+Click DELETE ANYWAY to confirm the relationship removal.
+Manually remove the common field that enforced the relationship. 
+
+Prevent table update (Optional)
+By default, the system will use the auto-generated database script to update the table in the source database. You'll just need to keep the Update Table option selected.
+{% include zoompic.html url="images/Create_Record_Type/update-data-source-highlight-update-table.png" alt="Update Table option highlighted in the review step of the Add Source Fields dialog" border="-nb" %}
+However, under certain conditions, you might want to prevent Appian from updating the table. For example, you might need to make modifications to the script like editing the field names to meet database administration requirements or adding foreign keys and constraints. 
+In that case, you can prevent the system from updating the table, while still taking advantage of the guided experience to generate the basic script.
+To prevent the table update, unselect the Update Table checkbox.
+Save your changes
+Click SAVE CHANGES to save your changes to the record type. 
+{% include zoompic.html url="images/Create_Record_Type/update-data-source-highlight-save-changes.png" alt="Save Changes button highlighted in the Add Source Fields dialog" border="-nb" %}
+If the Update Table checkbox is selected, Appian will save the data model for the record type and update the table in the database. 
+If the Update Table checkbox is unselected, Appian will save the data model for your record type, but makes no changes to the database itself. Because the fields you added to the record type do not yet exist in the database, the sync will fail for your record type. As a result, error indicators will display in the record type until you update the table in the database and trigger a full sync.
+Download the database script (Optional)
+After Appian successfully saves the changes to your record type, you have only one step left: deciding whether to download the auto-generated database script. 
+{:.screenshot}
+You can use the database script to:
+- Update the new table directly in the database if you prevented the table update earlier.
+- Deploy any application that uses the record type to another environment. To do this, you can include the script in a deployment package or run the script in the target environment prior to a manual deployment.
+By default, the Download database script is selected, and the system will download the script when you click FINISH.
+If you do not want to download the script, unselect the Download database script checkbox before clicking FINISH.
+When you unselect this checkbox, a banner will appear asking if you want to save your download preferences. You can choose to skip the database script download each time you update to the source, or return to the default download setting so the script is downloaded whenever you update the source.
+
+appian-style-caution
+The auto-generated database script is not saved in Appian, so we strongly recommend downloading the script now and storing it locally. 

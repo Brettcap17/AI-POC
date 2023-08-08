@@ -1,0 +1,26 @@
+
+title: Guidelines Overview
+title_short: Guidelines
+type: Home
+description: "Learn about best practices for visual design, usability, accessibility, and more."
+uxorder: 1
+
+Introduction
+This is a collection of best practices and recommendations for creating attractive and usable interfaces. Each topic in this collection provides guidance to help you decide when and how to use particular features in support of typical scenarios, and what to avoid when designing, for a great user experience.
+Designing efficient, intuitive, and beautiful user interfaces
+Building business applications that are a pleasure to use requires much more than just satisfying the functional requirements. Great applications must also allow users to efficiently complete their work in order to maximize productivity. Making user interfaces as intuitive as possible reduces training costs and ramp-up time. And, of course, users expect beautiful interfaces that look rich and modern.
+
+Show the right amount of information
+Usability demands a balancing act to figure out the appropriate content and controls for a given task. When designing or reviewing an interface, start by asking these two questions:
+
+"What would users need that's not here?"
+"What's here that users don't really need?"
+
+Consciously design each interface to best meet the needs of its intended audience.
+Provide enough information to allow new users to quickly complete tasks without additional help. At the same time, remove unnecessary content that may reduce efficiency when performing repeated activities.
+Make your users more productive
+
+Minimize the number of clicks and keypresses
+Minimize scrolling and mouse movement by positioning controls close to their associated content
+Minimize the amount of content comprehension required to complete a task
+Optimize sequences that would hamper productivity for a frequent user

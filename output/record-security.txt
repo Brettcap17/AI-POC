@@ -1,0 +1,80 @@
+
+layout: basic
+title: Record Type Object Security
+permalink: record-security.html
+topic-group: F
+weight: 200
+
+This page describes the different security options for the record type. For more information on object security, see Object Security.
+
+appian-style-tip
+If you're new to configuring security on your record type, see Security in Appian Records to learn how the different security configurations impact a user's ability to see your enterprise data.
+
+Record type security {#prodlink-security}
+The security role map of a record type controls which users can see or modify it and its properties. By default, only the record type creator and system administrators have access to the record type. See Editing Object Security to modify a record type's security.
+The following table outlines the actions that can be performed by each permission level in a record type's security role map:
+
+ Actions 
+ Administrator 
+ Editor 
+ Viewer 
+
+View record type in Tempo 
+Yes 
+Yes
+Yes
+
+
+View record type definition
+Yes
+Yes
+Yes
+
+
+View the object security
+Yes
+Yes
+Yes
+
+
+Update record-level security
+Yes
+Yes
+No
+
+
+Update record type definition
+Yes
+Yes
+No
+
+
+Update the object security
+Yes
+No
+No
+
+
+Delete the record type
+Yes
+No
+No
+
+
+When you add a relationship to your record type, Appian will automatically enforce the object security configured on the related record type whenever you reference the related record data. If you do not have sufficient permissions on the related record type, you cannot reference the related record fields, and any references to the related record fields will appear as null.
+Preventing users from being able to view a record type does not secure the record type's underlying data source. Users may still be able to view the underlying data in other areas of Appian. See source security to learn how to secure your records.
+Source security
+Individual record security is based on the object security of the underlying data source and the record-level security defined in the record type. 
+Users must have at least Viewer permissions to the record type's source to view a record in the record list or to view its record views. However, the security of the record's source is configured differently for the different source types. 
+
+appian-style-tip
+Record-level security is only available on record types with data sync enabled. If your record type does not have data sync enabled, consider adding default filters to determine who can see which records.
+
+Database source type
+For record types with a database table as the data source, see data store security.
+Process model source type
+For record types with a process model as the data source, see Configuring Process Security.
+Web service source type
+For record types with a web service as the data source, both the list view and record view source expressions execute in the context of the user viewing the record list. Even if these source expressions are defined using expression rules, the security role map applied to those rules does not prevent any users from executing the rule by viewing the record list.
+Access to the underlying data must be controlled by the developer of the expression rule in its definition in conjunction with the access control mechanisms available from the provider of the data. For example, if the expression rule retrieves data from an external data provider that requires credentials for authentication and authorization, the expression rule developer must build the retrieval and presentation of those credentials into the definition of the expression rule.
+For more information, see Expression Rule Security.

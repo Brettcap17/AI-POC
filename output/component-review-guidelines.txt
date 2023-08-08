@@ -1,0 +1,33 @@
+
+layout: "basic"
+title: "Component Review Guidelines"
+topic-group: "Review Process"
+weight: 200
+
+Before you submit your component for review, make sure you've reviewed the guidelines on this page. The criteria are split into three categories: Proper Use, Design, and Support.
+In addition to these guidelines, component plug-ins must follow the general AppMarket submission policies.
+Proper use
+
+No replacements: Components must not duplicate or replace standard Appian components, regardless of styling, formatting, or minor functional differences.
+No composites: Components must not duplicate or replace functionality that can otherwise be created with standard Appian components.
+No full-page applications: Components must not be complete applications, independent of the surrounding Appian interface. Components should be modular, designed to work with other components to create a complete user experience, and should not be intended to fill the entire screen. Components that embed or integrate with external applications will be evaluated on a case-by-case basis.
+No navigation: Components must not navigate users away from Appian interfaces.
+
+Design
+
+Components should be visually consistent with the rest of Appian, including branding configurations using the accent color.
+Components should have a clear, narrow purpose. Avoid having a component with too many responsibilities. It is better to decompose a multi-purpose component into several more focused components.
+External dependencies and costs should be clearly identified in the component description.
+Components should not output messages to the browser console log. Errors or other information should be shown in the component or passed to the interface via parameters or validation messages.
+Components must not include any proprietary third party libraries that require a license to be distributed or deployed in production, or require distribution of source code as a condition of use.
+
+Support
+
+You must properly identify your organization as the component vendor.
+You must declare whether your plug-in is officially supported. *Official support- means customers can expect a response to inquiries and that bugs will be addressed in a timely manner.
+Supported plug-ins must include valid support contact details.
+Individual components must declare their support for browsers and mobile clients.
+
+
+appian-style-tip
+When creating an interface, developers can see who built a component, whether it's supported, the support contact details, and the available languages and browsers/mobile clients.

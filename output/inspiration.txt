@@ -1,0 +1,5 @@
+
+layout: ds-inspiration-home
+title: Inspiration
+description: Explore the wide variety of experiences that SAIL enables across all sorts of industries and solutions.
+navbar: inspiration

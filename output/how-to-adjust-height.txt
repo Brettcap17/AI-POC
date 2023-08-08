@@ -1,0 +1,107 @@
+
+layout: "basic"
+title: "Adjust the Component Height"
+topic-group: "How To"
+weight: 200
+
+This page provides two examples that explain how to handle height depending on the design of your component. One example is a map that has no fixed height. The other example is an embedded form that has a fixed height.
+You can find the complete code in our example repository.
+Adjustable height: Map
+A map component can be shorter or taller without significantly changing the function of the map. That means this component can be flexible when handling different height selections by the designer.
+Content container
+For this example, we'll assume your map is rendered in a <div> like the one below:
+```html
+
+
+This is an example of adjustable height content, like a map.
+
+```
+
+### Capture height parameter
+
+Start by capturing the **height** parameter. The value corresponds to the **Height** selected by the designer:
+
+- **Auto**: `auto`
+- **Short**: `280px`
+- **Medium**: `490px`
+- **Tall**: `840px`
+
+```javascript
+Appian.Component.onNewValue(function (newValues) {
+  let containerHeight = newValues.height;
+```
+
+### Auto: Set a default height
+
+When the designer selects **Auto** height, they're letting you decide how tall to make the component based on it's contents. Select a reasonable default and set that as the height of the component.
+
+```javascript
+if (containerHeight === 'auto') {
+  setMapHeight('400px');
+}
+```
+
+>appian-style-tip
+>Don't add another parameter to set a more granular height because the size of your content may differ across various browsers and mobile clients. Just let developers pick from the existing height options.
+
+### Preset heights
+
+When the designer selects one of the three preset heights you want to adjust the map to fit that size to avoid showing a scroll bar.
+
+```javascript
+if (containerHeight !== 'auto') {
+  setMapHeight(containerHeight);
+}
+```
+
+Keep in mind that the **height** parameter represents the size of the entire component container. If your component has any internal padding or margins you might need to set a slightly smaller height to make sure you don't end up with a scroll bar.
+
+## Fixed height: Embedded form
+
+A component that embeds a third-party form or web page can't easily change the height of it's contents. That means you'll want the component to show a scroll bar if the designer selects a height that's not big enough to fit it.
+
+### Content container
+
+For this example, we'll assume your form is rendered in a `` like the one below:
+
+```html
+
+
+
+This is an example of fixed height content, like an embedded form.
+
+
+```
+
+### Capture height parameter
+
+As with the map component, you first have to [capture the height parameter](#capture-height-parameter).
+
+### Auto: Maximum height
+
+With the map component we treated **Auto** as a chance to set a default height. With an embedded form you instead want to view the entire form up to a certain height, and then let the form scroll beyond that limit. In this case we'll pick `840px` as the maximum height to match the **Tall** preset height.
+
+```javascript
+if (containerHeight === 'auto') {
+  let div = document.getElementById('content-container');
+  let elementHeight = div.offsetHeight;
+  let style = getComputedStyle(div);
+  elementHeight += parseInt(style.marginTop) + parseInt(style.marginBottom);
+
+  if (elementHeight < 840) {
+    document.getElementById('content-container').style.height = 'auto';
+  } else {
+    document.getElementById('content-container').style.height = 840 + 'px';
+  }
+}
+```
+
+### Preset heights
+
+When the designer selects one of the three preset heights you just need to show your form content. If the form is shorter than the preset height there will be blank space at the bottom. If the form is taller than the preset height then a scroll bar will be shown. The designer can decide whether they prefer this or the **Auto** behavior for their interface.
+
+```javascript
+if (containerHeight !== 'auto') {
+  document.getElementById('content-container').style.height = 'auto';
+}
+```

@@ -1,0 +1,181 @@
+
+layout: basic
+title: Filter the Record Type Source Data
+title_short: Filter Source Data
+topic-group: B
+weight: 300
+
+This page describes the difference between source filters and default filters, and how to apply them to your record type.
+Overview
+After defining the source of your record type, you may decide that you don't need all the data from your source, or that you want to exclude certain data to prevent end users from viewing it. Appian Records allow you to create filters on your source data so you can exclude data that does not meet the specified criteria. 
+Depending on whether your record type has data sync enabled or not, the way you filter your source data will vary:
+- If your record type has data sync enabled, you can apply source filters.
+- If your record type does not have data sync enabled, you can apply default filters.
+
+appian-style-note
+Both source filters and default filters are not applicable to record types that use a web service as their data source. Instead, you can use the expression rule for the record data source to conditionally filter out records.
+
+Source filters
+When you enable data sync on your record type, you can apply source filters to specify which data is synced and available in the Appian system. With source filters, you can exclude unnecessary data, and even work with data sources that would otherwise cause your record type to exceed the row limit.
+For example, let's say you have a database with over 1 million rows of support case data. To sync and have access to this data, you could create two different record types: the Open Case record type and the Closed Case record type. Both record types would point to the same database, but they each use a source filter so that they only sync cases with a specific status. This way, you can continue to work with all of the data you need, and still leverage powerful sync-enabled features.
+You can add source filters when you configure the source of a record type, or anytime after configuring the source by navigating to the Data Model page of the record type. 
+The sections below explain how to add source filters after the source of the record type has been configured. To learn how to add source filters when configuring the source of a record type with sync enabled, see Choose a Record Type Data Source.
+To create a source filter, use one of the following options:
+- Basic mode: Apply multiple source filters joined by an AND union.
+- Expression mode: Apply more complex filters by entering an expression containing a!queryLogicalExpression().
+
+appian-style-tip
+Once you apply your source filters, apply record-level security to determine which records are available to which users.
+
+Basic mode
+Basic mode allows you to easily set up filters using three criteria: Field, Condition, and Value. Multiple filters are combined using the AND operator.
+To add a source filter using Basic mode:
+
+In your record type, go to Data Model.
+Under SOURCE FILTERS, click ADD FILTER. 
+In the Configure Source Filters form, leave the default selection Basic.
+
+Click  Add Filter
+{:.screenshot}
+
+
+From the Field picker, select the source field you want to filter the data. Only source types that can be converted to Appian types appear in the dropdown.
+
+From the Condition list, select the operator to apply to the filter.
+Use the context menu next to the Value field to select how you want to pass the value into the filter.
+The options in this menu change based on the data type of the field selected. You can enter a value directly or enter the value using an expression. For date and date and time data types, you can choose from a list of date presets.
+If you want to skip filters that have an empty value, select the Ignore Filters with Empty Values checkbox. See a!queryLogicalExpression() for more information.
+Click TEST FILTER to validate your filter conditions.
+If you have more than one filter, use the up and down arrows to change the order in which the filters are applied. Delete a filter by clicking X.
+Click OK.
+
+Expression mode
+Expression mode allows you to create more complex filters. You can switch to Expression mode at any time during your filter configuration. For example, if you want to use OR to combine filters instead of AND, simply create all of your filters in Basic mode, then switch to Expression mode and change AND to OR for the a!queryLogicalExpression() operator parameter.
+When configuring source filters in Expression mode, you must use an expression containing a list of a!queryFilter() or a!queryLogicalExpression(). 
+To configure a source filter using Expression mode:
+
+In your record type, go to Data Model.
+Under SOURCE FILTERS, click ADD FILTER. 
+In the Configure Source Filters form, select Expression.
+
+In the expression editor, enter an expression that returns a list of queryFilter or queryLogicalExpression.
+
+appian-style-note
+Source filters do not support the now() or loggedinuser() function, nor any object references called from the rule! or cons! domain.
+
+
+
+Click TEST FILTER to validate your filter conditions.
+
+Click OK.   
+
+For example, the following source filter expression would only sync opportunities that have a status of active and an opportunity level of either "Must have" or "Should have". Any data that does not meet these filter conditions will not be synced in Appian.
+sail
+  /*
+  (Has a status of "Active" AND has an opportunity level of "Must have" OR "Should have")
+  */
+  a!queryLogicalExpression(
+    operator: "AND",
+    logicalExpressions: {
+       a!queryLogicalExpression(
+        operator: "AND",
+        filters: a!queryFilter(
+           field: "status",
+           operator: "=",
+           value: "Active")
+      ),
+       a!queryLogicalExpression(
+         operator: "OR",
+         filters: {
+          a!queryFilter(field: "opportunityLevel", operator: "=", value: "Must have"),
+          a!queryFilter(field: "opportunityLevel", operator: "=", value: "Should have")
+         }
+       )
+    }
+  )
+For more information on specifying filters as an expression, see a!queryFilter() or a!queryLogicalExpression(). 
+Default filters
+When your record type does not have data sync enabled, you can use default filters to specify which records appear in the record list and views based on the conditions you specify.
+When a record is filtered out by a default filter:
+
+The record does not show up in the record list.
+The record is not returned in queries on that record type.
+Users may not access the views on the record.
+
+Each default filter defines a condition that must be true for a record to display in the list. If you have multiple conditions, the record must meet all conditions in order to display.
+For example, in a Case record type, you may want case managers to view all customer support cases, but you only want support engineers to see the cases that are assigned to them. Using a default filter, you could create a filter condition that states if a logged in user is a member of the Support Engineers group, only return cases assigned to the logged in user; Otherwise, return all customer support cases.
+
+appian-style-tip
+If your record type has data sync enabled, you can use record-level security to achieve this same use case.
+
+To create a default filter, use one of the following options:
+
+By Field: Allows you to apply multiple default filters joined by an AND union.
+Expression: Allows you to apply more complex filters by entering an expression containing a list of a!queryFilter() or a!queryLogicalExpression().
+
+By field
+Creating filters by field allows you to easily set up filters using three criteria: Field, Operator, and Value. Multiple filters are combined using the AND operator.
+To create a default filter by field:
+1. In your record type, go to Source & Default Filters. 
+2. Keep the default selection of By Field.
+3. Click on  New Default Filter. 
+4. Click the Field dropdown and select the record field that you want to set as the default filter. 
+5. Select the appropriate comparison from the Operator dropdown.
+6. Enter the value for the comparison in the Value field. This is an expression field, so encase text values in quotes.
+For example, the filter in the following screenshot removes all records that do not have an account manager.
+![Screenshot](images/Create_Record_Type/image_18.png){:.screenshot}
+
+
+Click OK. 
+
+Expression
+Creating filters using an expression allows you to create more complex filters. When configuring source filters in Expression mode, you must use an expression containing a list of a!queryFilter() or a!queryLogicalExpression(). 
+To create a default filter using an expression:
+1. In your record type, go to Source & Default Filters. 
+2. Select Expression.
+![/record default filters expression](images/record_default_filters_expression.png){:.screenshot}
+
+
+In the expression editor, enter an expression that returns a list of queryFilter or queryLogicalExpression.
+Click OK.
+
+For example, the following default filter expression returns cases that are either assigned to the logged in user, or cases that are not assigned to the "Global Users" group but are either Urgent or High priority:
+sail
+   /*
+   (Assigned to User OR (NOT Assigned to "Global Users" AND (priority="Urgent" OR priority="High")))
+   */
+  if(a!isUserMemberOfGroup(loggedInUser(),cons!CASE_GROUP_GLOBAL_VIEWERS),
+    {},
+    a!queryLogicalExpression(
+      operator: "OR",
+       logicalExpressions: {
+         a!queryLogicalExpression(
+           operator: "AND",
+           filters: a!queryFilter(
+            field: "userName",
+            operator: "=",
+            value: loggedInUser())
+        ),
+         a!queryLogicalExpression(
+          operator: "AND",
+           logicalExpressions: {
+             a!queryLogicalExpression(
+              operator: "AND",
+              filters: a!queryFilter(
+                field: "userName",
+                 operator: "<>",
+                value: cons!CASE_ADMIN_DB_KEY_1)
+            ),
+            a!queryLogicalExpression(
+               operator: "OR",
+               filters: {
+                 a!queryFilter(field: "priority", operator: "=", value: "Urgent"),
+                a!queryFilter(field: "priority", operator: "=", value: "High")
+              }
+             )
+           }
+        )
+      }
+    )
+  )
+For more information on specifying filters as an expression, see a!queryFilter() or a!queryLogicalExpression().

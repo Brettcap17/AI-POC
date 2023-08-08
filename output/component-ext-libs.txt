@@ -1,0 +1,22 @@
+
+layout: "basic"
+title: "Using Third-Party Libraries"
+topic-group: "Core Concepts"
+weight: 300
+
+Part of the power of component plug-ins is the ability to use third-party libraries. Most popular service providers have a JavaScript library or JavaScript widgets that make it easy to deliver a highly polished component in Appian. This page contains a few things to keep in mind when working with these external libraries.
+License restrictions
+Appian does not allow plug-ins that include proprietary libraries that require a license to be distributed or deployed in production.
+Service registration and costs
+If your component uses a third-party service or library make sure you clear communicate any requirements for using that service. Use the component description to indicate whether customers need to register for another company's service and what additional costs are involved. If costs are based on usage, make sure the customer has ways to control their costs and that your component minimizes usage as much as possible.
+Referencing hosted libraries
+You can often choose to reference a JavaScript library directly from a hosted URL or to copy that library into your component package directly. Libraries may also be copied into your package if you use a package manager like npm.
+If you decide to reference a library using a URL, be aware:
+
+The service provider may change the hosted implementation at any time, breaking your component. Check what guarantees the provider makes about maintaining compatibility with existing versions.
+Customers may have network firewalls that block access to certain provider domains, which would prevent the library from being loaded by a user's browser.
+
+In general you'll deliver a more consistent experience if you copy the library and distribute it with your plug-in. If that's not possible, you should explain any network access requirements in the component description.
+Dynamic script loading
+Sometimes the library you want to load depends on the value of an input parameter. For example, the Google Maps API requires an API key to be appended to the script URL, and that key is provided by the developer as an input parameter to the component.
+In these cases you can't use a static <script> tag in your HTML file to load the library because you won't know the path or URL in advance. Instead, you need to dynamically load the script in your JavaScript code once the input parameter has been passed in and validated. See the Google Maps sample code for an example of using this technique.

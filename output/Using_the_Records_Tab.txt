@@ -1,0 +1,107 @@
+
+layout: basic
+title: Where to Use Records
+permalink: Using_the_Records_Tab.html
+topic-group: D
+weight: 100
+
+This page explains the different places where you can reference your record data.
+Overview
+Now that you have your records and your record list, you can reference and use them throughout your applications. Appian Records are versatile, so you can view a single record or the record list in interface components, on sites, or on Tempo. 
+Once you choose where you're going to use your record data, learn how to reference the record type.  
+
+appian-style-tip
+Users must have at least Viewer permissions to a record type to access it on a site or in Tempo. Learn more about record security.
+
+Interface components
+You can quickly build powerful reports and interfaces when you leverage your record data in the following interface components:
+- Read-only grid
+- Charts
+- Record actions
+- Record links
+- Record picker
+Read-only grid
+You can easily pull record data into a read-only grid by choosing the record type as the grid's data source. This also allows you to reuse features configured on your record list such as user filters, record actions, and export to Excel.
+{% include zoompic.html url="images/records-read-only-grid.gif" %}
+By default, the read-only grid will apply the record list style and format. You can then customize your grid by creating new grid columns, replacing record fields with related record fields, or adding new display values in your fields.
+In Expression Mode, you can configure the grid's data source using a!recordData() or a!queryEntity(), and use fv!row with bracket notation to easily pass the record field values into the grid in your interface.
+See a!queryRecordType and a!recordData for more information on querying record data. See Reference a record type to learn more about fv!row.
+{% include related_patterns.html
+   content="recordType!"
+   heading="#### Related patterns"
+   related_patterns_mods="and, sr-tags: Grids"%}
+Charts
+It's easy to build powerful reports when you use a record type as the source of your charts. Simply choose your chart (bar chart, column chart, line chart, or pie chart), and specify the record type to use as your data source. Appian will then query your data for you and automatically display the results in the chart.
+You can then modify the chart's grouping and measures to determine what data to query from the record type and how to display the results on the chart. 
+If your record type leverages record type relationships, you can easily reference related data by hovering over the relationship name in the list of available record fields.
+{% include zoompic.html url="images/use-records-in-charts.gif" %}
+If you start building your chart and find that you need to calculate or summarize your existing data to display the right information, consider creating custom record fields on your record type to calculate these values and store them in a new record field. 
+You can even use a pre-defined reporting template to help you configure the data you need. You can then easily reference these fields like any other record field in your chart.
+See Chart Configuration Using Record Data for details and examples using a record type as the source.
+{% include related_patterns.html
+   content="recordType!"
+   heading="#### Related patterns"
+   related_patterns_mods="and, sr-tags: Charts"%}
+Record actions
+Once you add a related action or a record list action to your record type, you can reuse these actions in any report or form using the record action component.
+This component gives you the flexibility to display record actions anywhere on the page, and even change the way the button appears on the interface. 
+{% include zoompic.html url="images/record-action-component-ex.png" %}
+With a record action component, you can easily add a list of record actions, and even reference record actions from different record types. 
+See a!recordActionField() and a!recordActionItem() to learn how to configure a record action component.
+Record links
+After you configure your record views, you can easily link to these views using record links. For example, in your Customer record list, you could add a record link on the name field and use fv!identifer to pass in each customer's ID. Now, when a user clicks on the customer name, the link will go to the Summary view associated with each customer.
+sail
+a!linkField(
+  links: {
+    a!recordLink(
+      label: fv!row[recordType!Customer.fields.name],
+      recordType: recordType!Customer,
+      identifier: fv!identifier
+    )
+  }
+)
+Record links can be used in tags, charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text. Using record links, you can allow users to easily discover more information with minimal effort. 
+See the record link component for more information.
+Record picker
+The record picker allows users to select one or more records from a record type using an autocompleting picker. This component is particularly useful when building forms to update or add new information to a record. 
+For example, if you want to open a new case for a customer, you can add a record picker on your form so you can select the customer name from the Customer record type. This prevents users from manually entering a customer name each time they log a case, and it provides an alternative to building and maintaining a constant to display a list of all customer names.
+{% include zoompic.html url="images/use-record-picker.png" %}
+See the record picker component for more information.
+Process models
+INCLUDE PAGE: 
+Sites
+In sites, you can associate record types with site pages. 
+When a site page is associated with a record type, the user sees the record list for the associated record type when accessing that page. 
+{% include zoompic.html url="images/SiteRecordTypePage.png" %}
+Display records on a site
+To associate a record type with a site page:
+1. Create a site or open an existing site.
+1. Click  Add Page.
+1. From the Type dropdown, select Record List. 
+1. Use the Content dropdown to select a record type from the list of available records.
+1. Click OK.
+Show record news
+When you associate a record type with a site page, you can choose whether or not to show the News view on the records displayed on the site.
+By default, a site is configured to show record news. This means that each record will have a view that displays the 20 most recent news events related to the record. However, the News view will only display on the site if Show News view is selected for the record type object. 
+See Define Record Views and Actions to learn more about configuring the display of default record views.
+{:.screenshot}
+Tempo
+In Tempo, record types are displayed as a list of cards on the Records tab. Each record type has an associated icon and color.  
+By default, Tempo will display a pre-configured record type called Users. This record type contains a directory of all Appian users. To make changes to the Users record type, see Modify the User Record Type.
+Click a record type to view the record list.
+{:.screenshot}
+Display records on Tempo
+By default, new record types do not display on the Records tab in Tempo. 
+To display record types in Tempo:
+1. In your record type, go to Tempo.
+1. Select the Show this record type on the records tab in Tempo checkbox.
+ ![/Create Record Type/create a record type tempo configure](images/Create_Record_Type/create_a_record_type_tempo_configure.png){:.screenshot}
+
+
+For Icon, select an icon relevant to your record type so that users can find it faster in the list.
+For Icon Color, choose a color to help differentiate your record type from others.
+Save your record type.
+
+
+appian-style-note
+As a best practice, you should hide a record type that defines reference or supplemental data that is only created and managed in the context of another record type. Hiding a record type does not prevent users from viewing a record's list or views in Tempo.
