@@ -1,0 +1,190 @@
+
+layout: basic
+title: Applications View
+topic: Designer
+topic-group: Designer Space
+type: Reference
+weight: 302
+
+Overview
+This page describes what you can do in the Applications view in Appian Designer.
+The Applications view is the default view in Appian Designer. 
+To return to this view from other views at the environment level, click Applications in the navigation pane. 
+To return to this view from an application, click the back arrow in the header bar.
+Purpose
+The Applications view allows you to create applications, import applications, and access all applications for which you have permissions in the environment. This view also allows you to connect directly with your fellow developers in Appian Community.
+Elements
+The following image highlights the elements that make up this view:
+{% include zoompic.html url="images/applications-view-annotated.png" alt="screenshot of Appian Designer applications list" border="-nb" style="width:67%;" %}
+
+
+
+#
+Element
+Available Actions
+
+
+
+
+1
+Header bar
+Learn more about the header bar.
+
+
+2
+Navigation pane
+Learn more about the navigation pane.
+
+
+
+3
+Let's get started pane
+
+
+Create an application.
+Import an application or package.
+
+
+
+
+4
+Recent Applications section
+
+Quickly access the applications that you've opened or edited recently.
+
+
+
+5
+Applications toolbar
+
+
+Search for an application.
+Filter the applications list.
+Export an application or package.
+Review security for an application.
+Delete an application.
+
+
+
+
+6
+Applications list
+
+
+View the applications in this environment.
+Sort the applications list.
+Open an application.
+
+
+
+
+7
+Learn More pane
+
+
+Navigate to more views and information.
+Connect with Appian Community.
+
+
+
+
+
+Create an application
+Click New Application in the Let's get started pane. 
+Learn more about creating an application.
+Import an application or package
+Click Import in the Let's get started pane. 
+Learn more about importing.
+Access recent applications
+The Recent Applications section allows you to quickly access the last three to five applications that you have recently opened or modified.
+The following modifications will cause an application to show in Recent Applications:
+
+Changes to application settings.
+Creating or updating design objects in an application.
+Removing a design object from an application.
+
+The following modifications won't cause an application to show in Recent Applications:
+
+Deleting design objects.
+Modifying folders and their contents.
+
+If you haven't accessed any applications yet in this environment, this section displays the most recently edited applications in this environment.
+Visibility
+The Recent Applications section allows you to view information about your recently accessed applications, such as who else has modified the application and the time of the most recent changes. However, some permissions may affect the information that you can see.
+If you see an editor with a default grey profile avatar or a username instead of initials, you likely don't have permission to view that user or information about them. For more information on permissions and user visibility, see User Profile Visibility.
+If there are differences between the editors you see in the recent applications and those listed in the object grid within those applications, it's likely that an editor made changes to an object that you don't have permission to view.
+Manage applications
+In the Applications view, you can perform a number of application-related tasks.
+View the applications list
+The applications list displays information about applications for which you have at least Viewer permissions.
+Each row in the applications list contains the following columns:
+
+Name: The name of the application.
+Description: The description of the application.
+Last Modified: The date and time on which a developer either changed the application properties or added an object to the application.
+
+Search for an application
+To search the applications list, enter the name, description, or prefix of an application in the search box in the toolbar. Your search term(s) will be run against application names, descriptions, and prefixes and return a list of all matching applications.
+Filter the applications list
+In the toolbar, use the following filters:
+
+Last Modified By: Filter by the name of the developer who last changed an application property or added an object to the application.
+Last Modified On: Filter by the date when a developer last modified the application. This filter returns applications that were last updated on or after the FROM date, and all that were last updated on or before the TO date. The filters take the user's time zone into account, so users in different time zones may see different objects when filtering on the same dates.
+appian-style-note
+The last modified date represents the date that a developer last changed the application properties, added an object to the application, or removed an object from the application. 
+
+
+With Packages: Filter by whether an application contains packages.
+
+Sort the applications list
+By default, the applications list is sorted by the Last Modified On column.
+To sort by any column, click the column heading.
+Open an application
+In the applications list, click the application name. If you're opening the application for the first time, the Explore view is active by default. If you've previously opened the application, whichever view you last accessed in the application is active (for example, you might see the Build view instead).
+Export an application or package
+To export an application or package:
+
+Select an application in the list.
+In the toolbar, click EXPORT.
+Complete the export steps.
+
+Review security for an application
+To review application security:
+
+Select the application in the list.
+Click SECURITY in the toolbar.
+
+Learn more about application security.
+Delete an application
+Deleted applications are removed from the system and cannot be restored. Deleting an application does not delete any of its objects; they simply lose the relationship with the deleted application but retain any other relationships they may have.
+To delete an application:
+
+Select the application in the list.
+Click DELETE in the toolbar.
+In the confirmation dialog, click DELETE.
+
+After deleting the application, you can view those objects in the Objects view.
+Navigate to more
+In the Applications view, you can also navigate to other views and to additional environment-specific information:
+
+To navigate to other views in this environment, use the navigation pane.
+To view release notes for the Appian version currently running in this environment, click the Release Notes card in the Learn More pane.
+To view information about the environment, click the About This Environment card in the Learn More pane. Environment information includes:
+Your current Appian version
+Your current Appian RPA version
+Data sources that have been added in the Admin Console or configured in the application server.
+
+
+appian-style-tip
+You can also access environment information in the header bar.
+
+Connect with Appian Community
+In the Community section of the Learn More pane, you can quickly access the extensive resources available to you on the Appian Community. Learn more with these resources to level up your Appian development skills.
+Click any of the following cards:
+
+Discuss: Collaborate with other Appian developers in our online discussions.
+Learn: Explore new learning paths with Appian Academy and Appian Certifications.
+Success: Review development best practices with the Developer Playbook. 
+Support: Browse product support articles for frequently-asked-about topics or contact Appian Support.
+Documentation: Find the answers you need in our tutorials, patterns, recipes, and reference content.
+AppMarket: Browse for plug-ins and utilties and boost your application power with our partner solutions.

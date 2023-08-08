@@ -1,0 +1,63 @@
+
+layout: basic
+title: Deploying Applications
+topic-group: C
+weight: 100
+
+Overview
+This page is about the deployment process in Appian and the different ways you can deploy updates to your applications. To learn how to deploy your applications and packages, see Deploy to Target Environments.
+The deployment process
+Deploying is moving a set of objects from the source environment to the target environment in order to release updates to your end users.
+A package is a collection of Appian application changes that you can deploy to another environment. Preparing a package is an important step in the deployment process and involves understanding what changes you need to deploy and how these changes will affect your target environment. 
+Make sure you understand object-specific behavior while preparing a package for deployment. In your application, you check your application for missing precedents and add the precedents to the application. In the package view, you can perform the same analysis for an individual package.
+Once you've prepared a package, you can then deploy it from a source environment to a target environment.
+During deployment, the definition of each object in your package is exported from the source environment into an XML file. Appian bundles these XML files into a ZIP file, which is used to move the objects to the target environment.
+Information about related objects is preserved across the deployments. In most cases, the related objects themselves are not automatically exported. They must be explicitly added as objects within the package, or already present in the target environment.  
+Package dependencies
+The successful deployment of your package can depend on the files and settings listed below.
+
+appian-style-tip
+To simplify deployment, add these files and settings to your package during development.
+
+Application configurations
+These application-level settings are used to construct the application in the target environment. The configurations can also add functionality like centralized application documentation and default security groups. Application configurations are always deployed when an application is new in the target environment. A package can contain just your application configurations or include application configurations alongside additional objects and enhancements.
+You can manage this dependency by adding application configurations to a package during development or deployment. Alternatively, you can manually update the settings in the target environment.
+Import customization file
+You may have to include an import customization file in your deployment if certain objects and configurations require environment-specific values, such as usernames and passwords. This file also enables you to deploy unchanged objects and trigger a sync for record types. Appian generates a template import customization file for you, which you must modify as appropriate to the target environment.
+You can manage this dependency by adding an import customization file to a prepared package, during compare and deploy, or during a manual import.
+Database scripts
+You can directly deploy database scripts alongside your application changes or allow Appian to manage your database structure. Alternatively, you can manually deploy database scripts to a specific environment, following change management best practices.
+Plug-ins
+Plug-ins allow developers to extend Appian functionality. On Cloud sites, system administrators can deploy Cloud-approved plug-ins to an environment through the Admin Console. On self-managed sites, plug-ins can be hot deployed by placing the JAR file in the specified directory. In addition, you can deploy plug-ins that exist in one environment to another using compare and deploy.
+Admin Console settings
+Certain objects may rely on specific Admin Console settings for successful deployment. You must import these settings prior to deploying the package of dependent objects.
+Deployment types
+In addition to deploying enhancements, you can also use the following types of packages to deploy new applications and change administration settings in the target environment:
+
+Applications: Deploy an entire application when you are introducing a completely new business solution into the target environment.
+Database scripts and plug-ins: Deploy only database scripts and plug-ins to make changes in the target environment that support a later deployment of changed design objects.
+Admin Console settings: Deploy only Admin Console settings when you want to make changes to the Administration settings in the target environment.
+
+Deployment methods
+There are three methods for deploying a package in Appian: direct, manual, and external.
+Direct deployment
+Direct deployment provides a guided push-button deployment of applications, packages, plug-ins, and database scripts across connected environments.
+Direct deployments are an out-of-the-box approach for streamlined deployments, with fewer manual steps and predictable outcomes. This approach supports continuous delivery by allowing you to deploy packages frequently and reliably.
+For those looking for a streamlined deployment process with minimal setup effort, Appian recommends using direct deployment.
+Learn more about compare and deploy.
+Manual export and import
+You may have constraints on specific environments or packages that prevent you from taking advantage of direct deployments. If that's the case, you can also manually export an application or package from a source environment and import it into the target environment. 
+When you export and import a package, rather than directly deploy it, you must manage certain dependencies manually. For example, exported packages do not contain database scripts or plug-ins.
+Learn more about manual export and import.
+External deployment
+Our native deployment APIs enable you to deploy programmatically and customize your own deployment process.
+The APIs offer five endpoints that allow you to inspect and deploy applications, packages, import customization files, and database scripts. You can call the APIs from external tools, such as Jenkins. 
+Use these APIs to trigger deployments and integrate your Appian release into an automated pipeline. Configure your pipeline once and run it the exact same way for all future deployments, saving time and avoiding manual errors.
+Learn more about native deployment APIs.
+
+appian-style-note
+In order to programmatically deploy Admin Console settings or tightly integrate with a version control system to store and retrieve package files, use the Automated Deployment Manager. For more information on setting it up, see the DevOps Quick Start Guide.
+
+Post-deployment processes
+A post-deployment process is a process that automatically runs after a direct or external deployment has finished on an environment. From this process, you'll be able to access key information about the relevant deployment.
+Post-deployment processes provide flexibility, which allows you to automate tasks, leverage third-party tools, and customize your workflow. Automating your post-deployment steps reduces manual tasks and the potential for human error.

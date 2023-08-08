@@ -1,0 +1,29 @@
+
+layout: function
+title: ispositiveinfinity() Function
+category: function_page
+excerpt: 'Tests given numbers against positive infinity, returning true if the numbers are positive infinity, false if the numbers are not positive infinity.'
+fnccat: Informational
+fncexample: ispositiveinfinity(1)
+fncname: ispositiveinfinity
+fncresult: 'false'
+parameters:
+  - keyword: number
+    types: Number (Decimal)
+    description: Number to test against positive infinity.
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+ispositiveinfinity(100) returns false

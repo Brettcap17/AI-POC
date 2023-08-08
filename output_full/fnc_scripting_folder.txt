@@ -1,0 +1,54 @@
+
+layout: function
+title: folder() Function
+space: function_page
+excerpt: "Returns a property of the requested folder."
+category: function_page
+fncname: folder
+fncexample: "folder(54, \"knowledgeCenterName\")"
+fncresult: "System Knowledge Center"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: folderId
+    types: Integer
+    description: |
+      The Id number of the folder or the folder object.
+  - keyword: property
+    types: Text
+    description: |
+      The information you need to retrieve regarding the document.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} The return type will be the type of that property; for example selecting dateCreated as the property parameter returns a Date and Time value.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+The property parameter accepts the following case-sensitive values (with their return values in parentheses):
+
+changesRequireApproval (Boolean)
+creator (Text)
+dateCreated (Date and Time)
+documentChildren (List of Document)
+folderChildren (List of Folder)
+id (Number [Integer])
+inheritSecurityFromParent (Boolean)
+knowledgeCenterId (Number [Integer])
+knowledgeCenterName (Text)
+knowledgeCenterSearchable (Boolean)
+name (Text)
+numberOfDocuments (Number [Integer])
+parentFolderId (Number [Integer])
+parentFolderName (Text)
+pendingApproval (Number [Integer])
+searchable (Boolean)
+
+The documentChildren and folderChildren properties return up to the first 1000 documents or folders, respectively, that are direct children of the selected folder. Results are returned in alphabetical order by name.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+folder(54,"knowledgeCenterName") returns System Knowledge Center
+folder(3, "documentChildren") returns [Document:4149]; [Document:4160]; [Document:4212]; [Document:4161]

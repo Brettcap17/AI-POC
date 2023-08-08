@@ -1,0 +1,105 @@
+
+layout: function
+title: Write to Data Store Entity Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Write to Data Store Entity Smart Service adds process data to an entity in a Data Store.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!writeToDataStoreEntity
+fncsubcat: Data_Services
+parameters:
+  - keyword: dataStoreEntity
+    types: Data Store Entity
+    description: The data store entity where you want to save your data.
+  - keyword: valueToStore
+    types: Any Type
+    description: The data value to create or update.
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!storedValues function variable (Any Type) is available to specify the data that was stored or updated in the database. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Data_Services
+ssicon: Write_To_Data_Store_Entity.png
+ssparentcat: Automation_Services
+
+Overview
+This page provides guidance on how to use the Write to Data Store Entity smart service in the Process Modeler. The Write to Data Store Entity smart service is a powerful tool that allows you to easily insert or update data in your database from Appian.
+{{ page.excerpt }} It allows you to select a single entity in a data store to save or update data.
+Related objects needed
+Before you configure the Write to Data Store Entity smart service, you must first have two objects:
+- Data store
+- Custom data type (CDT) 
+You'll need to reference both of these objects within the smart service. The way you define your CDT determines whether you can update existing data in the data store. See Updating existing values for more information.
+When the activity is attended (requiring that a user perform a task), you can select the element or subelement of a CDT to store form data in your configuration of the interface. Data written to a data store using this activity must be supported in the XML 1.0 standard. 
+
+appian-style-note
+Unicode control characters, such as characters #x0 and #x1 through #x1F, are not fully supported in XML 1.0.
+
+Any update on related data is based on the JPA annotations/database schema defined for the entity. For example, updating the parent in a one-to-many containment relationship also affects the children, but updating one side of a lookup relationship will not affect the related object.
+Also note that any CDT created through the Data Type Designer or uploaded via an XSD file has the cascade attribute set to ALL on the child CDT by default. So unless you have manually changed this setting, updating a parent CDT value with this setting also affects the child value. Learn more about CDT Relationships.
+Permissions needed
+The user executing this activity must have Viewer rights to the selected data store, in order to update or insert information.
+Properties
+
+
+Category: Data Services
+
+
+Icon: 
+
+
+Assignment Options: Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+|Name|Data Type|Description|Required|Multiple|
+|-|-|-|-|-|
+|Data Store Entity|Data Store Entity|The data store entity where you want to save your form data. |No|Yes|
+In addition to the default node input, you must create a node input with the same custom data type (CDT) as the entity in the data store that you select. 
+For example, if the AT_Employee_DS data store entity uses the AT_employee CDT, the Write to Data Store Entity smart service must also have a node input that references the AT_employee CDT.
+{:.screenshot}
+
+appian-style-note
+Additional node inputs can be created to store process data, but cannot save to the data store. Only the first node input mapped to a data store entity is saved.
+
+Node outputs
+
+
+ Name 
+ System Data Type 
+ Description 
+
+
+Stored Values
+Any Type
+The data successfully updated or stored in the database. 
+
+
+You can create a new process variable to store the result or select an existing process variable from the available list.
+Usage considerations
+Data sync behavior for record types
+If you use this smart service to add or update data in a database table, and that table is the source of a record type with data sync enabled, those changes will be automatically synced in Appian. 
+INCLUDE PAGE: immediate-sync-row-amount.md
+If the smart service fails because there is an issue connecting to the database, like if VPN connection fails so you can't write your changes, Appian will automatically retry the smart service and the sync operation up to three times (with two seconds between each retry). After three attempts, the sync will fail and the record data will be unavailable. 
+See Troubleshooting Data Sync for more information on the different sync errors.
+Updating existing values
+To update existing data, the field must have a primary key value. Otherwise, a new row of data will be inserted.
+For example, if you want to update an employee record, you must pass the employee's Id to the Write to Data Store Entity smart service. To do this, you can create a related action. 
+Related actions are links to process models that users can start directly from a record using information from that record. This allows you to pass an employee Id into a start form so users can update the existing data for a specific employee. Then, when they click submit, it will pass the data from the start form to the Write to Data Store Entity smart service. The new values provided by the start form will overwrite the old values for that specific employee.
+a!writeToDataStoreEntity()
+The Write to Data Store Entity smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Review database schema best practices
+Since this smart service works directly with your data store and custom data types, be sure to note the Database Schema Best Practices before implementing.
+Example
+For an example of how to configure a Write to Data Store Entity smart service in an interface, see the Use the Write to Data Store Entity Smart Service Function on an Interface pattern.

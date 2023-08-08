@@ -1,0 +1,39 @@
+
+layout: basic
+title: Follow Records Smart Service
+reftype: smart_service
+sscat: Social
+ssicon: Follow_Records.png
+ssparentcat: Automation_Services
+
+Overview
+The Follow Records Smart Service lets you easily and efficiently set one or more users to follow one or more records. When a user follows a record, all news entries tagged with that record automatically appear in the user's news feed if the user has sufficient privileges to view them, regardless of whether the user is subscribed to the relevant feeds. This allows users to get news entries relevant to that record even if they are not interested in general in the feeds that generate news entries relevant to that record.
+New users of Appian don't automatically follow any records by default, and they may not even know which records they should be following. By using this smart service in your process model, you can set users to follow the relevant records right away without requiring any action from the users. Users can then unfollow records and/or follow additional records as they see fit.
+Existing configurations of users following records are not overwritten by this smart service, nor is it possible to set users to unfollow records.
+Once assigned, a user must manually unfollow each record to stop seeing the associated news entries.
+Example use case
+As your company hires new sales representatives, you want to have each new sales representative follow all of the Customer records in the relevant region. This allows the sales representative to get news entries relevant to those customers even when unsubscribed from some feeds that generate those entries.
+You can use this smart service to automatically have each new sales representative follow the relevant Customer records. If a sales representative subsequent chooses to unfollow a record that they were set to follow by this smart service, they can do so manually.
+Permissions needed
+The user designated to run this smart service must have at least edit permission over the users specified in the Followers input field. Attempting to run this smart service without the proper privileges sends an alert to process administrators and pauses the process.
+The user designated to run this smart service must also have at least view permission over the records specified in the Records input field. If the user designated to run the smart service does not have sufficient privileges over some of the records or if some of the users designated as followers do not have at least view permission over some of the records, those configurations will be ignored and will not be set. However, the smart service will configure users to follow records where privileges are sufficient. 
+Properties
+
+
+Category: Social
+
+
+Icon: 
+
+
+Assignment Options - Always Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+| Name | System Data Type | Required | Multiple | Description |
+| - | - | - | - | - | 
+| Followers | User | X | X | In this field, you can enter the users who will follow the specified records. |
+| Records | Record Identifier | X | X | In this field, you can enter the records to be followed by users in the Followers field. |

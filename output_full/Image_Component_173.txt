@@ -1,0 +1,146 @@
+
+layout: function
+title: a!imageField_17r3
+space: sail_component
+reftype: sailcomponent
+excerpt: Displays an image from document management or the web.
+category: function_page
+compatibility: -crf, -om, -portal
+fncname: a!imageField_17r3
+fncsubcat: Display
+fncexample: Click on the function name for examples.
+fncsyntax: 'a!imageField_17r3( [label], [labelPosition], [instructions], [helpTooltip], [images], [size] )'
+fnccat: Interface_Component
+evolved_fncname: a!imageField
+evolved_reason: 'Now supports a style parameter, a separate configuration for thumbnail functionality, and more sizes.'
+
+Image
+Function: a!imageField_17r3()
+Displays an image from document management or the web.
+See also: Document Image, Web Image
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Label 
+ label 
+ Text 
+ Optional text to display as the field label. 
+
+
+ Label Position 
+ labelPosition 
+ Text 
+ Optional text to determine where the label appears. Valid values include
+      
+"ABOVE" (default) Displays the label above the component.
+"ADJACENT" Displays the label to the left of the component.
+"COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+"JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+
+
+
+
+
+ Instructions 
+ instructions 
+ Text 
+ Optional text displayed beneath the image. 
+
+
+ Help Tooltip 
+ helpTooltip 
+ Text 
+ Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED". 
+
+
+ Images 
+ images 
+ Array of Images 
+ A list of images to display created with
+      
+ a!documentImage() 
+ a!userImage() 
+ a!webImage() 
+
+
+
+
+ Size 
+ size 
+ Text 
+ Optional text to control what size image displays. Valid values are "STANDARD" (default), "ICON", "THUMBNAIL", "SMALL", "MEDIUM", and "LARGE". 
+
+
+ Alignment 
+ align 
+ Text 
+ Determines alignment of the image(s). Valid values are "START" (default), "CENTER", and "END". 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true. 
+
+
+The maximum display dimensions for each Size are listed below:
+
+"ICON": 20x20 pixels
+"THUMBNAIL": 100x200 pixels
+"SMALL": 100x200 pixels
+"MEDIUM": 200x400 pixels
+"LARGE": 400x600 pixels
+"STANDARD": natural dimensions
+
+Notes
+
+Images are scaled down as necessary to fit the size limit, preserving their natural aspect ratio. Images will never be scaled up, so they'll display at their natural size if they are smaller than the configured size.
+Images look best with the "ICON" size if they are 40 x 40 pixels and have a transparent background. This size is recommended to ensure high quality rendering on high pixel density devices (E.g., MacBook Pros with Retina displays and many smartphones).
+If Size is set to "THUMBNAIL", images can be clicked to open slideshows. With this configuration, images cannot have links associated with them.
+If Size is set to "STANDARD", images display at either their natural width or the width of the column, whichever is smaller.
+Avoid using this component for offline mobile forms because images do not render when offline.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Display a Series of Document Images
+sail 
+=a!imageField_17r3(
+  label: "Image Field Example",
+  images: {
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "ENVELOPE")
+    ),
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "BRIEFCASE")
+    ),
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "CONVERSATION")
+    )
+  }
+)
+Returns the following when used as part of an interface expression:
+{:.screenshot}
+Display a Series of User Images with Looping
+sail 
+=a!imageField_17r3(
+  label: "Images",
+  size: "SMALL",
+  images: a!forEach(
+    /* 
+    * Document ids of images in your environment. 
+    * Please adjust document ids appropriately.
+    */
+    items: { 1, 2, 3 },
+    expression: a!documentImage(
+      document: fv!item
+    )
+  )
+)
+Returns the following when used as part of an interface expression:
+{:.screenshot}

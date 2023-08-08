@@ -1,0 +1,41 @@
+
+layout: function
+title: search() Function
+space: function_page
+excerpt: "Searches the text for a particular substring, returning the positional index of the first character of the first match."
+category: function_page
+fncname: search
+fncexample: "search(\"to\",\"Boston\",1)"
+fncresult: "4"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: search_text
+    types: Text
+    description: |
+      The text that will be searched for.
+  - keyword: within_text
+    types: Text
+    description: |
+      The text within which the search text will be searched for.
+  - keyword: start_num
+    types: Number
+    description: |
+      The positional index of the first character of the substring to be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: find()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Usage considerations
+Using the search_text parameter
+The search_text parameter does not support wildcard characters.
+Using the within_text parameter
+The first character of the entire within_text value is considered to have an index = 1.
+Examples
+search("to","boston",1) returns 4

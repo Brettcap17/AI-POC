@@ -1,0 +1,32 @@
+
+layout: function
+title: asinh() Function
+space: function_page
+excerpt: "Returns the hyperbolic arcsine(s) of the specified number(s) in radians."
+category: function_page
+fncname: asinh
+fncexample: "asinh(2)"
+fncresult: "1.443635"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      A number or array of numbers, the hyperbolic arcsine(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can be used with any value. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+asinh(2) returns 1.4436354751788103

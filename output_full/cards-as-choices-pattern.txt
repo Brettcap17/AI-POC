@@ -1,0 +1,247 @@
+
+layout: pattern
+title: Cards as Choices Pattern
+excerpt: Use this pattern to display sets of choices that are quick and easy to navigate.
+reftype: pattern
+sr-tags:
+  - Card Choices
+  - Rich Text
+
+{:.screenshot style="width:80%"}
+Design structure
+This page will break down the expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are rich text and card choices. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot style="width:80%"}
+Pattern expression
+When you drag and drop the cards as choices pattern onto your interface, 105 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!locationChoices: {
+      a!map(id: 1, icon: "building",   primaryText: "North Tower"),
+      a!map(id: 2, icon: "building-o", primaryText: "South Tower")
+    },
+    local!typeChoices: {
+      a!map(id: 1, icon: "shower",           primaryText: "Plumbing"),
+      a!map(id: 2, icon: "plug",             primaryText: "Electrical"),
+      a!map(id: 3, icon: "thermometer-half", primaryText: "HVAC")
+    },
+    local!selectedLocation: 1,
+    local!selectedType: 1,
+    {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: "New Work Order",
+            color: "STANDARD",
+            size: "LARGE_PLUS",
+            style: "STRONG"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: upper("Location"),
+            color: "SECONDARY",
+            size: "MEDIUM_PLUS"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!cardChoiceField(
+        label: "Location Choices",
+        labelPosition: "COLLAPSED",
+        data: local!locationChoices,
+        cardTemplate: a!cardTemplateTile(
+          id: fv!data.id,
+          primaryText: fv!data.primaryText,
+          icon: fv!data.icon
+        ),
+        value: local!selectedLocation,
+        saveInto: local!selectedLocation,
+        maxSelections: 1,
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: upper("Type"),
+            color: "SECONDARY",
+            size: "MEDIUM_PLUS"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!cardChoiceField(
+        label: "Type Choices",
+        labelPosition: "COLLAPSED",
+        data: local!typeChoices,
+        cardTemplate: a!cardTemplateTile(
+          id: fv!data.id,
+          primaryText: fv!data.primaryText,
+          icon: fv!data.icon
+        ),
+        value: local!selectedType,
+        saveInto: local!selectedType,
+        maxSelections: 1,
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Next",
+            icon: "arrow-right",
+            size: "LARGE",
+            style: "PRIMARY"
+          )
+        },
+        align: "CENTER"
+      )
+    }
+  )
+}
+[Line 1-13] Define local variables
+The local variables at the top of the expression define the data that will be displayed in each set of card choices and set up a variable to store the selected card.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!locationChoices: {
+      a!map(id: 1, icon: "building",   primaryText: "North Tower"),
+      a!map(id: 2, icon: "building-o", primaryText: "South Tower")
+    },
+    local!typeChoices: {
+      a!map(id: 1, icon: "shower",           primaryText: "Plumbing"),
+      a!map(id: 2, icon: "plug",             primaryText: "Electrical"),
+      a!map(id: 3, icon: "thermometer-half", primaryText: "HVAC")
+    },
+    local!selectedLocation: 1,
+    local!selectedType: 1,
+{% endhighlight %}
+[Line 14-56] Formatting the first two headers and configuring the first set of card choices {#first-card-choices}
+This section uses rich text and the card choices component to format the first two headers and the first set of card choices.
+The New Work Order and Location headers are created using rich text items. The rich text display field (lines 27-31) creates white space between the page header and the first set of card choices by using the char() function within the repeat() function.
+The char() function returns certain characters based on a numerical input. Here, char(10) is used to return a blank character. The repeat() function then repeats this blank character three times to create the desired amount of white space between the headers.
+The first set of card choices (lines 43-56) use the data mapped in the locationChoices local variables to display a set of two selectable card choices. These card choices include an icon and primary text.
+{% highlight sail linenos start_line=14 %}
+    {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: "New Work Order",
+            color: "STANDARD",
+            size: "LARGE_PLUS",
+            style: "STRONG"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: upper("Location"),
+            color: "SECONDARY",
+            size: "MEDIUM_PLUS"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!cardChoiceField(
+        label: "Location Choices",
+        labelPosition: "COLLAPSED",
+        data: local!locationChoices,
+        cardTemplate: a!cardTemplateTile(
+          id: fv!data.id,
+          primaryText: fv!data.primaryText,
+          icon: fv!data.icon
+        ),
+        value: local!selectedLocation,
+        saveInto: local!selectedLocation,
+        maxSelections: 1,
+        align: "CENTER"
+      ),
+{% endhighlight %}
+[Line 57-86] Formatting the Type header and configuring the second set of card choices  {#second-card-choices}
+This section is very similar to the first section, but in the reverse. The first rich text display item in this section uses the same repeat() and char() paradigm as explained above. The second rich text item to create the Type header is the same as the expression for the Location header. 
+The second set of card choices (lines 73-86) use the data mapped out in the typeChoices local variables to display a set of three selectable card choices. These card choices include an icon and primary text.
+{% highlight sail linenos start_line=57 %}
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: upper("Type"),
+            color: "SECONDARY",
+            size: "MEDIUM_PLUS"
+          )
+        },
+        align: "CENTER"
+      ),
+      a!cardChoiceField(
+        label: "Type Choices",
+        labelPosition: "COLLAPSED",
+        data: local!typeChoices,
+        cardTemplate: a!cardTemplateTile(
+          id: fv!data.id,
+          primaryText: fv!data.primaryText,
+          icon: fv!data.icon
+        ),
+        value: local!selectedType,
+        saveInto: local!selectedType,
+        maxSelections: 1,
+        align: "CENTER"
+      ),
+{% endhighlight %}
+[Line 87-105] Formatting the white space and Next button
+The rich text formatting in this section is similar to the first two rich text char() items. The rest of this section creates the button layout for the Next button.
+{% highlight sail linenos start_line=113 %}
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: repeat(3, char(10)),
+        align: "CENTER"
+      ),
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Next",
+            icon: "arrow-right",
+            size: "LARGE",
+            style: "PRIMARY"
+          )
+        },
+        align: "CENTER"
+      )
+    }
+  )
+}
+{% endhighlight %}

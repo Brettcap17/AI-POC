@@ -1,0 +1,50 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldMultiply() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function returns the result of multiplying a series of values. You can multiply record fields, related record fields, or literal values of type Number (Integer) or Number (Decimal).
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldMultiply
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      An array containing any combination of record fields, related record fields, or literal values to be multiplied. You must have at least two values in the array.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldMultiply() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Use with other Custom Field functions
+You can use the a!customFieldMultiply() function in conjunction with other Custom Field functions, like a!customFieldSubtract(), a!customFieldSum(), or a!customFieldDivide() to create the calculations you need.
+See the Real-time evaluation recipes for an example.
+Example
+Let's say you want to calculate each employee's potential bonus amount. 
+The Employee record type has an annualSalary field, which contains each employee's salary amount. The Level record type has a percentBonus field, which determines the potential bonus amount based on an employee's level in the organization.
+To calculate each employee's potential bonus amount, you could create a custom record field on the Employee record type that evaluates in real-time so you can reference the related record field from the Level record type in your calculation. 
+The expression would look something like this:
+sail
+a!customFieldMultiply(
+  value: {
+    recordType!Employee.fields.annualSalary,
+    recordType!Employee.relationships.level.fields.percentBonus
+  }
+)
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you can reference any of the following supported functions in the value parameter of a!customFieldMultiply():
+
+appian-style-note
+You must reference at least one record field, related record field, or another Custom Field function in the value parameter. 
+
+INCLUDE PAGE: Supported Custom Field Functions Table

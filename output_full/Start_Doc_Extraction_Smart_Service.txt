@@ -1,0 +1,54 @@
+
+layout: "basic"
+title: "Start Doc Extraction Smart Service"
+reftype: smart_service
+sscat: "Document_Management"
+ssicon: "Start_Doc_Extraction.gif"
+ssparentcat: "Appian_Smart_Services"
+proxy-topic: document_extraction
+type: Reference
+reftype: smart_service
+sscat: Document_Management
+ssicon: Start_Doc_Extraction.png
+ssparentcat: Automation_Services
+
+Overview
+The Start Doc Extraction node allows you to start a document extraction run.
+Activating this smart service in the process model initiates an asynchronous analysis run in Appian, and immediately returns a Doc Extraction ID. Next, the a!docExtractionStatus() function should be used to check the status of a run. 
+The Appian Document Extraction page walks you through how to use document extraction functionality together in a process model. See the following list for the other smart services and functions you need to use with the Start Doc Extraction Smart Service:
+- a!docExtractionStatus()
+- a!docExtractionResult()
+- Reconcile Doc Extraction Smart Service
+- Admin Console > Document Extraction
+Properties
+
+
+Category: Document Management
+
+
+Icon: 
+
+
+Assignment Options: Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+This tab displays all the Node Inputs and Node Outputs for the Service Node. You can add additional inputs and outputs, if needed. 
+Node inputs
+The default inputs are:
+|Input|Description|Data Type|Required|Multiple|
+|-|-|-|-|-|
+|Runtime Document|The document to process|Document|Yes|No|
+|preferredVendor|Select which vendor you would like to use for document processing and analysis. Possible values: Appian or Google. Visit the Select a Document to learn more about the extraction capabilities offered with each vendor.|Text|Yes|No|
+|processorID|Leaving this value blank will default to Google's v1beta2 extraction capabilities. If you provide a processor, this node will leverage Google's Document AI API v1 capabilities. processorId is not supported when Appian is selected for preferredVendor.|Text|No|No|
+
+appian-style-note
+Document extraction supports PDF files. File size is limited to 15 pages or 7 MB, regardless of the vendor processing the document.
+
+Node outputs
+|Name|Data Type|Description|
+|-|-|-|
+|Doc Extraction Id|Integer|The identifier of the doc extraction run.|
+After starting the doc extraction run, you should use the identifier with the a!docExtractionStatus() function to check the status of the run.

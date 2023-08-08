@@ -1,0 +1,133 @@
+
+layout: function
+title: Measure Component
+category: function_page
+compatibility: -crf, -portal
+excerpt: 'Determines the numerical values to display on a query or chart. The measure should incorporate a record field or a related record field, the appropriate calculation to run on the field, and an alias. If your record type has data sync enabled, you can also apply filters to determine which values are included in the calculation.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples
+fncname: a!measure
+fncsubcat: Charts
+parameters:
+  - keyword: field
+    name: Field
+    types: Any Type
+    description: |
+      The record field or related record field to use in this calculation, configured using the recordType! domain. For example, recordType!Case.fields.status.
+  - keyword: function
+    name: Function
+    types: Text
+    description: |
+      Function to use with calculations on the field provided. Accepts "COUNT", "SUM", "MIN", "MAX", "AVG", "DISTINCT_COUNT".
+  - keyword: alias
+    name: Alias
+    types: Text
+    description: |
+      The short name by which the result of the measure field can be referenced in other places in the chart configuration or a!queryRecordType().
+  - keyword: label
+    name: Label
+    types: Text
+    description: |
+      Text to display in the legend or tooltip when using the measure in a chart. If no label is defined, the label displays with the function name and field name. The label only displays if a single grouping is used on a bar, column, or line chart. This parameter is ignored when used in a!queryRecordType().
+  - keyword: filters
+    name: Filter
+    types: Any Type
+    description: |
+      A single, logical expression or a list of query filters to filter the record set. Queries also apply the default filters defined on the referenced record type. This parameter is only available on record types that have data sync enabled.
+  - keyword: formatValue
+    name: Format value
+    types: Text
+    description: |
+      Display value for the given measure value. Only applies when the measure is used in a records-powered chart. Valid formats are "AUTO" (default), "INTEGER", "DECIMAL", "DOLLAR", "EURO", "POUND", "YEN", "SWISS_FRANC", or a custom format defined with text(). For a custom format, you can reference the unformatted result from the data source using fv!value. The display format does not affect the values used in the calculations for the chart; it is only used for display.
+reftype: sailcomponent
+scdisplayname: Measure
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{{ page.fncsyntax }}
+{{ page.excerpt }}
+This configuration is used when a record type is defined as the data source for a chart or query. This function can be within the measure parameter in a bar, column, line, or pie chart or a query with records.
+See also:
+
+Column Chart Config
+Bar Chart Config
+Line Chart Config
+Pie Chart Config
+Scatter Chart Component
+Chart Configuration Using Records
+Grouping Component
+Record type relationships
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the field and function parameters
+
+The field and function parameters are required. The field parameter also must reference a record field or a related record field from the record type specified in the query or chart.
+If no measure is provided in a chart, by default the chart will display as a count of the primary key field.
+
+Count and mathematical functions
+
+The functions SUM, MIN, MAX, and AVG can only be used with fields of type integer or decimal.
+The function DISTINCT_COUNT is only supported with entity-backed or synced record types.
+The COUNT function will count the total number of values in a record field, whereas the DISTINCT_COUNT function will only count the unique values in a record field. 
+
+For example, say you want to count the number of customers who've placed an order. Since one customer can place many orders, the COUNT function would count the same customer twice; however, the DISTINCT_COUNT function will only count that customer once, even if they've placed multiple orders. 
+Using the alias parameter
+
+When using a!measure() in a query, the alias is required. 
+If an alias is provided, it must be used as the field in the sort parameter within the parent configuration function.
+
+Using the label parameter
+
+The label determines the text label displayed in the legend or tooltip for the measure when used in a chart. This parameter is ignored when used in a!queryRecordType.
+If no label is provided, the default label displays with the function and field name, such as Count of id. 
+The label does not apply when used with a secondary grouping, as the label is then determined by the secondary grouping field value. Also, the label does not apply when using a measure in a pie chart.
+
+Using the filters parameter
+
+
+The filters parameter is available for record types that have data sync enabled, and can be used to determine which values are included in the calculation specified in the field and function parameters.
+
+
+You can filter on a record field or a related record field, and the field reference must start from the aggregated record type.
+
+
+For example, you have a Customer record type that has a one-to-many relationship with the Order record type. In a report, you want to calculate the number of orders for each customer that include the order item "Printer". Since you're aggregating on the Order record type, the field reference in the filter must start from recordType!Order.
+The a!measure function would look something like this:
+sail
+  a!measure(
+    function: "COUNT",
+  ! field: recordType!Customer.relationships.orders.fields.id,
+    alias: "count_of_id",
+    /* Since the Order record type is the related record type used in the field parameter, 
+    we'll use that record type reference in the filter.*/
+    filters: {
+      a!queryFilter(
+  !   field: recordType!Order.relationships.orderItem.fields.itemName,
+      operator: "=",
+      value: "Printer"
+        )
+      }
+    )
+
+When you filter on a field from a related record type in a one-to-many relationship (the "many" side of the relationship), the filter returns all records from the base record type (the "one" side of the relationship) that have at least one related record that meets the filter condition.
+
+For example, an order can have many order items. So using the filter above, the aggregation will count all customer orders that have at least one order item called "Printer".
+
+appian-style-note
+You cannot use a custom record field defined using a!customFieldMatch() as a filter in a!measure().
+
+Using the formatValue parameter
+The formatValue has several predefined options to make the numbers on your records-powered chart easier to read and understand. You can also customize the formatting to make your data more meaningful to users.
+For example, your app may have a chart showing the average monthly temperature in each US state. If this data is stored in a record field as a Number (Decimal), the "AUTO" option lists each value as an unformatted number.
+{:.screenshot}
+You can customize the formatting to indicate temperature by concatenating each value with the degree symbol and unit of measure.
+sail
+text(fv!value, fv!value & " " & char(176) & "F")
+{:.screenshot}
+Measures on charts
+
+If you use a bar, column, or line chart, you can display multiple measures if no Secondary Grouping field is provided. See Chart Configuration Using Records for more information on how to add measures to charts.
+You can select a predefined or custom format value to change how the measure data is displayed on the chart. See Using format values for more information.

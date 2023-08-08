@@ -9,8 +9,8 @@ def main():
     os.mkdir(outputDir)
 
   dirs = os.listdir('../docs/collection_docs/')
-  for i in range(5):
-    dir ='../docs/collection_docs/' + dirs[-i] + '/'
+  for dir in dirs:
+    dir ='../docs/collection_docs/' + dir + '/'
     for file in os.listdir(dir):
       print(dir + file)
       if file.endswith('.md'):

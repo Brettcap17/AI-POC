@@ -1,0 +1,54 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldCondition() Function
+category: function_page
+excerpt: Used in the whenTrue parameter of a!customFieldMatch(), this function allows you to create a condition.
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldCondition
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: field
+    types: Any Type
+    description: |
+      The record field, related record field, or custom field function to be compared in the condition. Use the recordType! domain to reference a record field or related record field. For example, recordType!Case.fields.caseName.
+  - keyword: operator
+    types: Text
+    description: |
+      The operator used to compare the field and value parameters. Valid values: "=", "<>", ">", ">=", "<", "<=", "between", "in", "not in", "is null", "not null", "starts with", "not starts with", "ends with", "not ends with", "includes", "not includes".
+  - keyword: value
+    types: Any Type
+    description: |
+      The value to compare to the given field using the given operator. This value must be a literal. 
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldCondition() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Using the operator parameter
+INCLUDE PAGE: Filter condition options
+Supported data types
+The value and default parameters can accept any of the following data types:
+- Boolean
+- Date
+- Date and Time
+- Time
+- Number (Integer)
+- Number (Decimal)
+- Text
+All parameters must be the same data type or compatible data types. Compatible data types include Number (Integer) and Number (Decimal).
+For example, if you have a field of type Text, then the value should also be type Text. But, if you have a field of type Number(Integer), you could have value of type Number (Decimal).
+Example
+See the a!customFieldMatch() function for an example.
+Supported functions
+You can also use any of the following supported functions in the value parameter of a!customFieldCondition():
+INCLUDE PAGE: Supported Custom Field Functions Table

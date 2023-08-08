@@ -1,0 +1,34 @@
+
+layout: function
+title: daysinmonth() Function
+space: function_page
+excerpt: "Returns the number of days in the given month in the given year."
+category: function_page
+fncname: daysinmonth
+fncexample: "daysinmonth(2, 1800)"
+fncresult: "28"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: month
+    types: Integer
+    description: |
+      The month number.
+  - keyword: year
+    types: Integer
+    description: |
+      The year number.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+daysinmonth(2, 2000) returns 29

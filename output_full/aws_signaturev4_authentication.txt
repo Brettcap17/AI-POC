@@ -1,0 +1,51 @@
+
+layout: basic
+title: AWS Signature Version 4 Authentication
+topic-group: B
+weight: 141
+
+Overview
+This page provides detailed information about how Appian can connect to services that use the AWS Signature Version 4 authentication. Appian developers can use it to configure integrations with over 100 Amazon Web Services including S3, Comprehend, and Textract using HTTP and OpenAPI connected systems.
+See also:
+
+For information that pertains to all connected systems, see Connected System Object.
+To learn about more ways of authenticating external systems with Appian, see Authentication Types
+To learn how to use a connected system when creating an integration, see Create an Integration.
+
+AWS Configuration
+Understanding the AWS Signature Version 4 signing process
+
+appian-style-note
+Appian generates and uses an HTTP Authorization header to sign AWS requests.
+
+The HTTP Authorization method for AWS Signature Version 4 lays out the sequence of steps to sign the AWS requests. There are four main steps in this sequence:
+
+Most of the steps in these sequences are not visible to the user and Appian developers. However, understanding these sequences will help designers troubleshoot problems if they occur.
+To learn more about the AWS Signature Version 4 Signing Process, see the AWS documentation
+Getting your AWS security credentials
+Amazon Web Services use access keys as security credentials to make programmatic calls to AWS API operations. Access keys consist of two parts: the access key ID and the secret access key. You will need both to successfully integrate Appian with AWS using the Signature Version 4 authentication.
+If you do not have access to the above AWS security credentials, contact the administrator for your AWS account. 
+Appian configuration
+There are several important design considerations when configuring AWS Signature Version 4 authentication.
+Parameters set in the connected system
+The following parameters from the third-party system will need to be entered into the connected system. Refer to the respective AWS documentation for more information.
+| Field | Description  |
+|-------|--------------|
+| Access Key ID | Required/Sensitive. Amazon uses a custom authentication schema that requires a special signing of the request using an access key, secret access key, and region. The access key id, along with an associated secret access key and region, are used to access Amazon services. Your access key id is the first piece of a set of programmatic credentials that can be generated for Amazon Identity and Access Management (IAM) user accounts. |
+| Secret Key | Required/Sensitive. Your secret access key is the second piece of a set of programmatic credentials that can be generated for Amazon IAM user accounts. |
+| Security Token  | Sensitive. You can use temporary security credentials provided by the AWS Security Token Service (AWS STS) to authenticate a request by providing an additional Security Token parameter here. |
+| AWS Region | Required. Your region is the third piece of a set of programmatic credentials that can be generated for Amazon IAM user accounts. Learn more about the available AWS Regions in the AWS Service Endpoints documentation. |
+| Service | Required. The namespace of the Amazon Service you would like to use. Learn more about the available Amazon services and their namespaces in the AWS Resource Name documentation.|
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+Setting up an integration
+Once you have created the HTTP connected system which uses AWS Signature Version 4 authentication, create a new integration which uses the connected system. Below are certain important design considerations to keep in mind.
+Automatically generated headers
+AWS Signature Version 4 authentication requires certain headers to be sent along with your request for successful authentication. For every integration using the AWS Signature Version 4 authentication, apart from the default headers, Appian automatically creates and sends the below headers with each request:
+
+Host
+X-Amz-Date
+Authorization
+Signature
+X-Amz-Content-sha256 (For S3 Service only)
+
+Depending on the Amazon service you are using, you may be required to add more headers to the request. For example, X-Amz-Target for indicating the API action to be performed, for certain services. You can do this in the headers section in the integration. You can find the service specific requirements in the AWS documentation for the service.

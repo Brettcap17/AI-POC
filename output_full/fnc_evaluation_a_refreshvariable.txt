@@ -1,0 +1,47 @@
+
+layout: "basic"
+title: "a!refreshVariable() Function"
+category: "function_page"
+excerpt: "The configuration for a specific local variable for use within a!localVariables(). When used within an interface, the value of the variable can be refreshed under a variety of conditions. When used outside of an interface, all refresh properties are ignored."
+fnccat: "Evaluation"
+fncexample: "Click on the function name for examples."
+fncname: "a!refreshVariable"
+space: "function_page"
+compatibility: -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: The value of the local variable when it is created and what the variable is set to each time it is refreshed in an interface.
+  - keyword: refreshAlways
+    types: Boolean
+    description: |
+      When true, the value of this local variable will be refreshed after each user interaction and each interval refresh. Because the variable is continually refreshed, you cannot update its value by saving into it. Default is false.
+  - keyword: refreshInterval
+    types: Number (Decimal)
+    description: |
+      How often the variable value gets refreshed in minutes. When null, the variable will not be refreshed on an interval. Because the variable is periodically refreshed, you cannot update its value by saving into it. Valid values include 0.5, 1, 2, 3, 4, 5, 10, 30, 60.
+  - keyword: refreshOnReferencedVarChange
+    types: Boolean
+    description: |
+      When true, the value of this local variable will be refreshed each time the value of any variable it references within the value parameter is updated. To refresh the local variable when another variable that is not used within value changes, use refreshOnVarChange. Default is true.
+  - keyword: refreshOnVarChange
+    types: Any Type
+    description: |
+      Refreshes the value of the local variable each time any of these specific variables change. This allows you to refresh the value when a variable that is not referenced within the value parameter is updated.
+  - keyword: refreshAfter
+    types: List of Text String
+    description: |
+      Refreshes the value of the local variable after a record action, such as a related action or a record list action configured within a record type, completes from a dialog window within the Record Action Component. Instead of requiring the entire page to reload, this parameter allows you to refresh a local variable value on an interface after a record action completes. Valid values include RECORD_ACTION.
+reftype: function    
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Local Variables
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+You can define refreshOnVarChange either using a single variable (e.g. refreshOnVarChange: local!var1) or a list of variables (e.g. refreshOnVarChange: {local!var1, local!var2}).
+For more information about how to use a!localVariables and a!refreshVariable, including detailed examples, see Local Variables and Record Action Component. The Configuring Refresh Behavior section contains specific information about the different parameters of a!refreshVariable and how to use them.

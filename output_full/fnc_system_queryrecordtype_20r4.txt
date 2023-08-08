@@ -1,0 +1,116 @@
+
+layout: function
+title: a!queryRecordType_20r4() Function
+category: function_page
+excerpt: Executes a query on a given record type and returns the result. This is an older version of the a!queryRecordType() function, which has new functionality.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryRecordType_20r4
+parameters:
+  - keyword: recordType
+    name: Record Type
+    types: RecordType
+    description: |
+      A reference to a record type. You must reference the record type directly from the recordType! domain. For example, recordType!Case.
+  - keyword: selection
+    name: Field Selection
+    types: Any Type
+    description: |
+      List of record fields to be retrieved from the query. Record fields must be directly referenced from the recordType! domain. For example: recordType!Case.fields.caseName. When no record fields are specified, all record fields are returned in the order they are configured in the record type's data model.
+  - keyword: filters
+    name: Filters
+    types: Any Type
+    description: |
+      A single logical expression or a list of query filters can be provided to filter the results. Without a logical expression, a list of query filters will only return those records where all filters evaluate to true (AND comparisons). Queries also apply the default filters defined on the referenced record type.
+  - keyword: pagingInfo
+    name: Paging Info
+    types: PagingInfo
+    description: |
+      The paging and sorting configurations to apply when retrieving the record data.
+  - keyword: fetchTotalCount
+    name: Fetch Total Count
+    types: Boolean
+    description: |
+      If set to true, runs a separate query that retrieves the total number of records in the totalCount parameter of the query result. In cases where you don't need the totalCount, skipping this additional query can improve performance. Can only be used with record types that source from a data store entity.
+reftype: function
+space: function_page
+evolved_fncname: a!queryRecordType
+evolved_reason: "Replaced selection with fields, which now allows for both selection and aggregation of record data when querying a given record type."
+compatibility: -crf, ~portal, ~om
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+The return type of a!queryRecordType will be a Map data type with the following parameters:
+- success (Boolean)
+- data (List of Record Maps)
+- startIndex (Integer)
+- batchSize (Integer)
+- sort (List of SortInfo)
+- totalCount (Integer)
+- identifiers (List of Integer or List of Text)
+- errorCode (Text)
+This map will have the same named fields as a DataSubset (so that it can seamlessly be cast to that type when being passed around your application) with the addition of "success" and "errorCode" fields, like results from an Integration object, so app developers can build error-handling into their applications.
+Error Codes
+a!queryRecordType returns a query result even if a runtime error happened. In these cases the "success" field of the result would have a value of false and the "errorCode" field will return an Appian Error Code indicating what has happened. You can use these codes to decide what to do next in your application.
+| Error Code | Description | Usage |
+|---|---|---|
+| APNX-1-4205-038 | The user does not have access to this record type or the underlying data source. | This error code could be used to hide elements of an interface. |
+| APNX-1-4205-039 | This is a record type with sync enabled, and is currently unavailable due to a sync issue. | This error code could be used as a condition on which to query the data source instead of waiting for the sync issue to be resolved. |
+| APNX-1-4205-040 | The record type's data source could not be reached, or the query limit for that source has been reached. | While uncommon, for finicky data sources, this error code could be used to prevent an interface from breaking. |
+Usage considerations
+
+Expression-backed record types are not supported.
+The batchSize in your pagingInfo for a!queryRecordType cannot be larger than 5000, and cannot be -1.
+If you don't specify a selection of fields, all fields are returned.
+Multiple sortInfos is not yet available for process-backed record types.
+If the record type isn't sorted by the identifier, a final identifier sort is added to ensure deterministic sorting.
+The data in the query returned is a list of records, not dictionary.
+This query does not yet support aggregation.
+You must update the target record type after upgrading to 20.3 in order to use this query.
+
+Example
+NOTE: This uses the record type "Customer" for the purpose of illustration only. If you copy and paste the expression below into the Expression Rule Interface, it will not evaluate in your Test Rules interface. Use it as a reference only.
+sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  selection: {
+    recordType!Customer.fields.Name,
+    recordType!Customer.fields.LogoID,
+    recordType!Customer.fields.Industry
+  },
+  filters: {
+    a!queryFilter(
+      field: recordType!Customer.fields.InactiveFlag,
+      operator: "=",
+      value: false
+    )
+  },
+  pagingInfo: a!pagingInfo(
+    startIndex: 1,
+    batchSize: 5000,
+    sort: {
+      a!sortInfo(
+        field: recordType!Customer.fields.UpdatedOn,
+        ascending: false
+      ),
+      a!sortInfo(
+        field: recordType!Customer.fields.Name,
+        ascending: true
+      )
+    }
+  ),
+  fetchTotalCount: true
+)
+See Also
+
+a!queryRecordType() Function: A new version of a!queryRecordType_20r4 that returns a selection or aggregation of record data when querying a record type.
+Record Type: Additional information on the data type accepted for the recordType value.
+Query: Additional information on the data type accepted for the query value and how to create a type constructor for it including which fields are required/optional.
+Query Recipes: A list of examples of how to use the Query object to meet common use cases.
+DataSubset: Additional information on the structure of this data type.
+Constructing Data Type Values: Additional information on creating the query value via a type constructor.
+a!queryAggregationColumn() Function: Additional information on grouping Date and Date and Time fields by year and month.

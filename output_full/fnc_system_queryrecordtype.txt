@@ -1,0 +1,254 @@
+
+layout: function
+title: a!queryRecordType() Function
+category: function_page
+compatibility: '-crf, ~portal, ~om'
+excerpt: Executes a query on a given record type and returns the result.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryRecordType
+parameters:
+  - keyword: recordType
+    name: Record Type
+    types: RecordType
+    description: |
+      A reference to a record type. You must reference the record type directly from the recordType! domain. For example, recordType!Case.
+  - keyword: fields
+    name: Fields
+    types: Any Type
+    description: |
+      Fields to be retrieved for the query. This parameter accepts different values depending on the type of query to run. When performing a selection, use a list of record field or related record field references defined with the recordType! domain. When performing an aggregation, use a!aggregationFields() to define the configuration for the aggregated fields.
+  - keyword: filters
+    name: Filters
+    types: Any Type
+    description: |
+      A single logical expression or a list of query filters can be provided to apply additional filters to the record set. Queries also inherit the default filters defined on the referenced record type. Reference record fields or related record fields from the specified record type using the recordType! domain. Record types sourced from a web service or other expression only support this parameter if the data is synced.
+  - keyword: pagingInfo
+    name: Paging Info
+    types: PagingInfo
+    description: |
+      The paging and sorting configurations to apply when retrieving the record data.
+  - keyword: fetchTotalCount
+    name: Fetch Total Count
+    types: Boolean
+    description: |
+      If set to true, runs a separate query that returns the total number of records in the totalCount parameter of the query result. In cases where you don't need the totalCount, skipping this additional query can improve performance. Can only be used with record types that use a database as the source.
+  - keyword: relatedRecordData
+    types: List of RelatedRecordData
+    description: |
+      When selecting one-to-many related record data, use a!relatedRecordData() to filter, sort, and limit the related record sets. This parameter is not supported when performing an aggregation.     
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- Record Type
+- Reference a Record Type in your Applications
+- DataSubset
+- Constructing Data Type Values
+- Aggregation Fields Function
+- a!relatedRecordData() function
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Types of queries
+There are two methods of returning data using a!queryRecordType():
+
+A selection returns each record as a separate item in the response. Any field of the record type or related record type can be returned by providing the field within a list in the fields parameter. To filter, sort, or limit data returned from a one-to-many relationship, use a!relatedRecordData in the relatedRecordData parameter.
+An aggregation groups fields by common values and also allows using a function to produce a calculated result. An aggregation requires using supporting functions a!aggregationFields, a!grouping, and a!measure to define the query.
+
+Returns
+The return type of a!queryRecordType() will be a Map data type with the following parameters:
+- success (Boolean)
+- data (List of Records or List of Maps)
+- startIndex (Integer)
+- batchSize (Integer)
+- sort (List of SortInfo)
+- totalCount (Integer)
+- identifiers (List of Integer or List of Text)
+- errorCode (Text)
+This map will have the same named fields as a DataSubset (so that it can seamlessly be cast to that type when being passed around your application) with the addition of "success" and "errorCode" fields, like results from an Integration object, so app developers can build error-handling into their applications.
+The type for the data parameter varies depending on the type of query:
+
+When selecting data, the return type is a list of records that matches the specified record type.
+When aggregating data, the return type is a list of map where the keys of the map match the aliases of each grouping or measure.
+
+INCLUDE PAGE: Query Data with Dot Notation
+Error codes
+a!queryRecordType() returns a query result even if a runtime error happened. In these cases the "success" field of the result would have a value of false and the "errorCode" field will return an Appian Error Code indicating what has happened. You can use these codes to decide what to do next in your application.
+| Error Code | Description| Usage|
+|-|-|-|
+| APNX-1-4205-038 | The user does not have access to this record type, a related record type, or the underlying data source. This also applies if the user does not have access to a referenced related record type in a filter, sort, or aggregation.| This error code could be used to hide elements of an interface.|
+| APNX-1-4205-039 | The record type or a related record type has not been synced, or the existing synced data has been invalidated. | This error code could be used as a condition on which to query the data source instead of waiting for the sync issue to be resolved. |
+| APNX-1-4205-040 | The record type's data source or the related record type's data source could not be reached, or the query limit for that source has been reached.| While uncommon, for finicky data sources, this error code could be used to prevent an interface from breaking.|
+Usage considerations
+Supported record types
+You must update the target record type after upgrading to 20.3 in order to use this query. 
+Service-backed and Salesforce-backed record types without data sync enabled are not supported.
+Querying record fields
+To reference a record field, use the recordType! domain to reference a record field. For example, recordType!Customer.fields.firstName returns the firstName field from the Customer record type.
+If you don't specify a selection of fields, all record fields are returned. 
+
+appian-style-note
+This will not return related record fields, only record fields from the record type specified in the recordType parameter.
+
+Querying related record fields
+You can reference related record fields in the fields parameter and when sorting or filtering. 
+To reference a related record field, use the recordType! domain to reference a relationship and select a related record field. For example, recordType!Customer.relationships.cases.fields.status is using the relationship on the Customer record type to select the status field from the Case record type.
+You can also reference the record type relationship in the fields parameter to return all related record fields from the specified relationship. For example, using the relationship reference recordType!Customer.relationships.cases in the fields parameter would return all fields from the Case record type.
+If you only specify a relationship reference or a related record field reference in the fields parameter, the query will return all fields from the base record type and the selected related record fields. For example, the following query would return all fields from the Customer record type and the status fields from the Case record type:
+sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {recordType!Customer.relationships.cases.fields.status},
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+).data
+If you are querying one-to-many related record fields, the maximum number of related record data returned for each base record is 10. For example, when querying customers and their related support cases, the query will return a max of 10 related support cases for each customer.
+To limit, filter, and sort your related one-to-many data, you can use the relatedRecordData parameter. Learn more about using this parameter.
+Aggregating data
+When performing an aggregation, you can apply filters within a!measure(). 
+You can filter by record fields or related record fields, but the field reference must start from the aggregated record type. For example, if the measure is on recordType!Customer.relationships.cases.fields.id, the field to filter by could be recordType!Case.fields.status. 
+See Aggregation of all cases and cases with a status of critical for an example.
+Using the relatedRecordData parameter
+The relatedRecordData parameter allows you to filter, sort, and limit related record data from a one-to-many relationship using the a!relatedRecordData() function. 
+For example, let's say you're querying the Customer record type and you only want to return the latest case associated with each customer. Since a customer can have many cases, by default, the query will return up to 10 cases related to each customer. In the relatedRecordData parameter, you could use the a!relatedRecordData() function to limit and sort the cases returned from the related record type Case.
+When applying a filter or sort to a!relatedRecordData(), your record field or related record field reference must start from the related record type specified in the relationship parameter. See additional usage considerations for using the a!relatedRecordData() function.
+
+appian-style-note
+You cannot use this parameter when performing an aggregation.
+
+Using the pagingInfo parameter
+The batchSize in your pagingInfo for a!queryRecordType() can be between 0 and 5000. It cannot be -1. If the record type isn't sorted by the identifier, a final identifier sort is added to ensure deterministic sorting when using a selection. See a!pagingInfo() for more information.
+
+appian-style-note
+Multiple sortInfos are not available for process-backed record types.
+
+Using the fetchTotalCount parameter
+For record types with data sync enabled, fetchTotalCount is applied because Appian already knows the total number of records and therefore doesn't need to query the source to provide this information.
+For record types without data sync enabled, there is a performance cost to getting the total number of records with a query. If you decide you want to retrieve the total count, set fetchTotalCount to true. The following table describes two scenarios and how to set the parameters required to achieve that result.
+| Scenario                                                                                                                                                          | Batch Size          | Fetch Total Count | Value of totalCount                            |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|-------------------|------------------------------------------------|
+| You want a subset of records, but also want to know the total number of records after filters are applied. Appian must run an extra query to get the total count. | Any positive number | true            | Total number of records after filters are applied |
+| You want a subset of rows and don't need to know the total number of rows after filters are applied.                                                              | Any positive number | false           | -1                                             |
+Examples
+The following examples use the Customer record type, which has a one-to-many relationship with the Case record type.
+For additional examples, see:
+- Recipes using a!queryRecordType()
+- Build Reports from Records
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Selection of customer fields
+sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {
+    recordType!Customer.fields.Name,
+    recordType!Customer.fields.LogoID,
+    recordType!Customer.fields.Industry
+  },
+  filters: {
+    a!queryFilter(
+      field: recordType!Customer.fields.InactiveFlag,
+      operator: "=",
+      value: false
+    )
+  },
+  pagingInfo: a!pagingInfo(
+    startIndex: 1,
+    batchSize: 5000,
+    sort: {
+      a!sortInfo(
+        field: recordType!Customer.fields.UpdatedOn,
+        ascending: false
+      ),
+      a!sortInfo(
+        field: recordType!Customer.fields.Name,
+        ascending: true
+      )
+    }
+  ),
+  fetchTotalCount: true
+)
+Sample output from the query above: 
+{:.screenshot}
+Selection of customer fields and support case fields
+```sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {
+    /Fields from the Customer record type/
+    recordType!Customer.fields.name,
+    recordType!Customer.fields.phoneNumber,
+/*Related fields from the Case record type*/
+recordType!Customer.relationships.cases.fields.title
+
+},
+  relatedRecordData: {
+    /Only return the latest support case for each customer/
+    a!relatedRecordData(
+      relationship: recordType!Customer.relationships.cases,
+      sort: {
+        a!sortInfo(
+          field: recordType!Case.fields.createdOn,
+          ascending: false
+        )
+      },
+      limit: 1
+    )
+  },
+  pagingInfo: a!pagingInfo(
+      startindex: 1,
+      batchSize: 500
+  )
+)
+```
+Sample output from the query above:
+{:.screenshot style="width:50%"}
+Aggregation of all cases and cases with a status of critical
+sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: a!aggregationFields(
+    groupings: 
+      a!grouping(
+        field: recordType!Customer.fields.name,
+        alias: "customer_name"
+      ),
+    measures: {
+      /* Count of all support cases */
+      a!measure(
+        field: recordType!Customer.relationships.cases.id,
+        function: "COUNT",
+        alias: "count_total",
+        label: "All cases"
+      ),
+      /* Count of all support cases that have a status of "Critical"*/
+      a!measure(
+        field: recordType!Customer.relationships.cases.id,
+        function: "COUNT",
+        alias: "count_critical",
+        label: "Critical cases",
+        filters: 
+        /* Since the aggregation is on the Case record type,
+        the field reference starts from the Case record type */
+          a!queryFilter(
+            field: recordType!Case.fields.status,
+            operator: "=",
+            value: "Critical"
+          )
+      )
+    }
+  ),
+  pagingInfo: a!pagingInfo(
+    startIndex: 1,
+    batchSize: 100,
+    sort: {
+      a!sortInfo(
+        field: "customer_name",
+        ascending: true
+      )
+    }
+  )
+)
+Sample output from the query above:
+{:.screenshot}

@@ -1,0 +1,46 @@
+
+layout: "basic"
+title: "Work with OAuth 2.0"
+topic-group: "C"
+weight: 7
+
+Overview
+This page shows how to use OAuth authorization code grant with connected system plug-ins. When using the authorization code grant, Appian automatically handles all interactions with the external system, including routing the user to the authorization server, retrieving and storing access tokens, and refreshing expired tokens.
+To create an OAuth 2.0 (authorization code grant) connected system template extend SimpleOAuthConnectedSystemTemplate. This class has an additional method getOAuthConfiguration. Other grant types must be manually implemented.
+Implementing getOAuthConfiguration
+Simply populate an OAuthConfigurationData object with a combination of environment agnostic constants (like scope) and designer-entered data (like client id).
+java
+@Override
+protected OAuthConfigurationData getOAuthConfiguration(SimpleConfiguration simpleConfiguration) {
+  return OAuthConfigurationData.builder()
+      .authUrl("https://accounts.google.com/o/oauth2/v2/auth")
+      .clientId(simpleConfiguration.getValue(CLIENT_ID_KEY))
+      .clientSecret(simpleConfiguration.getValue(CLIENT_SECRET_KEY))
+      .scope("https://www.googleapis.com/auth/drive")
+      .tokenUrl("https://www.googleapis.com/oauth2/v4/token")
+      .build();
+} 
+Using an access token
+Access tokens are available on all integration methods. Retrieve the access token by calling ExecutionContext.getAccessToken().
+java
+String accessToken;
+Optional<String> optionalAccessToken = executionContext.getAccessToken();
+if(optionalAccessToken.isPresent()) {
+  accessToken = optionalAccessToken.get();
+}
+Refreshing an expired access token
+If the external system indicates that the access token has expired, throw an ExpiredTokenException exception. Appian will attempt to refresh the token and retry the integration if the token can be refreshed.
+java
+if (response.getStatusCode() == 401) {
+  throw new ExpiredTokenException();
+}
+Checking if Appian has attempted access token refresh
+Sometimes, errors from the external system are ambiguous. For example, an HTTP 403 status code could mean the access token is expired, or it could be that the user does have access to the resource. For additional context in such a situation, you can check to see whether Appian has already attempted to refresh your access token using the attempt number in the execution context.
+Call ExecutionContext.attemptNumber() to see how many times Appian has tried executing the integration and caught an ExpiredTokenException.
+java
+if (response.getStatusCode() == 403) {
+  if(executionContext.attemptNumber() > 1) {
+    return handleUnauthorized();
+  }
+  throw new ExpiredTokenException();
+}

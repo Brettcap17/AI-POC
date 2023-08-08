@@ -1,0 +1,177 @@
+
+layout: function
+title: User Browser Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Displays group membership structure in columns. Users can navigate through the structure and select a single user.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!userBrowserFieldColumns
+fncsubcat: Browsers
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: rootGroup
+    name: Initial Group
+    types: Group
+    description: The direct members of the initial group are displayed in the first column.
+  - keyword: pathValue
+    name: Navigation Path
+    types: List of User or Group
+    description: The path from the first column to the current navigation.
+  - keyword: pathSaveInto
+    name: Save Navigation To
+    types: List of Save
+    description: Variable or list of variables to update when a user clicks on a user or group.
+  - keyword: selectionValue
+    name: Selection Value
+    types: User
+    description: This user is displayed as selected when it is present in the navigation path array.
+  - keyword: selectionSaveInto
+    name: Save Selection To
+    types: List of Save
+    description: Variable or list of variables to update upon selection of a user.
+  - keyword: readOnly
+    name: Read-only
+    types: Boolean
+    description: |
+      Determines whether selection is enabled. Default: false.
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the height of the component.Valid values: "SHORT", "MEDIUM" (default), "TALL".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: User Browser
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Example Interfaces, Recipes
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+User, group, and user and group browser components comparison
+The user and group browser components create Miller-columns-style browsers that allow users to select a user or group while browsing through a group membership tree.
+
+The three group membership browsing components are:
+
+User Browser
+Group Browser
+User and Group Browser
+
+Similar to the user and group picker fields, these three components appear the same but differ in what they allow to be selected. Depending on whether users, groups, or users and groups should be selected, choose the group browser, user browser, or user and group browser, respectively. If the interface is only for browsing, use the  group browser, as it is the only browser that can be configured to show only groups and not users.
+To learn how to use these components, see the examples listed below:
+
+Example Interfaces for Group Browser Components
+Navigation & the Initial Group
+Selection for More Information
+Selection for Picking
+
+Saving, selecting, and displaying values
+
+If an initial group is not specified, only the label, tooltip, and instructions will be displayed.
+To make the selection required for submission or display validation messages based on the selection, pair the browser with a a picker or other component.
+Click a selected user to deselect the value. When a user is deselected, a null value is saved.
+
+Using the pathValue and pathSaveInto parameters
+
+Because users can appear in multiple places in the browser at one time, a user only appears as selected if it is present in the pathValue array.
+When a user is selected, the variables in selectionSaveInto are updated after the variables in pathSaveInto. This means that if a variable is updated in both saves, it will be updated to the value assigned in the selectionSaveInto when a user is selected.
+When the component is read-only, the variables in selectionSaveInto are not updated when a user is clicked. However, if the selectionValue is set, a user can still be displayed as selected. pathSaveInto still updates as normal.
+A user can only be deselected if present in the pathValue.
+The first user or group in the pathValue must be a member of the initial group. Each subsequent user or group in the pathValue must be a member of the group that comes before it in the array. Otherwise, an error will occur.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Using user browsers with picker fields
+sail 
+a!localVariables(
+  local!initialGroup,
+  local!pathValue: a!refreshVariable(
+    value: {},
+    refreshOnVarChange: local!initialGroup
+  ),
+  local!selectionValue,
+  local!readOnly,
+  {
+      a!sectionLayout(
+        label:"Controls",
+        contents:{
+          a!pickerFieldGroups(
+            label: "Initial Group",
+            maxSelections: 1,
+            value: local!initialGroup,
+            saveInto: local!initialGroup
+          ),
+          a!checkboxField(
+            labelPosition: "COLLAPSED",
+            choiceLabels: {"Read-only"},
+            choiceValues: {true},
+            value: local!readOnly,
+            saveInto: local!readOnly
+          )
+        }
+      ),
+      a!sectionLayout(
+        label:"Component",
+        contents: {
+          a!userBrowserFieldColumns(
+            label: "User Browser",
+            rootGroup: local!initialGroup,
+            pathValue: local!pathValue,
+            pathSaveInto: local!pathValue,
+            selectionValue: local!selectionValue,
+            selectionSaveInto: local!selectionValue,
+            readOnly: local!readOnly
+          )
+        }
+      ),
+      a!sectionLayout(
+        label: "Selection & Path",
+        contents: {
+          a!pickerFieldUsersAndGroups(
+            label: "Navigation Path",
+            instructions: "Represents the current navigation from the rootGroup. Changing this could cause errors in the interface.",
+            value: local!pathValue,
+            saveInto: local!pathValue
+          ),
+          a!pickerFieldUsers(
+            label: "Selected User",
+            instructions: "The selected user only appears as selected if contained in the pathValue.",
+            value: local!selectionValue,
+            saveInto: local!selectionValue
+          )
+        }
+      )
+  }
+)

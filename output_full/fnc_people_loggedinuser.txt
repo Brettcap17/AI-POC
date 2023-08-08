@@ -1,0 +1,38 @@
+
+layout: function
+title: loggedInUser() Function
+space: function_page
+excerpt: "Returns the current user logged in to the application."
+category: function_page
+fncname: loggedInUser
+fncexample: "loggedInUser()"
+fncresult: "current.user"
+fnccat: People
+compatibility: -crf, ~portal, +pe, +pr
+reftype: function
+parameters: none  
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+User
+Usage considerations
+It is only applicable in situations where there is a user context, such as when rendering an interface, displaying a report, or executing a process task form.
+If there is no user context, such as when used in an expression in a node output, loggedInUser() returns "Administrator".
+In non-SAIL task forms that do not follow an activity-chained flow, loggedInUser() can be populated by selecting the Refresh default values every time the task form is viewed checkbox on the Other tab of the activity. The checkbox does not need to be selected when an interface is used as it is automatically applied.
+The function can be used to filter process reports for the current user. Cast the data to the User data type with the touser() function.
+loggedInUser() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Return the user that is viewing a report or an interface:
+loggedInUser() returns current.user
+Identify if the logged in user is in an array of users using the contains() function:
+contains(pv!userArray, touser(loggedinuser())) returns true or false
+Identify if the user viewing a task is the task owner using the tp!owner task property:
+loggedinuser()=touser(tp!owner) returns true or false
+
+appian-style-note
+Cast tp!owner to the User data type with the touser() function so that there's no error when comparing with loggedinuser() as soon as a task is accepted. Not doing so results in the error message Cannot compare incompatible operands of type User and type User id.

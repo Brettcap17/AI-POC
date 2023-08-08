@@ -1,0 +1,39 @@
+
+layout: function
+title: exact() Function
+space: function_page
+excerpt: "Compares two given text strings in a case-sensitive manner, returning true only if they are exactly the same."
+category: function_page
+fncname: exact
+fncexample: "exact( \"Copy of the other\", \"Copy of the other\" )"
+fncresult: "true"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text1
+    types: Text
+    description: |
+      One of two strings that will be compared.
+  - keyword: text2
+    types: Text
+    description: |
+      The other string that will be compared.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Comparison Operators
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+When comparing text strings, using this function over the = operator improves performance. The = operator, however, is case-insensitive. Only use the exact() function when case-insensitivity is not a requirement.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+exact("Copy of the other","Copy of the other") returns true
+exact("HELLO","HELLO") returns true
+exact("Hello","HELLO") returns false

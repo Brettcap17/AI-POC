@@ -1,0 +1,283 @@
+
+layout: function
+title: Column Layout
+category: function_page
+compatibility: -crf
+excerpt: Displays a column that can be used within the columns layout.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!columnLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: contents
+    name: Contents
+    types: Any Type
+    description: Values that define the interface components for a column.
+  - keyword: width
+    name: Width
+    types: Text
+    description: |
+      Determines the width of the column. Valid values: "AUTO" (default), "EXTRA_NARROW", "NARROW", "NARROW_PLUS", "MEDIUM", "MEDIUM_PLUS", "WIDE", "WIDE_PLUS", "1X", "2X", "3X", "4X", "5X", "6X", "7X", "8X", "9X", "10X".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Column Layout
+scsubcat: Layout_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a column that can be used within the columns layout.
+See also:
+
+Columns
+Columns and Side By Side design guidance
+Columns layout design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the contents parameter
+
+The following layouts are not supported in the contents parameter: form layout, header content layout, and column layout. All other layouts can be used, including columns layout.
+
+Column widths
+Use the width parameter to set the width of each column. See the SAIL Design System for guidance on choosing between column widths.
+Valid values are:
+
+"AUTO" (Default)
+Relative widths: "1X", "2X", "3X", "4X", "5X", "6X", "7X", "8X", "9X", "10X".
+Fixed widths: "EXTRA_NARROW", "NARROW", "NARROW_PLUS", "MEDIUM", "MEDIUM_PLUS", "WIDE", "WIDE_PLUS".
+
+Auto width
+The "AUTO" column width distributes the space evenly across all columns. As you resize the screen, the columns will remain distributed evenly.
+{:.screenshot}
+Relative widths
+Relative column widths are always proportional to other columns in the same columns layout. If there is only one column in a columns layout and it is set it to a relative width, it would take up the entire width because there isn't another column to compare it to.
+Relative widths are always a multiple of "1X". If you have two columns and one uses "2X" and the other uses "3X", you could imagine the columns being split into five sections. The "2X" column takes up 2/5 of the space, and the "3X" column takes up 3/5 of the space.
+{:.screenshot}
+As you resize the screen, columns with a relative width will maintain the same proportions.
+{:.screenshot}
+Fixed widths
+As long as they have enough room on the screen, fixed column widths will always maintain the same pixel width.
+{% include zoompic.html url="images/ux_pages/columns_layout_fixed.png" alt="fixed column width example" %}
+If their combined width takes up more than the width of the screen, they will size down appropriately.
+
+
+In this example, the "WIDE_PLUS" columns will almost always be wider than the "MEDIUM" column. But none of them will be as wide as their default width when the screen is wide enough to use their full width.
+
+Combining column width types
+Fixed and relative column widths
+If you use fixed column widths and relative column widths in the same columns layout, the fixed width applies first. The relative columns split the remaining space.
+
+
+In this example, the "NARROW_PLUS" and "MEDIUM" columns will first take up the specified amount of space. The "1X" and "3X" columns will take up 1/4 and 3/4 of the remaining space, respectively.
+
+If the screen is resized, the fixed column widths will maintain their size for as long as possible. The relative column widths will maintain their proportion to each other in the remaining space.
+{:.screenshot}
+Auto column widths
+If used with relative column widths, "AUTO" column widths are equal to "1X".
+If used with fixed column widths, "AUTO" column widths will take up the remaining space on the page.
+Examples
+Single column
+INCLUDE PAGE: SAIL intro
+{% sailbox 580 %}
+a!columnLayout(
+  width: "AUTO",
+  contents: {
+    a!textField(
+      label: "Customer",
+      value: "John Smith",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Status",
+      value: "Prospective",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Priority",
+      value: "High",
+      readOnly: true
+    )
+  }
+)
+{% endsailbox %}
+Relative column width: aligning columns across rows
+This example has three columns on the top row and two columns on the bottom row. The columns on the top row each take up 1/3 of the space and the columns on the bottom take up 1/3 and 2/3 of the space.
+{:.screenshot}
+To do this, create two rows with the same number of columns. Use the same relative column widths for each row. This ensures that the margins will line up.
+{:.screenshot}
+Then, for the column on the top row that lines up with the longer column on the bottom row, nest an a!columnsLayout() to split the space into to more columns.
+{:.screenshot}
+Copy and paste the example into an Appian Expression Editor to experiment with it.
+sail
+{a!columnsLayout(
+    columns: {
+      a!columnLayout(
+        width: "1X",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    height: "AUTO",
+                    style: "NONE",
+                    marginBelow: "STANDARD",
+                    contents: {
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(text: "Energy Consumption", color: "SECONDARY"),
+                          char(10),
+                          a!richTextItem(text: "3,415", size: "LARGE", style: "STRONG")
+                        }
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+        }
+      ),
+      a!columnLayout(
+        width: "2X",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    height: "AUTO",
+                    style: "NONE",
+                    marginBelow: "STANDARD",
+                    contents: {
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(text: "Transportation", color: "SECONDARY"),
+                          char(10),
+                          a!richTextItem(text: "3,415", size: "LARGE", style: "STRONG"
+                          )
+                        }
+                      )
+                    }
+                  )
+                }
+              ),
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    height: "AUTO",
+                    style: "NONE",
+                    marginBelow: "STANDARD",
+                    contents: {
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(text: "Waste", color: "SECONDARY"),
+                          char(10),
+                          a!richTextItem(text: "3,415", size: "LARGE", style: "STRONG")
+                        }
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+    }
+  ),
+  a!columnsLayout(
+    columns: {
+      a!columnLayout(
+        width: "1X",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    height: "AUTO",
+                    style: "NONE",
+                    marginBelow: "STANDARD",
+                    contents: {
+                      a!pieChartField(
+                        label: "Emissions by Category",
+                        labelPosition: "ABOVE",
+                        series: {
+                          a!chartSeries(label: "Energy", data: 314),
+                          a!chartSeries(label: "Transportation", data: 219),
+                          a!chartSeries(label: "Waste", data: 89)
+                        },
+                        colorScheme: "RAINFOREST",
+                        style: "DONUT",
+                        seriesLabelStyle: "ON_CHART",
+                        height: "MEDIUM"
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+        }
+      ),
+      a!columnLayout(
+        width: "2X",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    height: "AUTO",
+                    style: "NONE",
+                    marginBelow: "STANDARD",
+                    contents: {
+                      a!areaChartField(
+                        label: "Emissions over Time",
+                        labelPosition: "ABOVE",
+                        categories: {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+                        series: {
+                          a!chartSeries(
+                            label: "Energy",
+                            data: {29.8, 28, 24.9, 21.5, 27.4, 27.2, 22.1, 29.9, 25.6, 26.4, 23.1, 25.3}
+                          ),
+                          a!chartSeries(
+                            label: "Transportation",
+                            data: {15.2, 19.8, 17.1, 16.7, 18.8, 15, 19.5, 19.4, 16.9, 16.7, 15.3,16.6
+                            }
+                          ),
+                          a!chartSeries(
+                            label: "Waste",
+                            data: {7.1, 6.2, 7.1, 7.6, 7.9, 7.6, 6, 7.9, 6.5, 6.3, 6.6, 6.4
+                            }
+                          )
+                        },
+                        xAxisTitle: "2021",
+                        yAxisTitle: "MTCO2e",
+                        stacking: "NONE",
+                        showLegend: true,
+                        showTooltips: true,
+                        colorScheme: "RAINFOREST",
+                        height: "MEDIUM"
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}

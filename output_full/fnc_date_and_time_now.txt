@@ -1,0 +1,26 @@
+
+layout: function
+title: now() Function
+space: function_page
+excerpt: "Returns the current Date and Time as a serial number."
+category: function_page
+fncname: now
+fncexample: "now()"
+fncresult: "2/2/2022 2:02 PM"
+fnccat: Date_and_Time
+compatibility: -crf, +pe, +pr
+parameters: none
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date and Time
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+now() returns 2/2/2022 2:02 PM GMT+00:00

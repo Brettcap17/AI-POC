@@ -1,0 +1,54 @@
+
+layout: function
+title: document() Function
+category: function_page
+excerpt: Returns property information for a document.
+fnccat: Scripting
+fncexample: 'document(101, "expirationDate")'
+fncname: document
+fncresult: '12/21/05 2:28 PM GMT'
+space: function_page
+compatibility: -crf, ~om
+reftype: function
+parameters:
+  - keyword: documentId
+    types: Number
+    description: |
+      The Id of the document. This parameter accepts document objects as well. Document objects are represented by their Id number internally.
+  - keyword: property
+    types: Text
+    description: |
+      Information to retrieve for this document.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The property parameter accepts the following case-sensitive values:
+
+dateCreated
+description
+expirationDate
+extension
+folderId
+folderName
+id
+knowledgeCenterId
+knowledgeCenterName
+lastUserToModify
+lockedBy
+name
+totalNumberOfVersions
+pendingApproval
+size
+approved
+changesRequireApproval
+url
+
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+document(101,"expirationDate") returns 12/21/05 2:28 PM GMT

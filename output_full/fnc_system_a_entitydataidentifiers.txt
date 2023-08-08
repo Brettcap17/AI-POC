@@ -1,0 +1,29 @@
+
+layout: function
+title: a!entityDataIdentifiers() Function
+category: function_page
+excerpt: 'Creates an EntityDataIdentifiers configuration for use with a!deleteFromDataStoreEntities().'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!entityDataIdentifiers
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: entity
+    types: DataStoreEntity
+    description: |
+      This field holds a single Data Store Entity value in which the data to be deleted is stored.
+  - keyword: identifiers
+    types: Any Type
+    description: |
+      This field holds multiple Any Type values for the primary key values of the data to be deleted.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: EntityDataIdentifiers
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+EntityDataIdentifiers

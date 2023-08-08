@@ -1,0 +1,32 @@
+
+layout: function
+title: a!userRecordIdentifier() Function
+category: function_page
+excerpt: Returns a value of type Record Identifier for each user passed to the function.
+fnccat: System
+fncexample: a!userRecordIdentifier("john.smith")
+fncname: a!userRecordIdentifier
+fncresult: '0'
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: users
+    types: User Array
+    description: |
+      The array of users for whom record identifiers are to be created.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Post Event to Feed Smart Service, Post System Event to Feed Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Record Identifier Array
+Usage considerations
+This function can be used for both active and deactivated users.
+The expression will fail to evaluate and an error will occur if the users field contains invalid users.
+Examples
+NOTE: To make the following expression valid, replace "john.smith" and "jane.doe" with valid usernames in your environment.
+a!userRecordIdentifier(users: {"john.smith", "jane.doe"}) returns an array of two Record Identifier values with the first pointing to John Smith's User record the second pointing to Jane Doe's User record.

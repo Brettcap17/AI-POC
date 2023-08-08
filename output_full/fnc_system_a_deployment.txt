@@ -1,0 +1,49 @@
+
+layout: function
+title: a!deployment() Function
+category: function_page
+compatibility: '-crf, ~portal, ~om'
+excerpt: Returns a specific property of a direct deployment.
+fnccat: System
+fncexample: 'deployment(101, "reviewedDate")'
+fncname: a!deployment
+fncresult: '12/21/05 2:28 PM GMT'
+parameters:
+  - keyword: deploymentUuid
+    types: Deployment
+    description: 'The deployment to retrieve. The UUID is available from the post-deployment process or the deployment''s log.'
+  - keyword: property
+    types: Text
+    description: |
+      The information to retrieve for this deployment. Properties are case-sensitive and the following properties are supported:
+        - name: The name of the deployment package. (Text)
+        - description: The description of the deployment package. (Text)
+        - uuid: The UUID of the deployment. (Text)
+        - auditUuid: The common UUID across environments that tracks a direct deployment and any related deployments completed using the Deploy to Another Environment option. (Text)
+        - status: The status of the deployment (Completed, Completed with Errors, Failed, In Progress, Pending, Rejected, Unavailable). (Text)
+      - applications: The list of applications that the deployments are for.(List of Application)
+      - packageType: The type of package (Patch or Application). (Text)
+      - objectsPackageId: The document ID for objects package zip file. (Integer)
+      - customizationFileId: The document ID for Import Customization property file. (Integer)
+      - databaseScriptsIds: The document IDs for database scripts in the order they are executed. (List of Integer)
+      - pluginsPackageId: The document ID for the zip file of plug-in JAR files. (Integer)
+      - logId: The ID of the deployment log. (Integer)
+      - source: The name of the source environment. (Text)
+      - target: The name of the target environment. (Text)
+      - objectsDeployed: The number of objects in the package that have been deployed. This includes successfully deployed objects and skipped objects. (Integer)
+      - objectsFailed: The number of objects in the package that have failed to deploy. (Integer)
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Returns a specific property of a direct deployment which can be used in a post-deployment process.
+Usage considerations
+Supported use case
+This function should be used in your post deployment processes and you can set up a process parameter to pass deployment information to your process model.
+Example
+deployment(101, "reviewedDate") returns 12/21/05 2:28 PM GMT

@@ -1,0 +1,67 @@
+
+layout: function
+title: a!iconIndicator() Function
+category: function_page
+excerpt: 'Returns the specified image from a list of standard indicator icons. Indicator icons can be used on interface within a document image.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!iconIndicator
+compatibility: -crf, ~portal, -om
+parameters:
+  - keyword: icon
+    types: Text
+    description: |
+      The key from the table of the icon to be returned.
+reftype: function
+space: function_page
+
+
+appian-style-note
+The rich text icon is a better alternative to icon indicator, with a larger library of options and styles.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+See also: DocumentImage, Display Processes by Process Model with Status Icons
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Document
+Usage consideration
+Icon size
+The "ICON" size configuration should be used when using these icons within an interface image component.
+Available icons
+The table below shows each icon.
+INCLUDE PAGE: Indicator Icon Table
+Examples
+sail
+a!localVariables(
+  local!pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 3),
+  a!gridField_19r1(
+    columns: {
+      a!gridTextColumn(
+        label: "Task Name",
+        data: {"Task 1", "Task 2", "Task 3"}
+      ),
+      a!gridTextColumn(
+        label: "Assignee",
+        data: {"John Smith", "Andrew Nelson", "Pamela Sanders"}
+      ),
+      a!gridImageColumn(
+        label: "Status",
+        size: "ICON",
+        data: apply(
+          a!documentImage(document: _, altText: _, caption: _),
+          merge(
+            apply(a!iconIndicator, {"STATUS_OK", "STATUS_WARN", "STATUS_NOTDONE"}),
+            {"Complete", "Overdue", "Not Complete"},
+            {"Complete", "Overdue", "Not Complete"}
+          )
+        )
+      )
+    },
+    totalCount: 3,
+    value: local!pagingInfo,
+    rowHeader: 1
+  )
+)

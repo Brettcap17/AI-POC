@@ -1,0 +1,13 @@
+
+layout: function
+title: a!httpWrite() Function [Deprecated]
+space: function_page
+category: function_page
+depver: 17.2
+fncname: a!httpWrite
+fnccat: "一Deprecated一"
+refype: function
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. To implement the same functionality,  create an Integration. See also: Integration Tutorial 
+For information about the a!httpWrite() function, see the Appian 17.1 documentation.

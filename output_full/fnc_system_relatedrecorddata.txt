@@ -1,0 +1,198 @@
+
+layout: function
+title: a!relatedRecordData() Function
+category: function_page
+excerpt: 'References a one-to-many relationship defined on a record type and allows for additional filtering, sorting, and limiting of the related record set.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!relatedRecordData
+compatibility: -crf
+parameters:
+  - keyword: relationship
+    types: Record Type Relationship
+    description: |
+      A reference to a one-to-many record type relationship, configured using the recordType! domain. For example, recordType!Department.relationships.employees.
+  - keyword: limit
+    types: Number (Integer)
+    description: |
+      Number of related records to return. Valid values include 1-10. Default: 10.
+  - keyword: sort
+    types: List of SortInfo
+    description: |
+      Array of Sort Info configurations created with a!sortInfo(). When defining the field to sort on, reference a record field or related record field starting from the related record type. For example, sort on the field recordType!Employee.fields.status when relationship is recordType!Department.relationships.employees.
+  - keyword: filters
+    types: Any Type
+    description: |
+      A single logical expression or a list of query filters, which are applied together with an AND operation, can be provided to apply additional filters to the record set. When defining fields to filter on, reference record fields or related record fields starting from the related record type. For example, filter on the field recordType!Employee.fields.status when relationship is recordType!Department.relationships.employees. Queries also inherit the default filters defined on the referenced record type. 
+reftype: function
+space: function_page
+
+Function
+{{ page.fncsyntax }}
+{{ page.excerpt }} 
+See also: 
+- a!queryRecordType()
+- a!recordData()
+- a!sortInfo()
+- a!queryFilter()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+List of RelatedRecordData
+Usage considerations
+Function requirements
+This function is only supported on record types that have data sync enabled and have a one-to-many relationship with another record type.
+You cannot use this function when performing an aggregation in a!queryRecordType() or in a records-powered chart.
+Supported use cases
+Use this function to filter, sort, or limit the related record data returned from a one-to-many relationship referenced in a!queryRecordType() or in an a!recordData() function used in a read-only grid. 
+See Examples for sample use cases.
+Limiting the related record set
+If you don't specify a limit, the default limit of 10 is applied. This is the maximum number of related records that can be returned for each base record. 
+For example, when querying customers and their related support cases, the query will return a max of 10 related support cases for each customer if no limit is applied.
+Filtering and sorting the related record set
+When applying a filter or sort to a!relatedRecordData(), your record field or related record field reference must start from the related record type specified in the relationship parameter. 
+For example, the Department record type has a one-to-many relationship with the Employee record type, and you only want to see the employees in each department that have a status of "Active".
+To return this data, you would do something like:
+sail
+   relatedRecordData: {
+   /*Only return related Employees that have a status of active*/
+    a!relatedRecordData(
+!    relationship: recordType!Department.relationships.employee,
+     filters: {
+        a!queryFilter(
+!         field: recordType!Employee.fields.status,
+          operator: "=",
+          value: "Active"
+          )
+        }
+      )
+    }
+Examples
+The following examples demonstrate how to use a!relatedRecordData() in the a!queryRecordType() function. We'll use the Customer record type, which has a one-to-many relatonship with the Case record type, to return information about customers and their related support cases.
+See the a!recordData() function for an example using a!relatedRecordData() in a read-only grid.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Only return the latest customer support case
+```sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {
+    /Fields from the Customer record type/
+    recordType!Customer.fields.name,
+    recordType!Customer.fields.phoneNumber,
+/*Related fields from the Case record type*/
+recordType!Customer.relationships.cases.fields.title
+
+},
+  relatedRecordData: {
+    /Only return the latest support case for a customer/
+    a!relatedRecordData(
+      relationship: recordType!Customer.relationships.cases,
+      sort: {
+        a!sortInfo(
+          field: recordType!Case.fields.createdOn,
+          ascending: false
+        )
+      },
+      limit: 1
+    )
+  },
+  pagingInfo: a!pagingInfo(
+      startindex: 1,
+      batchSize: 500
+  )
+)
+```
+Returns
+{:.screenshot style="width:50%"}
+Only return customer cases that have a status of "critical"
+```sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {
+    /Fields from the Customer record type/
+    recordType!Customer.fields.name,
+    recordType!Customer.fields.phoneNumber,
+/*Related fields from the Case record type*/
+recordType!Customer.relationships.cases.fields.title
+
+},
+  relatedRecordData: {
+    /Only return related cases that have a priority of critical/
+    a!relatedRecordData(
+      relationship: recordType!Customer.relationships.cases,
+      filters: {
+        a!queryFilter(
+          field: recordType!Case.relationships.priority.fields.label,
+          operator: "=",
+          value: "Critical"
+        )
+      }
+    )
+  },
+  pagingInfo: a!pagingInfo(
+      startindex: 1,
+      batchSize: 500
+  )
+)
+```
+Returns
+{:.screenshot style="width:50%"}
+
+appian-style-tip
+Since there is no limit specified in a!relatedRecordData, the number of related records to return will default to 10.
+
+Return the lastest critical support case and the latest case comment
+```sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: {
+    /Fields from the Customer record type/
+    recordType!Customer.fields.name,
+    recordType!Customer.fields.customerSince,
+/*Related fields from the Case record type*/
+recordType!Customer.relationships.cases.fields.title,
+recordType!Customer.relationships.cases.fields.status,
+
+/*Related fields from the Comments record type*/
+recordType!Customer.relationships.cases.relationships.comments.fields.commentText
+
+},
+  relatedRecordData: {
+    /Only return the latest case with a priority of critical/
+    a!relatedRecordData(
+      relationship: recordType!Customer.relationships.cases,
+      filters: {
+        a!queryFilter(
+          field: recordType!Case.relationships.priority.fields.label,
+          operator: "=",
+          value: "Critical"
+        )
+      },
+      sort: {
+        a!sortInfo(
+          field: recordType!Case.fields.createdOn,
+          ascending: false
+        )
+      },
+      limit: 1
+    ),
+    /Only return the latest comment associated with each critical case/
+    a!relatedRecordData(
+      relationship: recordType!Customer.relationships.cases.relationships.comments,
+      sort: {
+        a!sortInfo(
+          field: recordType!Comments.fields.createdOn,
+          ascending: false
+        )
+      },
+      limit: 1
+    )
+  },
+  pagingInfo: a!pagingInfo(
+      startindex: 1,
+      batchSize: 500
+  )
+)
+```
+Returns
+{:.screenshot}

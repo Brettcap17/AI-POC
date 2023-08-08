@@ -1,0 +1,56 @@
+
+layout: function
+title: like() Function
+space: function_page
+excerpt: "Tests whether a string of text is like a given pattern."
+category: function_page
+fncname: like
+fncexample: "like(\"brian\",\"*ian\")"
+fncresult: "true"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: stringA
+    types: text string
+    description: |
+      Text to match
+  - keyword: stringB
+    types: text string
+    description: |
+      List the characters to match.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Using wildcards
+stringB accepts the following wildcard characters:
+
+* - matches one or more characters (including an empty character). Multiple consecutive asterisks (multiple anything) is invalid input; use just one.
+? - matches any one character. Multiple question marks match the same number of characters.
+[characters] - matches one of the enclosed characters.
+[^characters] - matches anything but the enclosed characters.
+[number-number] - matches a range of numbers created in combination with the enclosed.
+
+Wildcard examples
+
+b*t matches bet; beat; and beast.
+
+b?t matches bat ; and bet; and bit.
+
+
+a[cr]t matches act and art.
+
+ab[^bc] matches abd but not abb nor abc.
+[0-2]4 matches 04 and 14 and 24 not 74.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+like("brian","*ian") returns true

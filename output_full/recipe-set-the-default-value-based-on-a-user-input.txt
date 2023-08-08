@@ -1,0 +1,65 @@
+
+layout: pattern
+title: Set the Default Value Based on a User Input
+excerpt: Set the default value of a variable based on what the user enters in another component.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Default Value
+
+This example only applies when the default value is based on the user's input in another component. See Set the Default Value of an Input on a Task Form recipe when the default value must be set as soon as the form is displayed and without requiring the user to interact with the form.
+Expression
+sail 
+a!localVariables(
+  local!username,
+  local!email,
+  local!emailModified: false,
+  a!formLayout(
+    label: "Example: Default Value Based on User Input",
+    contents: {
+      a!textField(
+        label: "Username",
+        instructions: "Value saved: " & local!username,
+        value: local!username,
+        saveInto: {
+          local!username,
+          if(local!emailModified, {}, a!save(local!email, append(save!value, "@example.com")))
+        },
+        refreshAfter: "KEYPRESS"
+      ),
+      a!textField(
+        label: "Email",
+        instructions: "Value saved: " & local!email,
+        value: local!email,
+        saveInto: {
+          local!email,
+          a!save(local!emailModified, true)
+        }
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    )
+  )
+)
+Test it out
+
+Type into the Username field and notice that the Email field is pre-populated.
+Type into the Username field, then modify the Email value, and type into the Username field again. The Email field is no longer pre-populated.
+
+Notice that the value of username as well as the email address field are updated as you type. That's because the username input is configured with refreshAfter: "KEYPRESS"
+To write your data to process
+
+Save your interface as sailRecipe
+Create rule inputs: username (Text), email (Text)
+Delete local variables: local!username, local!email
+In your expression, replace:
+local!username with ri!username
+local!email with ri!email
+In your process model, on the process start form or forms tab of an activity, enter the name of your interface in the search box and select it
+Click Yes when the Process Modeler asks, "Do you want to import the rule inputs?"
+On a task form, this will create node inputs
+On a start form, this will create parameterized process variables

@@ -1,0 +1,365 @@
+
+layout: "pattern"
+title: "Alert Banner Patterns"
+Alert Banners: "collection docs/ patterns/alert-banners"
+excerpt: "The alert banners pattern is good for creating a visual cue of different types of alerts about information on a page."
+reftype: "pattern"
+sr-tags: ["Choice Components"]
+
+This pattern uses cards to highlight different types of alerts you may have. You can easily modify it to change the number of cards that are on the screen. 
+Design structure
+The main components in this pattern are card layouts, side by side layouts, and rich text display fields. The image below displays how the pattern looks on a blank interface. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+This pattern introduces a 317-line expression into the interface. By default, every type of alert banner will be displayed.                                                       
+sail
+{
+  /* Information Banner */
+  a!cardLayout(
+    contents: {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "info-circle",
+                  color: "#555",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            /* Replace this rich text with your information message */
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                "A new Case Management System is available. Contact your Administrator with any questions.",
+                " ",
+                a!richTextItem(
+                  text: "Learn more",
+                  link: a!dynamicLink()
+                )
+              }
+            )
+          )
+        },
+        alignVertical: "MIDDLE"
+      )
+    },
+    style: "STANDARD",
+    marginBelow: "STANDARD",
+    accessibilityText: "Information message"
+  ),
+  /* Error Banner */
+  a!cardLayout(
+    contents: {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "exclamation-circle",
+                  color: "NEGATIVE",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            /* Replace this rich text with your error message */
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: {
+                    "Case Not Found."
+                  },
+                  style: "STRONG"
+                ),
+                " ",
+                "Case #1125 is missing. Please notify your Administrator.",
+                " ",
+                a!richTextItem(
+                  text: "Download error logs",
+                  link: a!dynamicLink()
+                )
+              }
+            )
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "STANDARD"
+      )
+    },
+    style: "ERROR",
+    marginBelow: "STANDARD",
+    accessibilityText: "Error message"
+  ),
+  /* Warning Banner */
+  a!cardLayout(
+    contents: {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "exclamation-triangle",
+                  color: "#ffc13e",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            /* Replace this rich text with your warning message */
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: {
+                    "Case Still Open."
+                  },
+                  style: "STRONG"
+                ),
+                " ",
+                "The following case has been open for more than 30 days:",
+                " ",
+                a!richTextItem(
+                  text: "Case #1124",
+                  link: a!dynamicLink()
+                )
+              }
+            )
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "STANDARD"
+      )
+    },
+    style: "WARN",
+    marginBelow: "STANDARD",
+    accessibilityText: "Warning message"
+  ),
+  /* Success Banner */
+  a!cardLayout(
+    contents: {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "check-circle",
+                  color: "POSITIVE",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            /* Replace this rich text with your success message */
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: {
+                    "Case Closed."
+                  },
+                  style: {
+                    "STRONG"
+                  }
+                ),
+                " ",
+                "Case #1123 has been closed. A satisfaction survey has been sent to the customer.",
+                " ",
+                a!richTextItem(
+                  text: "Go to My Dashboard",
+                  link: a!dynamicLink()
+                )
+              }
+            )
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "STANDARD"
+      )
+    },
+    style: "#e7f4e4",
+    marginBelow: "STANDARD",
+    accessibilityText: "Success message"
+  ),
+  /* Info Banner with Action Option */
+  a!cardLayout(
+    contents: {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "info-circle",
+                  color: "#555",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            /* Replace this rich text with your information message */
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: {
+                    "Upgrade Software."
+                  },
+                  style: {
+                    "STRONG"
+                  }
+                ),
+                " ",
+                "New software updates are available. Upgrade now to use the latest features.",
+                " ",
+                a!richTextItem(
+                  text: "Read documentation",
+                  link: a!dynamicLink()
+                )
+              }
+            )
+          ),
+          a!sideBySideItem(
+            item: a!buttonArrayLayout(
+              buttons: a!buttonWidget(
+                label: "Upgrade",
+                size: "SMALL"
+              ),
+              marginBelow: "NONE"
+            ),
+            width: "MINIMIZE"
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "STANDARD"
+      )
+    },
+    style: "STANDARD",
+    marginBelow: "STANDARD",
+    accessibilityText: "Information message"
+  ),
+  /* Dismissible Information Banner */
+  load(
+    local!showInformationBanner: true,
+    a!cardLayout(
+      contents: {
+        a!sideBySideLayout(
+          items: {
+            a!sideBySideItem(
+              item: a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextIcon(
+                    icon: "info-circle",
+                    color: "#555",
+                    size: "MEDIUM"
+                  )
+                }
+              ),
+              width: "MINIMIZE"
+            ),
+            a!sideBySideItem(
+              /* Replace this rich text with your information message */
+              item: a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextItem(
+                    text: {
+                      "New Case."
+                    },
+                    style: {
+                      "STRONG"
+                    }
+                  ),
+                  " ",
+                  "A new low priority case has been created.",
+                  " ",
+                  a!richTextItem(
+                    text: "View details",
+                    link: a!dynamicLink()
+                  )
+                }
+              )
+            ),
+            a!sideBySideItem(
+              item: a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: a!richTextIcon(
+                  icon: "times",
+                  link: a!dynamicLink(
+                    value: false,
+                    saveInto: local!showInformationBanner
+                  ),
+                  linkStyle: "STANDALONE",
+                  size: "MEDIUM"
+                )
+              ),
+              width: "MINIMIZE"
+            )
+          },
+          alignVertical: "MIDDLE",
+          spacing: "STANDARD"
+        )
+      },
+      showWhen: local!showInformationBanner,
+      style: "STANDARD",
+      marginBelow: "STANDARD",
+      accessibilityText: "Information message"
+    )
+  )
+}
+[Line 1-4 ... 38-40] Create your card layout
+Each alert banner is created by first setting up a card layout. This allows you to select the alert's color style and place different rich text displays side by side.
+{% highlight sail linenos start_line=1 %}
+{
+  / Information Banner /
+  a!cardLayout(
+    contents: {
+...
+
+style: "STANDARD",
+marginBelow: "STANDARD",
+accessibilityText: "Information message"
+
+),
+{% endhighlight %}
+[Line 5-17] Setting up the side by side layout of rich text display items
+Using a!sideBySideLayout, you can display the components of an individual alert banner alongside each other. You can then drag and drop and configure the order of the items in your banner with a!sideBySideItem.
+We then use rich text display fields to display the content of each alert banner. These display fields are where you can replace content to fit your own use case.
+{% highlight sail linenos start_line=5 %}
+a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextIcon(
+                  icon: "info-circle",
+                  color: "#555",
+                  size: "MEDIUM"
+                )
+              }
+            ),
+{% endhighlight %}

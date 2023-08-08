@@ -1,0 +1,86 @@
+
+permalink: fnc_system_a_executestoredprocedureforquery.html
+layout: function
+title: a!executeStoredProcedureForQuery() Function
+category: function_page
+excerpt: Executes a stored procedure in a database. Since this function could run more than once, do not use it with stored procedures that modify data to avoid unintentional changes.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!executeStoredProcedureForQuery
+compatibility: -crf, ~portal, -om
+parameters:
+  - keyword: dataSource
+    types: Any Type
+    description: The data source that contains the stored procedure. The value depends on how your data source is connected. For data source connected systems, enter the connected system constant. For data sources connected in the Admin Console, enter the name of the data source or a Text constant that stores the name.
+  - keyword: procedureName
+    types: Text
+    description: Name of the stored procedure. Case sensitivity requirements are specific to each type of database. For Oracle and Db2 databases, enter the name in uppercase. For PostgreSQL databases, enter the name in lowercase.
+  - keyword: inputs
+    types: List of Map
+    description: A list of names and values of the IN and INOUT parameters to the stored procedure created using a!storedProcedureInput(). An input must be provided for every IN and INOUT parameter. Case sensitivity requirements are specific to each type of database. For Oracle and Db2 databases, enter the parameter names in uppercase. For PostgreSQL databases, enter the parameter names in lowercase.
+  - keyword: timeout
+    types: Integer
+    description: "The amount of time (in seconds) until the stored procedure execution is cancelled. Default: 30 seconds."
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} To safely execute stored procedures in a saveInto parameter, use a!executeStoredProcedureOnSave.
+
+appian-style-tip
+Stored procedures are a set of SQL statements that you can save in your database and use to query or modify data over and over again.
+
+See also: Execute Stored Procedure Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+See also: Stored Procedure Input
+Returns
+The a!executeStoredProcedureForQuery function returns a Map data type with the following parameters:
+- success (Boolean)
+- errorMessage (Text)
+- results (List of List of Map)
+- parameters (List of Map)
+The errorMessage parameter will only be returned in the event of a failure.
+Usage considerations
+Ensuring users have access to execute stored procedures
+If using a data source connected system, the user executing this activity must have Viewer permissions to the selected data source connected system in order to execute stored procedures.
+INCLUDE PAGE: stored-procedure-guardrails.md
+INCLUDE PAGE: stored-procedure-database-specifics.md
+Example
+In this example, a parameterized PostgreSQL stored procedure is executed using the a!executeStoredProcedureForQuery() function.
+Stored procedure details:
+
+Stored procedure name: get_customers
+IN parameters: limit_input, offset_input
+INOUT parameter: my_cursor
+PostgreSQL stored procedure definition:
+CREATE OR REPLACE PROCEDURE get_customers(
+    IN limit_input INTEGER,
+    IN offset_input INTEGER,
+    INOUT my_cursor refcursor
+)
+BEGIN
+OPEN my_cursor FOR
+    SELECT * FROM customers LIMIT limit_input OFFSET offset_input;
+END;
+
+To call this stored procedure we can use the expression below.
+sail
+a!executeStoredProcedureForQuery(
+  dataSource: cons!POSTGRES_DB_POINTER,
+  procedureName: "get_customers",
+  inputs: {
+    a!storedProcedureInput(
+      name: "limit_input",
+      value: 5
+    ),
+    a!storedProcedureInput(
+      name: "offset_input",
+      value: 0
+    )
+  }
+)
+Because PostgreSQL databases use cursor objects for the stored procedure output, the query results from this stored procedure are returned in the parameter key.
+However, if you execute a similar stored procedure in a database that doesn't use cursor objects for the stored procedure output, the query results will be in the results key instead. Below, you can see how the results will differ between stored procedures executed on PostgreSQL and MariaDB.
+{% include zoompic.html url="images/execute_stored_procedure/execute_stored_procedure_postgres_vs_mariadb.gif" border="-nb" style="width:67%;"%}

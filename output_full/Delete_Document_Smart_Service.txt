@@ -1,0 +1,59 @@
+
+layout: function
+title: Delete Document Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: 'The Delete Document node allows you to select a document and then completely remove it from a Knowledge Center or Folder, as well as the server file system.'
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!deleteDocument
+fncsubcat: Document_Management
+parameters:
+  - keyword: document
+    types: Document
+    description: The document to delete.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Document_Management
+ssicon: Delete_Document.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} It is located under Appian Smart Services > Document Management in the Process Modeler palette.
+You must be a System Administrator, a member of the Document Administrators group, a Knowledge Center Administrator, a Folder Administrator, or the person who uploaded the document in order to execute the activity.
+
+appian-style-note
+Attempting to complete this task without sufficient user rights generates an error message for the Process Administrator and pauses the process.
+
+Properties
+
+
+Category: Document Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+The data tab displays the node inputs and outputs for the activity. You can add additional inputs and custom outputs, if needed. The default Document input is listed.
+| Input | Data Type | Required | Multiple |
+| - | - | - | - |
+| Document | Document | Yes | No |
+If the activity is run without being assigned to a user (or a group) you must specify values for each of the node inputs listed. You can either manually enter data into the text-field, or a value can be generated using the Expression Editor. When using the Expression Editor, you can reference and modify process variables, rules, constants, and other data. The expressions then specify your Node Input values.
+If the node is assigned, the node input values are typed by your assigned user(s) into a form.
+a!deleteDocument()
+The Delete Document smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

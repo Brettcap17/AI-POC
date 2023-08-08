@@ -1,0 +1,325 @@
+
+layout: pattern
+title: Duration Display
+excerpt: 'Use the duration display pattern to show the amount of time in between events in a quick, easy-to-read way.'
+reftype: pattern
+sr-tags:
+  - Rich Text
+  - Events
+
+{:.screenshot style="width:60%"}
+Design structure
+This page will break down this expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are side-by-side layouts and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot style="width:60%"}
+Pattern expression
+When you drag and drop the duration display pattern onto your interface, 139 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!events: {
+      a!map(name: "Opened", date: today() - 10),
+      a!map(name: "Closed", date: today())
+    },
+    local!duration: tointeger(local!events[2].date - local!events[1].date),
+    local!targetDuration: 10,
+    {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text:  text(local!events[1].date, "m/d"),
+                  size: "MEDIUM_PLUS"
+                ),
+                char(10),
+                a!richTextItem(
+                  text: upper(local!events[1].name),
+                  color: "SECONDARY"
+                )
+              },
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: a!richTextItem(
+                /* You can change how many characters *
+                 * display based on the page width    */
+                text: repeat(
+                  if(
+                    a!isPageWidth("PHONE"),
+                    2,
+                    5
+                  ), 
+                  /* horizontal bar character */
+                  char(9472)
+                ),
+                color: "#ddd",
+                size: "LARGE",
+                style: "STRONG"
+              )
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                if(
+                  local!duration > local!targetDuration,
+                  a!richTextIcon(
+                    icon: "exclamation-circle",
+                    altText: "warning",
+                    color: "NEGATIVE",
+                    size: "MEDIUM_PLUS"
+                  ),
+                  a!richTextIcon(
+                    icon: "clock-o",
+                    altText: "clock",
+                    color: "SECONDARY",
+                    size: "MEDIUM_PLUS"
+                  )
+                ),
+                "  ",
+                a!richTextItem(
+                  text: {
+                    a!richTextItem(
+                      text: local!duration,
+                      style: "STRONG"
+                    ),
+                    " ",
+                    upper("Days")
+                  },
+                  size: "MEDIUM_PLUS"
+                )
+              },
+              /* Consider changing the tooltip and styling of the richText *
+               * if the duration is greater than a target value            */
+              tooltip: if(
+                local!duration > local!targetDuration,
+                "Number of days between events exceeds target duration",
+                "Number of days between events"
+              ),
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: a!richTextItem(
+                /* You can change how many characters *
+                 * display based on the page width    */
+                text: repeat(
+                  if(
+                    a!isPageWidth("PHONE"),
+                    2,
+                    5
+                  ), 
+                  /* horizontal bar character */
+                  char(9472)),
+                  color: "#ddd",
+                  size: "LARGE"
+              )
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: text(local!events[2].date, "m/d"),
+                  size: "MEDIUM_PLUS"
+                ),
+                char(10),
+                a!richTextItem(
+                  text: upper(local!events[2].name),
+                  color: "SECONDARY"
+                )
+              },
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "DENSE"
+      )
+    }
+  )
+}
+[Line 1-8] Define local variables and mappings
+The local variables at the top of the expression are used to define:
+- The data that will be displayed for the opened and closed dates. 
+- The amount of days in between those dates.
+- The target duration. 
+The local!events variable uses the a!map() function to link the opened and closed values to their corresponding dates.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!events: {
+      a!map(name: "Opened", date: today() - 10),
+      a!map(name: "Closed", date: today())
+    },
+    local!duration: tointeger(local!events[2].date - local!events[1].date),
+    local!targetDuration: 10,
+{% endhighlight %}
+[Line 9-51] Define the opened date display {#first}
+This section:
+- Contains the first side-by-side layout. 
+- Defines the display for the opened date. 
+- Creates the formatting for the first set of rich text dividers. 
+The rich text divider is made of char(9472) characters that creates a gray line in between the opened date and the rich text duration display.  
+Lines 36-44 conditionally change the width of the rich text divider using the a!isPageWidth() function. The page width function allows you to determine the width of the page in which the interface is being displayed. Here, the function is used with an if() statement to conditionally change how many char(9472) characters are shown depending on the width of the page. This ensures that display will look good at all page widths.
+{% highlight sail linenos start_line=9 %}
+    {
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text:  text(local!events[1].date, "m/d"),
+                  size: "MEDIUM_PLUS"
+                ),
+                char(10),
+                a!richTextItem(
+                  text: upper(local!events[1].name),
+                  color: "SECONDARY"
+                )
+              },
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: a!richTextItem(
+                / You can change how many characters *
+                 * display based on the page width    /
+                text: repeat(
+                  if(
+                    a!isPageWidth("PHONE"),
+                    2,
+                    5
+                  ), 
+                  / horizontal bar character /
+                  char(9472)
+                ),
+                color: "#ddd",
+                size: "LARGE",
+                style: "STRONG"
+              )
+            ),
+            width: "MINIMIZE"
+          ),
+{% endhighlight %}   
+[Line 52-94] Define the event duration display
+This section uses an if() statement to conditionally display the amount of days between the opened and closed dates or a warning icon. The warning icon only appears if the amount of days between the opened and closed date exceeds the target duration. If the amount of days exceeds the target duration, the tooltip will also display the message Number of days between events exceeds target duration.
+{% highlight sail linenos start_line=52 %}
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                if(
+                  local!duration > local!targetDuration,
+                  a!richTextIcon(
+                    icon: "exclamation-circle",
+                    altText: "warning",
+                    color: "NEGATIVE",
+                    size: "MEDIUM_PLUS"
+                  ),
+                  a!richTextIcon(
+                    icon: "clock-o",
+                    altText: "clock",
+                    color: "SECONDARY",
+                    size: "MEDIUM_PLUS"
+                  )
+                ),
+                "  ",
+                a!richTextItem(
+                  text: {
+                    a!richTextItem(
+                      text: local!duration,
+                      style: "STRONG"
+                    ),
+                    " ",
+                    upper("Days")
+                  },
+                  size: "MEDIUM_PLUS"
+                )
+              },
+              / Consider changing the tooltip and styling of the richText *
+               * if the duration is greater than a target value            /
+              tooltip: if(
+                local!duration > local!targetDuration,
+                "Number of days between events exceeds target duration",
+                "Number of days between events"
+              ),
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          ),
+{% endhighlight %}
+{:.screenshot}
+[Lines 95-139] Define the closed date display
+This section contains:
+- The final sets of side-by-side layouts.
+- The last rich text divider. 
+- The closed date. 
+This section is similar to the first set of side-by-side layouts, but in the reverse order.
+{% highlight sail linenos start_line=95 %}
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: a!richTextItem(
+                / You can change how many characters *
+                 * display based on the page width    /
+                text: repeat(
+                  if(
+                    a!isPageWidth("PHONE"),
+                    2,
+                    5
+                  ), 
+                  / horizontal bar character /
+                  char(9472)),
+                  color: "#ddd",
+                  size: "LARGE"
+              )
+            ),
+            width: "MINIMIZE"
+          ),
+          a!sideBySideItem(
+            item: a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: text(local!events[2].date, "m/d"),
+                  size: "MEDIUM_PLUS"
+                ),
+                char(10),
+                a!richTextItem(
+                  text: upper(local!events[2].name),
+                  color: "SECONDARY"
+                )
+              },
+              align: "CENTER"
+            ),
+            width: "MINIMIZE"
+          )
+        },
+        alignVertical: "MIDDLE",
+        spacing: "DENSE"
+      )
+    }
+  )
+}
+{% endhighlight %}

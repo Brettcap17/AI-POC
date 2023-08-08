@@ -1,0 +1,62 @@
+
+layout: pattern
+title: Set the Default Value of CDT Fields Based on a User Input
+excerpt: Set the value of a CDT field based on a user input.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Default Value
+
+Expression
+sail 
+a!localVariables(
+  local!myCdt: 'type!{http://www.appian.com/ae/types/2009}LabelValue'(),
+  a!formLayout(
+    label: "Example: Default Value Based on User Input",
+    instructions: "local!myCdt: " & local!myCdt,
+    contents: {
+      a!textField(
+        label: "Label",
+        instructions: "Value saved: " & local!myCdt.label,
+        value: local!myCdt.label,
+        saveInto: {
+          local!myCdt.label,
+          a!save(local!myCdt.value, append(save!value, "@example.com"))
+        },
+        refreshAfter: "KEYPRESS"
+      ),
+      a!textField(
+        label: "Value",
+        instructions: "Value saved: " & local!myCdt.value,
+        value: local!myCdt.value,
+        saveInto: local!myCdt.value,
+        refreshAfter: "KEYPRESS"
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    )
+  )
+)
+Test it out
+
+Type into the first text field, and notice that the second text field is pre-populated. The instructions of the form show the value of the CDT variable.
+
+To write your data to process
+
+Any Type is not a supported data type in the Process Modeler. Before creating the process model, you will need to create a CDT that matches the data structure of local!myCdt.
+
+
+Save your interface as sailRecipe
+Create rule input: myCdt (CDT)
+Remove the localVariables() function
+Delete local variable: local!myCdt
+In your expression, replace:
+local!myCdt with ri!myCdt
+In your process model, on the process start form or forms tab of an activity, enter the name of your interface in the search box and select it
+Click Yes when the Process Modeler asks, "Do you want to import the rule inputs?"
+On a task form, change the records node inputs to data type of the CDT used in the interface.
+On a start form, change the records process variable to data type of the CDT used in the interface.

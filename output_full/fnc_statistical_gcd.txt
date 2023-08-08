@@ -1,0 +1,30 @@
+
+layout: function
+title: gcd() Function
+space: function_page
+excerpt: "Returns the greatest common denominator of the specified non-negative number(s), which is the largest number that divides all the given numbers without a remainder."
+category: function_page
+fncname: gcd
+fncexample: "gcd(4, 12, 36)"
+fncresult: "4"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      The list of non-negative numbers.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+gcd(4,12,36) returns 4

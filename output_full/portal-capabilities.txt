@@ -1,0 +1,36 @@
+
+layout: basic
+title: Portal Capabilities 
+weight: 200
+topic-group: A
+
+Overview
+After you publish a portal, it exists outside of your Appian environment. Because of this, the interfaces, expression rules, and other supporting objects that you use in your portal have some limitations.
+There are certain platform capabilities that are partially compatible with portals. Because portals are separate from Appian, these capabilities will only work with a portal if you evaluate them in your Appian environment using an integration and web API. You couldn't use these capabilities directly in a portal the way you would in an authenticated Appian application.
+For example, if you tried to call a partially compatible function like a!startProcess from a portal interface, it would error after you publish the portal and try to test it. However, you can still use the function if you connect to your Appian environment through an integration and web API. Learn how to use integrations and web APIs for partially compatible capabilities.
+Additionally, there are a few capabilities that won't work in a portal at all.
+Portal capabilities
+The following table lists some common capabilities and whether they are compatible, partially compatible, or incompatible with portals. The compatibility of functions and components is also listed in the Appian Functions table. Keep this compatibility in mind when designing your portal to make sure you are using these capabilities in a way that works with portals.
+| Platform capability | Portals compatibility | Workaround |
+|---|---|---|
+| Direct connection to an external database using a data source connected system. | Compatible - for external databases available at public IP addresses (preview feature). | N/A |
+| Connection to an Appian database, or a database behind a VPN. | Partially compatible | Connect to a web API object using an integration object. From the web API, use an Appian function to write or query data in your database. |
+| Pre-built connected systems. | Partially compatible | Connect to a web API object using an integration object. From the web API, call an integration object using the desired connected system. |
+| HTTP and OpenAPI connected systems. | Compatible - using basic and API key authentication | N/A |
+| AWS Signature Version 4, Google Service Account, OAuth 2.0 authentication types. | Partially compatible | Connect to a web API object using an integration object. From the web API, call an integration object using the desired authentication type. |
+| Appian-supported locales, time zones, and calendars. | Compatible | N/A |
+| Site object. | Incompatible | If you want a navigation bar like a site, use a header content layout with a fixed header in your interface. |
+| Decision objects. | Partially compatible | Connect to a web API object using an integration object. From the web API, call the decision object. |
+| Component plug-ins. | Incompatible | None. |
+| Function plug-ins. | Partially compatible | Connect to a web API object using an integration object. From the web API, call the function plug-in. |
+| Components that need to connect to an Appian environment. | Incompatible | None. |
+| Functions that need to connect to an Appian environment. | Partially compatible/incompatible | Connect to a web API object using an integration object. From the web API, call the function.  There are a few functions that will not work with this workaround. They are listed as incompatible with portals in the Appian Functions table.|
+| Record data types | Compatible | N/A |
+| Records-powered grids and charts. | Incompatible | Connect to a web API object using an integration object From the web API, query your record type. Then reference that data in charts and read-only grids. |
+| Record actions and views. | Incompatible | Build a custom interface instead of using a record action or view. |
+| Accessing the portal in the Appian Mobile application. | Incompatible | Access the portal from a mobile browser. |
+| Offline mobile. | Incompatible | None. |
+| Rule inputs. | Compatible - but not in your parent interface. | N/A |
+| Tasks. | Incompatible | Your users should be authenticated if you need to send them a task |
+| Uploading and downloading files. | Compatible | N/A |
+| Using a portal as an embedded interface. | Incompatible | Link to the Portal from your website. |

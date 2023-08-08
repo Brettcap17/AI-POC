@@ -1,0 +1,39 @@
+
+layout: basic
+title: Authentication Types
+topic-group: B
+weight: 50
+
+Overview
+HTTP and OpenAPI connected systems allow you to manage authentication details for various third-party integrations in one place. This page details the authentication options available from the Authentication dropdown list in these connected systems.
+{:.screenshot}
+All fields marked Sensitive will never be logged as part of HTTP request/response logging for integrations or exported in an import customization file.
+If you need to connect to a system that uses an authentication type that isn't listed here, check out the App Market for pre-built connected system plug-ins that you may be able to use. Java developers can also create custom connected systems for other authentication types using the SDK.
+None
+No specific authentication will be applied. You can provide custom authentication values in the integration's URL, parameters, or headers as required by the external system. Client certificate/mutual SSL authentication can be enabled by uploading client certificates in the Admin Console. Services that use self-signed or internal SSL certificates can be enabled by uploading trusted server certificates in the Admin Console.
+API key properties
+Although API keys can be configured directly in the integration headers or parameters, the only way to securely configure an API key for an integration is by using the connected system object. The following properties are available for configuration when API key is selected as the authentication type:
+| Field | Description |
+|-------|-------------|
+| Send As | Required. This field specifies whether the API key should be sent as an http header or a query parameter. |
+| Header/Parameter Name | Required. The key identifier of the API key. |
+| Value | Required/Sensitive. The key value of the API key. This value is masked to prevent unauthorized users from seeing and should be treated as a password.|
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+AWS Signature Version 4
+To see the configurable properties for this authentication type, see AWS Signature Version 4 Authentication
+Basic authentication properties
+The following properties are available for configuration when Basic Authentication is selected as the authentication type:
+| Field  | Description |
+|--------|-------------|
+| Username | Sensitive. The username to use for authentication. |
+| Password | Sensitive. The password to use for authentication. |
+| Send credentials preemptively instead of waiting for a 401 authentication challenge | Determines whether or not authentication credentials are sent only after a 401 Not Authorized response or, when selected, before the system has challenged. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+Google Service Account properties
+To see the configurable properties for this authentication type, see Google Service Account Authentication.
+OAuth 2.0: Authorization Code Grant properties
+To see the configurable properties for this authentication type, see OAuth 2.0: Authorization Code Grant.
+OAuth 2.0: Client Credentials Grant properties
+To see the configurable properties for this authentication type, see OAuth 2.0: Client Credentials Grant.
+OAuth 2.0: SAML Bearer Assertion as Authorization Grant Properties
+To see the configurable properties for this authentication type, see OAuth 2.0: SAML Bearer Assertion Flow.

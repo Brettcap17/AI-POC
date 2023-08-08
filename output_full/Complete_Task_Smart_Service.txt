@@ -1,0 +1,88 @@
+
+layout: function
+title: Complete Task Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Complete Task Smart Service allows you to complete a task belonging to another process from your current process.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!completeTask
+fncsubcat: Process_Management
+parameters:
+  - keyword: taskId
+    types: Number(Integer)
+    description: The ID of the task to complete.
+  - keyword: taskInputs
+    types: Dictionary
+    description: A dictionary containing keys and values that corresponds to the task’s inputs.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Process_Management
+ssicon: Complete_Task.png
+ssparentcat: Automation_Services
+
+{{ page.excerpt }}  
+Permissions Needed
+The user running the smart service must have rights to complete the selected task. Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process.
+Properties
+
+
+Category: Process Management
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended - Note: When this smart service is attended, the form that the user sees is the form configured on the node, not the form for the specified task.
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+| Input | Data Type | Description | Required | Multiple |
+| Task Id | Number (Integer) | The id of the task to complete. | Yes | No |
+| Task Inputs | Any Type | A dictionary containing keys and values that corresponds to the task’s inputs. | No | No |
+The Task Inputs property is a dictionary that must contain entries for any required parameters for the selected task.  It may also contain fields for optional parameters for the task.  If any required parameters are missing or if the dictionary contains any entries that do not match parameters of the selected task, the target task will not be completed and this node will pause.  
+For example, if you have a task that is a part of an employee review cycle, it might have a required parameter named employeeId and optional parameters named deadline, and reasonCode.
+To successfully complete this task, the Task Inputs input would look like one of the following:
+sail 
+{
+    employeeId: 12345
+}
+sail 
+{
+    employeeId: 12345,
+    deadline: today()+30
+}
+sail 
+{
+    employeeId: 12345,
+    deadline: today()+30,
+    reasonCode: "ANNUAL"
+}
+In the examples below, the target task does not complete.  For the first two cases, the reason is that the required task input, employeeId, was not provided. For the third case the reason is that an entry in the task input, supervisorId, did not match any of the inputs of the task.
+```sail 
+{
+}
+```
+sail 
+{
+    deadline: today()+30
+}
+sail 
+{
+    employeeId: 12345,
+    supervisorId: 6789
+}
+a!completeTask()
+The Complete Task smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

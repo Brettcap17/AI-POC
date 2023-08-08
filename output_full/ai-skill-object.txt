@@ -1,0 +1,78 @@
+
+layout: basic
+title: AI Skill Object
+type: Reference
+notice: ia_notice
+
+Overview
+An AI skill is a design object that enables you to build, configure, and train an artificial intelligence (AI) model using Appian low-code capabilities.
+This page discusses the basic features and functionality of the AI Skills design object.
+Create an AI skill
+To create an AI skill:
+
+In the Build view, click NEW > AI Skill.
+
+Configure the following properties:
+|Property|Description|
+|-|-|
+| Name | Enter a name that follows the recommended naming standard. |
+| Description | (Optional) Enter a brief description of the AI skill. |
+1. Click CREATE.
+
+
+The AI skill opens in a new dialog or window, where you can choose the skill type and add document types.
+Skill types
+{:.screenshot}
+As you create an AI skill, you'll select the type of skill that suits your purpose.
+
+Classify Documents
+Extract from Documents (coming soon)
+Predict Trend (coming soon)
+
+You'll configure your skill based on its type.
+Design guidance
+The AI Skill design object is not versioned. However, as you train your skill, you can review the results and create a new model using additional sample data. During this refinement process, each model is preserved in the training summary. 
+You can access the training summary to view details on model creation history and how the skill was refined to its current state.
+Using an AI skill in a process
+After you train the skill and determine a model's predictions are suitable for your purposes, you'll publish the model. The published model is what the Classify Documents smart service uses when it calls the AI Skill in a process model. 
+
+appian-style-tip
+Only one model can be published at a time within an AI Skill design object.
+
+You'll call an AI skill in a process model using the smart services in the AI Skill menu of the palette.
+{% comment %}
+Will link to the smart service page when it is created
+{% endcomment %}
+Move
+INCLUDE PAGE: Move Objects
+Duplicate
+INCLUDE PAGE: Duplicate Objects
+Delete
+Deleting an AI skill prevents users from further viewing or editing it or the models it contains. Additionally, any smart service configured to use the AI skill will no longer work as intended.
+AI skills can be deleted by users with Administrator permissions to it.
+To delete an AI skill:
+1. In your application, go to the Build view.
+2. Select the checkbox of the AI skill you want to delete.
+3. Click Delete.
+4. Review any object dependents and click DELETE.
+
+appian-style-note
+System administrators have the ability to delete decisions (and other objects) in bulk by selecting them and clicking Delete in the toolbar.
+
+Security
+| Actions | Administrator | Editor | Viewer |
+  | - | - | - | - | 
+  | View the skill | Yes | Yes | Yes |
+  | Duplicate the skill | Yes | Yes | Yes |
+  | Update the skill | Yes | Yes |~ No |
+  | Rename the skill | Yes | Yes |~ No |
+  | Save the skill | Yes | Yes |~ No |
+  | View the security | Yes | Yes |~ No |
+  | Create a model in the skill | Yes | Yes |~ No |
+  | Publish a model in the skill | Yes | Yes |~ No |
+  | Configure the Classify Documents smart service to use the skill| Yes | Yes |~ No |
+  | Update the security | Yes |~ No |~ No |
+  | Delete the skill | Yes |~ No |~ No |
+
+appian-style-note
+If a user or group is assigned the Deny role, they cannot perform any action associated with the skill.

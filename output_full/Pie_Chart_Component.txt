@@ -1,0 +1,240 @@
+
+layout: function
+title: Pie Chart Component
+category: function_page
+compatibility: -crf, -om
+excerpt: Displays numerical data as slices of a single circle. Use a pie chart to graphically display parts of a whole.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!pieChartField
+fncsubcat: Charts
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: series
+    name: Series
+    types: List of PieChartSeries
+    description: Array of data series created with a!chartSeries().
+  - keyword: showDataLabels
+    name: Show data labels
+    types: Boolean
+    description: |
+      Determines if data values are displayed with each pie slice. Default: false.
+  - keyword: showTooltips
+    name: Show tooltips
+    types: Boolean
+    description: |
+      Determines if a tooltip displays the data value for a pie slice. Default: false.
+  - keyword: showAsPercentage
+    name: Show as percentage
+    types: Boolean
+    description: |
+      Determines if the data is shown as a percentage. Default: false.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: colorScheme
+    name: Color scheme
+    types: Any type
+    description: |
+      Determines which color scheme to use in the chart. Use one of the following valid values: "CLASSIC" (default), "MIDNIGHT", "OCEAN", "MOSS", "BERRY", "PARACHUTE", "RAINFOREST", "SUNSET" or define a custom color scheme using a!colorSchemeCustom. See Chart Color Scheme for color scheme examples.
+  - keyword: style
+    name: Style
+    types: Text
+    description: |
+      Determines if the chart displays as a full pie or as a donut. Valid values: "PIE" (default), "DONUT".
+  - keyword: seriesLabelStyle
+    name: Series Label Style
+    types: Text
+    description: |
+      Determines where to display the series labels. Valid values: "ON_CHART" (default), "LEGEND", "NONE".
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the chart height. Valid values: "SHORT", "MEDIUM" (default), "TALL".
+  - keyword: data
+    name: Data
+    types: Any type
+    description: Reference to the record type used for the source of this chart. Can accept a!recordData or a Record Type Reference.
+  - keyword: config
+    name: Chart Configuration
+    types: PieChartConfig
+    description: |
+      Configures how to display data on the chart, including fields used for calculations and grouping, using a!pieChartConfig().
+  - keyword: refreshAlways
+    name: Refresh Always
+    types: Boolean
+    description: |
+      When true, chart data will be refreshed after each user interaction and each interval refresh. Default: false.
+  - keyword: refreshAfter
+    name: Refresh After
+    types: List of Text String
+    description: |
+      Refreshes chart data each time a specified event completes. Valid values: "RECORD_ACTION".
+  - keyword: refreshInterval
+    name: Refresh After an Interval of Time
+    types: Number (Decimal)
+    description: |
+      How often chart data gets refreshed in minutes. When null, chart data will not be refreshed on an interval. Valid values: "0.5", "1", "2", "3", "4", "5", "10", "30", and "60". 
+  - keyword: refreshOnReferencedVarChange
+    name: Refresh on Reference Variable Change
+    types: Boolean
+    description: |
+      When true, chart data will be refreshed each time the value of any variable referenced in the data parameter is updated. To refresh chart data when another variable that is not used in the data parameter changes, use refreshOnVarChange. Default: true. 
+  - keyword: refreshOnVarChange
+    name: Refresh on Variable Change
+    types: Any Type
+    description: |
+      Refreshes chart data each time any of these specific variables change. This allows you to refresh the chart data when a variable that is not referenced in the data parameter is updated. You can define a single variable (e.g. refreshOnVarChange: local!var1) or a list of variables (e.g. refreshOnVarChange: {local!var1, local!var2}). 
+reftype: sailcomponent
+scdisplayname: Pie Chart
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Column Chart
+Bar Chart
+Line Chart
+Area Chart
+Scatter Chart
+Chart Series
+Charts design guidance
+Chart Color Schemes
+Configure Charts Using Records
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Configuration
+There are two ways to configure a pie chart:
+
+Set a record type as the data source and define fields to display on the chart.
+Perform your own query and define lists of data within the series.
+
+If you have a record type that uses a database as the source, or a record type with data sync enabled, we recommend using the record type as the source of your chart. This configuration is easier because Appian will perform the query for you and display the results directly in the chart.
+If your record type uses a web service as the source and does not have data sync enabled, use the categories and series to construct the chart manually.
+Using record data
+Configuring a pie chart using a record type as the source requires using two parameters: data and config. Once you provide a record type in the data parameter and provide the fields in the config parameter, the chart displays the results.
+See Chart Configuration Using Record Data for details on using a record type as the source. See Build Reports from Records for examples of reports created with different charts.
+Using series
+When using series, you must provide the list of data labels and values directly to the parameter using a list of a!chartSeries(). 
+
+The labels and data arguments in the series are shown in the data labels and tooltips (if enabled).
+If a series has a non-null label value paired with a 0, null, or empty data value, the data value is treated as 0 and is still displayed if Show data labels is set to true. For example, Americas: 0.
+If a series argument has a null or empty label paired with a non-null data value, the label is displayed as [Series #] with # as the label's index number in the series  if Show data labels is set to true. For example, [Series 1]: 3.
+If a series argument has both a null or empty label paired with a 0, null, or empty data value, the above behaviors are combined and the following is displayed if Show data labels is set to true: [Series 1]: 0.
+
+Usage considerations
+Chart legends
+
+If the series label style is set to LEGEND and data labels are displayed, the data labels are shown in the legend in parentheses. For example, West Region (25%).
+Using the LEGEND or NONE series label styles will ensure consistent sizing of the pie for any columns of the same width. When ON_CHART is used for the series label style, the pie changes size based on the length of the series label.
+The ON_CHART style will usually use screen space more effectively than the LEGEND. Since showing the legend guarantees the same size pies across columns of the same width, there may be extra whitespace if a short label is used in the legend.
+If the legend is displayed, it will show below the pie in MEDIUM width columns or narrower; in wider columns the legend will show adjacent to the chart. The legend always displays below the pie on phones.
+
+Chart data and values
+
+If a data value is negative, the data label shows it as negative (for example -20), but it still displays as a pie slice. To avoid any confusion, negative values should only be used with bar, column, and line charts.
+Since pie chart values do not have an x-axis for reference, Appian recommends setting Show data labels as true.
+When values are shown as percentages, they are rounded to one decimal place. If values in the second decimal place are 5 or higher, the first decimal number is rounded up.
+If data contains a!recordData or a record type reference, the series parameter is ignored.
+When you use a record type as a source for your chart, you can use a!measure() to perform a calculation on a single field. If you need to perform multiple calculations within the same chart, use series to configure your chart instead of data and config.
+
+Chart lines and background colors
+When the chart is placed in a colored card, the chart background will match the color of the card. Text labels and lines in the chart will also adjust if a dark background color is used. See the SAIL Design System for best practices on using charts with background colors.
+Chart refresh behavior
+
+You can define a!refreshVariable parameters directly in the chart without creating additional local variables. The only exception being refreshOnVarChange, which refreshes the chart after a specific local variable has changed.
+When you use a record type as the source of your chart, it's recommended to use the refresh parameters in the chart instead of using local variables and the a!refreshVariable() function. This is because the refresh behavior will automatically apply to the fields specified in the data parameter of the chart.
+If you're not using a record type as the source of your chart, it's recommended to use local variables and the a!refreshVariable() function to define refresh behavior since you won't use the data parameter to configure your chart. 
+
+INCLUDE PAGE: Using Charts in Portals
+Examples
+The examples below demonstrate how to configure your charts using categories and series. For examples on using record data, see Chart Configuration Using Record Data. 
+Pie chart with label, instructions, and data labels
+INCLUDE PAGE: SAIL intro
+{% sailbox 900 %}
+a!pieChartField(
+  label: "New Hires by Department",
+  instructions: "The number of new employees hired by each department in 2019",
+  series: {
+    a!chartSeries(label: "Engineering", data: 12),
+    a!chartSeries(label: "Professional Services", data:  9),
+    a!chartSeries(label: "Sales", data:  8), 
+    a!chartSeries(label: "Finance", data:  6),
+    a!chartSeries(label: "HR", data:  4)
+},
+  colorScheme: "OCEAN",
+  showDataLabels: true,
+  showTooltips: true,
+  showAsPercentage: false
+)
+{% endsailbox %}
+Pie chart with label, instructions, data labels, tooltips, and percentage
+INCLUDE PAGE: SAIL intro
+{% sailbox 900 %}
+a!pieChartField(
+  label: "Opportunity Sources",
+  instructions: "Leads are calculated based on the initial mode of contact",
+  series: {
+    a!chartSeries(label: "Existing Client", data: 12),
+    a!chartSeries(label: "Inbound Call",    data:  6),
+    a!chartSeries(label: "Tradeshow",       data:  8),
+    a!chartSeries(label: "Web Site",        data:  6),
+    a!chartSeries(label: "Referral",        data:  7)
+  },
+  colorScheme: "MIDNIGHT",
+  showDataLabels: true,
+  showTooltips: true,
+  showAsPercentage: true
+)
+{% endsailbox %}
+Donut style chart with legend and colors assigned in series
+INCLUDE PAGE: SAIL intro
+{% sailbox 900 %}
+a!pieChartField(
+  label: "Employee Credential Status",
+  labelPosition: "ABOVE",
+  series: {
+    a!chartSeries(label: "Active Credential", data: 1374, color: "BLUEGRAY"),
+    a!chartSeries(label: "Expires within 30 Days", data: 343, color: "AMBER"),
+    a!chartSeries(label: "Expired", data: 97, color: "RED")
+  },
+  height: "SHORT",
+  seriesLabelStyle: "LEGEND",
+  colorScheme: "CLASSIC",
+  style: "DONUT",
+  showDataLabels: true,
+  showAsPercentage: true
+)
+{% endsailbox %}

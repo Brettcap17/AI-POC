@@ -1,0 +1,32 @@
+
+layout: function
+title: tanh() Function
+space: function_page
+excerpt: "Returns the hyperbolic tangent(s) of the specified number(s)."
+category: function_page
+fncname: tanh
+fncexample: "tanh(1)"
+fncresult: "0.7615942"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      An angle measure or array of angle measures in radians, the hyperbolic tangent(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can be used with any value. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tanh(1) returns 0.7615941559557648

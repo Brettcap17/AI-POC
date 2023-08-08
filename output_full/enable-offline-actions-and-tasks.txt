@@ -1,0 +1,61 @@
+
+title: Enabling Offline Actions and Tasks
+layout: basic
+weight: 400
+
+Introduction
+Before you can use actions and tasks offline, you first need to set them up.
+There are four main steps to enabling offline actions and tasks:
+
+Enable offline mobile in the Admin Console.
+Enable offline mobile in the interface object.
+For an offline action, use the interface as a start form in a process model.
+Configure the site object.
+
+This document provides instructions for how to enable offline actions and tasks.
+Enable offline mobile in the Admin Console {#enable-offline-admin}
+Before you can configure offline actions and tasks, you first need to enable offline mobile for the environment. This is a setting in the Admin Console.
+To enable offline mobile in the Admin Console:
+
+In the Admin Console, under SYSTEM properties, go to Mobile.
+Select Enable Offline Mobile and click SAVE CHANGES.
+
+{% include zoompic.html url="images/admin_console_offline_mobile.png" alt="screenshot of the mobile tab in the Admin Console" %}
+Enable offline mobile in the interface object {#enable-offline-interface}
+In order for an action or task to work offline, you need to enable offline mobile in the interface that you are going to use for the action or task.
+To enable offline mobile in the interface object:
+
+Open your interface.
+Click the settings icon  > Properties.
+Select Make Available Offline and click OK.
+
+{:.screenshot style="width:70"}
+An offline icon displays in the header for offline-enabled interface objects.
+{:.screenshot}
+For an offline action, use the interface as a start form in a process model {#start-form}
+Before you can use the action as a site page, you need to set up a process model to use the offline-enabled interface as a start form.
+
+appian-style-note
+For tasks, you don't need to do anything special when you create your process model. Just make sure the User Input Task node uses an interface that is offline-enabled.
+
+To use the offline-enabled interface as a start form:
+
+Create a process model with a start form.
+Use the offline-enabled interface for the start form.
+{% include zoompic.html url="images/offline_mobile_process_model.png" alt="screenshot showing selecting an offline form as a start form in a process model" %}
+
+Configure the site object
+The final step to enabling offline actions and tasks is to configure the site object to:
+
+Enable the task list.
+Use the process model you created as a site page.
+
+Note that offline tasks won't display on task reports.
+To configure the site object:
+
+Open the site object.
+If you are using offline tasks, under Show Task List, enable the task list.
+If you are using offline actions, in the Pages section, add a page to use for the action.
+For Type, select Action. 
+For Content, select the process model that uses the offline-enabled interface as a start form.
+   {% include zoompic.html url="images/offline_mobile_site_object.png" alt="screenshot showing selecting an offline form as a site page" %}

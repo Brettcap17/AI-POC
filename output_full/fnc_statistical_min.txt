@@ -1,0 +1,30 @@
+
+layout: function
+title: min() Function
+space: function_page
+excerpt: "Returns the minimum of the specified number(s)."
+category: function_page
+fncname: min
+fncexample: "min(1, 2, 3, 4)"
+fncresult: "1"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A candidate number or an array of candidates for the minimum.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Returns an integer if all parameters are integers.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+min(1,2,3,4) returns 1

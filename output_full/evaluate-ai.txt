@@ -1,0 +1,145 @@
+
+layout: basic
+title: Evaluate Model Performance
+type: Best Practice
+notice: ia_notice
+
+As you train your skill, you'll create one or more models. Each time you train a model, you'll see metrics to help show you how well it is able to classify your documents. There is no single metric that can tell you that your model is ready to use in production. Instead, you'll want to evaluate this data based on your use case and consideration of how your process might be impacted.
+This page explains the metrics you'll see during model training, how to intrepret them, and how to use them to evaluate if the model meets your requirements.
+Overview
+For each model training, you'll see the following metrics:
+{% include zoompic.html url="images/metrics-annotated.png" %}
+
+Status
+Document split
+Accuracy
+Confusion matrix
+Precision
+Recall
+F-1 Score
+
+Before you can act upon these metrics, it's important to understand what each one means. First, let's recap some of the key concepts:
+
+Document type: Before you extract data from a large set of documents or act on them in other ways, it's helpful to classify them into groups like invoices or purchase orders. These groups are known as document types.
+Predicted type: For each document that the model analyzes, it makes a prediction regarding its document type. If the model predicts that this document is an invoice, then invoice is the predicted type.
+Actual type: To determine if the prediction is correct, the predicted type is compared to the actual type, or the document type in reality. If the actual type (invoice) matches the predicted type (invoice), the model predicted the document type correctly.
+
+Now that we've refreshed our memories, we can start some evaluation of whether the model's training results meet our needs:
+Status
+A model can be in one of five states:
+
+Draft: You created the model, but no trainings have started yet.
+Training in progress: The model is currently using the data set to get to know your documents and practice predicting them correctly.
+Training complete: The model successfully finished a training.
+Training failed: The model didn't successfully finish training. You may want to try again using different or additional representative documents.
+Published: The model is available for use in your processes. If this skill is being used in a process model through the Classify Documents smart service, this is the model that will be called.
+
+Document split
+During training, your model divides the sample documents into two groups:
+
+The model uses training documents to learn about the documents you expect to encounter in production. From the data set you provided as examples of the document type, the model selects a few documents and it analyzes the characteristics that might indicate their type. For example, if the model identifies that most of your example documents for the invoice document type contain an "invoice number" field, it can use this information when testing.
+The model uses test documents to apply what it has learned about your documents and determine if its predictions are correct. The test documents are the remainder of example documents you provided, not used for training. If you uploaded 10 example invoices and 7 were used for training, then 3 are used for testing.
+
+This metric shows you the split between training documents and test documents when your model undergoes training.
+Accuracy
+Accuracy is the ratio of correct predictions to total predictions, which makes it a broader metric than precision and recall. It is expressed as a percentage and gives you an idea of how many total correct predictions the model made. 
+This includes true positives (correctly predicting that the document is part of a certain type) and true negatives (correctly predicting that the document isn't part of a certain type).
+Confidence
+A model's confidence measures how sure the model is of its prediction. Confidence is calculated per document. Most decisions (made by humans or computers) can vary in confidence. If someone asked you, "what's 2 + 2?" and you answer "4," you confidence in that answer is probably very high. But if someone asked you, "what did you eat for lunch last Tuesday?" you might not be so sure of your reply. "I think I had pizza" indicates you aren't very confident in your answer. Machine learning models apply the same confidence to their predictions. 
+Confidence can vary by document type, and it can help you determine whether the model is ready to use in production. If your model contains multiple document types, the confidence shown is the average.
+The model outputs confidence for each document it classifies. The Classify Documents smart service includes a Confidence threshold output that you can configure to meet your requirements. This way, your process only proceeds when the model's confidence in a decision is above the threshold value you set.
+How is accuracy different than confidence?
+Confidence and accuracy are similar but distinct concepts and it's important to not confuse them. Confidence is determined per document, whereas accuracy is an average that's determined from the entire data set. 
+To understand the difference between accuracy and confidence, consider the following example:
+You've created a model to recognize and classify two document types: invoices and purchase orders. During training, you uploaded 100 examples of invoices your business receives. The model uses 65 documents as training documents and 35 as test documents, also known as the document split. The model learns from the 65 training documents, and then puts its knowledge to the test with the 35 test documents.
+Of those 35 test documents, the model positively identifies 27 of them as invoices and the remaining 8 as purchase orders. Because this is training data, we (and the model) know that all 35 are invoices.
+Looking back at the equation for accuracy, this model's accuracy is (27 / 35) * 100, or 77%.
+Next is confidence. Confidence measures the probability the model will return a correct prediction. However, 100% confidence doesn't mean that the model will definitely return a correct prediction. Rather, confidence is the model's estimation at the likelihood the prediction is correct -- not the actual result. Let's break it down by continuing our example:
+Confidence is calculated for each document. Let's say the model is analyzing a document called acme_receiving.pdf. The model's average accuracy for predicting an invoice or a purchase order is 77%, so we can expect that the model will do reasonably well predicting the document's type.
+Based on what it's learned about invoices and purchase orders, the model predicts that this is an invoice. However, the model's analysis only picked up on some signals that this document is an invoice. Based on those traits, the model is fairly confident this is an invoice and gives it a confidence score of 70%.
+Next, the model analyzes a document called stock_request.pdf. This time, the model recognize some sure signs that this is a purchase order, which it learned during training. For one, the label "purchase order" appears at the top. During model training, every example purchase order had this label too. Other labels, like "description," "unit price," and "quantity" also appear here and are strong indicators of this document being a purchase order. Based on this information, the model classifies this as a purchase order with a confidence score of 90%.
+Both predictions are true positives: the first document is indeed an invoice and the second one is a purchase order. But the model was more confident when it came to the purchase order, because it had more experience identfying similar documents in the past.
+Accuracy and confidence are important for some document classification use cases. Jump to Evaluating the data to learn more.
+{% comment %}
+Feature Importance Analysis
+The feature important analysis gives you insight into the patterns and characteristics the model is looking for in your documents. It shows the labels that the model uses to determine the document type, and how much it factors into the prediction.
+{% endcomment %}
+Precision
+Precision is expressed as a value between 0 and 1, which indicates the number of true positive predictions the model made. It only considers the number of correct predictions the model made regarding documents that are part of a certain type. It doesn't include correct predictions for document that aren't part of a certain type, nor does it consider correct predictions that the model didn't make (false negatives).
+For example, a model is given 10 documents and tasked with identifying how many of them are invoices. There are 4 invoices in the set of documents to classify, but the model positively identifies only 3 as being invoices. However, those 3 identifications are correct. In this example, the model's precision is 1.0 because all of its predictions were correct, even though it didn't identify all of the invoices.
+Precision is closely related to recall, and together they calculate the F-1 Score.
+Recall
+Recall is the number of actual correct predictions a model made. Unlike precision, recall also considers the number of correct predictions the model didn't make.
+For example, a model is given 10 documents and tasked with identifying how many of them are invoices. There are 4 invoices in the set of documents, but the model identifies only 3. However, those 3 identifications are correct. In this example, the model's recall is .75 because it missed predicting one of the invoices.
+Recall is closely related to precision, and together they calculate the F-1 Score.
+F-1 score
+A metric used to measure accuracy in machine learning. The F-1 score (aka F-score) is a quick way to understand the model's ability to fulfill its purpose and make correct predictions. It is computed using precision and recall.
+Confusion matrix
+The confusion matrix visually represents the division of predicted and actual conditions, by document type. The confusion matrix grows larger based on the number of document types within the model.
+{:.screenshot}
+For example, in the image above, the two types (invoice and purchase order) are represented on both axes: predicted and actual. This creates four scenarios to measure:
+
+The model predicted the document is an invoice, and it is an invoice.
+The model predicted the document is an invoice, and it is an purchase order.
+The model predicted the document is a purchase order, and it is a purchase order.
+The model predicted the document is a purchase order, and it is an invoice.
+
+We want the actual type to match the predicted type, so we look for higher numbers in the cells on the diagonal. These are the cells which overlap predicted and actual type, indicating a match.
+Macro average
+The macro average is mean of the metrics across all document types.
+Weighted average
+The weighted average is the mean of the metrics across all document types, but it also takes into account the number of documents that were uploaded per document type.
+Evaluating the data
+The flexibility of the AI skill means that there is no one-size-fits-all solution. The results of model training are subjective, meaning that you'll need to determine if the metrics meet your requirements. As you evaluate the results of training you'll want to consider the following:
+
+Where does classification fit in the process?
+What is the impact of an incorrect prediction?
+Am I more concerned about false negatives or false positives? 
+
+Example
+For the sake of demonstration and to help answer some of these questions, we'll use an example from a fictional company: Acme Insurance.
+Acme Insurance offers vehicle insurance to customers. To file a new claim, a customer submits an online form. The customer can upload supporting paperwork (such as police reports, repair shop quotes, medical bills, and rental car bills), or they can request those organizations/businesses to send the documents directly to Acme.
+After a customer files a claim, their case is automatically assigned to an adjustor in the state of their accident. The adjustor reviews the claim details and determines if any documentation is missing. If the claim has all of the necessary documentation, the adjustor creates a summary report to send to the at-fault party's insurance company to begin negotiations for reimbursement. If the claim is missing documentation, the adjustor reaches out to the customer (or businesses) to request it.
+[ picture of the process model ]
+The adjustor takes special care with medical bills, prescriptions, and other sensitive information, since Acme is legally bound to not share this without the explicit permission of the customer first.
+Where can AI help in this process?
+The adjustor spends a lot of time manually reviewing each incoming claim to see if the supporting documents are attached. On average, it takes an adjustor 15 minutes per incoming claim to review it for completeness. If the adjustor spent their 8-hour work day on this, they would get through roughly 30 new claims a day. Acme Insurance decides to pilot an AI project to see if they can reduce the amount of manual review each adjustor has to do.
+The Acme developer gets started on a model to classify the following document types that are attached to incoming claims:
+
+Police reports
+Towing bills
+Repair estimates
+Medical bills
+Prescription bills
+Rental car bills
+
+Now that we have a sense of the use case, we can discuss the evaluation questions:
+
+Where does classification fit in the process? Classification will help Acme automatically check if the appropriate documentation is attached to a claim. If the docs are, then the adjustor is notified to proceed assembling a claim summary to send to the at-fault driver's insurance company. If the docs aren't, then the customer needs to provide contact information for those individuals or businesses.
+What is the impact of an incorrect prediction? It depends. If the model incorrectly classifies a medical bill or prescription as anything else, then it might accidentally make its way into the packet that the adjustor assembles and sends to the other insurance company. The consequences of sharing that information, even accidentally, are high because Acme might be violating the customer's legal right to privacy. So when the developer trains the model, she pays special attention to the "medical bills" document type. What about the other document types? If the model predicts them to be a type they aren't, then the adjustor can verify before they begin to assemble the reimbursement request or contact the customer for more information.
+Am I more concerned about false negatives or false positives? In the case of medical bills, we care more about false negatives (the model predicts them to belong to a different class).
+
+Metrics that might matter for your use case
+Different metrics are suited to help you evaluate model performance based on your use case. The table below outlines some examples:
+|Use case|Metric of interest|
+|-|-|
+|Imbalanced data set: The model classifies rental car receipts and towing reciepts. Historically, 80% of the total are rental car receipts.|F-1 score|
+|When false positives are annoying, but false negatives are detrimental: The model classifies medical bills. It's a bit annoying when the model accidentally classifies a repair estimate as a medical bill, but it's unacceptable when the model misclassifies a medical bill as another document type. (cost of false negatives are higher)|Recall|
+|When false positive is a major failure and false negative is fine: The model classifies multiple document types, but if it classifies any documents as fraudulent, the case is routed to another department and consumes many resources to investigate.|Precision|
+|When individual documents are of more interest than the whole class (document type): The model classifies police reports and towing bills at roughly equal volumes.|Accuracy|
+As you consider these metrics, it's helpful to think about the impact that classification may have in the context of your process. If a document is classified incorrectly, what happens next in the process? Does someone have to manually reclassify it? And if so, how much time will that take? Is someone's personal information at risk? Will the process take much more time to fix these issues?
+If the answer is yes to these questions, you'll have to evaluate the repercussions against the time savings of integrating AI. A model will never be 100% accurate, so you'll need to determine your appetite for uncertainty or incorrect predictions. The best way to do that is to think of the practical impacts. 
+Be careful not to overfit the model
+It's tempting to aim for 100% accuracy when training your document classification model. Why not try to get every single document classified correctly? This is a naturl tendency, but is a misguided aim because the model is trained on a data set of select documents that represent the documents it will classify in production. By nature, the data set is a selection of the whole, and therefore can never be completely representative.
+Overfitting is when a developer trains the model too specifically on the training data set. An overfitted model is very good at classifying the documents that were used to train it. However, in production, the model is looking for these specific characteristics or patterns to the exclusion of others -- so it misclassifies some documents because they don't fit within the model's narrow understanding of the document type.
+Rather than trying to reach 100% accuracy in a model, we recommend instead using the model in a test environment to see how it performs in the context of your process model.
+How to improve
+If the model's training results don't yet meet your requirements, you can train another model using additional sample documents. The more documents you have, the better. You'll want to provide a comprehensive set of documents to help train the model.
+Continue training
+As with skills like programming, swimming, or photography, the AI skill will need to regularly refresh its knowledge and understanding of your document types. This can occur if:
+
+you've gathered more training data
+application requirements have changed to support more or fewer document types
+the model's accuracy has declined in production
+
+These are all occasions when you should consider training the model further to improve it performance for your purposes.

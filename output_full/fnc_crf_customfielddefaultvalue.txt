@@ -1,0 +1,49 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldDefaultValue() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function returns a default value when the specified value is null or empty. All parameters must be of the same data type. When there are multiple default parameters, each parameter is evaluated in order and the first non-null or non-empty default will be returned. 
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldDefaultValue
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      The record field or related record field to return if not null or empty.
+  - keyword: default
+    types: Any Type
+    description: |
+      The record field, related record field, or literal value to return if not null or empty. This function accepts multiple default parameters, and each parameter will be evaluated in order until the first non-null and non-empty default is returned.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Where to use this function
+The a!customFieldDefaultValue() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+By default, this expression is used in the Date Difference template so that any null end date values are replaced with today's date. You can also use this function by itself or with other Custom Field functions by writing your own custom record field expression that evaluates in real-time.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Supported data types
+The value and default parameters can accept any of the following data types:
+- Boolean
+- Date
+- Date and Time
+- Time
+- Number (Integer)
+- Number (Decimal)
+- Text
+All parameters must be the same data type or compatible data types. Compatible data types include Number (Integer)/Number (Decimal) and Date/Date and Time.
+For example, if you have a value of type Text, all default values should also be type Text. But, if you have a value of type Date, you could have default values of type Date or Date and Time.
+Examples
+See the Real-time evaluation recipes for an example using a!customFieldDefaultValue().
+See the Date Difference template for an example using this function with a!customFieldDateDiff().
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you reference any of the following supported functions in the default parameter of a!customFieldDefaultValue(). This allows you to use functions like today() or now() as a default value when the value parameter is null.
+INCLUDE PAGE: Supported Custom Field Functions Table

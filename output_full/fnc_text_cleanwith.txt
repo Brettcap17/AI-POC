@@ -1,0 +1,36 @@
+
+layout: function
+title: cleanwith() Function
+space: function_page
+excerpt: "Returns the specified text, minus any characters not in the list of valid characters."
+category: function_page
+fncname: cleanwith
+fncexample: "cleanwith( \"text string\", \"xte\" )"
+fncresult: "textt"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be "cleaned" for printing purposes.
+  - keyword: with
+    types: Text
+    description: |
+      The text allowed in the "cleaned" result.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} (Performs the opposite function of "stripwith".)
+See also: stripwith()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+cleanwith("text string","xt") returns txtt
+cleanwith("text string","x t") returns txt t

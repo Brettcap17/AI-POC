@@ -1,0 +1,30 @@
+
+layout: function
+title: int() Function
+space: function_page
+excerpt: "Rounds the specified number down to the nearest integer."
+category: function_page
+fncname: int
+fncexample: "int(2.8888)"
+fncresult: "2"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number that will be rounded.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+int(31.5) returns 31 

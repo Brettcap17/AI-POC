@@ -1,0 +1,26 @@
+
+layout: function
+title: timezone() Function
+space: function_page
+excerpt: "Returns the default offset in minutes from GMT, which is generally the process initiator's time zone."
+category: function_page
+fncname: timezone
+compatibility: -om, +pe, +pr
+fncexample: "timezone()"
+fncresult: "0"
+fnccat: Date_and_Time
+reftype: function
+parameters: none  
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+timezone() returns 0 where the user's time zone is GMT.

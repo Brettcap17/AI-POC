@@ -1,0 +1,66 @@
+
+layout: function
+title: a!applyComponents() Function
+category: function_page
+excerpt: Calls a rule or function for each item in a list and supports the preservation of the local state on interfaces.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!applyComponents
+compatibility: -crf
+parameters:
+  - keyword: function
+    name: Function
+    types: Rule or Function Reference
+    description: |
+      Rule or expression function.
+  - keyword: array
+    name: Array
+    types: Any Type Array
+    description: |
+      Array of elements that the function iterates through.
+  - keyword: arrayVariable
+    name: Array Variable
+    types: Any Type Array
+    description: |
+      Optional variable for preserving component or rule data.
+reftype: function
+space: function_page
+
+
+appian-style-tip
+Check out the new looping function, a!forEach(). It does everything a!applyComponents() does but with easier syntax, better null handling, and support for interface components.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: a!localVariables(), load(), a!localVariables(), Arrays in Expressions, merge()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Using the function parameter
+Use fn!functionName to reference an expression function and rule!ruleName to reference a rule.
+Using the array parameter
+If array will not change, or if additions and removals only occur at the end of the array, arrayVariable is not needed.
+Passing a null array returns a null list without executing the function.
+Using the arrayVariable parameter
+The arrayVariable parameter should be passed an uninitialized local variable created via a!localVariables() or load().  a!applyComponents will store an array of state tokens in that variable.  This is only required if a!applyComponents() is being invoked as part of an interface and the order of elements in array is not stable.  If items in array swap positions, if an item is added to the beginning or middle, and if an item is removed from the beginning or middle, the same transformation should be applied to the arrayVariable array.
+Using rules or functions with more than one argument
+To use rules or functions that take more than one argument, use the merge() function. For example, given a rule g(x, y), a!applyComponents(function: rule!g, array: merge({a, b, c}, {d, e, f})) returns {g(a, d), g(b, e), g(c, f)}.
+The result of each operation is appended to each other in the same order as their corresponding item in the input list. If the result of each operation is an array, a!applyComponents() returns a two-dimensional array which can then be used for further computation. When the two-dimensional array is saved into a process variable, a node input or a custom data type, the array is flattened to a one-dimensional array. Local variables, however, can store the two-dimensional array without flattening it.
+If you save the nested arrays into a process variable for multiple values, the nested function is flattened. Keep in mind that casting to a flattened array only happens when saving into a process variable, node input, custom data type, or custom data type field.
+To avoid having the nested function flatten, you can use the output of the apply() function as the input for a merge() function.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Given an interface rule renderEmployeeDetails and an array of employees ri!employees:
+sail 
+    a!localVariables(
+      local!stateTokens,
+      a!applyComponents(
+        function: rule!renderEmployeeDetails,
+        array: 1 + enumerate(length(ri!employees)),
+        arrayVariable: local!stateTokens
+      )
+    )
+a!applyComponents(function: fn!isnull, array: {1,2,null,3,null,4}) returns false, false, true, false, true, false

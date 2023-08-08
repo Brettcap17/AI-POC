@@ -1,0 +1,32 @@
+
+layout: function
+title: error() Function
+category: function_page
+excerpt: 'Raises an error with the given message, used for invalidating execution.This function never returns a value.'
+fnccat: Informational
+fncexample: error("This is an error message.")
+fncname: error
+compatibility: +pe, +pr
+fncresult: 'Expression evaluation error at function ''error'': This is an error message.'
+parameters:
+  - keyword: message
+    types: Text
+    description: The text of the error message.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type 
+Usage considerations
+Returning no value
+This function is used for invalidating execution. It never returns a value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+error("This is an error message.") returns an error with the message This is an error message.

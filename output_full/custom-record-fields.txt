@@ -1,0 +1,619 @@
+
+layout: table
+title: Create Custom Record Fields
+permalink: custom-record-fields.html
+topic-group: B
+weight: 202
+
+{% capture _realtime %}(Real-time evaluation){% endcapture %}
+{% capture _synctime %}(Sync-time evaluation){% endcapture %}
+
+/* overrides layout changes to resemble basic layout */
+.page_main {
+ width: auto;
+}
+
+.page_nav, .page_about {
+ width: 280px;
+ }
+
+label {
+    display: none;
+}
+
+/* uses purple instead of blue to distinguish table from main functions table */
+tr.foldable a {
+ background-color: var(--snd-purple) !important;
+}
+
+tr.foldable a:hover {
+ background-color: #7D3DB5 !important;
+}
+
+.dataTables_filter {
+  float: right;
+}
+
+
+This page explains how to create custom record fields.
+Overview
+Appian Records makes it easy to leverage your enterprise data seamlessly throughout your applications, but there are times when your data isn’t enough on its own. Instead, you may need to aggregate, extract, or change your existing data to show specific insights to your users.
+When you sync your data in Appian, you can transform and manipulate your existing record data into the insights you need using custom record fields. 
+For example, in a Case record type, you may have a createdOn field and a closedOn field to show when each case was created and closed. However, account managers need to know how long each case was open to ensure the company is meeting their service-level agreements (SLAs).
+To easily display this information, you can create a new custom record field on the Case record type called slaStatus. This field will calculate the difference between the created on and closed on date for each case, and displays a value of On Time or Overdue based on the difference.
+Since custom record fields are created directly on your record type, you can reference them as quickly and easily as any other record field. Use your custom record fields to build charts, to sort and display data in grids, or as filter options in a user filter.
+To learn more about using your record fields and custom record fields, see:
+- Build Reports from Records
+- Configure Charts Using Records
+- Configure Read-Only Grids
+About custom record fields
+Custom record fields allow you to calculate, simplify, or transform your existing data into new fields in the record type. This allows you to fill in gaps within your data, display new insights, or even just clean up your data, so you can build reports and queries with the data you need.
+You can create custom record fields on any record type with data sync enabled. We have several templates to get you started creating your custom record fields—some are guided, and others provide a prepopulated expression with the functions you need. 
+You’ll choose which template to configure your custom record field based on your use case and when you want the field to be evaluated.
+Custom record fields can be evaluated at two different times:
+
+
+At sync time: The custom record field values are calculated whenever a sync occurs in the record type.
+
+
+In real time: The custom record field values are calculated whenever the field is actively referenced in your applications.
+
+
+All custom record field templates are preset to be evaluated at either sync time or in real time. In the following sections, templates that evaluate at sync time are denoted with a  icon, while templates that evaluate in real time are denoted with a . 
+If your business needs are more complex or you need more flexibility, you can also write your own custom record field expression. When you write your own expression, you can choose when the field values are evaluated.
+
+appian-style-note
+Record types with data sync enabled can only have 100 fields, and no more than 40 of them can be custom record fields. For example, if your record type has 98 fields, you can only create two custom record fields.
+
+Sync-time evaluations {#prodlink-sync-time-evaluations}
+When a custom record field evaluates at sync time, the field values are only calculated whenever a sync occurs in the record type. For example, when a scheduled sync occurs or when you use the Sync Records smart service to sync specific data, the custom record field values will be reevaluated.
+Sync-time evaluations are useful when your field values are not time sensitive, or when you do not require related data. 
+For example, you could create a custom record field that evaluates at sync-time in order to concatenate two fields on your record type, like firstName and lastName.
+Sync-time evaluations also allow you to leverage numerous functions, like if(), a!match(), or a!localVariables() so you can create conditional logic or more complex expressions.
+For example, you could create a custom record field that evaluates at sync-time to returns the value High when a case has an urgency of 1 and a supportLevel of 3. Otherwise, return the value Low.
+See any template that evaluates at sync-time, or any sync-time evaluation recipes for more examples.
+Real-time evaluations {#prodlink-real-time-evaluations}
+When a custom record field evaluates in real time, the field values are calculated whenever the field is actively referenced in your applications. For example, when an end user views a bar chart or grid that contains the custom record field.
+Since real-time evaluations occur more frequently, they are useful when you need to reference relative dates, like today’s date and time, or when you need to reference related record fields. 
+For example, you could create a custom record field that evaluates in real time in order to subtract the createdOn date from today’s date. With more frequent evaluations, you can be confident that your calculation is always referencing the most current date.
+Real-time evaluations leverage a special set of functions called custom field functions. These functions allow you to reference record fields, related record fields, and other custom record fields. Within each custom field function, you can leverage other supported functions like today() and now() in your calculations. 
+You must use at least one custom field function when creating a custom record field that evaluates in real time. The available custom field functions include:
+{% assign _crfFunctions = site.functions | where: 'fnccat', 'Custom_Fields' %}
+{% for page in _crfFunctions %}
+-  {{ page.fncname | append: '()' }}
+{% endfor %}
+See any template that evaluates in real time, or the real-time evaluation recipes below for more examples.
+Aggregate Related Record Fields {{ _realtime }}
+The Aggregate Related Record Fields template allows you to aggregate and filter a related record field from a one-to-many relationship. You can use this template when your record type has a one-to-many relationship.
+For example, let's say you have a Customer record type that has a one-to-many relationship with the Case record type, and you want to create a report that shows the number of open cases associated with each customer.
+On the Customer record type, you can use this template to create a custom record field that gets the count of Ids from the Case record type, and filters on the status field so you only count cases with a status of "Open".
+Once you create the field, the aggregation will automatically be grouped by the common field shared between the two record types. In this example, that would be the customer Id. 
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Aggregate Related Record Fields.
+4. Click NEXT.
+5. For Field, select the related record field you want to aggregate.
+6. For Aggregation Function, choose how you want to aggregate the field.
+7. To filter the aggregation, enable Filter related record values?
+8. Configure the following properties:
+     - Field: The field to filter on.
+     - Operator: The operator to apply to the selected field.
+     - Value: The value to compare to the given field using the given operator. Use the context menu () to specify how you pass in the value: using a static value, a date preset, or a constant.
+ > appian-style-note
+ > If there is a one-to-many relationship in the path between where you are aggregating data and where you are filtering, then you will observe [“at least one” filter behavior](fnc_system_a_queryfilter.md#prodlink-at-least-one).
+
+
+Click + Add Condition to add additional filter configurations. Choose how multiple filters are evaluated by selecting one of the following operators:
+"OR"
+"AND"
+"AND_ALL"
+
+
+appian-style-tip
+By default, the "AND_ALL" operator is selected whenever you filter by multiple fields from the same one-to-many relationship. This is the recommended operator to use when filtering by fields from the same one-to-many relationship. Learn more about this operator.
+
+
+Click TEST to preview your custom record field values using your record data.
+Click NEXT.
+Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+Click CREATE.
+
+Filter by dates {#prodlink-date-presets}
+When you filter the aggregation by a date or date and time field, you can select a Date Preset as your filter value. 
+These presets will dynamically filter your data based on the selected time frame. For example, if you select the date preset Today, the filter value will update each day to reflect the correct date. When you use a Date Preset, all date and time values are returned in Greenwich Mean Time (GMT).
+See Date Presets for Filters to see the underlying expression associated with each preset. 
+Date Difference {{ _realtime }}
+The Date Difference template allows you to return the difference between two dates and display the results in days, hours, minutes, or seconds. This template is prepopulated with two custom field functions: a!customFieldDateDiff() and a!customFieldDefaultValue().
+The a!customFieldDateDiff() function allows you to subtract two record fields or related record fields of type Date or Date and Time. By default, the a!customFieldDefaultValue() function is used in the endDate parameter so that, if the end date is null, it will be replaced by a default value.
+
+appian-style-note
+The values in the prepopulated expression will vary based on your available dataset.
+
+For example, let’s say you want to display the number of days it took to deliver each order on a read-only grid. You could use this template to create a custom record field that subtracts the submittedDate and the deliveryDate and returns the difference in days. If the order hasn’t been delivered yet (so the delivery date is null), then subtract the submittedDate from today’s date.
+The expression would look like this:
+sail
+a!customFieldDateDiff(
+ startDate: recordType!Order.fields.submittedDate,
+ endDate: a!customFieldDefaultValue(
+    value: recordType!Order.fields.deliveryDate,
+    default: today()
+ ),
+ interval: "DAY"
+)
+
+appian-style-tip
+For more examples using the Date Difference custom record field template, check out the AR_DateDiffDashboard in the Appian Retail application available for free in Appian Community Edition. 
+
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Date Difference. 
+4. Click NEXT.
+5. For Expression, the a!customFieldDateDiff() function is prepopulated to subtract a record field from a related record field, and replace any null endDate values with today's date. Modify the expression as needed. 
+You can replace the values in the expression with any of the following:
+- Record field or related record field references. You must reference fields using the `recordType!` domain. For example, `recordType!Case.fields.createdOn`.
+- Relative date and time functions, like `today()` or `now()`. 
+- [Constants](Constants.md).
+- Other [supported functions](fnc_crf_customfielddatediff.md#supported-functions).
+
+
+Click TEST to preview your custom record field values using your record data.
+Click NEXT.
+Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+Click CREATE.
+
+Extract Partial Dates {{ _synctime }}
+The Extract Partial Dates template allows you to return a particular value from a Date or Date and Time record field. 
+For example, let's say you have a Date and Time field called dateSubmitted, but you only need to know the date a ticket was submitted, not the time. You could use this template to create a custom record field called shortDateSubmitted to extract the date from the dateSubmitted field and set the new field to type Date. 
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Extract Partial Dates.
+4. Click NEXT.
+5. For Field, select the Date or Date and Time record field you want to extract the date from.
+6. For Unit of Time, select which part of the date you want to extract.
+7. Click NEXT.
+8. Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+9. For Error Value, choose the value to display if there is an error evaluating a custom record field value.
+10. Click CREATE.
+Groups Based on a Date Difference {{ _synctime }}
+The Groups Based on a Date Difference template allows you to calculate the difference between two dates and organize the difference into groups. This template requires two record fields of type Date or Date and Time.
+
+appian-style-tip
+Do you only want to calculate the difference between two dates? Try the Date Difference template instead. 
+
+For example, let’s say you have the record fields dateAssigned and dateClosed and you want to know whether a case was closed on time or overdue based on the service-level agreement (SLA). 
+Using this template, you can create a custom record field that calculates the number of days between the ticket's assigned date and closed date. Then, you can organize the differences into groups:
+- The On Time group includes values less than or equal to 5 days.
+- The Overdue group includes all remaining values.
+But what if the ticket hasn't been closed? This would make the dateClosed null. To handle a null date, you can specify a Default Value to appear on the custom record field. In this example, we could set the Default Value to In Progress.
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Groups Based on a Date Difference.
+4. Click NEXT.
+5. For Step 1: Calculate Difference, configure the following:
+     - Start Date: The starting Date or Date and Time record field to subtract.
+     - End Date: The ending Date or Date and Time record field to subtract.
+     - Interval: The unit of time to calculate the difference.
+6. For Step 2: Create Groups, configure the following:
+     - Number of Groups: The number of groups you want to categorize. You must have at least two groups.
+     - Custom Field Value: The name of the field value to return based on the difference. The final Custom Field Value will display for any values that are not included in the other groups.
+7. For Step 3: Handle Null Start Date or End Date Values, enter a Default Value. This is the value that will display if the Start Date or End Date is null. You can only enter a static text value.
+8. Click NEXT.
+9. Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+10. For Error Value, choose the value to display if there is an error evaluating a custom record field value.
+11. Click CREATE.
+Groups Based on a Range {{ _synctime }}
+The Groups Based on a Range template uses a range to organize your numerical data into groups. This template only supports record fields of type Number (Integer) or Number (Decimal). 
+For example, let's say you have a record field called price, and you want to create a chart that shows the distribution of prices in your orders. 
+Using this template, you can create a new custom record field called priceGroup so all prices that are less than or equal to $10 display as Low, prices greater than $10 and less than or equal to $30 display as Medium, and all other prices display as High. 
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Groups Based on a Range.
+4. Click NEXT.
+5. For Create Groups From, select a Number (Integer) or Number (Decimal) record field to base the range off of.
+6. For Number of Groups, select the number of groups you want to categorize. You must have at least two groups.
+7. For Custom Field Value, enter the name of the field value to return based on the specified range. The final Custom Field Value will display for any values that are not included in the other groups.
+8. Click NEXT.
+9. Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+10. For Error Value, choose the value to display if there is an error evaluating a custom record field value.
+11. Click CREATE.
+Groups Based on Text Values {{ _synctime }}
+The Groups Based on Text Values template allows you to organize the text values from a record field into groups. This template only supports record fields of type Text. 
+For example, say you have a record field called title that contains all job titles in your organization, and you want to create a pie chart that displays the number of employees per functional area. 
+Using this template, you could combine all titles that contain the keyword "Software" or "Quality" into a group called Engineers. This means any employees with titles like Associate Software Engineer, Quality Engineer II, or Lead Software Engineer will appear as Engineering in the custom record field. 
+You could create a group for each functional area using this same logic, and include any remaining titles in the Other group.
+Use this template
+To use this template:
+1. In the record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Groups Based on Text Values.
+4. Click NEXT.
+5. For Create Groups From, choose the Text record field you want to create groups from.
+6. For Number of Groups, select the number of groups you want to categorize. You must have at least two groups.
+7. For Custom Field Value, enter the name of the field value to return based on the specified Record Field Values. The final Custom Field Value will display for any values that are not included in the other groups.
+8. For Operator, choose an operator:
+     -  Use the Contains operator to include any record field values that contain a partial match to the specified keyword or keywords.
+     -  Use the In operator to specify the exact record field values to include in the group.
+
+For Record Field Value, enter a keyword or record field value to determine which values are included in the group.
+Click NEXT.
+Enter a Name for the custom record field. This is how you’ll reference the field in your applications.
+For Error Value, choose the value to display if there is an error evaluating a custom record field value.
+Click CREATE.
+
+Write Your Own Expression
+If your business needs are more complex and cannot be satisfied by a template, you can write your own custom record field expression.
+When you write your own expression, you’ll choose whether the field evaluates at sync-time or in real-time. Depending on your selection, the functions and fields you can use to create your custom record field will vary.
+The table below outlines the key configuration differences between sync-time and real-time field evaluations:
+||Sync-time evaluations|Real-time evaluations|
+|-|-|-|
+|Supported fields|Record fields and existing custom record fields that evaluate at sync-time|Record fields, related record fields, and any existing custom record fields|
+|Supported functions|Use one or more supported functions|Use one or more custom field functions|
+|Supported objects|None|Constants|
+|Reference record fields|Use rv!record followed by a record type field reference in brackets  For example, rv!record[recordType!Case.fields.name]|Use a record type field reference  For example, recordType!Case.fields.name|
+See the recipes below for examples configuring custom record fields that evaluate at sync-time or in real-time.
+Sync-time evaluation recipes
+The following recipes illustrate how to create a custom record field that evaluates at sync-time. Each of these recipes leverage one or more record fields and supported functions.
+
+appian-style-tip
+Want to use related record fields in your expression? Check out the real-time evaluation recipes instead.
+
+Concatenate values from the base record type
+Goal: Create a new custom record field that concatenates record fields and displays them as one value. 
+In this example, we will use the concat() function to concatenate the record fields street, city, state, and zipCode from the Employee record type into a new custom record field called address:
+sail
+concat(rv!record[recordType!Employee.fields.street], ", ", 
+rv!record[recordType!Employee.fields.city],  ",  ", 
+rv!record[recordType!Employee.fields.state], " ", 
+rv!record[recordType!Employee.fields.zip])
+
+appian-style-tip
+If you want to concatenate record fields and related record fields, create a custom record field that evaluates in real time and use the a!customFieldConcat() function. See an example below.
+
+Replace null values with a static value
+Goal: Create a new custom record field that displays the null values in a record field as "N/A".
+In this example, we'll create a new custom record field called cleanReference that displays any null values from the reference record field as "N/A". If the value is not null, then the record value will display.
+sail
+a!defaultValue(rv!record[recordType!Applicant.fields.reference], "N/A")
+
+appian-style-tip
+If you want to use related record fields or relative dates in your expression, create a custom record field that evaluates in real time and use the a!customFieldDefaultValue() function. See an example below.
+
+Use conditional logic with two record fields
+Goal: Create a new custom record field with values based on the conditions of two record fields. 
+In this example, we'll use the record fields urgency and supportLevel to determine a ticket's priority level. Based on the value of each field, the new custom record field will display values of "High", "Medium", or "Low".
+sail
+a!match(
+  whenTrue:and(
+        rv!record[recordType!Case.fields.urgency] = 1,
+        rv!record[recordType!Case.fields.supportLevel] = 3
+        ),
+  then: "High",
+  whenTrue: and(
+          rv!record[recordType!Case.fields.urgency] = 2,
+          rv!record[recordType!Case.fields.supportLevel] = 2
+        ),
+  then: "Medium",
+  default: "Low"
+)
+Add, subtract, multiply, and divide record fields
+Goal: Create a new custom record field using arithmetic operators to add, subtract, multiply, or divide record fields and displays the resulting values.
+In this example, we'll use the record fields price, cost, and unitsSold to calculate the values for the new custom record field called profit. 
+sail
+(rv!record[recordType!Sales.fields.price] - rv!record[recordType!Sales.fields.cost])
+* rv!record[recordType!Sales.fields.unitsSold]
+
+appian-style-tip
+If you want to use related record fields in your expression, create a custom record field that evaluates in real time and use any of the math related custom field functions. See an example below.
+
+Create percentages using record fields
+Goal: Create a new custom record field that performs a calculation on record field values and displays the values as a percentage.
+In this example, we'll calculate the return on investment (ROI) using the record fields revenue and totalExpenses. When you add this field in a report or grid, you can use rich text to add the percent sign. For example, rv!record[recordType!Sales.fields.roi] & "%".
+sail
+(rv!record[recordType!Sales.fields.revenue] - rv!record[recordType!Sales.fields.totalExpenses]) 
+/ rv!record[recordType!Sales.fields.totalExpenses] * 100
+Real-time evaluation recipes
+The following recipes illustrate how to create a custom record field that evaluates in real time.
+Each of these recipes leverages one or more custom field functions. You must use at least one of these functions to create a custom record field that evaluates in real time:
+{% for page in _crfFunctions %}
+-  {{ page.fncname | append: '()' }}
+{% endfor %}
+These recipes also highlight the ability to use related record fields, constants, and relative dates within the custom field expressions.
+Concatenate values from related record types
+Goal: Create a new custom record field that concatenates record fields and related record fields and displays them as one value.  
+In this example, we want to create a field that displays the sales region and shipping method together so we can create a chart that displays the count of orders by region and shipping method.
+Since the sales region and shipping method are stored in related record types, we will create a new custom record field on the Order record type that evaluates in real time. Using the a!customFieldConcat() function, we can concatenate the related record fields from the Sales Region record type and the Shipping Method record type.
+sail
+a!customFieldConcat(
+  {
+    recordType!Order.relationships.region.fields.label,
+    "-",
+    recordType!Order.relationships.shippingMethod.fields.label
+  }
+)
+Replace null values with related record field values
+Goal: Create a new custom record field that replaces null values in a record field with values from a related record field. 
+In this example, we have a createdOn field on the Customer record type. If a customer has a null value for createdOn, then we want to display the createdOn field from the related record type Account instead. 
+To do this, we could create a new custom record field on the Customer record type that evaluates in real time. Using the a!customFieldDefaultValue() function, we can replace any null values from the createdOn field from the Customer record type with the related record field createdOn from the Account record type. 
+sail
+a!customFieldDefaultValue(
+    value: recordType!Customer.fields.createdOn,
+    default: recordType!Customer.relationships.accounts.fields.createdOn
+)
+Use conditional logic with related record fields
+Goal: Create a new custom record field where the values are dependent on conditional logic.
+In this example, the Case record type has a many-to-one relationship with the Status record type, and we want to display all open or in progress cases as "Active", and any cases relying on customer action or support action to display as "Paused". Otherwise, if a case has any other status, display the case as "Closed".
+To do this, we could create a new custom record field on the Case record type that evaluates in real time. Using the a!customFieldMatch() function, we can use simplified if-then logic to determine the values of our custom record field.
+sail
+a!customFieldMatch(
+  value: recordType!Case.relationships.status.fields.name,
+  equals: "Open",
+  equals: "In Progress",
+  then: "Active",
+  equals: "Customer Action",
+  equals: "Support Action",
+  then: "Paused",
+  default: "Closed"
+}
+If you require more complex conditional logic, you can use the whenTrue parameter and the a!customFieldCondition() function or the a!customFieldLogicalExpression() function to meet your business needs. See the examples in a!customFieldMatch() for more information.
+Add, subtract, multiply, and divide record fields and related record fields
+Goal: Create a new custom record field that will add, subtract, multiply, or divide record fields and related record fields and displays the resulting values.
+In this example, we want to calculate each employee's potential bonus amount. 
+The Employee record type has an annualSalary field, which contains each employee's salary amount. The Level record type has a percentBonus field, which determines the potential bonus amount based on an employee's level in the organization.
+To calculate each employee's potential bonus amount, we could create a new custom record field on the Employee record type that evaluates in real time so you can reference the related record field in your calculation. 
+sail
+a!customFieldMultiply(
+  value: {
+    recordType!Employee.fields.annualSalary,
+    recordType!Employee.relationships.level.fields.percentBonus
+  }
+)
+See all math-related custom field functions:
+- a!customFieldSum()
+- a!customFieldSubtract()
+- a!customFieldMultiply()
+- a!customFieldDivide()
+Create a percentage using related record fields
+Goal: Create a new custom record field that performs a calculation using record field and related record field values and displays the result as a percentage.
+In this example, we want to calculate the percent of projected revenue to total revenue. The formula to calculate the percent of projected revenue to total revenue is Projected Revenue / (Current Revenue + Projected Revenue). 
+The Customer record type has a currentRevenue field, which displays the current revenue generated by each customer. The Account record type has a projectedRevenue field, which displays the forecasted revenue for each customer account according to the sales department. 
+To calculate these values, we could create a new custom record field on the Customer record type that evaluates in real time so that we can reference the related record field in our calculation. 
+sail
+a!customFieldDivide(
+  numerator: recordType!Customer.relationships.account.fields.projectedRevenue,
+  denominator:  a!customFieldSum(
+    value: {
+        recordType!Customer.fields.currentRevenue,
+        recordType!Customer.relationships.account.fields.projectedRevenue
+    }
+  )
+)
+When you add this field in a report or grid, you can use rich text to add the percent sign. For example, rv!record[recordType!Customer.fields.percentProjectedRevToTotalRev] & "%".
+Calculate values using other custom record fields
+Goal: Create a new custom record field that performs a calculation using other custom record fields.
+In this example, we want to calculate the percent change of sales generated this year versus last year for each country. The formula to calculate the percent change is (YTD Sales - LYTD Sales) / LYTD Sales.
+On the Country record type, we already have two existing custom record fields that use the Aggregate Related Record Fields template: one calculates the year-to-date sales for all orders, and another that calculates the previous year-to-date sales for all orders. To calculate the percent change, we'll simply reference those existing custom record fields in our calculation.
+sail
+a!customFieldDivide(
+  numerator: a!customFieldSubtract(
+      value1: recordType!Country.fields.ytdSales,
+      value2: recordType!Country.fields.lytdSales
+  ),
+  denominator: recordType!Country.fields.lytdSales
+)
+
+appian-style-tip
+You can reference any existing custom record fields in your real-time calculations, regardless of when it evaluates.
+
+Calculate values based on a constant
+Goal: Create a new custom record field that returns its values based on the values of a constant.
+In this example, we want to display the range of days in which an order is due based on the difference between today’s date and the delivery due date. Based on the difference, we want the custom record field to display "Overdue", "Due in the next 5 days", "Due in the next 6 to 10 days", or "Due after 10 days".
+On the Order record type, we could create a custom record field that evaluates in real time and call it dueDateGroupingLabel. 
+We’ll use the a!customFieldMatch() function so we can return different values based on different conditions (the different ranges of days). For the value parameter, we’ll use the a!customFieldDateDiff() function to return the difference between today’s date and the delivery due date. 
+Then, we’ll create various whenTrue conditions using the a!customFieldCondition() function to determine which value to return based on the date difference. For example, when the difference is less than or equal to 0, then return the value “Overdue”. To make it easier to maintain these return values, we’ll use the constant cons!AR_CONS_DELIVERY_DUE_DATE_GRPOUPING to store the different labels. 
+sail
+a!customFieldMatch(
+  value: a!customFieldDateDiff(
+    startDate: today(),
+    endDate: recordType!Order.fields.deliveryDueDate,
+  ),
+  whenTrue: a!customFieldCondition(
+    field: fv!value,
+    operator: "<=",
+    value: 0
+  ),
+  /* Returns "Overdue" */
+  then: cons!AR_CONS_DELIVERY_DUE_DATE_GROUPING[1],
+  whenTrue: a!customFieldCondition(
+    field: fv!value,
+    operator: "<=",
+    value: 5
+  ),
+  /* Returns "Due in the next 5 days" */
+  then: cons!AR_CONS_DELIVERY_DUE_DATE_GROUPING[2],
+  whenTrue: a!customFieldCondition(
+    field: fv!value,
+    operator: "<=",
+    value: 10
+  ),
+  /* Returns "Due in the next 6 to 10 days" */
+  then: cons!AR_CONS_DELIVERY_DUE_DATE_GROUPING[3],
+  /* Returns "Due after 10 days" */
+  default: cons!AR_CONS_DELIVERY_DUE_DATE_GROUPING[4],
+)
+Supported functions {#prodlink-supported-functions}
+When you write your own expression or edit certain templates, you can use different functions to configure your custom record field in expression mode. 
+The table below outlines which functions can be used to create a custom record field based on their evaluation time (sync-time or real-time).
+
+appian-style-note
+If your custom record field evaluates in real time, you must use a custom field function to create the field values. Within a custom field function, you can leverage other functions as well, like today() or null(). 
+See the supported functions listed on each custom field function page for more information.
+
+{% comment %}{% assign _funcPages = site.functions | where_exp: 'item', 'item.compatibility contains "-crf"'  %}{% endcomment %}
+{% assign _crfFunctions = site.functions | where_exp: 'item', 'item.depver == nil' %}
+
+
+
+Category
+Function
+Description
+Supported in
+
+
+
+    {%- for _fncPage in _crfFunctions -%}
+      {%- if _fncPage.compatibility contains '-crf' %}
+        {%- unless _fncPage.compatibility contains '+rcrf' -%}
+          {%- continue -%}
+        {%- endunless -%}
+      {%- endif -%}
+      
+{{ _fncPage.fnccat | replace: "_", " " }}
+{{ _fncPage.fncname | replace: '_', ' ' | append: '()' }}
+{{ _fncPage.excerpt | markdownify }}
+ 
+            {% if _fncPage.compatibility contains "+rcrf" %}
+                Real-time evaluation
+            {% else %}
+                Sync-time evaluation
+            {% endif %}
+          
+
+    {%- endfor -%}
+    
+
+
+    $(document).ready( function () {
+    var table = $('#crf_table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'columnsToggle',
+                columns: '.toggle'
+            },
+            {
+                text: "Expand All",
+                action: function ( e, dt, node, config ) {
+                    $(".fold tr.foldable a").removeClass("foldable");
+                    $(".fold tr:not(.foldable, .header)").show();
+                }
+            },
+            {
+                text: "Collapse All",
+                action: function ( e, dt, node, config ) {
+                    $(".fold tr.foldable a").removeClass("unfolded");
+                    $(".fold tr:not(.foldable, .header)").hide();
+                }
+            }],
+         "columns": [
+            { "orderable": false },
+            { "orderable": false },
+            { "orderable": false },
+            { "orderable": false },
+         ],
+         "columnDefs": [
+            { "visible": false, "targets": 0 },
+            { "visible": true, "searchable": true, "targets": 1 },
+            { "visible": true, "searchable": false, "targets": 2 },
+            { "visible": true, "searchable": true, "targets": 3 },
+         ],
+        paging: false,
+        info: false,
+        "scrollY": "650px",
+        "scrollX": false,
+        "scrollCollapse": true,
+
+        // Grouping by category
+        "drawCallback": function ( settings ) {
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+            api.column(0, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group foldable"><td colspan="3"><a>'+group+'</a></td></tr>'
+                    );
+                    last = group;
+                }
+            });
+            },
+             //Adds search bar and dropdown filter above the table
+
+
+        initComplete: function () {
+                this.api().columns(3).every( function () {
+                    var column = this;
+                    var select = $('<select><option value="">All Evaluations</option></select>')
+                        .appendTo( '#crf_table_filter' )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+                            column
+                                .search( val ? '.*?'+val+'(\s*$|,).*$' : '', true, false )
+                                .draw();
+                        } );
+                    column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+                    var namesearch = $('<input type="text" placeholder=" Search function"></input>')
+                        .prependTo( '#crf_table_filter' )
+                        .on( 'keyup', function () {
+                            table
+                                .columns( 1 )
+                                .search( this.value )
+                                .draw();
+                            });
+                }
+                );
+            }
+    });
+
+  //Add event listener for opening and closing details
+      $('#crf_table').on('click', 'td.details-control', function () {
+          var tr = $(this).closest('tr');
+          var row = table.row(tr);
+          if (row.child.isShown()) {
+              row.child.hide();
+              tr.removeClass('shown');
+          } else {
+              row.child(format(tr.data('child-value'))).show();
+              tr.addClass('shown');
+          }
+      });
+
+      //Show table after data loads
+        $('#crf_table').css('visibility', 'visible');
+        $('.dataTables_scrollHeadInner > table').css('visibility', 'visible');
+
+      //Making section headers foldable
+        $(function() {
+          $(".fold tr:not(.foldable)").hide();
+          $(".fold tr:first-child").show();
+          $(".fold tr.foldable a").click(function(){
+              $(this).parents("tr").nextUntil("tr.foldable").fadeToggle(200);
+              $(this).toggleClass("unfolded");
+          })
+        });
+
+        //Making section headers foldable
+        $('#crf_table').on( 'draw.dt', function () {
+            $(".fold tr:not(.foldable)").show();
+            $(".fold tr:first-child").show();
+            $(".fold tr.foldable a").addClass("unfolded");
+            $(".fold tr.foldable a").click(function(){
+                $(this).parents("tr").nextUntil("tr.foldable").fadeToggle(200);
+                $(this).toggleClass("unfolded");
+              })
+            });
+});
+

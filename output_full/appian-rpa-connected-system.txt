@@ -1,0 +1,8 @@
+
+layout: basic
+title: Appian RPA
+topic-group: A
+weight: 300
+
+{% include rpa-cs.md %}
+See Appian RPA documentation for guidance and examples of how to use robotic processes to complement Appian apps.

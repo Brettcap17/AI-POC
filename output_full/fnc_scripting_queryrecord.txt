@@ -1,0 +1,12 @@
+
+layout: "basic"
+title: "queryrecord() Function [Deprecated]"
+depver: 20.3
+category: "function_page"
+fnccat: "一Deprecated一"
+fncname: "queryrecord"
+fncsyntax: "queryrecord( recordType, query )"
+reftype: function
+
+The queryrecord() function has been deprecated, and will be removed in a future release of Appian. Use the a!queryRecordType() function instead.
+For information about queryrecord() Function, see the Appian 20.2 documentation .

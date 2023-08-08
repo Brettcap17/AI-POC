@@ -1,0 +1,73 @@
+
+layout: pattern
+title: Configure an Array Picker that Ignores Duplicates
+excerpt: Allow users to choose from a long text array using an autocompleting picker and prevent any choice from being picked multiple times.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Pickers
+
+{:.screenshot}
+Setup
+The main expression uses a supporting rule, so let's create them first.
+
+ucArrayPickerFilter: Scans labels that match the text entered by the user and returns a DataSubset for use in the picker component.
+
+Create expression rule ucArrayPickerFilter with the following rule inputs:
+
+filter (Text)
+labels (Text Array)
+identifiers (Text Array)
+
+Enter the following definition for the rule:
+sail 
+a!localVariables(
+  local!matches: where(
+    a!forEach(
+      items: ri!labels, 
+      expression: search( ri!filter, fv!item)
+    )
+  ),
+  a!dataSubset(
+    data: index( ri!labels, local!matches), 
+    identifiers: index( ri!identifiers, local!matches)
+  )
+)
+Now that we've created the supporting rule, let's move on to the main expression.
+Expression
+```sail 
+a!localVariables(
+  local!pickedStates,
+  local!stateLabels: { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" },
+  local!stateAbbreviations: { "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY" },
+  {
+    a!pickerFieldCustom(
+      label: "States",
+      instructions: "Select up to three desired office locations",
+      maxSelections: 3,
+      /
+      * To use with your data, replace local!stateLabels with the datapoint  you wish to be displayed and 
+      * local!stateAbbreviations with the datapoint you eventually want to save. 
+      /
+      suggestFunction: rule!ucArrayPickerFilter(filter: _, labels: local!stateLabels, identifiers: local!stateAbbreviations),
+      selectedLabels: a!forEach(
+        items: local!pickedStates,
+        expression: index(local!stateLabels, wherecontains(fv!item, local!stateAbbreviations))
+      ),
+      value: local!pickedStates,
+      / The union() function allows duplicate states to be ignored, returning only unique elements./
+      saveInto: a!save(local!pickedStates, union(save!value, save!value))
+    )
+  }
+)
+```
+Test it out
+
+Type in the picker field. Even if you don't know for sure how to spell the state you want or what its abbreviation is, the picker constrains your choices to valid states.
+After selecting a state, start typing its name again. Notice that it appears in the suggestions, but cannot be re-selected.
+Select three states.  Notice that because of the maxSelections configuration, once you select three states you must remove at least one of them before selecting another one.
+Remove a selection by clicking on the x after the label.  Now you can add another state.
+
+Notable Implementation Details
+
+A support rule is needed for the suggestFunction because we need to partially evaluate the suggested filter.

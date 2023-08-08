@@ -1,0 +1,218 @@
+
+layout: "pattern"
+title: "Timeline Patterns"
+excerpt: "Use the timeline pattern to show progress through steps in a process or project. These patterns can be used to show progress in both completed and ongoing processes."
+reftype: "pattern"
+sr-tags: ["Formatting"]
+
+There are three slightly different timeline patterns; timeline, timeline (lightweight), and timeline (progress) located under the PATTERNS tab on the left navigation menu of the palette. All three have the same functionality but different a different look. Test out all three to see which one aesthetically matches your business needs.
+{:.screenshot}
+Design structure
+The main components in these patterns are side by side layouts, styled icons, and styled text. These components are configured to stack based on the width of the screen size in which you're viewing the timeline. In this design structure breakdown, we'll use the basic timeline pattern to explain how each component is used.
+[Line 1-198] Side by side layouts
+This pattern consists of nine similar side by side layouts, all of which contain multiple rich text components. This pattern also uses two configurations of side by side layouts to create the timeline format. Also, the stackWhen parameter is used to format the timeline at smaller screen sizes (lines 193-196).    
+The first uses styled icons and styled text to create the steps on the timeline (lines 4-26). 
+The second uses styled text and the char() function within rich text components to create a styled format between steps in the timeline (lines 27-44). The char() function here has multiple uses. char(9472) creates a line, while char(160) adds a space (lines 32 and 37). These two components are on either side of the number of days displayed in text between each step of the timeline. 
+In the side by side layouts with both icons and text, char(10) is used to make the styled text bold. char(10) is similarly used in the timeline (progress) pattern to put emphasis on the completed steps in the timeline.
+Pattern expression
+This pattern introduces a 198-line expression to the interface. 
+{% sailbox 600 %}
+{
+  a!sideBySideLayout(
+    items: {
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextIcon(
+              icon: "paper-plane",
+              color: "SECONDARY",
+              size: "MEDIUM"
+            ),
+            char(10),
+            a!richTextItem(
+              text: upper("Applied"),
+              style: "STRONG"
+            ),
+            char(10),
+            a!richTextItem(
+              text: todate("11/5/2018")
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextItem(
+              text: char(9472) & char(9472) & char(160),
+              color: "#bfbfbf"
+            ),
+            "4d",
+            a!richTextItem(
+              text: char(160) & char(9472) & char(9472),
+              color: "#bfbfbf"
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextIcon(
+              icon: "phone",
+              color: "SECONDARY",
+              size: "MEDIUM"
+            ),
+            char(10),
+            a!richTextItem(
+              text: upper("Phone Interview"),
+              style: "STRONG"
+            ),
+            char(10),
+            a!richTextItem(
+              text: todate("11/9/2018")
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextItem(
+              text: char(9472) & char(9472) & char(160),
+              color: "#bfbfbf"
+            ),
+            "7d",
+            a!richTextItem(
+              text: char(160) & char(9472) & char(9472),
+              color: "#bfbfbf"
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextIcon(
+              icon: "building-o",
+              color: "SECONDARY",
+              size: "MEDIUM"
+            ),
+            char(10),
+            a!richTextItem(
+              text: upper("Onsite Interview"),
+              style: "STRONG"
+            ),
+            char(10),
+            a!richTextItem(
+              text: todate("11/16/2018")
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextItem(
+              text: char(9472) & char(9472) & char(160),
+              color: "#bfbfbf"
+            ),
+            "35d",
+            a!richTextItem(
+              text: char(160) & char(9472) & char(9472),
+              color: "#bfbfbf"
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextIcon(
+              icon: "handshake-o",
+              color: "SECONDARY",
+              size: "MEDIUM"
+            ),
+            char(10),
+            a!richTextItem(
+              text: upper("Offer Accept"),
+              style: "STRONG"
+            ),
+            char(10),
+            a!richTextItem(
+              text: todate("12/21/2018")
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextItem(
+              text: char(9472) & char(9472) & char(160),
+              color: "#bfbfbf"
+            ),
+            "227d",
+            a!richTextItem(
+              text: char(160) & char(9472) & char(9472),
+              color: "#bfbfbf"
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      ),
+      a!sideBySideItem(
+        item: a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextIcon(
+              icon: "user-plus",
+              color: "SECONDARY",
+              size: "MEDIUM"
+            ),
+            char(10),
+            a!richTextItem(
+              text: upper("Start"),
+              style: "STRONG"
+            ),
+            char(10),
+            a!richTextItem(
+              text: todate("8/5/2019")
+            )
+          },
+          align: "CENTER"
+        ),
+        width: "MINIMIZE"
+      )
+    },
+    alignVertical: "MIDDLE",
+    stackWhen: {
+      "PHONE",
+      "TABLET_PORTRAIT"
+    }
+  )
+}
+{% endsailbox %}

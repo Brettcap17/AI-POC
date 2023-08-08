@@ -1,0 +1,40 @@
+
+layout: function
+title: networkdays() Function
+space: function_page
+excerpt: "Returns the number of working days between two specified dates."
+category: function_page
+fncname: networkdays
+fncexample: "networkdays(date(2011, 12, 13), date(2011, 12, 20))"
+fncresult: "6"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: starting_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: ending_date
+    types: Date
+    description: |
+      The ending date.
+  - keyword: holidays
+    types: Date
+    description: |
+      A list of holidays not counted as workdays.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+An array of holidays may be given by enclosing them in braces, such as {"12/25/2004","12/31/2004"}.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+networkdays(date(2011,12,13),date(2011,12,20)) returns 6

@@ -1,0 +1,84 @@
+
+layout: function
+title: User Record Link Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to a user record.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!userRecordLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: user
+    name: User
+    types: User
+    description: The User whose record is linked.
+  - keyword: view
+    name: View
+    types: Text
+    description: |
+      The URL stub of the view to open for the record. Default is "summary".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: openLinkIn
+    name: Open Link In
+    types: Text
+    description: |
+      (Browser-Only) Determines where the linked content should open. Valid values: "SAME_TAB" (default), "NEW_TAB".
+reftype: sailcomponent
+scdisplayname: User Record Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Modify the User Record Type
+Link
+Read-Only Grid
+Images
+Tag Items
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Changing and deactivating usernames
+
+User record links can be created for both active and deactivated users.
+User record links continue to work when the user's username changes as long as the "user" field was configured by referencing a variable (e.g. process variable) rather than a username string.
+
+Using user record links with other components
+User record links can be used inside :
+
+links
+grid text columns
+document images
+user images
+web images
+chart series
+tag items
+rich text
+styled icons
+card layouts
+milestones
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+User record link to a user record summary view
+sail 
+a!userRecordLink(
+  label: "John Doe",
+  user: "john.doe",
+  view: "summary"
+)

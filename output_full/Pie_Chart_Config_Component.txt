@@ -1,0 +1,75 @@
+
+layout: function
+title: Pie Chart Configuration
+category: function_page
+compatibility: -crf
+excerpt: Contains configuration for how to display data in a pie chart.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples
+fncname: a!pieChartConfig
+fncsubcat: Charts
+parameters:
+  - keyword: primaryGrouping
+    name: Primary Grouping
+    types: Grouping
+    description: |
+      Defines the field labels to display for each slice of the pie chart, configured using a!grouping().
+  - keyword: measures
+    name: Measures
+    types: Measure
+    description: |
+      Defines the numerical calculations for data in the chart, configured using a!measure(). If no measure is provided, a count of records shows as the measurement in the chart.
+  - keyword: sort
+    name: Sort
+    types: SortInfo
+    description: |
+      Use a!sortInfo() to define a sort in ascending or descending order. Use the alias of any groupings or measures to sort by the values in the chart. Use a record field or related record field reference to sort by data that is not referenced in the chart.
+  - keyword: dataLimit
+    name: Data Limit
+    types: Integer
+    description: |
+      Maximum number of data points to display on the chart. Default: 100. Valid values: 1-5000.
+  - keyword: link
+    name: Link
+    types: Any Type
+    description: |
+      Link to execute when a user selects a data point on the chart. Use fv!selection to pass context from the selection made on the chart to the link. Create a link using a!dynamicLink().
+reftype: sailcomponent
+scdisplayname: Pie Chart Configuration
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} See the Pie Chart Component page for examples on using this configuration supporting function.
+See also:
+
+a!grouping() function
+a!measure() function
+a!sortInfo() function
+a!dynamicLink()
+Chart Configuration Using Records
+Charts Design Guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using a!pieChartConfig()
+
+a!pieChartConfig() is always used within a pie chart component.
+This configuration is used when a record type is defined as the data source for a pie chart in the data parameter of a!pieChartField().
+If no measure is provided, the chart displays a count of records. Also, the label displays as Count of <primary key field name>.
+
+Using groups and data limits parameters
+
+The primaryGrouping is required to display data on the chart.
+The dataLimit determines the total number of slices displayed in the chart.
+
+Using the sort parameter
+
+You can sort by the alias of any groupings or measures, or by any fields that are not directly referenced in the chart as long as they are of type Number (Integer), Number (Decimal), Date, Date and Time, Time, or Boolean. See Chart Configuration Using Records for an example of sorting by a field not referenced in the chart.
+When configuring sort in Design Mode, you must use the alias of any groupings or measures to sort by the fields in the chart. In Expression Mode, you can use the alias or the field name if the alias is not provided.
+
+Using dynamic links and aliases
+
+When a dynamic link is added to the link parameter, the current selected data is available using fv!selection. This variable returns a map that contains each of the field aliases as the key and the unformatted value as the value. Since the alias is used for the key, aliases are required for each grouping and measure when using a link. See Chart Configuration Using Records for an example of how to configure a link.

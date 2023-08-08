@@ -1,0 +1,331 @@
+
+layout: pattern
+title: KPI Patterns
+excerpt: The Key Performance Indicator (KPI) patterns provide a common style and format for displaying important performance measures.
+reftype: pattern
+sr-tags:
+  - Formatting
+
+There are five KPI patterns to choose from. KPI patterns 1, 2, and 3 have the same functionality. KPI patterns 4 and 5 are slightly different, with 4 showing line charts and 5 containing a single card. Test out all five to see which one best matches your needs. 
+The KPIs reflect how you can best use a single query to share related data across multiple components. The data used in the KPIs will usually be aggregated or sourced from a database view.
+{:.screenshot}
+Design structure
+The main components in KPIs patterns 1-3 are card layouts, rich text display fields, and column layouts. In this design structure breakdown, we'll use KPI pattern 2 to explain how each component is used. You can drag and drop KPI 1 and 3 to see the same design, but with different colors and slightly different expression patterns.
+The image below displays how KPI 2 looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the KPI 2 pattern onto your interface, 233 lines of expression will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    /* Creates an array of opportunities (opps) */
+    /* This would typically be returned with a query */
+    local!opportunities: {
+      a!map(id: 1, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 2, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 3, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 4, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 5, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) )
+    },
+    /* Set targets for the KPIs */
+    local!oppsTarget: 5,
+    local!stageTarget: 2,
+    local!dealSizeTarget: 155000,
+    local!pipelineTarget: 800000,
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(text: {"TOTAL ACTIVE OPPS"}, color: "SECONDARY", style: "STRONG")
+                            }
+                          ),
+                          a!sideBySideLayout(
+                            items: {
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    /* Returns a count of all the active opportunities */
+                                    a!richTextItem(
+                                      text: {count(local!opportunities)},
+                                      /* This changes the color of the text depending on whether or not the target was hit */
+                                      color: if(length(local!opportunities) >= local!oppsTarget, "POSITIVE", "NEGATIVE"),
+                                      size: "LARGE"
+                                    ),
+                                    "   ",
+                                    a!richTextIcon(icon: "handshake-o", size: "LARGE")
+                                  }
+                                )
+                              ),
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                                    " ",
+                                    a!richTextItem(text: {local!oppsTarget}, color: "SECONDARY")
+                                  },
+                                  align: "RIGHT"
+                                ),
+                                width: "MINIMIZE"
+                              )
+                            },
+                            alignVertical: "BOTTOM"
+                          )
+                        }
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(text: {"AVG DEAL SIZE"}, color: "SECONDARY", style: "STRONG")
+                            }
+                          ),
+                          a!sideBySideLayout(
+                            items: {
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    /* Returns the average dollar amount for the opportunities */
+                                    a!richTextItem(
+                                      text: {dollar(average(local!opportunities.amount) / 1000, 0), "K"},
+                                      /* This changes the color of the text depending on whether or not the target was hit */
+                                      color: if(average(local!opportunities.amount) >= local!dealSizeTarget, "POSITIVE", "NEGATIVE"),
+                                      size: "LARGE"
+                                    ),
+                                    "   ",
+                                    a!richTextIcon(icon: "money", size: "LARGE")
+                                  }
+                                )
+                              ),
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                                    " ",
+                                    a!richTextItem(text: {dollar(local!dealSizeTarget / 1000, 0), "K"}, color: "SECONDARY")
+                                  },
+                                  align: "RIGHT"
+                                ),
+                                width: "MINIMIZE"
+                              )
+                            },
+                            alignVertical: "BOTTOM"
+                          )
+                        }
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(text: {"TOTAL PIPELINE"}, color: "SECONDARY", style: "STRONG")
+                            }
+                          ),
+                          a!sideBySideLayout(
+                            items: {
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    /* Returns a total dollar amount for all opportunities */
+                                    a!richTextItem(
+                                      text: {dollar(sum(local!opportunities.amount) / 1000, 0), "K"},
+                                      /* This changes the color of the text depending on whether or not the target was hit */
+                                      color: if(sum(local!opportunities.amount) >= local!pipelineTarget, "POSITIVE", "NEGATIVE"),
+                                      size: "LARGE"
+                                    ),
+                                    "   ",
+                                    a!richTextIcon(icon: "line-chart", size: "LARGE")
+                                  }
+                                )
+                              ),
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                                    " ",
+                                    a!richTextItem(text: {dollar(local!pipelineTarget / 1000, 0), "K"}, color: "SECONDARY")
+                                  },
+                                  align: "RIGHT"
+                                ),
+                                width: "MINIMIZE"
+                              )
+                            },
+                            alignVertical: "BOTTOM"
+                          )
+                        }
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(text: {"TOTAL STAGE 3 OPPS"}, color: "SECONDARY", style: "STRONG")
+                            }
+                          ),
+                          a!sideBySideLayout(
+                            items: {
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    /* Returns a count of all the active opportunities in stage 3 */
+                                    a!richTextItem(
+                                      text: {count(local!opportunities[where(local!opportunities.stage = {3})])},
+                                      /* This changes the color of the text depending on whether or not the target was hit */
+                                      color: if(count(local!opportunities[where(local!opportunities.stage = {3})]) >= local!stageTarget, "POSITIVE", "NEGATIVE"),
+                                      size: "LARGE"
+                                    ),
+                                    "   ",
+                                    a!richTextIcon(icon: "flag-checkered", size: "LARGE")
+                                  }
+                                )
+                              ),
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                                    " ",
+                                    a!richTextItem(text: {local!stageTarget}, color: "SECONDARY")
+                                  },
+                                  align: "RIGHT"
+                                ),
+                                width: "MINIMIZE"
+                              )
+                            },
+                            alignVertical: "BOTTOM"
+                          )
+                        }
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+        },
+        stackWhen: {
+          "PHONE",
+          "TABLET_PORTRAIT",
+          "TABLET_LANDSCAPE"
+        }
+      )
+    }
+  )
+}
+[Line 1-16] Define opportunities and targets
+At the top of the pattern, local variables set up the data that will be used in the cards.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    / Creates an array of opportunities (opps) /
+    / This would typically be returned with a query /
+    local!opportunities: {
+      a!map(id: 1, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 2, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 3, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 4, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) ),
+      a!map(id: 5, accountExecId: round(rand() * 5, 0), amount: (round(rand(), 1) * 150000) + 90000, stage: tointeger(rand() * 2 + 1) )
+    },
+    / Set targets for the KPIs /
+    local!oppsTarget: 5,
+    local!stageTarget: 2,
+    local!dealSizeTarget: 155000,
+    local!pipelineTarget: 800000,
+{% endhighlight %}
+[Line 17-70] Use a card layout in a column layout to display KPIs
+The first visible component is a card layout in a column layout with the label, "TOTAL ACTIVE OPPS", in a rich text display field. For this particular KPI, we use a count() statement to display a count of the total active opportunities. We then use another rich text item to display the comparison between active opportunities and the opportunity target. 
+We also use an if() statement to change the color of the rich text depending on whether the opportunity target was hit or not. This kind of conditional styling based on the data being displayed is recommended to make it easy for the viewer to quickly understand the data in each KPI. 
+{% highlight sail linenos start_line=17 %}
+     {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(text: {"TOTAL ACTIVE OPPS"}, color: "SECONDARY", style: "STRONG")
+                            }
+                          ),
+                          a!sideBySideLayout(
+                            items: {
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    / Returns a count of all the active opportunities /
+                                    a!richTextItem(
+                                      text: {count(local!opportunities)},
+                                      / This changes the color of the text depending on whether or not the target was hit /
+                                      color: if(length(local!opportunities) >= local!oppsTarget, "POSITIVE", "NEGATIVE"),
+                                      size: "LARGE"
+                                    ),
+                                    "   ",
+                                    a!richTextIcon(icon: "handshake-o", size: "LARGE")
+                                  }
+                                )
+                              ),
+                              a!sideBySideItem(
+                                item: a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                                    " ",
+                                    a!richTextItem(text: {local!oppsTarget}, color: "SECONDARY")
+                                  },
+                                  align: "RIGHT"
+                                ),
+                                width: "MINIMIZE"
+                              )
+                            },
+                            alignVertical: "BOTTOM"
+                          )
+                        }
+                      )
+                    }
+                  ),
+{% endhighlight %}
+This pattern's other three KPI cards (lines 71 through 233) follow the same structure as the first to determine the display.

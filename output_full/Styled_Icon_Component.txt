@@ -1,0 +1,251 @@
+
+layout: function
+title: Styled Icon
+category: function_page
+compatibility: -crf
+excerpt: Displays a style icon within a rich text component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!richTextIcon
+fncsubcat: Display
+parameters:
+  - keyword: icon
+    name: Icon
+    types: Text
+    description: The key of the icon to display. See Available Icons below.
+  - keyword: altText
+    name: Alternative Text
+    types: Text
+    description: Equivalent alternate text to display when accessibility or browser compatibility issues prevent the icon from displaying.
+  - keyword: caption
+    name: Caption
+    types: Text
+    description: Text to display in mouseovers.
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the icon size. Valid values: "STANDARD" (default), "SMALL", "MEDIUM", "MEDIUM_PLUS", "LARGE", "LARGE_PLUS", and "EXTRA_LARGE".
+  - keyword: color
+    name: Color
+    types: Text
+    description: |
+      Determines the icon color. Valid values: Any hex color or "STANDARD" (default), "ACCENT", "POSITIVE", "NEGATIVE", and "SECONDARY".
+  - keyword: link
+    name: Link
+    types: Link
+    description: |
+      Link that determines the behavior of the icon when clicked. Create links with:
+        - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink() 
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: linkStyle
+    name: Link Style
+    types: Text
+    description: |
+      Determines how the link is underlined. Valid values: "INLINE" (default), "STANDALONE".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Styled Icon
+scsubcat: Rich_Text_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Display a styled icon within a rich text component. Icons can be styled by configuring a color, size, or link.
+To show documents as images within rich text, see Inline Image.
+See also: Styled icon design guidance, Rich text style guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the icon, link, and style parameters
+
+If icon is null or contains an empty array, no icon is displayed.
+If link is null, the icon is not displayed as a link.
+For nested rich text, if two conflicting styles are found (for example, both SMALL and LARGE), the innermost style will be displayed.
+
+Examples
+INCLUDE PAGE: SAIL intro
+Linked icons within text
+{% sailbox 600 %} 
+a!richTextDisplayField(
+  value: {
+    "In addition to a personal statement, candidates may submit up to three ",
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "picture-o"),
+        " Fine Art"
+      },
+      link: a!dynamicLink()
+    ),
+    ", ",
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "headphones"),
+        " Audio"
+      },
+      link: a!dynamicLink()
+    ),
+    ", or ",
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "video-camera"),
+        " Video"
+      },
+      link: a!dynamicLink()
+    ),
+    " media samples."
+  }
+)
+{% endsailbox %}
+Icons in a grid
+{% sailbox 600 %} 
+a!gridLayout(
+  label: "Today's Incidents",
+  headerCells: {
+    a!gridLayoutHeaderCell(label: "Type"),
+    a!gridLayoutHeaderCell(label: "Status"),
+    a!gridLayoutHeaderCell(label: "Summary"),
+    a!gridLayoutHeaderCell(label: "Assignee")
+  },
+  columnConfigs: {
+    a!gridLayoutColumnConfig(width: "ICON"),
+    a!gridLayoutColumnConfig(width: "ICON")
+  },
+  rows: {
+    a!gridRowLayout(
+      contents: {
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "wrench",
+            color: "#a600a6"
+          ),
+          align: "CENTER"
+        ),
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "exclamation",
+            color: "NEGATIVE"
+          ),
+          align: "CENTER"
+        ),
+        a!textField(
+          value: "Broken escalator in Atrium B",
+          readOnly: true
+        ),
+        a!textField(
+          value: "Unassigned",
+          readOnly: true
+        )
+      }
+    ),
+    a!gridRowLayout(
+      contents: {
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "ticket",
+            color: "#a600a6"
+          ),
+          align: "CENTER"
+        ),
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "arrow-right",
+            color: "POSITIVE"
+          ),
+          align: "CENTER"
+        ),
+        a!textField(
+          value: "Ticketing queue back-up",
+          readOnly: true
+        ),
+        a!textField(
+          value: "Karen Anderson",
+          readOnly: true
+        )
+      }
+    ),
+    a!gridRowLayout(
+      contents: {
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "video-camera",
+            color: "#a600a6"
+          ),
+          align: "CENTER"
+        ),
+        a!richTextDisplayField(
+          value: a!richTextIcon(
+            icon: "check",
+            color: "POSITIVE"
+          ),
+          align: "CENTER"
+        ),
+        a!textField(
+          value: "Faulty security camera",
+          readOnly: true
+        ),
+        a!textField(
+          value: "Amy Lee",
+          readOnly: true
+        )
+      }
+    )
+  },
+  rowHeader: 3
+)
+{% endsailbox %}
+Standalone links
+{% sailbox 600 %} 
+a!richTextDisplayField(
+  value: {
+    a!richTextItem(
+      text: {
+        a!richTextIcon(
+          icon: "home"
+        ),
+        " Home"
+      },
+      link: a!dynamicLink(),
+      linkStyle: "STANDALONE"
+    ),
+    char(10),
+    a!richTextItem(
+      text: {
+        a!richTextIcon(
+          icon: "check-square-o"
+        ),
+        " My Open Requests"
+      },
+      link: a!dynamicLink(),
+      linkStyle: "STANDALONE"
+    ),
+    char(10),
+    a!richTextItem(
+      text: {
+        a!richTextIcon(
+          icon: "file-text-o"
+        ),
+        " My Documents"
+      },
+      link: a!dynamicLink(),
+      linkStyle: "STANDALONE"
+    )
+  }
+)
+{% endsailbox %}
+Available icons
+The following table shows all available icons. Search the table to find specific icons.
+INCLUDE PAGE: Styled Icon Table

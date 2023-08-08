@@ -1,0 +1,28 @@
+
+layout: function
+title: userdayofyear() Function
+space: function_page
+excerpt: "Returns the number of day within in a specified date/datetime."
+category: function_page
+fncname: userdayofyear
+fncexample: "userdayofyear(2/28/2006)"
+fncresult: "58"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date/datetime for which "dayofyear" is requested.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+userdayofyear(2/28/2006) returns 58

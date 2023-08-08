@@ -1,0 +1,127 @@
+
+layout: pattern
+title: Configure a Dropdown with an Extra Option for Other
+excerpt: 'Show a dropdown that has an "Other" option at the end of the list of choices. If the user selects "Other", show a required text field.'
+reftype: sailrecipe
+sr-tags:
+  - Choice Components
+
+
+This scenario demonstrates:
+
+How to configure a dropdown with an appended value
+How to conditionally show a field based the selection of an 'Other' option
+How to save one of two values when evaluating a form through a submit button
+
+Expression
+sail 
+a!localVariables(
+  local!departments:{"Corporate","Engineering","Finance","HR","Professional Services"},
+  /*
+  * You need separate variables to temporarily store the dropdown selection
+  * (local!selectedDepartment) and the value entered for "Other" (local!otherChoice).
+  */
+  local!selectedDepartment,
+  local!otherChoice,
+  local!savedValue,
+  a!formLayout(
+    label: "Example: Dropdown with Extra Option for Other",
+    contents: {
+      a!dropdownField(
+        label: "Department",
+        instructions:"Value saved: "& local!savedValue,
+        /*
+        * Adding the "Other" option here allows you to store a separate value.
+        * For example, if your choiceValues are integers, you could store -1.
+        */
+        choiceLabels: a!flatten({local!departments, "Other"}),
+        choiceValues: a!flatten({local!departments, "Other"}),
+        placeholder: "--- Select a Department ---",
+        value: local!selectedDepartment,
+        saveInto: local!selectedDepartment
+      ),
+      a!textField(
+        label: "Other",
+        value: local!otherChoice,
+        saveInto: local!otherChoice,
+        required: true,
+        showWhen: local!selectedDepartment = "Other"
+      )
+    },
+    buttons: a!buttonLayout(
+      /*
+      * The Submit button saves the appropriate value to its final location
+      */
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        value: if(
+          local!selectedDepartment = "Other",
+          local!otherChoice,
+          local!selectedDepartment
+        ),
+        saveInto: local!savedValue,
+        submit: true
+      )
+    )
+  )
+)
+Expression (Offline)
+This expression shows how to modify the above expression for offline use.
+sail 
+a!localVariables(
+  local!departments:{"Corporate","Engineering","Finance","HR","Professional Services"},
+  /*
+  * You need separate variables to temporarily store the dropdown selection
+  * (local!selectedDepartment) and the value entered for "Other" (local!otherChoice).
+  */
+  local!selectedDepartment,
+  local!otherChoice,
+  local!savedValue,
+  a!formLayout(
+    label: "Example: Dropdown with Extra Option for Other",
+    contents: {
+      a!dropdownField(
+        label: "Department",
+        instructions:"Value saved: "& local!savedValue,
+        /*
+        * Adding the "Other" option here allows you to store a separate value.
+        * For example, if your choiceValues are integers, you could store -1.
+        */
+        choiceLabels: a!flatten({local!departments, "Other"}),
+        choiceValues: a!flatten({local!departments, "Other"}),
+        placeholder: "--- Select a Department ---",
+        value: local!selectedDepartment,
+        saveInto: local!selectedDepartment
+      ),
+      a!textField(
+        label: "Other",
+        value: local!otherChoice,
+        saveInto: local!otherChoice,
+        required: local!selectedDepartment = "Other"
+      )
+    },
+    buttons: a!buttonLayout(
+      /*
+      * The Submit button saves the appropriate value to its final location
+      */
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        value: if(
+          local!selectedDepartment = "Other",
+          local!otherChoice,
+          local!selectedDepartment
+        ),
+        saveInto: local!savedValue,
+        submit: true
+      )
+    )
+  )
+)
+Test it out
+
+Select Other in the dropdown, enter a value and click on the Submit button. Notice that the value saves on the submit button.
+
+Notable implementation details
+
+Notice that we cleared out the opposite variable upon submission so that only one variable gets updated.  That is, if the user filled out the "Other" field and then switched the dropdown back to an available option, local!other would be set to null on submission of the form.
+The offline version of this recipe cannot have conditional display, so the showWhen parameter of the Other text field has been removed.

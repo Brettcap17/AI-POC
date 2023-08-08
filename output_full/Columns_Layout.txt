@@ -1,0 +1,212 @@
+
+layout: function
+title: Columns Layout
+category: function_page
+compatibility: -crf
+excerpt: 'Displays any number of columns alongside each other. On narrow screens and mobile devices, columns are stacked.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!columnsLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: columns
+    name: Columns
+    types: Any Type
+    description: |
+      Columns to display using a column layout, a!columnLayout().
+  - keyword: alignVertical
+    name: Vertical Alignment
+    types: Text
+    description: |
+      Determines vertical alignment of all column content with the layout. Valid values are "TOP" (default), "MIDDLE", and "BOTTOM".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+  - keyword: stackWhen
+    name: Stack When
+    types: List of Text
+    description: |
+      Determines the window width at which column layouts stack vertically. List all widths where columns should stack. Valid Values: "PHONE" (default), "TABLET_PORTRAIT", "TABLET_LANDSCAPE","DESKTOP", "DESKTOP_WIDE", "NEVER".
+  - keyword: showDividers
+    name: Show Dividers
+    types: Boolean
+    description: |
+      Determines whether dividers appear between the columns. Default: false.
+  - keyword: spacing
+    name: Column Spacing
+    types: Text
+    description: |
+      Determines the space between columns in the layout when they are not stacked. Valid values: “STANDARD” (default), “NONE”, “DENSE”, “SPARSE”.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Columns Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Column
+Responsive Design
+Columns and Side By Side design guidance
+Columns layout design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Stacking on mobile
+
+On mobile phones, columns are stacked by default.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Three columns within one columns layout
+sail 
+a!columnsLayout(
+  columns: {
+    a!columnLayout(
+      contents: {
+        a!textField(
+          label: "Customer",
+          value: "Jane Doe",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Status",
+          value: "Active",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Priority",
+          value: "High",
+          readOnly: true
+        )
+      }
+    ),
+    a!columnLayout(
+      contents: {
+        a!textField(
+          label: "Customer",
+          value: "John Smith",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Status",
+          value: "Prospective",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Priority",
+          value: "High",
+          readOnly: true
+        )
+      }
+    ),
+    a!columnLayout(
+      contents: {
+        a!textField(
+          label: "Customer",
+          value: "Michael Johnson",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Status",
+          value: "Prospective",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Priority",
+          value: "Medium",
+          readOnly: true
+        )
+      }
+    )
+  }
+)
+Displays the following:
+{screenshot}
+Columns layout nested in another columns layout
+sail 
+a!columnsLayout(
+  columns: {
+    a!columnLayout(
+      contents: {
+        a!textField(
+          label: "Customer",
+          value: "Jane Doe",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Status",
+          value: "Active",
+          readOnly: true
+        ),
+        a!textField(
+          label: "Priority",
+          value: "High",
+          readOnly: true
+        )
+      }
+    ),
+    a!columnLayout(
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!textField(
+                  label: "Customer",
+                  value: "John Smith",
+                  readOnly: true
+                ),
+                a!textField(
+                  label: "Status",
+                  value: "Prospective",
+                  readOnly: true
+                ),
+                a!textField(
+                  label: "Priority",
+                  value: "High",
+                  readOnly: true
+                )
+              }
+            ),
+            a!columnLayout(
+              contents: {
+                a!textField(
+                  label: "Customer",
+                  value: "Michael Johnson",
+                  readOnly: true
+                ),
+                a!textField(
+                  label: "Status",
+                  value: "Prospective",
+                  readOnly: true
+                ),
+                a!textField(
+                  label: "Priority",
+                  value: "Medium",
+                  readOnly: true
+                )
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+)
+Displays the following:
+{screenshot}

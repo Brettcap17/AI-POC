@@ -1,0 +1,93 @@
+
+layout: function
+title: List Item
+category: function_page
+compatibility: -crf
+excerpt: Displays a numbered list within a rich text component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!richTextListItem
+fncsubcat: Display
+parameters:
+  - keyword: text
+    name: Text
+    types: Text or Styled Text
+    description: |
+      Array of text to display as a rich text list item. Text can be formatted using a!richTextItem().
+  - keyword: nestedList
+    name: Nested List
+    types: Bulleted List or Numbered List
+    description: |
+      A bulleted or numbered list to nest within the rich text list item. Use a!richTextBulletedList() or a!richTextNumberedList().
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: List Item
+scsubcat: Rich_Text_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a nested list within a bulleted or numbered list in a Rich Text component.
+See also: Rich text style guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the text and nestedList parameters
+
+If text is null or contains an empty array, no text is displayed for the list item.
+If nestedList is null, no nested list is displayed within the parent list.
+A nested list doesn't need to be the same type of list as its parent list. Bulleted lists can be nested within numbered lists and vice versa.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 750 %}
+a!richTextDisplayField(
+  labelPosition: "COLLAPSED",
+  value: {
+    a!richTextBulletedList(
+      items: {
+        "a",
+        a!richTextListItem(
+          text: "b",
+          nestedList: a!richTextBulletedList(
+            items: {
+              "c",
+              a!richTextListItem(
+                text: "d",
+                nestedList: a!richTextBulletedList(
+                  items: {
+                    a!richTextListItem(
+                      text: "e",
+                      nestedList: a!richTextBulletedList(
+                        items: {
+                          "f",
+                          "g"
+                        }
+                      )
+                    )
+                  }
+                )
+              )
+            }
+          )
+        ),
+        "h",
+        a!richTextListItem(
+          text: "i",
+          nestedList: a!richTextBulletedList(
+            items: {
+              "j",
+              "k"
+            }
+          )
+        )
+      }
+    )
+  }
+)
+{% endsailbox %}

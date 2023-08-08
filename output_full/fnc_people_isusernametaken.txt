@@ -1,0 +1,33 @@
+
+layout: function
+title: isusernametaken() Function
+space: function_page
+excerpt: "Verifies whether a user account with the specified username is already present."
+category: function_page
+fncname: isusernametaken
+fncexample: "isusernametaken(\"john.doe\")"
+fncresult: "true"
+fnccat: People
+compatibility: -crf, ~portal, ~om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: username
+    types: Text
+    description: |
+      The username to check against the current list of active and deactivated users.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Create a New User, Add User Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Returns a value of type Boolean.
+A false result indicates that the username is available to use when creating a new user, unless the username contains special characters that are not permitted.
+Both active and deactivated user accounts are referenced.
+The username parameter is case-sensitive, however you will not be able to create a username if case-insensitive matches exist.
+isusernametaken() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+isusernametaken("john.doe") returns true

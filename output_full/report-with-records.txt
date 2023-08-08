@@ -1,0 +1,109 @@
+
+layout: basic
+title: Build Reports from Records
+weight: 299
+topic: record_reports
+proxy-topic: records
+proxy-topic-group: D
+
+This page provides a sample reporting scenario and related reporting patterns.
+Overview
+Reports allow you to explore and analyze your enterprise data so you can make better business decisions. For example, a simple report that tracks your sales trends over the last year can help you determine which regions need more support, which products should you restock, or which employees deserve a promotion.
+To show you how fast and easy it is to build insightful reports, we've created a series of common reporting patterns that can be configured with little to no code. You can build and test all of these patterns in the Appian Retail application, a free, fully configured application available in Appian Community Edition. 
+These patterns show you the fastest way to build reports, and include sample business requirements so you can better understand when and why you'd create these types of reports. To get the most out of these reporting patterns, we recommend reviewing the story of the Appian Retail Company. This story provides context that simulates a real-world reporting scenario, including stakeholders and common business questions that can be answered in a report.
+Here's the story
+The Appian Retail Company is a large retail chain. They sell a variety of outdoor products like bikes, bike accessories, components, and clothing. Now, they’re thinking about expanding some of their product lines; however, this is a big business decision, one that should be backed by data.
+Before making this investment, the company needs to better understand their existing sales trends and customer needs. This is when they ask you, their Appian developer, to create a few reports to show them how their business is doing. 
+But you need more information than that to create useful reports. You need to know who the audience is, and what questions do they need answered? Understanding your audience and the information they need will ultimately help you determine your requirements and create a better story with your data.
+In this scenario, there are three different audiences who want to use these reports. Specifically, they want to know:
+
+
+Audience
+Questions to Answer
+
+
+Sales Executives
+
+
+How are our sales this year compared to last year?
+Who are the top customers?
+Which global sales regions are performing the best?
+
+
+
+
+Account Managers
+
+
+How many orders were purchased online compared to in-stores?
+How many orders contain items purchased with promo codes?
+
+
+
+
+Inventory Managers
+
+
+How did each product category affect total sales?
+
+
+
+
+To address their questions, you can create a series of reports that show sales trends over time, customers by highest sales generation, sales comparisons by product, and more. To allow stakeholders to investigate and collect their own insights, you can even make these reports dynamic and customized to their needs.
+Let's take a look at the types of reports you can build to answer the questions outlined above.
+Sales executive reports
+First, let's address the questions posed by the sales executives:
+- How are this year's sales compared to last year?
+- Who are the top customers?
+- Which global sales regions are performing the best?
+Show sales growth
+Sales executives want to know how their sales this year compared to last year so they can see, overall, how business is doing. Specifically, they need to know if business has grown over the last year before they decide to expand existing product lines. If business has not grown, this may indicate that they need to shift their existing product strategy before expanding to new ones.
+To show how sales this year compare to last year's sales, you'll calculate the company's year-over-year sales growth and display that value as a key performance indicator (KPI). This way, executives can quickly determine if the company is experiencing positive growth, and if so, move forward with their product expansion.
+{% include zoompic.html url="images/sales-growth-kpi.png" border="-nb" %}
+To create this report, see the Show year-over-year sales growth pattern.
+Show sales by top customers
+Sales executives also want to know who are their top paying customers this year so they can send 10 of them exclusive promotions for products purchased in their latest order.
+To show the top paying customers, you'll create a read-only grid that displays the customer name, their total sales, and a link to their latest order. You'll also add a filter on the grid so executives can filter the list of customers by a range of total sales.
+{% include zoompic.html url="images/sales-by-top-customers.png" %}
+To create this report, see the Show highest paying customers and their latest order pattern.
+Show sales by region
+In their final report, sales executives want to know which global sales regions have the highest sales numbers so they can hire more employees and dedicate more resources to high-performance areas.
+To show the sales regions with the highest sales, you'll create a bar chart that displays the sum of sales generated by each sales region this year. To see if sales have improved for certain regions, you'll also show the sum of sales generated by each region last year
+{% include zoompic.html url="images/sales-by-region.png" %}
+To create this report, see the Show sales by region pattern.
+Account manager reports
+Now, let's address the questions posed by the account managers:
+- How many orders were purchased online compared to in-person?
+- How many orders contain items purchased with promo codes?
+Show the percentage of online sales
+Account managers want to know how much of their yearly sales are generated from online sales so they can determine if they need to do more online advertising, or hire more in-person staff.
+To show the percentage of online sales, you’ll first calculate the sum of sales for all orders purchased this year and the sum of sales for orders purchased online this year. Then, you'll uses a gauge component to calculate and display the percentage of online sales generated this year. 
+To see if online sales are growing, you'll also calculate the percent of online sales generated last year. This way, account managers can quickly understand if sales are growing, stagnant, or decreasing, and make the necessary adjustments. 
+{% include zoompic.html url="images/ytd-and-ly-ytd.png" %}
+To create this report, see the Show the percentage of online sales pattern.
+Show total orders compared to orders purchased with promo codes
+Account managers also want to know: of the total number of orders placed this year, how many orders had at least one item purchased with a promo code? Account managers will use this information to see if promo codes are having a positive effect on their total number of sales. Depending on the data, they may choose to send more promo codes during lower performing months to boost sales.
+To allow account managers to analyze the relationship between promo codes and total orders, you'll create a column chart that shows the count of total orders and the count of orders that contain at least one promo code. To get a full year's worth of data, you'll filter the chart so it only includes orders from the past 12 months. 
+{% include zoompic.html url="images/orders-vs-promo-code-orders.png" %}
+To create this report, see the Show the number of orders purchased with at least one promo code pattern.
+Inventory manager report
+Finally, we'll create a report that answer the question posed by the inventory managers: How did each product category affect total sales?
+Show sales by product category compared to total sales
+Inventory managers want to know how monthly sales were divided among the different product categories to see how their line of products impact overall sales. Since each inventory manager is responsible for a certain product category, they want this report to help them determine if they need to change their inventory strategy to follow sales trends.
+To allow different inventory managers to view their own product category sales, you'll create an area chart that can be filtered by product category. This way, users can see their monthly sales for the selected category compared to the total sales generated each month. 
+{% include zoompic.html url="images/area-chart-report.gif" %}
+To create this report, see the Dynamically Show Sales by Product Category Compared to Total Sales pattern.
+Other report patterns
+Looking for other reporting patterns? Try these other report patterns that use the Employee record type as the source of their components.
+
+appian-style-note
+To follow along with these patterns, first complete the Records Tutorial to create the Employee record type used in these patterns.
+
+{% include related_patterns.html
+   content="recordType!Employee"
+   heading="#### Chart patterns"
+   related_patterns_mods="and, sr-tags: Grids"%}
+{% include related_patterns.html
+   content="recordType!Employee"
+   heading="#### Grid patterns"
+   related_patterns_mods="and, sr-tags: Charts"%}

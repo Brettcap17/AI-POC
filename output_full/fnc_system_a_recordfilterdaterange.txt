@@ -1,0 +1,57 @@
+
+layout: function
+title: a!recordFilterDateRange() Function
+category: function_page
+excerpt: Creates a user filter for a record list.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!recordFilterDateRange
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: name
+    name: Name
+    types: Text
+    description: |
+      Name of the date range user filter.
+  - keyword: field
+    name: Field
+    types: Record Field
+    description: |
+      The record field or related record field the filter will apply to.
+  - keyword: isVisible
+    name: Is Visible
+    types: Boolean
+    description: |
+      Determines whether the filter is visible to the user. Default is true.
+  - keyword: defaultFrom
+    name: Default From Date
+    types: Date
+    description: |
+      Determines the default start date, if any, for the date range filter.
+  - keyword: defaultTo
+    name: Default To Date
+    types: Date
+    description: |
+      Determines the default end date, if any, for the date range filter.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Facet
+Usage considerations
+This function creates a Facet type object, and is used within a Record Type Object for creating and configuring date range user filters. 
+Example
+sail 
+=a!recordFilterDateRange(
+   name: "Hire Date",
+   field: recordType!Employee.fields.hireDate,
+   defaultFrom: "today()",
+   defaultTo: "today() + 365",
+   isVisible: true
+)
+See Expression-Based User Filters for common uses.

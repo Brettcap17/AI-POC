@@ -1,0 +1,45 @@
+
+layout: basic
+title: Deployment REST API
+topic: deploymentapis
+proxy-topic: deployment
+proxy-topic-group: C
+weight: 800
+
+Overview
+Appian's deployment REST API suite provides a safe way to expose Appian deployment services and data to external systems.
+This allows you to: 
+
+Trigger external deployments programmatically.
+Integrate your Appian releases into an automated pipeline.
+Coordinate with your other software releases and business processes. 
+Set up your pipeline once and run it the exact same way for all future deployments, saving time and avoiding manual errors.
+
+There are five endpoints that allow you to inspect and deploy packages, import customization files, and database scripts. They also allow you to configure a post-deployment process to run after external deployments.
+The endpoints are:
+- Inspect packages
+- Get inspection results
+- Execute a deployment
+- Get deployment results
+- Get deployment log
+This page gives an overview of Appian's deployment REST API suite. 
+
+appian-style-note
+The API follows REST standards. See this resource{: target="blank"} for more information about RESTful APIs.
+
+Endpoints
+All deployment API endpoints are called with a URL beginning with https://<domain>/suite/deployment-management/v1, where <domain> is replaced with your Appian site domain. 
+Every API endpoint must be called using the HTTP request method (POST or GET) specified in the documentation. A POST request is used to send data to Appian in order to create or update information, such as creating a new deployment. A GET request is used to request data from Appian, such as retrieving the status of an existing deployment.
+Authentication
+All endpoint requests are authenticated with an API key, which is linked to a service account. This is the same mechanism that Appian uses to secure Web API objects. The service account and API key can be created in the Admin Console, and then configured to secure external deployments.
+Once configured, there are multiple ways to use the API key to authenticate your request. For example, you can add it to the HTTP header with the key name Appian-API-Key:
+curl https://<domain>/suite/deployment-management/v1/deployments -H "Appian-API-Key: <API key>"
+Workflow
+Appian recommends that any package should first be inspected and then deployed. 
+The high-level workflow and endpoints for each step are:
+
+Inspect your package and import customization file using the /inspections endpoint. The endpoint response provides the UUID of the inspection, which you can use in the next step.
+Retrieve the status and results of your inspection using the /inspections/<uuid> endpoint. The inspection may take longer depending on the size of your package. We recommend hitting this endpoint on a regular interval until the inspection is complete and results are available, which is indicated by the status response.
+Deploy your package, customization file, and database scripts using the /deployments endpoint. The endpoint’s response provides the UUID of the deployment, which you can use in the next step.
+Retrieve the status and results of your deployment, by using the /deployments/<uuid> endpoint. Similar to step 2, the deployment time will vary with the size of your package. We recommend hitting this endpoint on a regular interval until the deployment is completed and results are available, which is indicated by the status response.
+If necessary, retrieve the deployment log for more detailed results, by using the /deployments/<uuid>/log endpoint.

@@ -1,0 +1,44 @@
+
+layout: function
+title: community() Function
+space: function_page
+excerpt: "Returns the properties of a given community."
+category: function_page
+fncname: community
+fncexample: "community(1, \"numberOfDocuments\")"
+fncresult: "40"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: communityId
+    types: Document Management Community
+    description: |
+      The Id number of the community or community object you need property information from.
+  - keyword: property
+    types: Text
+    description: |
+      The information you aree asking for, enclosed with quotation marks (").
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The property parameter accepts the following parameters:
+
+dateCreated
+description
+Id
+name
+numberOfDocuments
+parentId
+parentName
+active
+
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+community(1,"numberOfDocuments") returns 40

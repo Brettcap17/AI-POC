@@ -1,0 +1,45 @@
+
+layout: function
+title: a!queryAggregationColumn() Function
+category: function_page
+excerpt: Creates an AggregationColumn object for use inside an Aggregation object.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryAggregationColumn
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: field
+    types: Text
+    description: |
+      The dot-notation to the field of the data, such as a record type, you want to group together and/or aggregate. The fields cannot be complex or multiple values.
+  - keyword: alias
+    types: Text
+    description: |
+      The short name by which the result of the AggregationColumn value can be referenced in other places of the Query value. Values are case-sensitive.
+  - keyword: visible
+    types: Boolean
+    description: |
+      Determines whether the grouping or aggregation column should be visible to end users. If false, the data for the column will not be retrieved, but it can be used for sorting. Default value is true.
+  - keyword: isGrouping
+    types: Boolean
+    description: |
+      Determines whether the field should be grouped. Default value is false.
+  - keyword: aggregationFunction
+    types: Text
+    description: |
+      The function to use when aggregating the field. Valid values include COUNT, SUM, AVG, MIN, and MAX. Requires isGrouping to be false.
+  - keyword: groupingFunction
+    types: Text
+    description: |
+      A function that can be applied on the selected field. Valid values are YEAR and MONTH. This parameter can only be used with Date and Date and Time data types. Requires isGrouping to be true.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Aggregation, AggregationColumn, Query
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+AggregationColumn

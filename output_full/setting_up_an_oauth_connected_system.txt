@@ -1,0 +1,105 @@
+
+layout: basic
+title: Setting Up a Connected System with the OAuth 2.0 Authorization Code Grant
+topic-group: B
+weight: 150
+
+Overview
+In this article, you will learn how to set up a connected system with the OAuth 2.0 Authorization Code grant. Additionally, you will learn how to use the connected system in an Integration. Finally, you will see how to create an interface to give individual users a link to authorize the connection.
+
+To learn about connected systems and their configuration options, see Connected System Object.
+To learn more about the Authorization Code Grant, see OAuth 2.0: Authorization Code Grant
+
+Because configuring OAuth differs so much between systems and scenarios, this article only discusses the setup at a high-level. Use this information as a general guide rather than specific steps to complete a particular solution.
+Set up the third-party app
+Appian is the OAuth client in this scenario, which means that it needs to obtain client credentials from the resource's authorization server. Typically, this requires registration with the third-party system though an application or project built within the third-party system. Refer to the third-party's documentation for guidance on OAuth registration for their system.
+
+
+appian-style-tip
+Because you will need to enter values both in Appian and the third-party system, it's a good idea to keep the third-party's application settings open in another tab or window while configuring the connected system.
+
+Create the connected system
+Once you have set up the necessary pieces in the other system, it's now time to create the connected system.
+Basic setup
+
+Open the destination application for the new connected system.
+Click New > Connected System, then select HTTP.
+Give the Connected System a name, description, and a logo.
+For Authentication, select OAuth 2.0: Authorization Code Grant. The Configure Authorization box appears.
+
+{:.screenshot style="width:75%"}
+Configure OAuth
+The Authorization Code grant requires that you enter values both Appian and the other system in order to implement successfully.
+{:.screenshot style="width:75%"}
+In the other system
+
+From the connected system, copy the redirect URI provided in the configuration box and add it to the other system.
+This can also referred to as the callback url.
+In the other system, note the Client ID and Client Secret values.
+
+In the connected system
+
+Enter the other system's Client ID and Client Secret into the appropriate fields.
+Locate the Authorization endpoint for the other system and enter it into the Authorization Endpoint field.
+The authorization endpoint can be found in the other system's API documentation.
+Locate the Token Endpoint for the other system and enter it into the Token Request Endpoint field.
+The token request endpoint can be found in the other system's API documentation.
+
+Test the connection
+Before a user can get data from an integration that authenticates with the Authorization Code grant, they must first authorize the connection. Before creating the connected system, you should verify that the configuration is valid and will enable a user to authorize the connection.
+
+Click Authorize. A new dialog should appear from the other system.
+
+
+
+Approve the authorization.
+In the connected system, verify that you've completed authorization by clicking Done Authorizing.
+
+
+
+Click Save to create the connected system.
+
+If the connection fails verify the settings entered in either system and try again. See the troubleshooting section below for more details.
+Use the connected system in an integration
+Once the connected system is configured, it can be used in an integration.
+
+appian-style-tip
+If you are testing the integration as the same user to test the authorization, you will already have authorized the connection (this testing can also occur from the integration. If you're using a different user account, than you'll need to authorize before the integration will return a token and data.
+
+Using an OAuth connected system is no different than calling any other connected system in an integration.
+
+In the integration object, select Use an existing connected system.
+Choose your connected system in the Connected System field.
+Set up the necessary integration's parameters as directed by the third party documentation.
+
+
+Create an authorization link on an interface
+Because access tokens are per user, you need to consider how users will grant access to a protected resource.
+Any user needs to grant Appian access to the other system so that Appian can obtain an access token. To achieve this, use an a!authorizationLink().
+
+
+Create an interface that will generate the authorization link and any needed amplifying information to alert the user of the access issue.
+This interface will act as a reusable object for any relevant integrations.
+Add an Rule Input with a data type of Any Type to pass in the HTTP response.
+Enter an interface expression that will show the authorization link.
+
+This interface can be conditionally shown on any integrations that query data from another system. This will provide users that need to authorize access a method to get to the other system's authorization UI.
+
+appian-style-tip
+It's important to note that write-based errors that warrant authorization links have a much lower likelihood of occurring. Because interfaces that write data to another system typically query data as well, the initial integration call would pick up the authorization issue first. However, it's still useful to create write-based authorization link to ensure the data submitted by the user makes it to the other system.
+
+Troubleshooting
+If for some reason your connection is not working, you'll need to take corrective action. This section offers some general guidelines when trying to determine the cause of the failed connection. It is not meant to be a comprehensive list of all possible error scenarios. Be sure to read the error messages from the connected system and integrations, as the often provide specific details about the issue and suggestive corrective action.
+Missing authorization page from other system
+If the Authorization Endpoint or Scope is misconfigured in the connected system, it can impact the ability to make a successful connection to the authorization server. Users may see no pop-up or a 401 error from the other system.
+Verify that the appropriate values are entered in the connected system.
+
+appian-style-tip
+Depending on the reason for the missing pop-up, the connected system will return the error in a red message box. These error boxes contain useful information about the cause of the error.
+
+Other system's authorization page appears but can't grant permission
+If the Client Secret is not entered properly, the other system will not know what resources should be authorized. Typically, this is seen in the other system's authorization pop-up as an error message.
+In addition to the client secret the callback url could have been incorrectly entered in the other system. Ensure the callback url entered in the other system matches what was provided by the connected system.
+Integration using the connected system with authorization code is getting an error
+If the user has not previously authorized the resource, the Integration will throw an error until the user has allowed the data to be requested.
+Additionally, if the Token Request Endpoint or the Client Secret is not configured correctly, the authorization server cannot return a valid token to the client. Verify that this endpoint's value has been properly entered.

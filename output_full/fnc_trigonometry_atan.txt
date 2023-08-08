@@ -1,0 +1,32 @@
+
+layout: function
+title: atan() Function
+space: function_page
+excerpt: "Returns the arctangent(s) of the specified number(s) in radians."
+category: function_page
+fncname: atan
+fncexample: "atan(1)"
+fncresult: "0.7853982"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      A number or array of numbers, the arctangent(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can only be applied for numbers between -1 and 1.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+atan(1) returns 0.7853981633974483

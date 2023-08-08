@@ -1,0 +1,38 @@
+
+layout: function
+title: toemailaddress() Function
+space: function_page
+excerpt: "Converts a value to email address."
+category: function_page
+fncname: toemailaddress
+fncexample: "toemailaddress(\"john.doe\"&char(64)&\"company.com\")"
+fncresult: "john.doe@company.com"
+fnccat: Conversion
+compatibility: +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Send E-Mail Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Email Address
+Usage considerations
+Using toemailaddress() with arrays
+When operating on arrays, it is not necessary to use apply with toemailaddress. If multiple parameters are passed, or one parameter is an Array, toemailaddress will return an Email Address Array.
+Understanding results
+Can convert an email address Text.
+The output can be converted to a value with an Email Recipient type for use in the To:, Cc:, or Bcc: field in the Setup tab of the Send E-Mail Smart Service.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+toemailaddress("john.doe@company.com") returns john.doe@company.com as an Email Address type.
+toemailaddress("john.doe@company.com","jane.doe@company.com") and toemailaddress({"john.doe@company.com","jane.doe@company.com"}) both return {john.doe@company.com,jane.doe@company.com} as a List of Email Address type.

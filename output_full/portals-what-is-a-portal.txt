@@ -1,0 +1,84 @@
+
+layout: basic
+title: What is a Portal
+topic-group: A
+weight: 100
+
+Overview
+A portal is a public web app built on Appian where users can complete their workflows, access information, and provide data with ease, all without signing in to Appian.
+A portal consists of a portal object and an interface (referred to as a primary interface) that are created in Appian and published as a public web app at a unique URL. A portal can also use or reference any number of objects, configurations, and connections within your Appian applications. This enables you to use a portal for anything ranging from a simple dashboard to a complex form. The portal object, primary interface, and supporting objects and connections work together to connect your users to your Appian applications.
+This page explains what a portal is, how it works, and what connections and objects can make up a portal.
+How does a portal work?
+To create a portal, create a primary interface and a portal object. The primary interface is used as the content for the portal object. The portal object contains the configurations and settings for your portal.
+For more information on creating, publishing, and deploying portals see the Portal Object and Manage a Portal pages.
+When you publish your portal object, Appian bundles up the portal object, the primary interface, and all of the objects used by the primary interface (including child rules, integrations, record types, etc), and publishes them all as a cohesive serverless web app called a portal.
+When published, each portal is run in a service that is separate from your Appian environment, but can be connected to your Appian applications, data, and workflows.
+Running your portal in a separate service connected to Appian allows you to:
+
+Create secure, public experiences for your users without them signing in.
+Easily connect users to your Appian applications.
+Not worry about managing and provisioning third party servers.
+
+Data connections between a portal and Appian
+Although published portals are run separately from your Appian environment, they can easily connect to your Appian applications through integrations and web APIs.
+How web APIs and integrations work in a non-portal application
+In a non-portal application, you would use a web API to allow an external system to request to query data from Appian or ask Appian to do something. The external system reaches out to an Appian web API to perform the request and Appian sends a response back to the external system.
+You could also use an integration to have Appian request to query data from an external system or ask the external system to do something. The integration reaches out to the external system to perform the request and the external system sends a response back to Appian.
+How web APIs and integrations work in a portal
+With a portal, you would use an integration in the portal request to query data from Appian or ask Appian to do something. The integration talks directly to a web API in Appian, which completes the request and sends a response back to the integration in the portal.
+Simply put, your portal can make requests to Appian using an integration to connect to a web API in Appian. The web API completes the request, such as querying data or starting a process, and sends a response back to the integration in the portal.
+The diagram below shows how the portal and Appian work together to allow for the flow of data.
+{% include zoompic.html url="images/portals-architecture-diagram.png" border="-nb" alt="diagram of the Portals architecture, depicting the connection between the portal and the Appian applications described above" %}
+A portal is run in a separate service from your Appian environment, but using an integration allows your portal to connect to your applications using web APIs in Appian. The integration and web API form a bridge that connects your portal to Appian and allows data to pass through. The integration is on one side in your portal and the web API is on the other side in Appian.
+What is in a portal?
+A portal can consist of any number of objects and connections, but must include a portal object and a primary interface. What else you'll need to include and connect to in your portal depends on what you want to use your portal for.
+This section gives you a brief overview of how to connect your portal to Appian for data, document, and reCAPTCHA services as well as the objects you'll need for these connections.
+For some uses, a portal can just consist of a portal object, a primary interface, and hard-coded information to share with your users. But for most uses, you need to connect your portal to Appian to use document or data services.
+Connections to write and query data
+To write to or query from Appian, you'll need to create an integration and web API to connect your portal to Appian.
+To directly write to or query from an external database), you'll need to set up that database as a data source connected system in Appian.
+For most cases when you want to write data from a portal, you'll use a web API and integration to write the data to Appian.
+To write or query data in a portal to/from Appian, you need:
+
+An integration object called from the interfaces or supporting rules used for your portal.
+An API key.
+A service account.
+A connected system object.
+A web API object.
+A record type. You could also use a data store. Make sure to give your service account viewer permissions to your record type or data store.
+
+Learn more about Working with Data in Portals and Connecting a Portal Directly to an External Database.
+Connections for document services
+To enable users to upload, download, and view documents in your portal, use file upload, document download link, document viewer and document image components similarly to how you would in a non-portal interface in Appian.
+To upload files in a portal, you need:
+
+A file upload or signature component.
+The a!submitUploadedFiles() function used in a submit button in your primary or child interface for your portal.
+A target document folder for your uploaded files.
+A service account with Editor permissions to your target folder.
+
+To download or view files in a portal, you need:
+
+A document download link, document image, or document viewer component.
+Files to download or view.
+A document folder for your files.
+A service account with Viewer permissions to your documents and folder.
+
+Learn more about Working with Documents in Portals.
+Connections for reCAPTCHA services
+To help filter potential spam data from bots accessing your portal, you can configure a connection to Google's reCAPTCHA service.
+To use reCAPTCHA in a portal, you need:
+
+Google reCAPTCHA credentials.
+The a!verifyRecaptcha() used in the recaptchaSaveInto parameter on a!buttonWidget().
+
+Learn more about Configuring reCAPTCHA.
+How does my portal scale?
+The scalability of your portal is how well your portal will perform when different amounts of users are using the portal at the same time.
+Each portal automatically scales up and down to handle user traffic. This means that even with many concurrent users visiting your portal, the portal will scale to handle the load caused by users using your interface at the same time. Be mindful of what your portal connects to, as that may affect the overall scalability of your portal.
+Portals scalability
+Each portal runs as a serverless web app inside a service that is separate from the environment used to publish the portal. That service automatically scales up and down to meet user demand, independent from the platform.
+However, there are some limitations to the scalability of a portal to be aware of. User traffic to your portal is limited to an average of 10 terabytes per month. By default, most portals will be able to handle up to 200,000 daily visits. If you anticipate exceeding these limits, contact Appian.
+Platform scalability
+If you're connecting to Appian or other systems to query or write data, start processes, or provide documents, then the scalability of your portal is bound to the scalability of the Appian platform or system you're connecting to. When you're connecting to Appian, consider the expected usage of both your portal and platform when following the platform scaling guidance.
+Keep in mind your expected usage and always test your portal at scale. Test all databases and web APIs connected to your portal to ensure that all parts of your portal are performing well and scaling effectively.

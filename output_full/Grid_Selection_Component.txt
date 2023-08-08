@@ -1,0 +1,24 @@
+
+layout: function
+title: Paging Grid Selection Component [Deprecated]
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+fncname: a!gridSelection
+scsubcat: Paging_Grid_Elements
+scdisplayname: Paging Grid Selection
+evolved_fncname: a!gridField
+evolved_reason: "The paging grid natively supports selection."
+depver: 19.2
+fnccat: "一Deprecated一"
+parameters:
+  - keyword: pagingInfo
+    name: pagingInfo
+    types: Any Type
+    description: 'Paging and sorting configuration created with a!pagingInfo().'
+  - keyword: Selected
+    name: selected
+    types: Any Type
+    description: 'Array of selected identifiers. Supported types: Text Array and Integer Array.'
+
+The grid selection component has been deprecated, and will be removed in a future release of Appian. Instead, use a grid field. For information about the grid selection field, see the Appian 19.4 documentation.

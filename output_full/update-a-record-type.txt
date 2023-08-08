@@ -1,0 +1,54 @@
+
+layout: basic
+title: Update a Legacy Record Type
+topic-group: E
+weight: 400
+
+If you're excited to take advantage of new record features, functionality, and components available in the latest Appian release, you'll need to update any existing record type objects created with Appian 20.2 or earlier. 
+This page explains how to update your legacy record type objects.
+Updating a legacy record type
+{:.screenshot}
+All legacy record type objects, created with Appian 20.2 and earlier, include the following update alert at the top of the page. You'll need to update your legacy record types in order to take advantage of any new features, functionality, or components included in the latest Appian release.
+To update a legacy record type, open the record type and click Update Now at the top of the page. Appian will automatically update your record type to the latest version.
+
+appian-style-tip
+Appian recommends exporting a copy of your record type before clicking Update Now in case you need to roll back the record type to the previous version.
+
+After your record type successfully updates, the UI displays a green message banner to indicate that new record type features and functionally are available for use. Be sure to save your record type to capture all of these updates and any additional changes you made. 
+{:.screenshot style="width:90%"}
+There may be other design objects, including interfaces and expression rules, that support or reference the updated record type. After saving the updated record type, you'll need to review and update these design objects to ensure they are correctly referencing the record type.
+If you need to roll back the record type to the previous version, close the record type object without saving your changes. If you have already saved your record type, you can import the version you exported prior to updating the record type into your application and delete the updated version.
+
+appian-style-caution
+The Update Now feature does not convert legacy expression-backed records created before Appian 20.3 into updated service-backed records that have all of the new record features and functionalities. 
+In order to access these new record features on your legacy expression-backed records, you must recreate them using the latest Appian version.
+
+Troubleshooting record type updates
+In some instances, after updating your legacy record type, you may need to manually configure part of your record list or manually update expressions that support your record type.
+The guidance provided in this section will help you identify configuration settings in your record list or parameters in your expressions that you need to manually reconfigure following a record type update.
+Message banner
+After updating your record type, you may encounter a yellow message banner in the UI, which indicates that one or more configuration issues were detected in the record list.
+{:.screenshot style="width:90%"}
+To resolve this:
+1. In the record type, go to List.
+2. Click Edit List.
+3. Review all of the parameter settings for your record list. Manually reconfigure the list so that all of the grid, column, and component parameters are mapped to the new setting options for the enhanced record list.
+Resolving record list issues
+The record list for a legacy record type may have component and parameter settings that did not convert to the new setting options when you updated the record type. As such, we recommend that you review your record list and configuration settings after updating your record type to the latest version.
+If your record list met any of the following conditions prior to updating, you will need to manually reconfigure the parameter settings to ensure the list displays properly:
+- Uses rf! to define the align parameter of a column component.
+- Uses an expression rule to define the align parameter with one of the following values: LEFT and RIGHT.
+- Uses an expression rule to define the width parameter with the following value: DISTRIBUTE.
+- Uses an expression rule to define the default sorts parameter or sort field parameter that uses a string field reference. 
+- Contains syntax errors that prevent the record list from displaying properly.
+To reconfigure your record list:
+1. In the record type, go to List.
+2. Click Edit List. 
+3. Click RESET LIST to populate the record list with the latest fields in your record type. This will remove any existing configurations on the record list.
+See Configure a record list for more information.
+Resolving expression rule issues
+After updating a legacy record type, you may also need to update the expression rules used within the record type or in other objects that support the record type. 
+Manually reconfigure any expression rules that support your record type if any of the following conditions apply:
+- Defines an expression rule that applies query filters or sorts to the record data, such as an expression rule for user filters. To resolve this, update the expression rule by switching the fieldAs parameter to recordType!MyRecord.fields.fieldAs.
+- Used in the record type to define a queryFilter or sort, BUT the query filter or sort is not applied to the record data. To resolve this, update the expression rule by switching recordType!MyRecord.fields.fieldAs to fieldAs.
+- References rf! variables. To resolve this, reconfigure your expression rule within record titles, record views, and related actions to use rv!identifier and rv!record to reference a record field in the record type.

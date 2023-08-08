@@ -1,0 +1,38 @@
+
+layout: function
+title: substitute() Function
+space: function_page
+excerpt: "Substitutes a specific part of a string with another string."
+category: function_page
+fncname: substitute
+fncexample: "substitute(\"hello world\",\"hello\",\"my\")"
+fncresult: "my world"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The string to be modified.
+  - keyword: find
+    types: Text
+    description: |
+      The part of the string that will be replaced.
+  - keyword: replace_with
+    types: Text
+    description: |
+      The replacement substring.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+substitute("hello world","hello","my") returns my world

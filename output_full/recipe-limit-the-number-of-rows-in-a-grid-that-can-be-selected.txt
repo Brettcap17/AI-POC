@@ -1,0 +1,138 @@
+
+layout: pattern
+title: Limit the Number of Rows in a Grid That Can Be Selected
+excerpt: Limit the number of rows that can be selected to an arbitrary number.
+reftype: sailrecipe
+sr-tags:
+  - Validation
+  - Grids
+  - Records
+
+This is a more elaborate version of the Limit Grid Selection to One Row pattern.
+{:.screenshot}
+This scenario demonstrates:
+
+How to configure grid selection in a Read-Only Grid.
+How to limit selection to an arbitrary number.
+
+Expression
+```sail
+a!localVariables(
+  local!selection,
+  local!selectedRows,
+  / This is the maximum number of rows you can select from the grid. Selections that exceed
+     this value are dropped from local!selectedRows. /
+  local!selectionLimit: 2,
+  / This stores the last dropped row that exceeded the selection limit. /
+  local!errorDrop,
+  {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!gridField(
+              label: "Employees",
+              labelPosition: "ABOVE",
+              instructions: "Select up to " & local!selectionLimit & " employees.",
+              data: recordType!Employee,
+              columns: {
+                a!gridColumn(
+                  label: "ID",
+                  sortField: "id",
+                  value: fv!row[recordType!Employee.fields.id],
+                  width: "ICON"
+                ),
+                a!gridColumn(
+                  label: "First Name",
+                  sortField: "firstName",
+                  value: fv!row[recordType!Employee.fields.firstName]
+                ),
+                a!gridColumn(
+                  label: "Last Name",
+                  sortField: "lastName",
+                  value: fv!row[recordType!Employee.fields.lastName]
+                ),
+                a!gridColumn(
+                  label: "Phone Number",
+                  sortField: "phoneNumber",
+                  value: fv!row[recordType!Employee.fields.phoneNumber]
+                )
+              },
+              pagesize: 10,
+              selectable: true,
+              selectionstyle: "ROW_HIGHLIGHT",
+              selectionvalue: local!selection,
+              selectionsaveinto: {
+                local!selection,
+                a!save(local!selectedRows, append(local!selectedRows, fv!selectedRows)),
+                a!save(local!selectedRows, difference(local!selectedRows, fv!deselectedRows)),
+                / If the length of the selected rows is greater than the limit, this saves the excess
+                   selection in local!errorDrop so we can tell the user which row was dropped. /
+                if(length(local!selectedRows) > local!selectionLimit, 
+                  a!save(local!errorDrop, fv!selectedRows),
+                  a!save(local!errorDrop, null)
+                ),
+                /* We use the rdrop() function to remove the most recent selections, so only the
+                   first-selected rows, up to the limit, remain. If you want the reverse behavior, 
+                   dropping the oldest selections instead, replace rdrop() with ldrop().
+               The max() function is used as a simple way to handle negative numbers for when 
+               the selection length is less than the limit. */
+            a!save(local!selectedRows, rdrop(local!selectedRows, max(0, length(local!selectedRows)-local!selectionLimit))),
+            a!save(local!selection, rdrop(local!selection, max(0, length(local!selection)-local!selectionLimit)))
+          },
+          validations: a!validationMessage(
+            message: "The total cannot be greater than $1,000",
+            validateAfter: "REFRESH",
+            showWhen: true
+          )
+        )
+      },
+      width: "WIDE"
+    ),
+    a!columnLayout(
+      contents: {
+        a!sectionLayout(
+          label: "Selected Employees",
+          contents: {
+            a!forEach(
+              items: local!selectedRows,
+              expression: a!textField(
+                label: fv!index&". "&fv!item[recordType!Employee.fields.firstName]&" "&fv!item[recordType!Employee.fields.lastName],
+                value: "    "&fv!item[recordType!Employee.fields.phoneNumber],
+                readOnly: true
+              )
+            )
+          }
+        ),
+        a!richTextDisplayField(
+          label: "Rich Text",
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextItem(
+              text: {
+                if(
+                  not(isnull(local!errorDrop)),
+                  "Can't add "
+                  &local!errorDrop[recordType!Employee.fields.firstName] &" "& local!errorDrop[recordType!Employee.fields.lastName] &"."
+                  &char(10)&"Maximum selections: "&local!selectionLimit,
+                  ""
+                )
+              },
+              color: "NEGATIVE",
+              style: {
+                "STRONG"
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+)
+
+}
+)
+```
+Test it out
+
+Select multiple rows and note that only the last selection persists.

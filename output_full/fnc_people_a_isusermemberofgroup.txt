@@ -1,0 +1,59 @@
+
+layout: function
+title: a!isUserMemberOfGroup() Function
+category: function_page
+excerpt: 'Identifies whether or not a user is a member of the specified groups. By default, this function returns true if the user is in at least one of the specified groups.'
+fnccat: People
+fncexample: 'a!isUserMemberOfGroup("john.doe", 2)'
+fncname: a!isUserMemberOfGroup
+fncresult: 'false'
+compatibility: -crf, ~portal
+space: function_page
+reftype: function
+parameters:
+  - keyword: username
+    types: User
+    description: |
+       The username of the user for whom you wish to check for group membership.
+  - keyword: groups
+    types: Group Array
+    description: |
+       One or more groups to check for membership.
+  - keyword: matchAllGroups
+    types: Boolean
+    description: |
+       Determines whether to match any or all of the provided groups. When set to true, the function will check that the user is a member of ALL of the groups. Default: false
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Returns true when the user belongs to the specified group, except when security rules prohibit users from knowing this information.
+For example, this function returns false to keep membership awareness secure in the following instance:
+
+A high privacy group is passed in AND 
+A user other than the logged in user is passed in AND 
+The function is executed within the context of a basic user who is not an administrator of the high privacy group
+
+A basic user is not allowed to know whether another user is a member of such groups.
+a!isUserMemberOfGroup() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+a!isUserMemberOfGroup("john.doe", 2) returns false
+sail
+a!isUserMemberOfGroup(
+  username: loggedInUser(), 
+  groups: a!groupsByName("Process Model Creators")
+)
+The above expression returns true if you are in the Process Model Creators group
+sail
+a!isUserMemberOfGroup(
+  username: loggedInUser(),
+  groups: { 5, 6, 7 },
+  matchAllGroups: true
+)
+The above expression returns false if you are not in all of the following groups: Application Users, Designers, and Quick App Creators.

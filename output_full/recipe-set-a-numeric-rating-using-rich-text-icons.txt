@@ -1,0 +1,52 @@
+
+layout: pattern
+title: Set a Numeric Rating Using Rich Text Icons
+reftype: sailrecipe
+sr-tags: ["Conditional Display"]
+excerpt: Save a numeric score using a set of clickable rich text icons.
+
+This example uses a familiar set of star icons capture a user's sentiment. To see how to display an aggregated set of rankings rating, see the Show a Numeric Rating as Rich Text Icons recipe.
+This scenario demonstrates:
+
+How to use a!forEach() within rich text.
+How to set a parameter dynamically within an interface component.
+How to reset a value back to its initial value.
+
+{:.screenshot}
+Expression
+sail 
+a!localVariables(
+  local!rating: 0,
+  local!totalStars: 10,
+  a!richTextDisplayField(
+    value: {
+      a!foreach(
+        items: enumerate(local!totalStars) + 1,
+        expression: {
+          a!richTextIcon(
+            icon: if(
+              fv!index <= local!rating,
+              "star",
+              "star-o"
+            ),
+            color: "ACCENT",
+            linkstyle: "STANDALONE",
+            link: a!dynamicLink(
+              value: if(local!rating=fv!index, 0, fv!index),
+              saveInto: local!rating
+            )
+          )
+        }
+      )
+    }
+  )
+)
+Test it out
+
+Click on a random star. Notice that this and all previous stars will fill in.
+Click on another random star. Notice that the total number of stars will change.
+Click on the same star again. Notice that the stars will reset to zero. 
+
+Notable implementation details
+
+The calculation does no rounding on the score. Any score between two whole numbers will receive a partial star. This can be easily adjusted in the second if() statement, providing a different value than 1 when running the index comparison against local!score.

@@ -1,0 +1,238 @@
+
+layout: function
+title: a!submitUploadedFiles() Function
+permalink: fnc_system_a_submituploadedfiles.html
+space: function_page
+excerpt: |
+      Submits all uploaded files in a!fileUploadField or a!signatureField components to their target folders. The function only executes inside a saveInto parameter. Only for use with Portals.
+category: function_page
+fncname: a!submitUploadedFiles
+fncexample: Click on the function name for examples.
+fnccat: System
+reftype: function
+compatibility: -crf, -om
+parameters:
+  - keyword: onSuccess
+    types: Any Type
+    description: |
+      A list of saves to execute after the uploaded files are submitted successfully to the target folder.
+  - keyword: onError
+    types: Any Type
+    description: |
+      A list of saves to execute after the uploaded files are not submitted successfully to the target folder. Use fv!error to access the returned error.      
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+For best results, use this function in the saveInto parameter of submit links and buttons. If the user has uploaded any files to file upload or signature components, the function submits the files automatically and immediately to Appian when the function is evaluated. When the function is used correctly in the saveInto parameter of submission links and buttons, the function is evaluated when the user clicks the link or button to submit the form.
+If you use the function in the saveInto parameter of the file upload or signature components, the files are submitted to the target folder as soon as a user uploads them. This means that if a user accidentally uploads the wrong file, the function  submits it before the user can change files. This can result in unnecessary or incorrect files mistakenly added to the target folder.  
+To avoid this and ensure that the files are submitted with the rest of the data in the form, add the function to submit links or buttons.
+
+appian-style-plugindisclaimer
+WARNING: To write document IDs from uploaded files to a database through an integration, the integration input that you're writing must be of type Number(Integer), not Document. An incorrect type can cause the data and document IDs to not save properly.
+
+See also:
+
+Working with documents in Appian Portals
+Link component
+Button component
+File upload component
+Signature component
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any type
+Error codes
+The a!submitUploadedFiles() function returns an error code if a runtime error happens. The error code can be accessed using fv!error in the onError parameter.
+To learn how to display the error code on your portal interface, see this example.
+The following table lists each error code along with its meaning.
+| Error Code      | Meaning |
+|---|---|
+| APNX-1-4561-007 | An error occurred when submitting the uploaded file(s). |
+| APNX-2-4196-000 | An unexpected error has occurred. The form can't be submitted. |
+| APNX-2-4196-001 | The destination folder specified is invalid. |
+| APNX-2-4196-002 | You do not have sufficient privileges to upload a file to the designated folder. |
+| APNX-2-4196-006 | This file is empty. |
+| APNX-2-4196-007 | The uploaded file doesn't exist. |
+Usage considerations
+Design guidance for uploading files in portals
+
+Files uploaded in a portal can be no larger than 10 MB.
+This function should be fully tested in a published portal in a development environment.
+This function can be used with other functions inside the saveInto parameter of a link or button. It can also be nested within another function used in the saveInto parameter. To see this in practice, check out the example here.
+
+Example
+These expressions should only be used as examples and should not be used to test the a!submitUploadedFiles() function. Test the a!submitUploadedFiles() function in a published portal in a development environment.
+Upload a file in a Portal
+sail
+a!localVariables(
+  local!file,
+  {
+    a!fileUploadField(
+      label: "Supporting Image",
+      value: local!file,
+      saveInto: local!file,
+      target: cons!myFolder,
+      maxSelections: 1,
+      validations: if(
+        or(upper(fv!files.extension) = { "PNG", "JPG" }),
+        null,
+        "Please upload a valid image type: png or jpg"
+      )
+    ),
+    a!buttonArrayLayout(
+      buttons: {
+        a!buttonWidget(
+          label: "Submit",
+          submit: true,
+          style: "PRIMARY",
+          saveInto: a!submitUploadedFiles()
+        )
+      },
+      align: "END"
+    )
+  }
+)
+Upload a file in a Portal using the onSuccess and onError parameters {#complex-example}
+sail
+a!localVariables(
+  local!customer: type!Customer(),
+  local!submissionSuccessful,
+  {
+    a!textField(
+      label: "Name",
+      value: local!customer.name,
+      saveInto: local!customer.name,
+      characterLimit: 255
+    ),
+    a!fileUploadField(
+      label: "Image",
+      value: local!customer.document,
+      saveInto: local!customer.document,
+      target: cons!myFolder,
+      maxSelections: 1,
+      validations: if(
+        or(upper(fv!files.extension) = { "PNG", "JPG" }),
+        null,
+        "Please upload a valid image type: png or jpg"
+      )
+    ),
+    a!buttonArrayLayout(
+      buttons: {
+        a!buttonWidget(
+          label: "Submit",
+          style: "PRIMARY",
+          saveInto: {
+            a!writeToDataStoreEntity(
+              dataStoreEntity: cons!PORTAL_ENTITY,
+              valueToStore: local!customer,
+              onSuccess: {
+                /*Only upload the files if the data is successfully written*/
+                a!submitUploadedFiles(
+                  onSuccess: {
+                    a!save(local!submissionSuccessful, true)
+                  },
+                  onError: {
+                    a!save(local!submissionSuccessful, false)
+                  }
+                )
+              },
+              onError: {
+                a!save(local!submissionSuccessful, false)
+              }
+            )
+          }
+        )
+      },
+      align: "END"
+    )
+  }
+)
+Upload a file in a portal and display the error code
+Because the a!submitUploadedFiles() function only works inside a published portal, the only way to view the value of fv!error is to display it in your interface if the file fails to upload.
+To test the below example:
+
+Save the example expression as an interface.
+Replace cons!DOCUMENT_FOLDER with a constant that points to the folder that the files will be uploaded to.
+Give a service account editor access to the folder that the files will be uploaded to.
+Publish the interface as a portal. For Service Account, enter the service account that has access to the folder.
+After the portal is live, test the portal by uploading a file that is less than 10 MB. It should display "File uploaded successfully."
+Remove the service account's access to the folder and test the portal again. It should display "File not uploaded (APNX-2-4196-002)."
+
+sail
+a!localVariables(
+  local!file,
+  local!submissionSuccessful,
+  local!errorCode,
+  {
+    a!fileUploadField(
+      label: "Supporting Image",
+      target: cons!DOCUMENT_FOLDER,
+      maxSelections: 1,
+      value: local!file,
+      saveInto: local!file
+    ),
+    a!buttonArrayLayout(
+      buttons: {
+        a!buttonWidget(
+          label: "Submit",
+          saveInto: a!submitUploadedFiles(
+            onSuccess: a!save(local!submissionSuccessful, true),
+            onError: {
+              a!save(local!submissionSuccessful, false),
+              a!save(local!errorCode, fv!error)
+            }
+          ),
+          submit: true,
+          style: "PRIMARY"
+        )
+      },
+      align: "END"
+    ),
+    {
+      if(
+        isnull(local!submissionSuccessful),
+        {},
+        if(
+          local!submissionSuccessful = true,
+          /* Success message */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              a!richTextIcon(
+                icon: "check-circle", 
+                color: "POSITIVE"),
+                " ",
+                a!richTextItem(
+                  text: "File uploaded successfully",
+                  style: "STRONG"
+                )
+            },
+            align: "RIGHT"
+          ),
+          /* Error message */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              a!richTextIcon(
+                icon: "times-circle", 
+                color: "NEGATIVE"),
+                " ",
+                a!richTextItem(
+                  text: {
+                    "File not uploaded (",
+                    local!errorCode,
+                    ")"
+                  },
+                  style: "STRONG",
+                  color: "NEGATIVE"
+                )
+            },
+            align: "RIGHT"
+          )
+        )
+      )
+    }
+  }
+)

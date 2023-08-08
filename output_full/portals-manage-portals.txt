@@ -1,0 +1,72 @@
+
+layout: basic
+title: Manage a Portal
+weight: 600
+topic-group: B
+
+Overview
+Making continuous improvements and updates to your portal is important to ensure the best possible experience for your users. To make your portal available to your users, you'll need to publish, test, and deploy your portal.
+Publishing a portal
+When you publish a portal, you make it available to your users at the specified web address. This means that anyone with the URL can access your portal.
+You'll only be publishing a portal directly during development. If you've published the portal in the source environment, Appian automatically applies that publishing status to the portal object in the target environment after you successfully deploy the object. No extra steps required!
+For more information, see the Deployments and publishing section below.
+To publish a portal:
+
+Open your portal object.
+Under Configurations, toggle on Published.
+Click SAVE CHANGES. The portal won't begin publishing until you save.
+
+If you no longer need for your portal to be available to users, you can easily unpublish the portal:
+
+Under Configurations in the portal object, toggle off Publish.
+Click SAVE CHANGES.  The portal won't be unpublished until you save.
+
+Updating and republishing a portal
+Once your portal is published, you need to republish it if you make changes to the portal object configurations, the primary interface, or any objects that your portal depends on. Republishing ensures that your users have the most up-to-date portal and functionality you have to offer.
+Once your portal is published, you can republish at any time:
+
+Open your portal object.
+In the blue status banner, click  Republish. 
+Click SAVE CHANGES. 
+
+Testing a portal
+As with all Appian applications, you should always fully test all objects that your portal relies on to make sure everything is functioning correctly. Be sure to test everything in your primary interface, including all input and selection fields, and data and document connections.
+After you've tested all objects and connections for your portal in Appian Designer, it's important to fully test your portal after it is published. Be sure to fill out all of the fields, whether they are required or not, and go through all of the steps in your portal. If you run into any issues while testing, check out the Visitor Activity Logs in your Portal object.
+Who can access a portal during testing?
+You must publish your portal to fully test it, which means that anyone with the web address can access your portal, maybe even before you're ready for them to.
+To help limit access to the portal while you're testing, UUIDs are added by default to the web addresses of all portals in your development and testing environments. This means that only users that you share the URL with will be able to easily find the portal during development.
+In production environments, this option is deselected by default to make the web addresses more intuitive and easier for your users to access them.
+This setting can be changed in the Administration Console.
+Deploying a portal
+You can easily deploy a portal from one environment to another as a part of your existing deployment pipeline. Simply deploy your portal object as part of a deployment package or application. Make sure to include all of your portal's precedents in with your deployment.
+For more information on packages and deployments, see:
+
+Preparing deployment packages
+Deploy to target environments
+Application deployment guidelines
+
+Deployments and publishing
+As with all objects, when you deploy a portal object all of the fields and configurations are deployed with it. After deployment, the value of the portal object's Publish field in the target environment will be the same as the Publish field value in the source environment.
+For example:
+
+If the portal is published in the source environment, it will be published in the target environment.
+If the portal has never been published in the source environment, it will not be published in the target environment.
+If the portal has been unpublished in the source environment, it will be unpublished in the target environment.
+
+Deploying a published portal
+When deploying a published portal, the portal will automatically publish in the target environment during deployment.
+If your portal is published in the target environment and you deploy an updated precedent of the portal to that environment, the portal will automatically republish during deployment to include the latest updates.
+What to include when deploying your portal
+If your portal is using data or document services, including integrations, connected systems, or document download or upload, make sure to include the following credentials and access information when deploying your portal.
+| If your portal uses... | Don't forget! |
+| - | - |
+| Data or document services | The service account for your portal |
+| Integrations | An Import Customization File (ICF) with API keys |
+| External database and data source connected system | ICF with connected system credentials |
+For more information on using data and document services with your portal, see Working with Data in Portals and Working with Documents in Portals.
+Setting up service accounts before deploying published portals
+In order to publish your portal automatically after deployment, you need to set up your portal service account with the appropriate permissions in your target environment.
+Before deploying your portal, for all environments in your deployment pipeline you must set up the following:
+
+Create a service account with the same name as the service account associated with your portal.
+Set up group membership and permissions for the service account to match those in the source environment.

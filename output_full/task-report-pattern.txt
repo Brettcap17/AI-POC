@@ -1,0 +1,515 @@
+
+layout: pattern
+title: Task Report Pattern
+excerpt: Provides a simple way to create and display an Appian task report.
+reftype: pattern
+sr-tags:
+  - Grids
+  - Filters
+  - Process Task Links
+  - Task Reports
+
+{:.screenshot}
+Design structure
+This page will break down this expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs. For an example of how to modify this pattern or how to se a task report in a site, see the Task Report Tutorial. 
+The main components in this pattern are dropdowns, read only grids, process task links, and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{% include zoompic.html url="images/patterns/task_report_pattern_annotated.png" %}
+Pattern expression
+When you drag and drop the Task Report pattern onto your interface, 200 lines of expressions will be added to the section where you dragged it.
+```sail
+a!localVariables(
+  local!statusFilter: null,
+/ https://docs.appian.com/suite/help/latest/Task_Report_Tutorial.html /
+  / Basic steps to follow:                                              /
+  / 1. Create a Process Report object                                   /
+  / 2. Duplicate an existing process report, e.g. active_tasks          /
+  / 3. Create a Document constant for the report, e.g. TASKS_REPORT     /
+  / 4. Replace the value parameter of the refresh variable              /
+  /    local!taskReportData with a process analytics query e.g.         /
+  /    a!queryProcessAnalytics(                                         /
+  /      report: cons!TASKS_REPORT,                                     /
+  /      query: a!query(                                                /
+  /        pagingInfo: a!pagingInfo(                                    /
+  /          startIndex: 1,                                             /
+  /          batchSize: -1,                                             /
+  /          sort: a!sortInfo(                                          /
+  /            field: "c2",                                             /
+  /            ascending: false                                         /
+  /          )                                                          /
+  /       ),                                                            /
+  /       filter: a!queryFilter(                                        /
+  /         field: "c5",                                                /
+  /         operator: "in",                                             /
+  /         value: local!statusFilter,                                  /
+  /         applyWhen: a!isNotNullOrEmpty(local!statusFilter)           /
+  /       )                                                             /
+  /     )                                                               /
+  /   )                                                                 /
+/ The variable used to refresh the task report data /
+  local!refreshTrigger: true,
+/ Placeholder variable for the task data returned by a process analytics query /
+  local!taskReportData: a!refreshVariable(
+    refreshOnVarChange: local!refreshTrigger,
+    value: {
+      startIndex: 1,
+      batchSize: 7,
+      sort: {field: "c2", ascending: false},
+      totalCount: 10,
+      data: a!localVariables(
+        local!data: {
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #38",  dp0: 268440077, dp2: null, dp4: null, dp3: 268435772, dp5: 268435772, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #39",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #123", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #40",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #124", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #125", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #41",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null)
+        },
+        if(
+          a!isNullOrEmpty(local!statusFilter),
+          local!data,
+          index(
+            local!data,
+            wherecontains(local!statusFilter, local!data.c5),
+            {}
+          )
+        )
+      ),
+      identifiers: {123456781, 123456782, 123456783, 123456784, 123456785, 123456786, 123456787},
+      name: "Employee Tasks",
+      / Maps field labels above to user friendly name /
+      columnConfigs: {
+        a!map(label: "Name",        field: "c0", drilldownField: "dp0", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: "TASK_DETAILS"),
+        a!map(label: "Process",     field: "c3", drilldownField: "dp3", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: "PROCESS_DASHBOARD"),
+        a!map(label: "Status",      field: "c5", drilldownField: "dp5", configuredFormatting: "TASK_STATUS", configuredDrilldown: "PROCESS_DETAILS"),
+        a!map(label: "Assignee",    field: "c8", drilldownField: "dp2", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: null),
+        a!map(label: "Received On", field: "c2", drilldownField: "dp2", configuredFormatting: "DATE_TIME",   configuredDrilldown: null)
+      }
+    }
+  ),
+  / Maps the "c5" / "Status" field values to status names /
+  local!taskStatuses: {
+    a!map(name: "Assigned",               icon: "user-o",             color: "#666666"),
+    a!map(name: "Accepted",               icon: "user-check",         color: "ACCENT"),
+    a!map(name: "Completed",              icon: "check-circle",       color: "POSITIVE"),
+    a!map(name: "Not Started",            icon: "circle-o-large",     color: "#666666"),
+    a!map(name: "Cancelled",              icon: "stop-circle",        color: "#fdb858"),
+    a!map(name: "Paused",                 icon: "pause-circle",       color: "#666666"),
+    a!map(name: "Aborted",                icon: "question-circle",    color: "#666666"),
+    a!map(name: "Cancelled By Exception", icon: "minus-circle",       color: "#fdb858"),
+    a!map(name: "Cancelled By Exception", icon: "times-circle",       color: "NEGATIVE"),
+    a!map(name: "Submitted",              icon: "share",              color: "ACCENT"),
+    a!map(name: "Running",                icon: "spinner",            color: "ACCENT"),
+    a!map(name: "Error",                  icon: "exclamation-circle", color: "NEGATIVE")
+  },
+  {
+    a!sectionLayout(
+      label: "Employee Tasks",
+      labelColor: "SECONDARY",
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!multipleDropdownField(
+                  label: "Status",
+                  labelPosition: "COLLAPSED",
+                  placeholder: "All statuses",
+                  choiceLabels: { "Assigned", "Accepted", "Completed", "Not Started" },
+                  choiceValues: enumerate(4),
+                  value: local!statusFilter,
+                  saveInto: local!statusFilter
+                )
+              },
+              width: "MEDIUM"
+            ),
+            a!columnLayout(
+              contents: {
+                a!buttonArrayLayout(
+                  buttons: a!buttonWidget(
+                    icon: "refresh",
+                    value: not(local!refreshTrigger),
+                    saveInto: local!refreshTrigger,
+                    size: "SMALL",
+                    style: "SECONDARY",
+                    accessibilityText: "Refresh task data"
+                  )
+                )
+              }
+            )
+          },
+          marginBelow: "NONE"
+        ),
+        a!gridField(
+          label: "Employee Tasks",
+          labelPosition: "COLLAPSED",
+          data: local!taskReportData.data,
+          columns: a!forEach(
+            items: local!taskReportData.columnConfigs,
+            expression: a!gridColumn(
+              label: fv!item.label,
+              sortField: fv!item.field,
+              value: a!localVariables(
+                local!fieldValue: index(fv!row, fv!item.field, {}),
+                / Display the data based on its configured formatting /
+                a!match(
+                  value: fv!item.configuredFormatting,
+                  equals: "TASK_STATUS",
+                  then: a!localVariables(
+                    local!status: index(local!taskStatuses, local!fieldValue + 1, {}),
+                    a!richTextDisplayField(
+                      value: {
+                        a!richTextIcon(
+                          icon: index(local!status, "icon", "circle"),
+                          color: index(local!status, "color", "#666666")
+                        ),
+                        "  ",
+                        index(local!status, "name", "Other")
+                      }
+                    )
+                  ),
+                  equals: "DATE_TIME",
+                  then: if(
+                    a!isNullOrEmpty(local!fieldValue),
+                    local!fieldValue,
+                    text(local!fieldValue, "MMM D, YYYY, H:MM am/pm")
+                  ),
+                  / Show a process link for task details /
+                  whenTrue: fv!item.configuredDrilldown = "TASK_DETAILS",
+                  then: a!linkField(
+                    links: a!processTaskLink(
+                      label: local!fieldValue,
+                      task: index(fv!row, fv!item.drilldownField, {})
+                    )
+                  ),
+                  / Show username or group name for Assignee field                         /
+                  / Note: For task reports that only show tasks for the current user,      /
+                  / the "Assignee" column can be hidden. Task list can be named "My Tasks" /
+                  whenTrue: fv!item.field = "c8",
+                  then: a!richTextDisplayField(
+                    value: a!forEach(
+                      items: fv!row.c8,
+                      expression: if(
+                        / Check if User, otherwise its a Group /
+                        isusernametaken(fv!item),
+                        a!richTextItem(
+                          text: user(fv!item, "firstName") & " " & user(fv!item, "lastName") & char(10),
+                          link: a!userRecordLink(user: fv!item),
+                          linkStyle: "STANDALONE"
+                        ),
+                        / Adding char(10) adds line breaks to the list of names /
+                        group(fv!item, "groupName") & char(10)
+                      )
+                    )
+                  ),
+                  default: local!fieldValue
+                )
+              ),
+              align: if(fv!item.configuredFormatting = "DATE_TIME", "END", "START")
+            )
+          ),
+          pageSize: 10,
+          borderStyle: "LIGHT",
+          rowHeader: 1
+        )
+      }
+    )
+  }
+)
+```
+[Line 1-32] Provide instructions in comments
+The first two lines in the expression begin the local variables, but are directly followed by 25 lines of comments. These comments contain a link to the Task Report Tutorial and a set of 4 steps to tell you how to create a task report.
+{% highlight sail linenos start_line=1 %}
+a!localVariables(
+  local!statusFilter: null,
+/ https://docs.appian.com/suite/help/latest/Task_Report_Tutorial.html /
+  / Basic steps to follow:                                              /
+  / 1. Create a Process Report object                                   /
+  / 2. Duplicate an existing process report, e.g. active_tasks          /
+  / 3. Create a Document constant for the report, e.g. TASKS_REPORT     /
+  / 4. Replace the value parameter of the refresh variable              /
+  /    local!taskReportData with a process analytics query e.g.         /
+  /    a!queryProcessAnalytics(                                         /
+  /      report: cons!TASKS_REPORT,                                     /
+  /      query: a!query(                                                /
+  /        pagingInfo: a!pagingInfo(                                    /
+  /          startIndex: 1,                                             /
+  /          batchSize: -1,                                             /
+  /          sort: a!sortInfo(                                          /
+  /            field: "c2",                                             /
+  /            ascending: false                                         /
+  /          )                                                          /
+  /       ),                                                            /
+  /       filter: a!queryFilter(                                        /
+  /         field: "c5",                                                /
+  /         operator: "in",                                             /
+  /         value: local!statusFilter,                                  /
+  /         applyWhen: a!isNotNullOrEmpty(local!statusFilter)           /
+  /       )                                                             /
+  /     )                                                               /
+  /   )                                                                 /
+/ The variable used to refresh the task report data /
+  local!refreshTrigger: true,
+{% endhighlight %}
+[Line 34-73] Define the local variable for task data
+This is the first local variable that populates the placeholder data for the grid. 
+{% highlight sail linenos start_line=34 %} 
+  / Placeholder variable for the task data returned by a process analytics query /
+  local!taskReportData: a!refreshVariable(
+    refreshOnVarChange: local!refreshTrigger,
+    value: {
+      startIndex: 1,
+      batchSize: 7,
+      sort: {field: "c2", ascending: false},
+      totalCount: 10,
+      data: a!localVariables(
+        local!data: {
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #38",  dp0: 268440077, dp2: null, dp4: null, dp3: 268435772, dp5: 268435772, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #39",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #123", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 0, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #40",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #124", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "Document Processing",  c8: loggedInUser(), c7: null, c2: now(), c0: "Review Document: Invoice #125", dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null),
+          a!map(c5: 1, c4: 1, c3: "New Purchase Request", c8: loggedInUser(), c7: null, c2: now(), c0: "Approve Purchase Request #41",  dp0: 268440067, dp2: null, dp4: null, dp3: 268435771, dp5: 268435771, dp7: null, dp8: null)
+        },
+        if(
+          a!isNullOrEmpty(local!statusFilter),
+          local!data,
+          index(
+            local!data,
+            wherecontains(local!statusFilter, local!data.c5),
+            {}
+          )
+        )
+      ),
+      identifiers: {123456781, 123456782, 123456783, 123456784, 123456785, 123456786, 123456787},
+      name: "Employee Tasks",
+      / Maps field labels above to user friendly name /
+      columnConfigs: {
+        a!map(label: "Name",        field: "c0", drilldownField: "dp0", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: "TASK_DETAILS"),
+        a!map(label: "Process",     field: "c3", drilldownField: "dp3", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: "PROCESS_DASHBOARD"),
+        a!map(label: "Status",      field: "c5", drilldownField: "dp5", configuredFormatting: "TASK_STATUS", configuredDrilldown: "PROCESS_DETAILS"),
+        a!map(label: "Assignee",    field: "c8", drilldownField: "dp2", configuredFormatting: "NORMAL_TEXT", configuredDrilldown: null),
+        a!map(label: "Received On", field: "c2", drilldownField: "dp2", configuredFormatting: "DATE_TIME",   configuredDrilldown: null)
+      }
+    }
+  ),
+{% endhighlight %}
+When you adapt this pattern to work for you, you need to remove this entire section (lines 35-73) and replace the pattern's placeholder data with your own data.
+To replace the placeholder data: 
+
+
+Copy and paste the following expression from the commented expression in lines 11-29 of the pattern and use it as the value for local!taskReportData on line 35:
+    ```sail
+      local!taskReportData: a!queryProcessAnalytics(                                       
+        report: cons!TASKS_REPORT,                                   
+        query: a!query(                                              
+          pagingInfo: a!pagingInfo(                                  
+            startIndex: 1,                                           
+            batchSize: -1,                                           
+            sort: a!sortInfo(                                        
+              field: "c2",                                           
+              ascending: false                                       
+            )                                                        
+         ),                                                          
+         filter: a!queryFilter(                                      
+           field: "c5",                                              
+           operator: "in",                                           
+           value: local!statusFilter,                                
+           applyWhen: a!isNotNullOrEmpty(local!statusFilter)         
+         )                                                           
+       )                                                             
+     ),                                                                 
+``
+1. Replacecons!MY_TASKS_REPORT` with the constant that points to your task report that you created in step 2 in the section above. 
+1. To see your changes reflected in the interface preview, click the refresh button.
+
+
+
+appian-style-note
+Clicking TEST forces the local variables in your interface preview to refresh. Do this any time you update a local variable to see your changes reflected in the interface.
+
+To learn more about adapting this pattern to use your own data and reports, see the Task Report tutorial.
+Reference task report columns
+Notice in the new local variable expression that the field parameter values are c5 and c2. This comes from the underlying process report, which identifies each column with a field id. 
+You can see these field ids and which column they refer to in the LOCAL VARIABLES pane in the interface object. This pane displays the query results for the local!taskReportData variable. Simply expand taskReportData, then columnConfigs to see the column configuration parameters for each column in the task report.
+These configurations list the label, field, drilldownField, configuredFormatting, and configuredDrilldown parameters for each column. Looking at this, we can see the field id c2 is for the "Received" column and c5 is for the "Status" column.
+{:.screenshot style="width:50%"}
+You can also use these parameters with fv!item within the a!forEach() function that creates the grid. For example, the pattern uses fv!item.label, fv!item.field, and fv!item.configuredFormatting for formatting the grid columns.
+sail
+...
+a!gridField(
+          label: "My Tasks",
+          labelPosition: "COLLAPSED",
+          data: local!taskReportData.data,
+          columns: a!forEach(
+            items: local!taskReportData.columnConfigs,
+            expression: a!gridColumn(
+!             label: fv!item.label,
+!             sortField: fv!item.field,
+              value: a!localVariables(
+                local!fieldValue: index(fv!row, fv!item.field, {}),
+                /* Display the data based on its configured formatting */
+                a!match(
+!                 value: fv!item.configuredFormatting,
+                  equals: "TASK_STATUS",
+                  then: a!localVariables(
+                    local!status: index(local!taskStatuses, local!fieldValue + 1, {}),
+                    a!richTextDisplayField(
+                      value: {
+                        a!richTextIcon(
+                          icon: index(local!status, "icon", "circle"),
+                          color: index(local!status, "color", "#666666")
+                        ),
+                        "  ",
+                        index(local!status, "name", "Other")
+                      }
+                    )
+                  ),
+...
+You can use this column configuration information to make changes to the task report. For example, you could sort the report by priority (c4) instead of the received date (c2).
+[Line 74-88] Define the local variable to make friendly names for statuses
+This section of the expression creates user-friendly names for each standard task status and maps it to an icon and color. When you adapt this pattern to work with your own data and tasks, you can use all or some of these task statuses, depending on which are most relevant for your workflow.
+{% highlight sail linenos start_line=74 %}
+    / Maps the "c5" / "Status" field values to status names /
+  local!taskStatuses: {
+    a!map(name: "Assigned",               icon: "user-o",             color: "#666666"),
+    a!map(name: "Accepted",               icon: "user-check",         color: "ACCENT"),
+    a!map(name: "Completed",              icon: "check-circle",       color: "POSITIVE"),
+    a!map(name: "Not Started",            icon: "circle-o-large",     color: "#666666"),
+    a!map(name: "Cancelled",              icon: "stop-circle",        color: "#fdb858"),
+    a!map(name: "Paused",                 icon: "pause-circle",       color: "#666666"),
+    a!map(name: "Aborted",                icon: "question-circle",    color: "#666666"),
+    a!map(name: "Cancelled By Exception", icon: "minus-circle",       color: "#fdb858"),
+    a!map(name: "Cancelled By Exception", icon: "times-circle",       color: "NEGATIVE"),
+    a!map(name: "Submitted",              icon: "share",              color: "ACCENT"),
+    a!map(name: "Running",                icon: "spinner",            color: "ACCENT"),
+    a!map(name: "Error",                  icon: "exclamation-circle", color: "NEGATIVE")
+  },
+{% endhighlight %}
+[Line 89-126] Create the status filter
+This section of the expression creates the status filter using a multiple dropdown field. When you adapt this pattern to work with your own data and tasks, change the choice labels and values in the dropdown to match your statuses.
+{% highlight sail linenos start_line=89 %}
+  {
+    a!sectionLayout(
+      label: "Employee Tasks",
+      labelColor: "SECONDARY",
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!multipleDropdownField(
+                  label: "Status",
+                  labelPosition: "COLLAPSED",
+                  placeholder: "All statuses",
+                  choiceLabels: { "Assigned", "Accepted", "Completed", "Not Started" },
+                  choiceValues: enumerate(4),
+                  value: local!statusFilter,
+                  saveInto: local!statusFilter
+                )
+              },
+              width: "MEDIUM"
+            ),
+            a!columnLayout(
+              contents: {
+                a!buttonArrayLayout(
+                  buttons: a!buttonWidget(
+                    icon: "refresh",
+                    value: not(local!refreshTrigger),
+                    saveInto: local!refreshTrigger,
+                    size: "SMALL",
+                    style: "SECONDARY",
+                    accessibilityText: "Refresh task data"
+                  )
+                )
+              }
+            )
+          },
+          marginBelow: "NONE"
+        ),
+{% endhighlight %}
+[Line 127-202] Create the grid
+This section of the expression creates the grid to display tasks, formats the status column, and adds process links to each task. The grid uses the a!forEach() function to loop through all the local variables associated with each placeholder task and display them as a row in the grid.
+Lines 139 use the a!match() function to determine the type of data (either date, status, or text). The e.
+Lines 142 use the then parameter in the match() function to format any values of type TASK_STATUS so that they show the status.
+Lines 156 use the then parameter to format any values of type DATE_TIME so that they show when the task was received.
+Lines 163 use the then parameter to format the process task links for each placeholder task in the grid so that users can select a task and view its details.
+{% highlight sail linenos start_line=127 %}
+                a!gridField(
+          label: "Employee Tasks",
+          labelPosition: "COLLAPSED",
+          data: local!taskReportData.data,
+          columns: a!forEach(
+            items: local!taskReportData.columnConfigs,
+            expression: a!gridColumn(
+              label: fv!item.label,
+              sortField: fv!item.field,
+              value: a!localVariables(
+                local!fieldValue: index(fv!row, fv!item.field, {}),
+                / Display the data based on its configured formatting /
+                a!match(
+                  value: fv!item.configuredFormatting,
+                  equals: "TASK_STATUS",
+                  then: a!localVariables(
+                    local!status: index(local!taskStatuses, local!fieldValue + 1, {}),
+                    a!richTextDisplayField(
+                      value: {
+                        a!richTextIcon(
+                          icon: index(local!status, "icon", "circle"),
+                          color: index(local!status, "color", "#666666")
+                        ),
+                        "  ",
+                        index(local!status, "name", "Other")
+                      }
+                    )
+                  ),
+                  equals: "DATE_TIME",
+                  then: if(
+                    a!isNullOrEmpty(local!fieldValue),
+                    local!fieldValue,
+                    text(local!fieldValue, "MMM D, YYYY, H:MM am/pm")
+                  ),
+                  / Show a process link for task details /
+                  whenTrue: fv!item.configuredDrilldown = "TASK_DETAILS",
+                  then: a!linkField(
+                    links: a!processTaskLink(
+                      label: local!fieldValue,
+                      task: index(fv!row, fv!item.drilldownField, {})
+                    )
+                  ),
+                  / Show username or group name for Assignee field                         /
+                  / Note: For task reports that only show tasks for the current user,      /
+                  / the "Assignee" column can be hidden. Task list can be named "My Tasks" /
+                  whenTrue: fv!item.field = "c8",
+                  then: a!richTextDisplayField(
+                    value: a!forEach(
+                      items: fv!row.c8,
+                      expression: if(
+                        / Check if User, otherwise its a Group /
+                        isusernametaken(fv!item),
+                        a!richTextItem(
+                          text: user(fv!item, "firstName") & " " & user(fv!item, "lastName") & char(10),
+                          link: a!userRecordLink(user: fv!item),
+                          linkStyle: "STANDALONE"
+                        ),
+                        / Adding char(10) adds line breaks to the list of names /
+                        group(fv!item, "groupName") & char(10)
+                      )
+                    )
+                  ),
+                  default: local!fieldValue
+                )
+              ),
+              align: if(fv!item.configuredFormatting = "DATE_TIME", "END", "START")
+            )
+          ),
+          pageSize: 10,
+          borderStyle: "LIGHT",
+          rowHeader: 1
+        )
+      }
+    )
+  }
+)
+{% endhighlight %}

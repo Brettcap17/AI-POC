@@ -1,0 +1,106 @@
+
+layout: function
+title: a!httpFormPart() Function
+space: function_page
+excerpt: "Creates an HTTP form part which can be passed in an integration’s multipart request body."
+category: function_page
+fncname: a!httpFormPart
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: name
+    types: Text
+    description: |
+       The form part name.
+  - keyword: contentType
+    types: Text
+    description: |
+       The form part content type. This can be set to “auto-detect” to automatically detect the content type of a document value.
+  - keyword: value
+    types: Any Type
+    description: |
+       The form part value. If the value is a document, it can be streamed by setting the contentType to “auto-detect”.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+For integrations that have a request body, you can send multiple types of data in a single request by choosing Multipart Form Data (multipart/form-data) for the Content Type.
+Using the form to define the multipart request
+If you have a static number of form parts that don't require additional logic, you can specify values for each part using the form.
+{:.screenshot}
+Using an expression to define the a multipart request
+If you want to use conditional logic or send a dynamic number of form parts, you can select Define all parts with a single expression, and define the form parts using an array of a!httpFormPart() functions. This can be helpful if you have multiple form parts that can be sent as a part of the integration, but some of them are optional.
+
+appian-style-tip
+The output of the expression must be one of the following:
+
+Null.
+Empty brackets: {}.
+A single httpFormData system type, created with a!httpFormPart().
+An array of type httpFormData, created with an array of a!httpFormPart() functions.
+
+
+Example
+Using conditional logic for a multipart request
+The following interface is from an automated application deployment app. When users fill out a request to deploy an application, they can upload up to three different files. However, depending on their needs, they may only need to upload one or two files.
+{:.screenshot}
+The information from the form is passed into an integration that sends the file and text data as multipart form data.
+To configure the integration object for this app, after filling out the Connection information, choose Multipart Form Data (multipart/form-data) in the Request Body section.
+{:.screenshot style="width:60%"}
+Since you need to use conditional logic to determine which files to send with the request, choose Define all parts with a single expression and enter the following expression.
+```sail
+/The application UUID is always sent with the request/
+{
+  a!httpFormPart(
+    name: "applicationUUID",
+    contentType: "text/plain",
+    value: ri!applicationUUID
+  ),
+/ri!applicationFile, ri!propertiesFile, and ri!sqlFile rule inputs are Document data types/
+  if
+  (
+    isnull(ri!applicationFile),
+    {},
+    a!httpFormPart(
+      name: "applicationFile",
+      /Because this is a document, we set the value to "auto-detect"/
+      contentType: "auto-detect",
+      value: ri!applicationFile
+    )
+  ),
+if
+  (
+    isnull(ri!propertiesFile),
+    {},
+    a!httpFormPart(
+      name: "propertiesFile",
+      contentType: "auto-detect",
+      value: ri!propertiesFile
+    )
+  ),
+if
+  (
+    isnull(ri!sqlFile),
+    {},
+    {
+      a!httpFormPart(
+        name: "sqlFile",
+        contentType: "auto-detect",
+        value: ri!sqlFile
+      ),
+      /ri!sqlDataSource rule input is a Text data type/
+      a!httpFormPart(
+        name: "sqlDataSourceName",
+        contentType: "text/plain",
+        value: ri!sqlDataSource
+      )
+    }
+  )
+}
+```

@@ -1,0 +1,36 @@
+
+layout: function
+title: a!recordFilterChoices() Function
+category: function_page
+excerpt: Creates choices of a user filter for an expression-backed record.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!recordFilterChoices
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: choiceLabels
+    types: List of Text String
+    description: |
+      The list of text to be displayed to the user as the filter choices.
+  - keyword: choiceValues
+    types: List of Variant
+    description: |
+      The list of values associated with the available choices.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Record Type Object
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+To use this function in your record type, see User filters for record types that use a web service.
+Since users can save default selections for user filters, try to use expressions that rarely change the choices available. If users save a choice that is not available the next time they load the record, their saved filter selections will be cleared and a warning message will display.
+Example
+sail 
+=a!recordFilterChoices(
+  choiceLabels: {"Active", "Inactive"},
+  choiceValues: {1, 0}
+)

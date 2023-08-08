@@ -1,0 +1,51 @@
+
+layout: pattern
+title: Set the Default Value of an Input on a Start Form
+reftype: sailrecipe
+sr-tags: ["Default Value"]
+excerpt: Display a default value in some form inputs on a start form, and save the value into the process when submitting.
+
+Steps
+
+Create an interface with one rule input called title (Text) and another one called date (Date).
+Enter the following definition for the interface, and save it as sailRecipe.
+In your process model, on the process start form enter the name of your interface in the search box and select it
+Click Yes when the Process Modeler asks, "Do you want to import the rule inputs?"
+This will create parameterized process variables
+On the Variables Tab, give the process variables the following values:
+caseTitle (Text): ="My default text"
+date (Date): =today()
+Save and publish the process model.
+To view the start form in Tempo, add the process model to an application and configure it as an action. Don't forget to publish your application.
+
+Expression
+sail 
+=a!formLayout(
+  label: "Example: Default Value",
+  contents: {
+    a!textField(
+      label: "Case Title",
+      value: ri!title,
+      saveInto: ri!title,
+      required: true
+    ),
+    a!dateField(
+      label: "Date",
+      value: ri!date,
+      saveInto: ri!date,
+      required: true
+    )
+  },
+  buttons: a!buttonLayout(
+    primaryButtons: a!buttonWidget(
+      label: "Submit",
+      submit: true
+    )
+  )
+)
+Test it out
+
+On the start form, don't modify the value of either field, and click the Submit button. Check the value of the process variables, and notice that they have the default value.
+Now modify the value of the text and date fields, and click the Submit button. Check the value of the process variables, and notice that they have the values you entered.
+If you do not see the value you entered, make sure that you selected the Parameter checkbox when you created the process variable.
+To see what happens when the default value is incorrectly configured, remove the default value from the process variable definition. Then update the expression and set the value parameter of the text component to ="Default text from the component". View the form and submit without modifying the text field. Notice that the corresponding process variable does not have the default value.

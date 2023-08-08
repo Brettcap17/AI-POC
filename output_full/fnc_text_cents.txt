@@ -1,0 +1,34 @@
+
+layout: function
+title: cents() Function
+space: function_page
+excerpt: "Converts a number into its value in cents by effectively appending a cent sign to a fixed representation and one comma for every three digits preceding the decimal."
+category: function_page
+fncname: cents
+fncexample: "cents( 123412 )"
+fncresult: "123,412.00¢"
+fnccat: Text
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number of cents to be returned as text.
+  - keyword: decimals
+    types: Number
+    description: |
+      The number of digits after the decimal to display.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+cents(123412) returns 123,412.00¢

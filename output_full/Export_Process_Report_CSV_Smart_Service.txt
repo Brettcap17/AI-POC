@@ -1,0 +1,140 @@
+
+layout: basic
+title: Export Process Report to CSV Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Export Process Reports to CSV Smart Service allows designers to safely export large datasets.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!exportProcessReportToCsv
+fncsubcat: Document_Generation
+parameters:
+  - keyword: report
+    types: Document
+    description: |
+      The process report to query.
+  - keyword: filters
+    types: Any Type
+    description: |
+      (Optional) A set of conditions to apply to the queried data. Can use either a list of a!queryFilter() or a single a!queryLogicalExpression(). When using a list of a!queryFilter(), all filters are combined using the AND operator. User filters saved to the process report are applied before these are.
+  - keyword: context
+    types: Any Type
+    description: |
+      Contains an array of either Group, User, Number (Integer), or Process Model to pass to the report context.
+  - keyword: documentName
+    types: Text
+    description: |
+      The name of the new document that is to be created by this smart service.
+  - keyword: documentDescription
+    types: Text
+    description: (Optional) A brief description of the document.
+  - keyword: saveInFolder
+    types: Folder
+    description: |
+      The folder where the newly created document is to be stored. Applicable and required when creating a new document.
+  - keyword: documentToUpdate
+    types: Document
+    description: |
+      The existing document to update with the exported data. Using this parameter will append new contents at the end of the file. Note: A new version of this document will be created.
+  - keyword: includeHeader
+    types: Boolean
+    description: (Optional) Outputs the field's label in the first row of the document if set to true. Default is true.
+  - keyword: csvDelimiter
+    types: Text
+    description: |
+      (Optional) The field delimiter used to separate fields in the CSV file. Valid values are: "TAB", "COMMA", "SEMICOLON", "SPACE", "PIPE", "CARET". Default is "COMMA".
+  - keyword: onSuccess
+    types: Any Type
+    description: |
+      A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). The document ID of the created/updated document is returned in the fv!newDocument function variable.
+  - keyword: onError
+    types: Any Type
+    description: |
+      A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Document_Generation
+ssicon: Export_Process_Report_to_CSV.png
+ssparentcat: Automation_Services
+
+
+appian-style-note
+This is the new Export Process Report to CSV Smart Service. If you need to export to Excel, use the Export Process Report to Excel Smart Service.
+
+Overview
+The Export Process Report to CSV Smart Service allows designers to safely export large amounts of data from process reports.
+When exporting to CSV, raw values and data are intentionally left alone and unformatted. If formatted values are necessary, please use the Export Process Report to Excel Smart Service instead. It can be used to export data from Appian that can then be imported into other third-party applications. A designer may want to export all data or just updates made within the last day.
+The Smart Service returns a document in a CSV format. 
+Properties
+Export Process Report to CSV Smart Service
+- Category: Document Generation
+- Icon: 
+
+Assignment Options: This smart service can be either attended or unattended (default).
+
+Node inputs
+| Name                     | Data Type      | Description | Required | Multiple |
+|--------------------------|----------------|-------------|----------|----------|
+| Process Report           | Process Report | The process report to query.  | Y        | N |     
+| Filters                  | Any Type       | A set of conditions to apply to the queried data. Can use either a list of a!queryFilter() or a single a!queryLogicalExpression(). When using a list of a!queryFilter(), all filters are combined using the AND operator. Filters saved to the process report are applied before these are applied. | N        | Y  |    
+| Report Context           | Any Type       | Contains an array of either Group, User, Number (Integer), or Process Model to pass to the report context.  | N        | N |     
+| New Document Name        | Text           | The name of the new document that is to be created by this smart service activity. | N        | N  |    
+| New Document Description | Text           | A brief description of the document.  | N        | N  |    
+| Save in Folder           | Folder         | The folder where the newly created document is to be stored. Applicable and required when creating a new document. | N        | N |     
+| Document to Update       | Document       | The existing document to update with the exported data. This can be useful when using the smart service multiple times in the same process model. Using this parameter will append new contents at the end of the file. Note: A new version of this document will be created.                    | N        | N  |    
+| Include header           | Boolean        | Outputs the label of each field in the first row of the document if set to true. Default is true  | N | N   |   
+| CSV Delimiter            | Text           | The field delimiter used to separate fields in the CSV file. Valid values are: "TAB", "COMMA", "SEMICOLON", "SPACE", "PIPE", "CARET". Default is "COMMA".   | N        | N|
+Node outputs
+| Name | Data Type | Description |
+|-|-|-|
+| New Document | Document  | The document generated as a result of executing this smart service. |
+a!exportProcessReportToCsv()
+Exports data from a process report to CSV. This function will only execute inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Document
+Example
+Copy and paste an example into an Appian Expression Editor to experiment with it. 
+You will need to provide a constant to replace both REPORT and TARGET_FOLDER.
+sail 
+a!localVariables(
+  local!exportId,
+  {
+    a!linkField(
+      labelPosition: "COLLAPSED",
+      links: a!dynamicLink(
+        label: "Render CSV File",
+        saveInto: {
+          a!exportProcessReportToCsv(
+            report: cons!REPORT,
+            documentName: "Report " & now(),
+            saveInFolder: cons!TARGET_FOLDER,
+            onSuccess: a!save(
+              local!exportId,
+              fv!newDocument
+            )
+          )
+        }
+      )
+    )
+  }
+) 
+Usage considerations
+The following configurations and expected behavior apply when using the Export Process Report to CSV Smart Service from the Process Modeler:
+
+You may specify either a LogicalExpression or a list of Filters in the Filters parameter but not both. If you wish to specify only one condition, specify a Filter. If you wish to specify more than one condition, use LogicalExpression or use a list of Filters. 
+To create a CSV file with data from different process reports, use multiple nodes of this smart service. You can use the Document to Update when exporting a second process report.
+Due to performance considerations, there is a max row limit of 10,000 rows and a max column limit of 50 columns that can be exported.
+
+Related objects
+Data Types:
+
+Query Filter
+Logical Expression
+
+See also
+
+Export Process Report To Excel Smart Service
+Smart Services Library 

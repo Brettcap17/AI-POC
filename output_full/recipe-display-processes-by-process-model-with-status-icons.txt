@@ -1,0 +1,109 @@
+
+layout: pattern
+title: Display Processes by Process Model with Status Icons
+excerpt: Use an interface to display information about instances of a specific process model.
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Grids
+  - Images
+  - Reports
+
+
+This scenario demonstrates:
+
+How to use a!queryProcessAnalytics() to query process data
+How to display process report data in a grid
+How to use the process report's configured formatting to customize display
+How to us a!forEach() to dynamically create a grid's columns
+
+Setup
+For this recipe, you'll need a constant pointing to a process report and a process model that has been at least started a few times. If you don't have a process model, you can follow the Process Modeling Tutorial. Once you have some processes, you can follow these steps to create a process report with the default columns and associate it with a constant:
+
+In the Build view of your application, click NEW > Process Report.
+Select Create from scratch.
+Name the report Processes for Process Model A.
+Under Report Type, select Process.
+Under Context Type, select Processes by process model.
+Specify a folder to contain the report, and then click Create.
+Open the process report in a new tab. You will see the Choose Process Models dialog open.
+In the Choose Process Models dialog, select the desired process model, and then click OK.
+
+The main expression uses two supporting constants, so let's create them first.
+
+UC_PROCESSES_FOR_PM_REPORT: Constant of type Document whose value is Processes for Process Model A.
+UC_PROCESS_MODEL: Constant of type Process Model whose value is the process you created.
+
+Expression
+sail
+a!localVariables(
+  local!pagingInfo: a!pagingInfo(
+    startIndex: 1,
+    batchSize: -1 
+  ),
+  local!report: a!queryProcessAnalytics(
+    report: cons!UC_PROCESSES_FOR_PM_REPORT,
+    contextProcessModels: {
+      cons!UC_PROCESS_MODEL
+    },
+    query: a!query(
+      pagingInfo: local!pagingInfo
+    )
+  ),
+  a!gridField(
+    label: local!report.name,
+    instructions: local!report.description,
+    data: local!report.data,
+    columns: a!forEach(
+      items: local!report.columnConfigs,
+      expression: a!gridColumn(
+        label: fv!item.label,
+        sortField: fv!item.field,
+        value: if(
+          fv!item.configuredFormatting = "PROCESS_STATUS_ICON",
+          a!imageField(
+            images: choose(
+              /*Process status go from 0-4, so add 1 to index into the choose list */
+              1 + tointeger(index(fv!row, fv!item.field, {})),
+              a!documentImage(
+                document: a!iconIndicator( icon: "PROGRESS_RUNNING" ),
+                altText: "Active",
+                caption: "Active"
+              ),
+              a!documentImage(
+                document: a!iconIndicator( icon: "STATUS_OK" ),
+                altText: "Completed",
+                caption: "Completed"
+              ),
+              a!documentImage(
+                document: a!iconIndicator( icon: "PROGRESS_PAUSED" ),
+                altText: "Paused",
+                caption: "Paused"
+              ),
+              a!documentImage(
+                document: a!iconIndicator( icon: "STATUS_NOTDONE" ),
+                altText: "Cancelled",
+                caption: "Cancelled"
+              ),
+              a!documentImage(
+                document: a!iconIndicator( icon: "STATUS_ERROR" ),
+                altText: "Paused By Exception",
+                caption: "Paused By Exception"
+              )
+            ) ),
+            index(fv!row, fv!item.field)
+        )
+      )
+    ),
+    rowHeader: 1,
+    pageSize: 20
+  )
+)
+Test It Out
+
+Sort and (if you have enough processes) page your grid
+In another window or tab, complete a process and then refresh your interface to see the status change
+
+Notable Implementation Details
+
+This example shows how to specially handle one kind of formatting, but the same pattern can be applied to provide an interface interpretation of other process report configurations.

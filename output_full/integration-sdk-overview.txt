@@ -1,0 +1,27 @@
+
+layout: video
+title: Integration SDK Overview
+title_short: Overview
+topic-group: B
+videodesc: Ever wanted to build a connected system template or UI plugin but didn't know where to start? This hands-on lab is for you. Watch this interactive webinar as Appian experts walk you through everything you need to start creating plugins for low-code developers.
+videolink: 'https://www.youtube.com/embed/kTpDkbNSB2E'
+videotitle: 'Hands-On Lab: Extending Appian with the Integration SDK'
+weight: 100
+
+The Integration SDK gives developers two ways to extend Appian's low-code integration capabilities: Connected System Plug-ins and Component Plug-ins.
+Regardless of your role, the SDK provides great benefits:
+
+For vendors: Create branded, low-code integrations to your platform and ship them with your logo in the Appian AppMarket.
+For partners: Deliver Appian solutions that feature compelling user interfaces and integrations that are easier for designers to modify and extend.
+For teams: Handle complex design challenges to deliver on unique customer requirements.
+
+Connected system plug-ins
+Appian comes with many connected systems that make it easy to integrate with enterprise systems and services using a tailored point-and-click design experience. The Integration SDK gives developers the ability to bring that same low-code experience to backend integrations with additional platforms.
+For more information, see Connected System Plug-ins.
+Component plug-ins
+Appian has a fantastic array of components that can be used to build beautiful and powerful user interfaces. The Integration SDK lets developers create new components that can bring the power of other systems right into their interface object.
+For more information, see:
+- Component Plug-ins: Describes how component plug-ins can be used to extend the capabilities of your interface.
+- Configuration Files: Provides reference information about the configuration files used to define your component plug-in.
+- Package Structure: Describes the required ZIP structure for component plug-ins.
+- JavaScript API: Provides an API reference for JavaScript developers and outlines which components can be used in your interface.

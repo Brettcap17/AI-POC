@@ -1,0 +1,166 @@
+
+layout: function
+title: Edit Group Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: 'The Edit Group smart service allows you to select a group and update any of its available fields, including its name, description, and parent group.'
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!editGroup
+fncsubcat: Identity_Management
+parameters:
+  - keyword: group
+    types: Group
+    description: The group to modify.
+  - keyword: name
+    types: Text
+    description: The name of the group.
+  - keyword: description
+    types: Text
+    description: The description of the group.
+  - keyword: delegatedCreation
+    types: Boolean
+    description: Should administrators of this group be permitted to create additional groups as children? The default value is false.
+  - keyword: parent
+    types: Group
+    description: The group's parent. You must be an administrator of this group.
+  - keyword: membershipPolicy
+    types: Text
+    description: 'The membership policy of the new group. Valid values include CLOSED (default), EXCLUSIVE, AUTOMATIC. See Group Membership Policy for definitions of the membership policies.'
+  - keyword: securityType
+    types: Text)
+    description: 'The security type of the new group. Valid values include PUBLIC (default), PERSONAL, RESTRICTED. See Group Visibility for definitions of the security types.'
+  - keyword: groupPrivacy
+    types: Text
+    description: 'The privacy policy of the new group. Valid values include LOW (default), HIGH. See Group Privacy Policy for definitions of the group privacy rules.'
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Add_Group_Members.png
+ssparentcat: Automation_Services
+
+
+Overview
+{{ page.excerpt }} 
+Permissions needed
+The Edit Group smart service can only be executed by a system administrator or by an administrator of the group. Attempting to run this node without sufficient rights causes an error message to be sent to the process administrator and pauses the process. This also occurs if you attempt to rename a group using an existing name or specify an object that does not exist.
+Attempting to execute this task as a Basic User causes a runtime exception that pauses the process and sends an alert to the Process Administrator.
+Properties
+
+
+Category: Identity Management
+
+
+Icon:  
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+
+Name
+Type
+Required
+Multiple
+Default Value
+Comments
+
+
+
+
+Group
+Group
+Yes
+No
+
+
+
+
+Name
+Text
+Yes
+No
+
+The following characters are not allowed in group names.
+/ \ < > " , . * '
+
+
+Description
+Text
+No
+No
+
+
+
+
+Delegated Creation?
+Integer
+
+No
+0 (No)
+The default values are Yes or No. The integer 1 equals yes. 0 equals no.
+
+
+Parent Group
+Group
+No
+No
+
+The user account that activates this activity must have Administrator rights for the parent group in order to add this new group as a child.
+
+
+Membership Policy
+Number
+Yes
+No
+Closed
+Default value options: Closed, Exclusive, Automatic
+
+
+Visibility
+Number
+Yes
+No
+Public
+Default value options: Public, Personal, Restricted
+
+
+Privacy Policy
+Number
+Yes
+No
+Low
+Default value options: Low, High
+
+
+
+If the activity is run without being assigned to a user (or a group) you must specify values for each of the node inputs listed.
+Selecting a Personal visibility input value sets other associated node input values automatically. Be aware that the node input lists on the Data tab and the dropdown lists displayed task form are not automatically filtered when this happens to show only valid options for the visibility. Any invalid selections (made by you at design time, or by your users at runtime) are ignored when the group is created.
+If the Visibility input is set to Personal, the following settings are configured automatically.
+
+The Group Type input is set to Custom
+No value can be specified for the Parent Group node input.
+The membership policy node input is set to Closed.
+The privacy policy node input is set to High.
+
+a!editGroup()
+The Edit Group smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Save
+Example
+See Create Group Smart Service

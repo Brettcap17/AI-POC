@@ -1,0 +1,38 @@
+
+layout: function
+title: internalize() Function
+space: function_page
+excerpt: "Converts the given externalized string representation of a value to the original value."
+category: function_page
+fncname: internalize
+fncexample: "internalize(externalize(todocument(1)))"
+fncresult: "[Document:1]"
+fnccat: Conversion
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: externalizedText
+    types: Text
+    description: |
+      Externalized representation of a value.
+  - keyword: default
+    types: Any Type
+    description: |
+      Value to return if the text cannot be internalized or an error occurs.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: externalize()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+This function cannot be used with record data. If you use a!toJson() to create a text representation of record data, that JSON can then be cast to a record data type with a!fromJson().
+INCLUDE PAGE: Cast JSON example
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+internalize(externalize(!pv2)) returns user3 where !pv2 is User Mike Smith whose username is user3

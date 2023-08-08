@@ -1,0 +1,53 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldSum() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function returns a sum of values. You can calculate the sum of record fields, related record fields, or literal values of type Number (Integer) or Number (Decimal).
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldSum
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      An array containing any combination of record fields, related record fields, or literal values to be summed. You must have at least two values in the array.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldSum() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Use with other Custom Field functions
+You can use the a!customFieldSum() function in conjunction with other Custom Field functions, like a!customFieldSubtract(), a!customFieldDivide(), or a!customFieldMultiply() to create the calculations you need.
+See the Real-time evaluation recipes for an example.
+Example
+Let's say you want calculate each employee's total salary, which includes their base salary, restricted stock units (RSU), and an annual bonus that is only applied if they qualify. 
+On the Employee record type, you could create a custom record field that evaluates in real-time so you can add the baseSalary field, the related record field rsuDollarAmount, and the related record field annualBonus. However, the annualBonus field will only be included in the calculation when the constant cons!DISCRETIONARY_BONUS is true.
+sail
+a!customFieldSum(
+  value: {
+     recordType!Employee.fields.baseSalary,
+     recordType!Employee.relationships.employeeLevel.fields.rsuDollarAmount,
+     /* If the constant is true, then add a discretionary bonus */
+     if(cons!DISCRETIONARY_BONUS, 
+        recordType!Employee.relationships.employeeLevel.fields.annualBonus,
+        0
+     )
+   }
+)
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you can reference any of the following supported functions in the value parameter of a!customFieldSum():
+
+appian-style-note
+You must reference at least one record field, related record field, or another Custom Field function in the value parameter. 
+
+INCLUDE PAGE: Supported Custom Field Functions Table

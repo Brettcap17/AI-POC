@@ -1,0 +1,48 @@
+
+layout: basic
+title: Troubleshooting a Portal
+weight: 1200
+topic-group: C
+title_short: Troubleshooting
+
+Overview
+If you experience an issue in a published portal, you may need guidance on what to do next. This page provides information on some of the most common errors you may run into in a published portal and how to resolve them.
+This is not a comprehensive list of all possible errors or issues. To learn more about where to find errors, see the Portal Object page.
+
+appian-style-tip
+The error messages on this page are examples. Your actual error message may be different.
+
+Errors encountered in a published portal
+
+
+
+Error Message
+Cause/Next Steps
+
+
+
+
+[title=The requested URL cannot be found, message=The connected system was not found at the requested URL or is refusing to allow access, detail=HTTP/1.1 404 Not Found]There are two different ways to view this error:- If the integration queries info (GET), then the error will be available in the error field of the dictionary returned.- If the integration modifies data (POST), then the error can be accessed by fv!error in the onError parameter of the integration rule.
+Cause: Incorrect API key or credentials in the import customization file, or invalid URL for web API.Next Steps: 1. If you're in a development environment, check your objects to make sure that they are using the correct credentials or API keys. If you're in a staging or production environment, make sure that the credentials or API keys listed in the import customization file that you used for deployment are correct and have permission to your Appian web API.2. Ensure that the integration used by your interface can connect to the Appian web API.
+
+
+File upload authentication failed. No service account was found. A service account is required to upload files.
+Cause: Missing or incorrect service account for file upload.Next Steps: Check that the service account used when publishing your portal has permission to upload documents to the target document folder.
+
+
+Expression evaluation error at function a!queryEntity [line 21]: Connection to the data store entity failed. The connected system data source was not found at the specified URL or is refusing to allow access.
+Cause: Scenarios such as invalid database/data store entity, wrong credentials in the import customization file, or data store entity not verified.Next Steps: 1. Check that the data source is configured correctly and can be connected to from the interface.2. If you're in a development environment, check your objects to make sure that they are using the correct credentials or API keys. If you're in a staging or production environment, make sure that the credentials or API keys listed in the import customization file that you used for deployment are correct and able to authenticate to the data source connected system.
+
+
+Varies based on function or component used. Example:Expression evaluation error at function a!userRecordLink: Invalid function a!recordlink (not available as [])
+Cause: The parent interface or child objects use incompatible functions or components.Next Steps: Ensure all functions and components used in the interface are compatible with Appian Portals and that partially compatible functions are connected using an integration and web API.
+
+
+HTTP Code: 404 Could not find portal interface with uuid: _a-0000e827-7a29-8000-9bd3-011c48011c48_11234
+Cause: A precedent of the portal has been deleted or is missing from this environment. All interface precedents must be included in the environment that is being used to publish the portal.Next Steps: Ensure there are no missing precedents of the portal in the current environment. 
+
+
+Varies depending on error from Google. Example:reCAPTCHA connection failed. Check that proper credentials have been provided in the reCAPTCHA connected system and test the connection.
+Cause: Issue with reCAPTCHA.Next Steps: See Testing, monitoring, and troubleshooting reCAPTCHA for more information.1. Ensure that the reCAPTCHA Site key, API key, and Project ID are correct in the portal object.2. Ensure that your Google project is set up correctly to use reCAPTCHA.
+
+

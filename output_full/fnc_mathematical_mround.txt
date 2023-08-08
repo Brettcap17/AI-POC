@@ -1,0 +1,38 @@
+
+layout: function
+title: mround() Function
+space: function_page
+excerpt: "Rounds the number to the specified multiple."
+category: function_page
+fncname: mround
+fncexample: "mround(2.8888, .01)"
+fncresult: "2.89"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number that will be rounded.
+  - keyword: multiple
+    types: Decimal
+    description: |
+      The multiple to which you want to round the number.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer 
+Usage considerations
+If the nearest lower multiple is as far away as the nearest higher multiple, the number will be rounded up.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+mround(63,8) returns 64 
+See Also
+fixed(): Use this function with mround() to display your desired output. 

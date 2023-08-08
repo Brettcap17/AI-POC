@@ -1,0 +1,141 @@
+
+layout: function
+title: a!sblInvoke() Function
+space: function_page
+excerpt: "Invokes the method in Siebel, returning the result."
+category: function_page
+fncname: a!sblInvoke
+fncsubcat: "Siebel"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: hostname
+    types: Text
+    description: |
+      The application server host of the SAP server (ASHOST). The value can be an IP address, a fully-qualified domain name, or SAP's router string format. For example, "/H/sap_router/W/password/H/app_host/S/service_port".
+  - keyword: port 
+    types: Number (Integer)
+    description: |
+      The port the Siebel server is listening on. For example, 2321.
+  - keyword: enterpriseApp 
+    types: Text
+    description: |    
+      The enterprise application of the target system. For example, "SBA_82".
+  - keyword: appManager 
+    types: Text
+    description: |
+      The active application manager of the target system. For example, "SSEObjMgr_enu".
+  - keyword: language 
+    types: Text
+    description: |
+      The target system language. For example, "enu".
+  - keyword: businessService 
+    types: Text
+    description: |
+      The name of the Siebel Business Service on which to invoke the method.
+  - keyword: method 
+    types: Text
+    description: |
+      The name of the method to invoke.
+  - keyword: parameters 
+    types: Any Type
+    description: |
+      The input parameters for the method, given as a dictionary where the parameter names are the dictionary field names and the parameter values are give as the dictionary field values.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} This function is intended for reads only. To invoke a method that will result in a write to Siebel, use a!sblInvokeWriter.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+The function returns the standard connector result dictionary described in the main Connectors page. 
+If successful, the result field contains a dictionary representation of the result of invoking the Siebel method.
+Examples
+Get number of accounts from Siebel
+The main expression uses a supporting rule, so let's create that first.
+
+parseSeibelInvokeResponse: Parses the data Siebel returns from the invoked method.
+
+Create expression rule parseSeibelInvokeResponse with the following rule input:
+
+response (Text)
+
+Enter the following definition for the rule:
+sail 
+=a!localVariables(
+  local!keys: {
+    "success",
+    "error",
+    "result"
+  },
+  local!resultKeys: {
+    "Value",
+    "Type",
+    "Count",
+    "First RowId"
+  },
+  local!str: extract(ri!response,"[","]"),
+  local!data: split(keyval(local!str,local!keys,":",","),","),
+  local!results: split(keyval(local!data[3],local!resultKeys,{" ="},{"> "}),","),
+  {
+    success: local!data[1],
+    error: local!data[2],
+    result: {
+      value: local!results[1],
+      type: local!results[2],
+      count: local!results[3],
+      firstRowId: local!results[4]
+    }
+  }
+)
+Main expression: 
+sail 
+=load(
+  local!accountInfo: a!sblInvoke(
+    scsExternalSystemKey: cons!SBL_SCS_KEY,
+    usePerUserCredentials: true,
+    hostname: cons!SBL_HOSTNAME,
+    port: cons!SBL_PORT,
+    enterpriseApp: cons!SBL_APP,
+    appManager: cons!SBL_APP_MANAGER,
+    language: cons!SBL_LANGUAGE,
+    businessService: "CUT eSales Order Entry Toolkit Service",
+    method: "GetBCCount",
+    parameters: {
+      'BC Name': "Account",
+      'BusObj Name': "Account"
+    }
+  ), 
+  local!parsedResult: rule!parseSiebelInvokeResponse(local!accountInfo),
+  {
+      a!textField(
+        label: "Count",
+        value: local!accountInfo.result.count,
+        showWhen: toboolean(local!accountInfo.success)
+      ),
+      a!textField(
+        label:"First Row Id",
+        value: local!accountInfo.result.firstRowId,
+        instructions: "businessService: CUT eSales Order Entry Toolkit Service, 
+                      method: GetBCCount,
+                      BC Name: Account, 
+                      BusObj Name: Account",
+        showWhen: toboolean(local!accountInfo.success)
+      ),
+      a!textField(
+        label: "Error",
+        value: local!accountInfo.error,
+        showWhen: not(toboolean(local!accountInfo.success))
+      )
+  }
+)

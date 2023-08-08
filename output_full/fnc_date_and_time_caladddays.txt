@@ -1,0 +1,55 @@
+
+layout: function
+title: caladddays() Function
+space: function_page
+excerpt: "This function adds a given number of working days as designated on the process calendar to a Date and Time value, and returns a Date and Time value that falls within the work time defined in the process calendar."
+category: function_page
+fncname: caladddays
+compatibility: -portal, -om, +pe, +pr
+fncexample: "caladddays(datetime(2011, 12, 13, 12, 0, 0), 0)"
+fncresult: "12/13/2011 12:00 PM GMT"
+fnccat: Date_and_Time
+reftype: function
+parameters:
+  - keyword: start_datetime
+    types: Date and Time
+    description: |
+      The starting Date and Time.
+  - keyword: number
+    types: Integer
+    description: |
+      The number of net working days to be added to the Date and Time.
+  - keyword: calendar_name
+    types: Text
+    description: |
+      This optional parameter accepts the name of a system calendar; otherwise, the default calendar is used.
+
+
+appian-style-tip
+Check out the new Date and Time function a!addDateTime(). It does everything caladddays() does but offers more flexibility. You can also use the new a!subtractDateTime() function to subtract an increment of time from a specified start date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date and Time
+Usage considerations
+General considerations
+This function calculates results across daylight saving time boundaries.
+This function is commonly used in process events, like Start Events or Timer Events.
+Using the start_datetime parameter
+When you pass a non-working day as the start_datetime it adds the desired number of days to the next working day defined on the calendar. 
+Passing a date value casts the parameter to a Date and Time with the value of 12:00 AM GMT for that date.
+Using the number parameter
+The number parameter is limited to one-year's worth of working days (263 days with a default working time setting in the process calendar). The maximum parameter value is 365.
+Using the calendar_name parameter
+Passing a calendar name allows you to calculate working days using an alternate system calendar, if you have multiple calendars configured.
+See also: Process Calendar Settings
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+caladddays(datetime(2011,12,13,12,0,0),0) returns 12/13/2011 12:00 PM GMT +00:00
+In this example, a Date and Time that falls into non-working time is adjusted to the next working time on the process calendar.

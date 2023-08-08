@@ -1,0 +1,63 @@
+
+layout: pattern
+title: Make a Component Required Based on a User Selection
+excerpt: Make a paragraph component conditionally required based on the user selection.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Validation
+
+
+This scenario demonstrates:
+
+How to configure a required parameter of one component based off the interaction of another
+
+Expression
+sail 
+a!localVariables(
+  local!isCritical,
+  local!phoneNumber,
+  a!formLayout(
+    label: "Example: Conditionally Required Field",
+    contents:{
+      a!columnsLayout(
+        columns:{
+          a!columnLayout(
+            contents:{
+              a!checkboxField(
+                label: "Is Mission Critical",
+                choiceLabels: "Check the box if the employee will be on a mission critical team",
+                choiceValues: {true},
+                value: local!isCritical,
+                saveInto: local!isCritical
+              )
+            }
+          ),
+          a!columnLayout(
+            contents:{
+              a!textField(
+                label: "Cell Number",
+                placeholder:"555-456-7890",
+                required: local!isCritical,
+                value: local!phoneNumber,
+                saveInto: local!phoneNumber,
+                validations: if( len(local!phoneNumber) > 12, "Contains more than 12 characters. Please reenter phone number, and include only numbers and dashes", null )
+              )
+            }
+          )
+        }
+      )
+    },
+    buttons:a!buttonLayout(
+      primaryButtons:{
+        a!buttonWidget(
+          label:"Submit",
+          submit: true
+        )
+      }
+    )
+  )
+)
+Test it out
+
+Select the Is Mission Critical checkbox. Notice that the Cell Number field is required.  If the checkbox is not selected but no comments are entered, the user cannot submit the form.

@@ -1,0 +1,851 @@
+
+layout: pattern
+title: Year-Over-Year Report
+excerpt: 'This is a feature-rich, interactive report for sales and profits by products over select periods of time.'
+reftype: pattern
+sr-tags:
+  - Charts
+  - Reports
+  - Formatting
+
+{:.screenshot}
+Design structure
+The main components in this pattern are boxes, styled text, rich text icons, and charts that show a break down of profits, sales, and costs per year, month, and product. The components are organized in side by side layouts nested within columns layouts. 
+The image below displays how the pattern looks on a blank interface with callouts of the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+This pattern introduces a 409-line expression to the interface.
+```sail
+{
+  a!localVariables(
+    / Data for the Profit: Year to Date KPI. The query that replaces this should be aggregated by year, *
+     * then sorted by year in descending order, so that the first element is the current year.           /
+    local!profitKPIDatasubset: a!dataSubset(
+      data: {
+        a!map(orderDate_year: 2019, profit_sum: 200000000.00, targetProfit_sum: 150000000.00),
+        a!map(orderDate_year: 2018, profit_sum: 300000000.00, targetProfit_sum: 150000000.00)
+      }
+    ),
+/* Data for the Sales: Year to Date KPI. The query that replaces this should be aggregated by year,  *
+ * then sorted by year in descending order, so that the first element is the current year.           */
+local!salesKPIDatasubset:  a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, sales_sum: 500000000.00, targetSales_sum: 650000000.00),
+    a!map(orderDate_year: 2018, sales_sum: 425000000.00, targetSales_sum: 650000000.00)
+  }
+),
+
+/* Data for the Cost: Year to Date KPI. The query that replaces this should be aggregated by year,   *
+ * then sorted by year in descending order, so that the first element is the current year.           */
+local!costKPIDatasubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, cost_sum: 50000000.00, targetCost_sum: 25000000.00),
+    a!map(orderDate_year: 2018, cost_sum: 100000000.00, targetCost_sum: 25000000.00)
+  }
+),
+
+/* Variables for the Time Period filter and query */
+local!timePeriodLabels: { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" },
+local!timePeriodValue: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
+local!currentMonth: month(today()),
+local!timePeriodSelection: local!currentMonth,
+local!timeRange: {
+  date(year(today()), local!timePeriodSelection, 1),
+  eomonth(date(year(today()), local!timePeriodSelection, 1), 0)
+},
+
+/* Sample data for card selectors in the TOP SELLING PRODUCTS BY CATEGORY & MONTH section.        *
+ * Substitute with a query on the aggregated numerical field (e.g., sales_sum), and  the          *
+ * category (e.g., `productLine`) and use local!timeRange as the filter value for your date field *
+ * (e.g., `orderDate`).
+
+ * Select a batch size of 3, 5 or 10 and sort in descending order on the numerical field to get   *
+ * only the top values returned.                                                                  */
+local!salesByCategory: a!dataSubset(
+  data: {
+    a!map(productLine: "Beverages", sales_sum: 111562.51),
+    a!map(productLine: "Cereals", sales_sum: 59862.22),
+    a!map(productLine: "Dairy", sales_sum: 43763.59),
+    a!map(productLine: "Culinary", sales_sum: 40160.97),
+    a!map(productLine: "Infant Nutrition", sales_sum: 6284.0)
+  }
+),
+
+/* Default card selection */
+local!selectedCategory: index(local!salesByCategory.data, "productLine")[1],
+
+/* Sample data for the bar chart in the TOP SELLING PRODUCTS BY CATEGORY & MONTH section.       *
+ * Substitute with a query on the aggregated numerical field (e.g., sales_sum), the category    *
+ * (e.g., `productLine`), and items within that categry (e.g., `productCode`), and use          *
+ * local!timeRange as the filter value for for your date field (e.g., `orderDate`).
+
+ * Select a batch size of -1 and sort in descending order on the numerical field to get all     *
+ * items returned.                                                                              */
+local!salesByCategoryAndProduct: a!dataSubset(
+  data: {
+    a!map(productLine: "Beverages", productCode: "Coke", sales_sum: 20535.24),
+    a!map(productLine: "Beverages", productCode: "Pepsi", sales_sum: 13556.06),
+    a!map(productLine: "Beverages", productCode: "Dr Pepper", sales_sum: 12300.55),
+    a!map(productLine: "Beverages", productCode: "Sprite", sales_sum: 5168.4),
+    a!map(productLine: "Beverages", productCode: "Other", sales_sum: 4271.5),
+    a!map(productLine: "Beverages", productCode: "Vitamin Water", sales_sum: 4030.47)
+  }
+),
+
+/* Sample Current Year to Date data for the column chart in the SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE *
+ * section. Substitute with a query on the aggregated numerical field (e.g., sales_sum) and the  *
+ * time field (e.g., `orderDate`). Make sure to use `Current Year to Date` as the date preset    *
+ * in your filter using a date field. Group the data for `orderDate` using the year and          *
+ * month modifiers.                                                                              *
+
+ * Select a batch size of -1 and sort in descending order on the numerical field.                */
+local!tyMonthDataSubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, orderDate_month: 1, sales_sum: 339543.42),
+    a!map(orderDate_year: 2019, orderDate_month: 2, sales_sum: 358186.18),
+    a!map(orderDate_year: 2019, orderDate_month: 3, sales_sum: 374262.76),
+    a!map(orderDate_year: 2019, orderDate_month: 4, sales_sum: 138915.45)
+  }
+),
+
+/* Sample Current Year to Date data for the column chart in the SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE *
+ * section. Substitute with a query on the aggregated numerical field (e.g., sales_sum) and the  *
+ * time field (e.g., `orderDate`). Make sure to use `Previous Year to Date` as the date preset   *
+ * in your filter using a date field. Group the data for `orderDate` using the year and          *
+ * month modifiers.                                                                              *
+
+ * Select a batch size of -1 and sort in descending order on the numerical field.                */
+local!lyMonthDataSubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2018, orderDate_month: 1, sales_sum: 316577.42),
+    a!map(orderDate_year: 2018, orderDate_month: 2, sales_sum: 311419.53),
+    a!map(orderDate_year: 2018, orderDate_month: 3, sales_sum: 205733.73),
+    a!map(orderDate_year: 2018, orderDate_month: 4, sales_sum: 112537.04)
+  }
+),
+
+{
+  a!columnsLayout(
+    columns: {
+      a!columnLayout(
+        contents: {
+          a!boxLayout(
+            label: "Profit: Year to Date",
+            contents: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: {dollar(index(local!profitKPIDatasubset.data, "profit_sum")[1], 0)},
+                          size: "LARGE",
+                          style: "STRONG"
+                        )
+                      }
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                        " ",
+                        a!richTextItem(
+                          text: {dollar(index(local!profitKPIDatasubset.data, "targetProfit_sum")[1], 0)},
+                          color: "SECONDARY",
+                          size: "MEDIUM"
+                        )
+                      }
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "BOTTOM",
+                stackWhen: {
+                  "PHONE",
+                  "TABLET_LANDSCAPE",
+                  "DESKTOP_NARROW"
+                }
+              )
+            },
+            marginBelow: "STANDARD"
+          )
+        }
+      ),
+      a!columnLayout(
+        contents: {
+          a!boxLayout(
+            label: "Sales: Year to Date",
+            contents: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: {dollar(index(local!salesKPIDatasubset.data, "sales_sum")[1], 0)},
+                          size: "LARGE",
+                          style: "STRONG"
+                        )
+                      }
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                        " ",
+                        a!richTextItem(
+                          text: {dollar(index(local!salesKPIDatasubset.data, "targetSales_sum")[1], 0)},
+                          color: "SECONDARY",
+                          size: "MEDIUM"
+                        )
+                      }
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "BOTTOM",
+                stackWhen: {
+                  "PHONE",
+                  "TABLET_LANDSCAPE",
+                  "DESKTOP_NARROW"
+                }
+              )
+            },
+            marginBelow: "STANDARD"
+          )
+        }
+      ),
+      a!columnLayout(
+        contents: {
+          a!boxLayout(
+            label: "Cost: Year to Date",
+            contents: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: {dollar(index(local!costKPIDatasubset.data, "cost_sum")[1], 0)},
+                          size: "LARGE",
+                          style: "STRONG"
+                        )
+                      }
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                        " ",
+                        a!richTextItem(
+                          text: {dollar(index(local!costKPIDatasubset.data, "targetCost_sum")[1], 0)},
+                          color: "SECONDARY",
+                          size: "MEDIUM"
+                        )
+                      }
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "BOTTOM",
+                stackWhen: {
+                  "PHONE",
+                  "TABLET_LANDSCAPE",
+                  "DESKTOP_NARROW"
+                }
+              )
+            },
+            marginBelow: "STANDARD"
+          )
+        }
+      )
+    },
+    stackWhen: {
+      "PHONE",
+      "TABLET_PORTRAIT"
+    }
+  ),
+  a!columnsLayout(
+    columns: {
+      a!columnLayout(
+        contents: {
+          a!richTextDisplayField(
+            value: {
+              a!richTextHeader(
+                text: "TOP SELLING PRODUCTS BY CATEGORY & MONTH",
+                size: "SMALL"
+              )
+            }
+          ),
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!dropdownField(
+                    label: "Time Period",
+                    labelPosition: "ABOVE",
+                    choiceLabels: rdrop(local!timePeriodLabels, 12 - local!currentMonth),
+                    choiceValues: rdrop(local!timePeriodValue, 12 - local!currentMonth),
+                    value: local!timePeriodSelection,
+                    saveInto: {local!timePeriodSelection}
+                  ),
+                  a!textField(labelPosition: "COLLAPSED", readOnly: true),
+                  a!forEach(
+                    items: local!salesByCategory.data,
+                    expression: a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: a!richTextItem(
+                                  text: index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                                  style: "STRONG"
+                                )
+                              )
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: dollar(fv!item.sales_sum, 0),
+                                    size: "MEDIUM"
+                                  )
+                                },
+                                align: "RIGHT"
+                              ),
+                              width: "MINIMIZE"
+                            )
+                          },
+                          alignVertical: "MIDDLE"
+                        )
+                      },
+                      link: if(
+                        local!selectedCategory = index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                        {},
+                        a!dynamicLink(
+                          value: index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                          saveInto: local!selectedCategory
+                        )
+                      ),
+                      style: if(
+                        local!selectedCategory = index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                        "ACCENT",
+                        "NONE"
+                      ),
+                      marginBelow: "STANDARD"
+                    )
+                  )
+                },
+                width: "NARROW_PLUS"
+              ),
+              a!columnLayout(
+                contents: {
+                  {
+                    a!barChartField(
+                      categories: index(local!salesByCategoryAndProduct.data, "productCode"),
+                      series: {
+                        a!chartSeries(
+                          label: "Total Sales",
+                          data: index(local!salesByCategoryAndProduct.data, "sales_sum")
+                        )
+                      },
+                      stacking: "NORMAL",
+                      showLegend: false,
+                      showTooltips: true,
+                      colorScheme: "SUNSET"
+                    )
+                  }
+                },
+                width: "AUTO"
+              )
+            }
+          )
+        }
+      ),
+      a!columnLayout(
+        contents: {
+          a!richTextDisplayField(
+            value: {
+              a!richTextHeader(
+                text: "SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE",
+                size: "SMALL"
+              )
+            }
+          ),
+          a!columnChartField(
+            categories: a!forEach(
+              items: local!tyMonthDataSubset.data,
+              expression: text(
+                date(
+                  fv!item.orderDate_year,
+                  fv!item.orderDate_month,
+                  1
+                ),
+                "mmmm"
+              )
+            ),
+            series: {
+              a!chartSeries(
+                label: "Previous Year to Date Sales",
+                data: index(local!lyMonthDataSubset.data, "sales_sum", null)
+              ),
+              a!chartSeries(
+                label: "Current Year to Date Sales",
+                data: index(local!tyMonthDataSubset.data, "sales_sum", null)
+              )
+            },
+            stacking: "NONE",
+            showLegend: true,
+            showTooltips: true,
+            labelPosition: "ABOVE",
+            colorScheme: "SUNSET"
+          )
+        }
+      )
+    },
+    stackWhen: {
+      "PHONE",
+      "TABLET_PORTRAIT",
+      "TABLET_LANDSCAPE"
+    }
+  )
+}
+
+)
+}
+```
+[Line 1-108] Define local variables and data subsets
+The first section of this pattern defines all of the local variables and data that make up the report's display. 
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    / Data for the Profit: Year to Date KPI. The query that replaces this should be aggregated by year, *
+     * then sorted by year in descending order, so that the first element is the current year.           /
+    local!profitKPIDatasubset: a!dataSubset(
+      data: {
+        a!map(orderDate_year: 2019, profit_sum: 200000000.00, targetProfit_sum: 150000000.00),
+        a!map(orderDate_year: 2018, profit_sum: 300000000.00, targetProfit_sum: 150000000.00)
+      }
+    ),
+/* Data for the Sales: Year to Date KPI. The query that replaces this should be aggregated by year,  *
+ * then sorted by year in descending order, so that the first element is the current year.           */
+local!salesKPIDatasubset:  a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, sales_sum: 500000000.00, targetSales_sum: 650000000.00),
+    a!map(orderDate_year: 2018, sales_sum: 425000000.00, targetSales_sum: 650000000.00)
+  }
+),
+
+/* Data for the Cost: Year to Date KPI. The query that replaces this should be aggregated by year,   *
+ * then sorted by year in descending order, so that the first element is the current year.           */
+local!costKPIDatasubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, cost_sum: 50000000.00, targetCost_sum: 25000000.00),
+    a!map(orderDate_year: 2018, cost_sum: 100000000.00, targetCost_sum: 25000000.00)
+  }
+),
+
+/* Variables for the Time Period filter and query */
+local!timePeriodLabels: { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" },
+local!timePeriodValue: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
+local!currentMonth: month(today()),
+local!timePeriodSelection: local!currentMonth,
+local!timeRange: {
+  date(year(today()), local!timePeriodSelection, 1),
+  eomonth(date(year(today()), local!timePeriodSelection, 1), 0)
+},
+
+/* Sample data for card selectors in the TOP SELLING PRODUCTS BY CATEGORY & MONTH section.        *
+ * Substitute with a query on the aggregated numerical field (e.g., sales_sum), and  the          *
+ * category (e.g., `productLine`) and use local!timeRange as the filter value for your date field *
+ * (e.g., `orderDate`).
+
+ * Select a batch size of 3, 5 or 10 and sort in descending order on the numerical field to get   *
+ * only the top values returned.                                                                  */
+local!salesByCategory: a!dataSubset(
+  data: {
+    a!map(productLine: "Beverages", sales_sum: 111562.51),
+    a!map(productLine: "Cereals", sales_sum: 59862.22),
+    a!map(productLine: "Dairy", sales_sum: 43763.59),
+    a!map(productLine: "Culinary", sales_sum: 40160.97),
+    a!map(productLine: "Infant Nutrition", sales_sum: 6284.0)
+  }
+),
+
+/* Default card selection */
+local!selectedCategory: index(local!salesByCategory.data, "productLine")[1],
+
+/* Sample data for the bar chart in the TOP SELLING PRODUCTS BY CATEGORY & MONTH section.       *
+ * Substitute with a query on the aggregated numerical field (e.g., sales_sum), the category    *
+ * (e.g., `productLine`), and items within that categry (e.g., `productCode`), and use          *
+ * local!timeRange as the filter value for for your date field (e.g., `orderDate`).
+
+ * Select a batch size of -1 and sort in descending order on the numerical field to get all     *
+ * items returned.                                                                              */
+local!salesByCategoryAndProduct: a!dataSubset(
+  data: {
+    a!map(productLine: "Beverages", productCode: "Coke", sales_sum: 20535.24),
+    a!map(productLine: "Beverages", productCode: "Pepsi", sales_sum: 13556.06),
+    a!map(productLine: "Beverages", productCode: "Dr Pepper", sales_sum: 12300.55),
+    a!map(productLine: "Beverages", productCode: "Sprite", sales_sum: 5168.4),
+    a!map(productLine: "Beverages", productCode: "Other", sales_sum: 4271.5),
+    a!map(productLine: "Beverages", productCode: "Vitamin Water", sales_sum: 4030.47)
+  }
+),
+
+/* Sample Current Year to Date data for the column chart in the SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE *
+ * section. Substitute with a query on the aggregated numerical field (e.g., sales_sum) and the  *
+ * time field (e.g., `orderDate`). Make sure to use `Current Year to Date` as the date preset    *
+ * in your filter using a date field. Group the data for `orderDate` using the year and          *
+ * month modifiers.                                                                              *
+
+ * Select a batch size of -1 and sort in descending order on the numerical field.                */
+local!tyMonthDataSubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2019, orderDate_month: 1, sales_sum: 339543.42),
+    a!map(orderDate_year: 2019, orderDate_month: 2, sales_sum: 358186.18),
+    a!map(orderDate_year: 2019, orderDate_month: 3, sales_sum: 374262.76),
+    a!map(orderDate_year: 2019, orderDate_month: 4, sales_sum: 138915.45)
+  }
+),
+
+/* Sample Current Year to Date data for the column chart in the SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE *
+ * section. Substitute with a query on the aggregated numerical field (e.g., sales_sum) and the  *
+ * time field (e.g., `orderDate`). Make sure to use `Previous Year to Date` as the date preset   *
+ * in your filter using a date field. Group the data for `orderDate` using the year and          *
+ * month modifiers.                                                                              *
+
+ * Select a batch size of -1 and sort in descending order on the numerical field.                */
+local!lyMonthDataSubset: a!dataSubset(
+  data: {
+    a!map(orderDate_year: 2018, orderDate_month: 1, sales_sum: 316577.42),
+    a!map(orderDate_year: 2018, orderDate_month: 2, sales_sum: 311419.53),
+    a!map(orderDate_year: 2018, orderDate_month: 3, sales_sum: 205733.73),
+    a!map(orderDate_year: 2018, orderDate_month: 4, sales_sum: 112537.04)
+  }
+),
+
+{% endhighlight %}
+[Line 110-259] Display profit, sales, and cost boxes
+This section is the first of two columns layouts which make up the display for the report. This first section contains three boxes that display profit, sales, and cost for the year to date. Inside the boxes are styled text and rich text icons that show the current amount met and the target amount for each category. 
+{% highlight sail linenos start_line=110 %}
+{
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!boxLayout(
+                label: "Profit: Year to Date",
+                contents: {
+                  a!sideBySideLayout(
+                    items: {
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextItem(
+                              text: {dollar(index(local!profitKPIDatasubset.data, "profit_sum")[1], 0)},
+                              size: "LARGE",
+                              style: "STRONG"
+                            )
+                          }
+                        )
+                      ),
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                            " ",
+                            a!richTextItem(
+                              text: {dollar(index(local!profitKPIDatasubset.data, "targetProfit_sum")[1], 0)},
+                              color: "SECONDARY",
+                              size: "MEDIUM"
+                            )
+                          }
+                        ),
+                        width: "MINIMIZE"
+                      )
+                    },
+                    alignVertical: "BOTTOM",
+                    stackWhen: {
+                      "PHONE",
+                      "TABLET_LANDSCAPE",
+                      "DESKTOP_NARROW"
+                    }
+                  )
+                },
+                marginBelow: "STANDARD"
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!boxLayout(
+                label: "Sales: Year to Date",
+                contents: {
+                  a!sideBySideLayout(
+                    items: {
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextItem(
+                              text: {dollar(index(local!salesKPIDatasubset.data, "sales_sum")[1], 0)},
+                              size: "LARGE",
+                              style: "STRONG"
+                            )
+                          }
+                        )
+                      ),
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                            " ",
+                            a!richTextItem(
+                              text: {dollar(index(local!salesKPIDatasubset.data, "targetSales_sum")[1], 0)},
+                              color: "SECONDARY",
+                              size: "MEDIUM"
+                            )
+                          }
+                        ),
+                        width: "MINIMIZE"
+                      )
+                    },
+                    alignVertical: "BOTTOM",
+                    stackWhen: {
+                      "PHONE",
+                      "TABLET_LANDSCAPE",
+                      "DESKTOP_NARROW"
+                    }
+                  )
+                },
+                marginBelow: "STANDARD"
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!boxLayout(
+                label: "Cost: Year to Date",
+                contents: {
+                  a!sideBySideLayout(
+                    items: {
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextItem(
+                              text: {dollar(index(local!costKPIDatasubset.data, "cost_sum")[1], 0)},
+                              size: "LARGE",
+                              style: "STRONG"
+                            )
+                          }
+                        )
+                      ),
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: {
+                            a!richTextIcon(icon: "bullseye", color: "SECONDARY"),
+                            " ",
+                            a!richTextItem(
+                              text: {dollar(index(local!costKPIDatasubset.data, "targetCost_sum")[1], 0)},
+                              color: "SECONDARY",
+                              size: "MEDIUM"
+                            )
+                          }
+                        ),
+                        width: "MINIMIZE"
+                      )
+                    },
+                    alignVertical: "BOTTOM",
+                    stackWhen: {
+                      "PHONE",
+                      "TABLET_LANDSCAPE",
+                      "DESKTOP_NARROW"
+                    }
+                  )
+                },
+                marginBelow: "STANDARD"
+              )
+            }
+          )
+        },
+        stackWhen: {
+          "PHONE",
+          "TABLET_PORTRAIT"
+        }
+      ),
+{% endhighlight %}
+[Line 260-409] Display time period filter, product options, and charts
+The second columns layout contains the time period dropdown, product cards, and sales charts. The components in this section should be used as examples of how you can create an interactive report. For the components to conditionally change displays and values based on user selection, substitute your own queries and data. 
+The time period dropdown shows one way to create a filter in your report using local variables to define filter values. With a function filter, the card and chart values would change based on the time period selected.
+The product cards are configured using the a!forEach() function with styled text and dynamic link components. In a completed report, these cards with dynamic links would change the chart series values based on your selected product.
+Lastly, the bar and column charts are configured using local variables to define their categories and series. Notice that both charts use the same color scheme to create a consistent style for the interface.
+{% highlight sail linenos start_line=260 %}
+a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!richTextDisplayField(
+                value: {
+                  a!richTextHeader(
+                    text: "TOP SELLING PRODUCTS BY CATEGORY & MONTH",
+                    size: "SMALL"
+                  )
+                }
+              ),
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!dropdownField(
+                        label: "Time Period",
+                        labelPosition: "ABOVE",
+                        choiceLabels: rdrop(local!timePeriodLabels, 12 - local!currentMonth),
+                        choiceValues: rdrop(local!timePeriodValue, 12 - local!currentMonth),
+                        value: local!timePeriodSelection,
+                        saveInto: {local!timePeriodSelection}
+                      ),
+                      a!textField(labelPosition: "COLLAPSED", readOnly: true),
+                      a!forEach(
+                        items: local!salesByCategory.data,
+                        expression: a!cardLayout(
+                          contents: {
+                            a!sideBySideLayout(
+                              items: {
+                                a!sideBySideItem(
+                                  item: a!richTextDisplayField(
+                                    labelPosition: "COLLAPSED",
+                                    value: a!richTextItem(
+                                      text: index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                                      style: "STRONG"
+                                    )
+                                  )
+                                ),
+                                a!sideBySideItem(
+                                  item: a!richTextDisplayField(
+                                    labelPosition: "COLLAPSED",
+                                    value: {
+                                      a!richTextItem(
+                                        text: dollar(fv!item.sales_sum, 0),
+                                        size: "MEDIUM"
+                                      )
+                                    },
+                                    align: "RIGHT"
+                                  ),
+                                  width: "MINIMIZE"
+                                )
+                              },
+                              alignVertical: "MIDDLE"
+                            )
+                          },
+                          link: if(
+                            local!selectedCategory = index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                            {},
+                            a!dynamicLink(
+                              value: index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                              saveInto: local!selectedCategory
+                            )
+                          ),
+                          style: if(
+                            local!selectedCategory = index(index(local!salesByCategory.data, "productLine"), fv!index, ""),
+                            "ACCENT",
+                            "NONE"
+                          ),
+                          marginBelow: "STANDARD"
+                        )
+                      )
+                    },
+                    width: "NARROW_PLUS"
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      {
+                        a!barChartField(
+                          categories: index(local!salesByCategoryAndProduct.data, "productCode"),
+                          series: {
+                            a!chartSeries(
+                              label: "Total Sales",
+                              data: index(local!salesByCategoryAndProduct.data, "sales_sum")
+                            )
+                          },
+                          stacking: "NORMAL",
+                          showLegend: false,
+                          showTooltips: true,
+                          colorScheme: "SUNSET"
+                        )
+                      }
+                    },
+                    width: "AUTO"
+                  )
+                }
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!richTextDisplayField(
+                value: {
+                  a!richTextHeader(
+                    text: "SALES PERFORMANCE: YEAR TO DATE VS. PREVIOUS YEAR TO DATE",
+                    size: "SMALL"
+                  )
+                }
+              ),
+              a!columnChartField(
+                categories: a!forEach(
+                  items: local!tyMonthDataSubset.data,
+                  expression: text(
+                    date(
+                      fv!item.orderDate_year,
+                      fv!item.orderDate_month,
+                      1
+                    ),
+                    "mmmm"
+                  )
+                ),
+                series: {
+                  a!chartSeries(
+                    label: "Previous Year to Date Sales",
+                    data: index(local!lyMonthDataSubset.data, "sales_sum", null)
+                  ),
+                  a!chartSeries(
+                    label: "Current Year to Date Sales",
+                    data: index(local!tyMonthDataSubset.data, "sales_sum", null)
+                  )
+                },
+                stacking: "NONE",
+                showLegend: true,
+                showTooltips: true,
+                labelPosition: "ABOVE",
+                colorScheme: "SUNSET"
+              )
+            }
+          )
+        },
+        stackWhen: {
+          "PHONE",
+          "TABLET_PORTRAIT",
+          "TABLET_LANDSCAPE"
+        }
+      )
+    }
+  )
+}
+{% endhighlight %}

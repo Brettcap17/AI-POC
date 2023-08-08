@@ -1,0 +1,92 @@
+
+layout: basic
+title: Google Drive
+topic-group: A
+weight: 701
+
+Overview
+The Google Drive connected system allows you to easily manage files and folders in Google Drive using OAuth 2.0 Authorization Code (per user).
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Google Drive connected system has the following properties:
+| Field             | Description                  |
+|-------------------|-----------------------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Client ID     | Required. This value is available in the downloaded credentials |
+| Client Secret | Required/Sensitive. This value is available in the downloaded credentials  |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+Click AUTHORIZE to use the provided configuration information to authorize the designer in a new window.  See OAuth 2.0: Authorization Code Grant for more details.
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|Upload File | Upload an Appian document to Google Drive | WRITE |
+|Create Folder | Create a folder in Google Drive | WRITE |
+|Create Google Doc | Create a Google Doc file in Google Drive from user input text | WRITE |
+|List Folder Contents | List files and folders within a Google Drive folder | READ |
+|Query Drive | Search using specified query within Google Drive | READ |
+|Copy File | Create a copy of the file and add it to a specified folder | WRITE |
+|Download File | Retrieve a file from Google Drive and download to Appian | WRITE |
+|Manage File Location | Move a file between folders within Google Drive | WRITE |
+|Find File | List files and folders matching a full text search | READ |
+Upload File
+Upload an Appian document to Google Drive.
+Upload File is a WRITE type integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Create Folder
+Create a folder in Google Drive.
+Create Folder is a WRITE type integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Create Google Doc
+Create a Google Doc file in Google Drive from user input text.
+Create Google Doc is a WRITE type integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+List Folder Contents
+List files and folders within a Google Drive folder.
+Find File Metadata property names in Google documentation.
+{:.screenshot}
+Query Drive
+Search using specified query within Google Drive.
+Find File Metadata property names in Google documentation.
+{:.screenshot}
+Copy File
+Create a copy of the file and add it to a specified folder.
+Copy File is a WRITE type integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Download File
+Retrieve a file from Google Drive and download to Appian.
+Download File is a WRITE type integration.  To prevent against duplicate document creation, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Manage File Location
+Move a file between folders within Google Drive.
+Manage File Location is a WRITE type integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Find File
+List files and folders matching a full text search.
+Find File Metadata property names in Google documentation.
+{:.screenshot}
+How to generate new credentials for Google Drive
+To generate new credentials:
+
+Create a Google Cloud Platform Project that has Drive API services enabled.
+Set up the OAuth Consent.
+Name: Your Name
+Add the following scopes:
+../auth/drive
+../auth/drive.metadata
+../auth/drive.appdata
+
+
+Authorized Domains: <YOUR_ENVIRONMENT>.appiancloud.com
+
+
+Create Credentials.
+OAuth 2.0 client IDs > Create a Client ID > Create OAuth client ID
+Application Type: Web Application
+Name: <NAME>
+Authorized JavaScript origins: <leave empty>
+Authorized redirect URIs: https://<YOUR_ENVIRONMENT>.appiancloud.com/suite/oauth/callback
+
+
+Download your credentials from APIs & Services > Credentials.

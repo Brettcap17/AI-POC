@@ -1,0 +1,110 @@
+
+layout: pattern
+title: Use Validation Groups for Buttons with Multiple Validation Rules
+excerpt: 'Present two buttons to the end user that, based on the selection, will validate only after a particular button is clicked.'
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Validation
+
+{:.screenshot}
+This scenario demonstrates how to use validation groups in an interface. 
+Expression
+sail 
+a!localVariables(
+  /*
+   * All of these local variables could be combined into the employee CDT and passed into
+   * a process model via a rule input
+   */
+  local!firstName,
+  local!lastName,
+  local!department,
+  local!title,
+  local!phoneNumber,
+  local!startDate,
+  /*  
+  * local!isFutureHire is a placeholder varaiable used to set the validation group trigger.
+  * When isFutureHire is set to true, a user can skip phone number and start date.
+  */
+  local!isFutureHire,
+  local!isNumberValid:if( len( local!phoneNumber ) <= 12, true, false ),
+  a!formLayout(
+    label: "Example: Add Employee with Conditional Requiredness",
+    contents: {
+      a!textField(
+        label: "First Name",
+        value: local!firstName,
+        saveInto: local!firstName,
+        required: true
+      ),
+      a!textField(
+        label: "Last Name",
+        value: local!lastName,
+        saveInto: local!lastName,
+        required: true
+      ),
+      a!dropdownField(
+        label: "Department",
+        choiceLabels: { "Corporate", "Engineering", "Finance", "Human Resources", "Professional Services", "Sales" },
+        placeholder: "-- Please Select a Department -- ",
+        choiceValues: { "Corporate", "Engineering", "Finance", "Human Resources", "Professional Services", "Sales" },
+        value: local!department,
+        saveInto: local!department,
+        required: true
+      ),
+      a!textField(
+        label: "Title",
+        value: local!title,
+        saveInto: local!title,
+        required: true
+      ),
+      /*
+     * When a field has a validation group set, the required parameter and any validations
+     * are deferred until the validation group is triggered by a button or link.
+     *
+     * Multiple validations are added to the phone number field by adding a local variable
+     * that turns off required and validation group, but triggers a standard validation
+     * upon unfocus from the field (rather than the onboard button click).
+     */
+      a!textField(
+        label: "Phone Number",
+        placeholder: "555-456-7890",
+        value: local!phoneNumber,
+        saveInto: local!phoneNumber,
+        required: local!isNumberValid,
+        requiredMessage:"A phone number is needed if you're going to onboard this employee",
+        validations: if(local!isNumberValid,"","Please enter a valid telephone less than 12 digits long."),
+        validationGroup:if(local!isNumberValid,"Future_Hire","")
+      ),
+      a!dateField(
+        label: "Start Date",
+        value: local!startDate,
+        saveInto: local!startDate,
+        required:true,
+        requiredMessage:"A start date is needed if you're going to onboard this employee",
+        validationGroup:"Future_Hire"
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Submit as Future Hire",
+          value: true,
+          saveInto: local!isFutureHire,
+          submit: true
+        ),
+        a!buttonWidget(
+          label: "Onboard Employee Now",
+          value: false,
+          saveInto: local!isFutureHire,
+          submit: true,
+          validationGroup: "Future_Hire"
+        )
+      }
+    )
+  )
+)
+Test it out
+
+Click Submit As Future Hire without entering any information. Notice that the standard required message is displayed for four of the six fields.
+Enter values for First Name, Last Name, Department, and Title. Click Onboard Employee Now. Notice the two remaining fields will show a custom validation error.

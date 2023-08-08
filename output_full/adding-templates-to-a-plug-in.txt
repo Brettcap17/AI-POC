@@ -1,0 +1,68 @@
+
+layout: "basic"
+title: "Add Templates"
+topic-group: "C"
+
+This page explains how to add new templates to your connected system plug-in.  Examples provided show adding a new connected system, integration, or client API.
+Adding a new connected system template
+To create a new connected system and add it to your plug-in, follow the steps below:
+
+Create a new Java class that extends SimpleConnectedSystemTemplate.
+Specify a template ID using the @TemplateId annotation. Specify a name and version.
+This ID should be unique across your entire plug-in.
+We recommend using your fully qualified class name.
+The version parameter is only supported on connected systems and has no effect on integrations or client APIs.
+Add the template to appian-plugin.xml.
+
+xml
+  <connected-system-template key="com.mycorp.templates.MyConnectedSystemTemplate" name="MyConnectedSystem" class="com.mycorp.templates.MyConnectedSystemTemplate">
+    <!-- Integration Templates and Client APIs go here -->
+  </connected-system-template>
+
+key needs to be unique to your plug-in. We recommend using the same value you used for your template ID
+name is displayed in logs and errors
+See examples for how to implement API key and OAuth.
+
+Adding a new integration template
+To create a new integration and add it to your plug-in, follow the steps below:
+
+Ensure you have a connected system template to associate to.
+Create a new Java class that extends SimpleIntegrationTemplate.
+Specify a template ID using the @TemplateId annotation. Specify a name only.
+This ID should be unique across your entire plug-in.
+We recommend using your fully qualified class name.
+The version parameter is only supported on connected systems and has no effect on integrations or client APIs.
+Specify a request policy using @IntegrationTemplateRequestPolicy.
+If your template definitely has side effects, use a "WRITE" policy. This will make all integrations created with this template act as a Smart Service.
+If your template may or may not have side effects, depending on its configuration, use a "READ_AND_WRITE" policy. Note: This will put the responsibility of determining the policy on the designer.
+Otherwise, if your template definitely will not have side effects, use a "READ" policy.
+Add the template to appian-plugin.xml under an existing connected system tag
+
+xml
+  <connected-system-template key="com.mycorp.templates.MyConnectedSystemTemplate" name="MyConnectedSystem" class="com.mycorp.templates.MyConnectedSystemTemplate">
+    <integration-template key="com.mycorp.templates.MyIntegrationTemplate" name="MyIntegration" class="com.mycorp.templates.MyIntegrationTemplate" />
+  </connected-system-template>
+
+key needs to be unique to your plug-in. We recommend using the same value you used for your template ID
+name is displayed in logs and errors
+See the How To on Creating and Using a Configuration for how to set up the integration for your needs.
+
+Adding a new client API
+To create a new client API and add it to your plug-in:
+
+Ensure you have a connected system to associate to.
+Create a new Java class that extends SimpleClientApi.
+Specify a template ID using the @TemplateId annotation. Specify a name only.
+This ID should be unique across your entire plug-in.
+We recommend using your fully qualified class name.
+The version parameter is only supported on connected systems and has no effect on integrations or client APIs.
+Add the template to appian-plugin.xml under an existing connected system tag.
+
+xml
+  <connected-system-template key="com.mycorp.templates.MyConnectedSystemTemplate" name="MyConnectedSystem" class="com.mycorp.templates.MyConnectedSystemTemplate">
+    <client-api key="com.mycorp.templates.MyClientApi" name="MyClientApi" class="com.mycorp.templates.MyClientApi" />
+  </connected-system-template>
+
+key needs to be unique to your plug-in. We recommend using the same value you used for your template ID
+name is displayed in logs and errors
+See Client APIs for more information.

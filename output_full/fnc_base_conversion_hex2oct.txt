@@ -1,0 +1,39 @@
+
+layout: function
+title: hex2oct() Function
+space: function_page
+excerpt: "Converts a Hex number as text to an Octal number as text."
+category: function_page
+fncname: hex2oct
+compatibility: ~portal, ~om, +pe, +pr
+fncexample: "hex2oct(64)"
+fncresult: "144"
+fnccat: Base_Conversion
+reftype: function
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+      Hex value as text to convert, such as A5.
+  - keyword: place
+    types: Number
+    description: |
+      The number of places in the result.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the value parameter
+Invalid digits for a value parameter, including signs, are ignored.
+Using the place parameter
+The default value for place is however many places are necessary to represent the number.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+hex2oct(64) returns 144

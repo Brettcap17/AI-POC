@@ -1,0 +1,32 @@
+
+layout: function
+title: product() Function
+space: function_page
+excerpt: "Returns the product of the specified numbers."
+category: function_page
+fncname: product
+fncexample: "product(10, 2)"
+fncresult: "20"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: factor
+    types: Decimal Array
+    description: |
+      A number or set of numbers that will be factored into the final product.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+If all parameter values are integers, the function will return an integer.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+product(2,3,4) returns 24 

@@ -1,0 +1,29 @@
+
+layout: basic
+title: AND Gateway
+excerpt: 'The AND Gateway directs all incoming workflow(s) to all of the possible branches. If more than one incoming path is used, all incoming paths must reach the node before the process can continue.'
+reftype: smart_service
+sscat: Gateways
+ssicon: And_Gateway.png
+ssparentcat: Workflow
+
+
+
+
+ The AND Gateway directs all incoming workflow(s) to all of the possible branches. If more than one incoming path is used, all incoming paths must reach the node before the process can continue. It is also used to join all incoming paths.
+This node allows you to execute a specific set of tasks in parallel, before moving on to the next stage of your process.
+Configuring an AND gateway
+
+On the tools Palette of the Process Modeler, select the Workflow folder to expand the node categories.
+Select the Gateways node category. The Gateway nodes display.
+Select the AND node, and drag it onto the canvas.
+In the Process Modeler, click the Connect button  on the toolbar.
+Drag the Connect tool from a connection point x on a prior node (or nodes) to a connection point on the AND node.
+Drag the tool from a connection point x on the AND node to connection points on the nodes that represent your optional paths. The AND node requires that you have at least one incoming and one outgoing path.
+Open the AND Properties dialog.
+Right-click on an AND node on the designer canvas. Select Properties. — or —
+Double-click an AND node on the Canvas. The Configure AND dialog is displayed.
+Click the General tab.
+Enter a descriptive name for the node, by typing it in the Name field. When additional languages are enabled, a tab for each language appears on the General tab. If so, the Name field must be populated for each language.
+
+No conditions are applied to the incoming or outgoing paths of an AND Gateway node.

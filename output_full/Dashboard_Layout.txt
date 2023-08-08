@@ -1,0 +1,24 @@
+
+layout: function
+title: Dashboard Layout [Deprecated]
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+fncname: a!dashboardLayout
+fnccat: "一Deprecated一"
+depver: 18.2
+scdisplayname: Dashboard Layout
+related_patterns_mods: hide
+parameters:
+  - keyword: contents
+    name: Contents 
+    types: Any Type Array
+    description: |
+      Components and layouts to display in the dashboard body. 
+  - keyword: showWhen
+    name: Visibility 
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+
+The dashboard layout has been deprecated, and will be removed in a future release of Appian. Instead, wrap your components in an array {}. For information about the dashboard layout, see the Appian 19.4 documentation.

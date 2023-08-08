@@ -1,0 +1,15 @@
+
+layout: function
+title: a!dashboardLayout_17r1 Component [Deprecated]
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+fncname: a!dashboardLayout_17r1
+depver: 18.2
+fnccat: "一Deprecated一"
+fncsyntax: "a!dashboardLayout_17r1( [firstColumnContents], [secondColumnContents] )"
+scdisplayname: Dashboard Layout 17.1
+evolved_fncname: a!dashboardLayout
+evolved_reason: "Replaced firstColumnContents and secondColumnContents with contents. Now supports greater than two-column layout."
+
+The dashboard layout 17r1 has been deprecated, and will be removed in a future release of Appian. Instead, wrap your components in an array {}. For information about the dashboard layout, see the Appian 19.4 documentation.

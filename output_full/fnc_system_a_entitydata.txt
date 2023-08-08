@@ -1,0 +1,29 @@
+
+layout: function
+title: a!entityData() Function
+category: function_page
+excerpt: 'Creates an Entity Data for use with a!writeToMultipleDataStoreEntities()'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!entityData
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: entity
+    types: DataStoreEntity
+    description: |
+      This field holds a single Data Store Entity value in which the data to be updated is stored.
+  - keyword: data
+    types: Any Type
+    description: |
+      This field holds multiple Any Type values to store in the entity.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: EntityData 
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+EntityData

@@ -1,0 +1,128 @@
+
+layout: function
+title: a!sectionLayout_17r1 Component
+category: function_page
+compatibility: -crf
+evolved_fncname: a!sectionLayout
+evolved_reason: Replaced firstColumnContents and secondColumnContents with contents. Now supports greater than two-column layout.
+excerpt: Displays one or two columns of related components beneath a section title on an interface.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!sectionLayout_17r1
+fncsubcat: Layouts
+fncsyntax: 'a!sectionLayout_17r1( [label] , [firstColumnContents], [secondColumnContents], [validations], [validationGroup], [isCollapsible], [isInitiallyCollapsed] )'
+reftype: sailcomponent
+scdisplayname: Section Layout 17.1
+space: sail_component
+
+Section layout component
+Function: a!sectionLayout_17r1()
+Displays one or two columns of related components beneath a section title on an interface.
+See also: Dashboard, Form
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Label 
+ label 
+ Text 
+ Optional text to display as the section's title. 
+
+
+ Column 1 Contents 
+ firstColumnContents 
+ Any Type Array 
+ Values that define the contents for the first column in the interface. 
+
+
+ Column 2 Contents 
+ secondColumnContents 
+ Any Type Array 
+ Values that define the contents for the second column in the interface. 
+
+
+ Validations 
+ validations 
+ Text or Validation Message Array 
+ Validation errors displayed below the section title. Configured using a text array or an array with a mix of text and Validation Message using a!validationMessage(message, validateAfter). 
+
+
+ Validation Group 
+ validationGroup 
+ Text 
+ When present, the section is only validated when a button in the same validation group is clicked. 
+
+
+ Collapsible 
+ isCollapsible 
+ Boolean 
+ Determines if an expand/collapse control appears in the section label. Default is false. 
+
+
+ Initially Collapsed 
+ isInitiallyCollapsed 
+ Boolean 
+ Determines if the section is collapsed when the interface first loads. Default is false. 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true. 
+
+
+Usage considerations
+
+If you put a two-column section within a column of a two-column dashboard, the section's columns collapse into one.
+If the Column 2 Contents argument is null, the content for the first column displays as in a single-column layout with no space left for where the second column would display.
+Sections that contain validation messages are not collapsible regardless of the setting of the Collapsible parameter. For example, if a validation is triggered when the form loads, then that section is expanded, even if you have specified true for the Initially Collapsed parameter.
+If you have nested section layouts, any validations on an inner section will appear in the outer section.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Two columns within a section
+sail 
+a!sectionLayout_17r1(
+  label: "Customers for Review",
+  firstColumnContents: {
+    a!textField(
+      label: "Customer",
+      value: "John Smith",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Status",
+      value: "Prospective",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Priority",
+      value: "High",
+      readOnly: true
+    )
+  },
+  secondColumnContents: {
+    a!textField(
+      label: "Customer",
+      value: "Michael Johnson",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Status",
+      value: "Prospective",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Priority",
+      value: "Medium",
+      readOnly: true
+    )
+  }
+)
+Displays the following:
+{:.screenshot}

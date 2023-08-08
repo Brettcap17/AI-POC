@@ -1,0 +1,32 @@
+
+layout: function
+title: degrees() Function
+space: function_page
+excerpt: "Converts the measure(s) of the specified angle(s) from radians to degrees."
+category: function_page
+fncname: degrees
+fncexample: "degrees(pi()/2)"
+fncresult: "90"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: angle_in_radians
+    types: Decimal
+    description: |
+      An angle measure or array of angle measures that will be converted into degrees.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can only be used for values between 0 and 2π (~6.286).
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+degrees(180) returns 10313.240312354817

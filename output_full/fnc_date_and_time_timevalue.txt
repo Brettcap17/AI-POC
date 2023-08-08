@@ -1,0 +1,30 @@
+
+layout: function
+title: timevalue() Function
+space: function_page
+excerpt: "Converts the given time into an equivalent interval."
+category: function_page
+fncname: timevalue
+fncexample: "timevalue(time(14, 20, 23))"
+fncresult: "2:20 PM"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: time_text
+    types: Text
+    description: |
+      The time of day to be converted into an interval.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Time
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+timevalue(time(14,20,23)) returns 2:20 PM

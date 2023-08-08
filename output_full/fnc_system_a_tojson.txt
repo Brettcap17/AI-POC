@@ -1,0 +1,33 @@
+
+layout: function
+title: a!toJson() Function
+category: function_page
+excerpt: Converts a value into a JSON string.
+fnccat: System
+fncexample: 'a!toJson(a!pagingInfo(startIndex: 1, batchSize: 10))'
+fncname: a!toJson
+fncresult: '{"startIndex":1,"batchSize":10}'
+compatibility: -crf, -portal, -om
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      The value to convert into a JSON string.
+  - keyword: removeNullOrEmptyFields
+    types: Boolean
+    description: |
+      Determines whether fields with values that are null, empty strings, or empty arrays are removed from the JSON output. Default: false.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the value parameter
+The value parameter must be a CDT, a dictionary, a map, a record, or a list.
+Using the removeNullOrEmptyField parameter
+The removeNullOrEmptyFields parameter removes all fields with values that are null, empty strings, or empty arrays from the generated JSON request body. This is important for certain web services, such as those that follow the OData protocol. Some web services treat fields with null values differently from fields that aren't included in the request body at all. Omitting a field may mean "don't modify the field," while sending a null value for that field would mean "write a null value to the field."
+The behavior of removeNullOrEmptyFields can also be leveraged for integrations that send a JSON request body by selecting the checkbox labeled Remove fields with null or empty values from generated JSON.

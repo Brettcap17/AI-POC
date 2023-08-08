@@ -1,0 +1,22 @@
+
+layout: "basic"
+title: "Internationalization"
+topic-group: "Core Concepts"
+weight: 400
+
+Appian has users across the globe who speak many different languages. Your component will have the broadest appeal if it supports the same languages as the rest of Appian. This page explains how to internationalize your component to support additional languages and other locale specific behaviors.
+Designer translations
+When developers build an interface they rely on your component's name and description and its parameter names and descriptions to configure it successfully. Component plug-ins make it easy to provide this information in their native language using standard internationalization bundles for component and parameter properties. At minimum you must provide values for the en_US locale.
+User translations
+When users interact with your component as part of a task, record, or report they expect it to match the rest of the interface. That means any labels or text in your code should be translated according to the user's language setting.
+Unlike Designer properties where there's a standard configuration provided, you'll need to manage user translations in your component. Exactly how you do this will depending on whether you're using a JavaScript framework like React, a third-party library, or just plain JavaScript.
+
+In all cases, start by getting the user's language setting using the Appian.getLocale method. This returns the locale code. For example: en-US for English (United States), or es for Spanish (Mexico).
+Most frameworks and libraries expect a locale string as a configuration parameter, input parameter, or as part of a filename reference. Determine what your implementation requires and pass in the user's code to specify the language at run-time.
+For example, the Box Content Uploader expects the locale string to be passed in the URL when loading the library script: https://cdn01.boxcdn.net/platform/elements/9.1.0/**en-US**/uploader.js
+If you're using a third-party library it's likely to already support a specific set of languages. You should match the languages supported by Appian to the languages supported by the library, and then pick a default (For example: en-US) for any language that the library doesn't support.
+There may be a difference in the expected format of the language code and the locale string, and you may need to convert the values for some locales.
+For example: Appian's Spanish language code is es, but the Box Content Uploader supports Spanish using the es-ES locale (note the use of both lanugage and region codes).
+
+Other locale-driven behaviors
+In addition to language, a user's locale also controls their date and time formats and even the direction that text should flow on the screen (For example: Arabic (ar) is written right-to-left). As with user translations, you should use the code returned by the Appian.getLocale method to provide an experience tailored to their locale.

@@ -1,0 +1,30 @@
+
+layout: function
+title: avedev() Function
+space: function_page
+excerpt: "Returns the average deviation of the specified number(s)."
+category: function_page
+fncname: avedev
+fncexample: "avedev(1, 2, 3, 4)"
+fncresult: "1"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A number or array of numbers to include in the set on which the average deviation will be calculated.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+avedev(1,2,3,4) returns 1

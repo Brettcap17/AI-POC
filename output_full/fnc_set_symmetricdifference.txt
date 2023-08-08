@@ -1,0 +1,35 @@
+
+layout: function
+title: symmetricdifference() Function
+space: function_page
+excerpt: "Returns the values unique to two arrays but are not in the intersection of them."
+category: function_page
+fncname: symmetricdifference
+fncsubcat: Set
+fncexample: "symmetricdifference({10, 20, 30}, {20, 30, 40})"
+fncresult: "{10, 40}"
+fnccat: Array
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: array1
+    types: Any Type Array
+    description: |
+      Array of values.
+  - keyword: array2
+    types: Any Type Array
+    description: |
+      Array of values.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+symmetricdifference({1, 2, 3, 4}, {3, 4, 5, 6}) returns 1, 2, 5, 6

@@ -1,0 +1,159 @@
+
+layout: pattern
+title: Filter the Data in a Grid
+excerpt: 'Configure a user filter for your read-only grid that uses a record type as the data source. When the user selects a value to filter by, update the grid to show the result.'
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Grids
+  - Filtering
+  - Records
+
+{:.screenshot}
+Filter the rows in a grid
+User filters on your read-only grid allow users to select a filter and return only the records that match the filter value. When you use a record type as the data source for your read-only grid, there are two ways to configure user filters on the grid.
+In Design Mode, you can quickly and easily bring any user filters configured in the record type into your grid. In Expression Mode, you can  use the filter parameter in the a!recordData() function to manually configure a user filter for a specific grid. This type of user filter is considered single-use because it is not configured in the record type.
+The patterns on this page demonstrate both methods for configuring user filters on your grid. 
+Applying a filter from the record type
+Walk through the steps below to bring a user filter configured on a record type into your read-only grid.
+Replace the Employee record type used in this example with a record type in your environment. Be sure there is at least one user filter configured on your record type.
+To add a user filter from your record type to the grid: 
+
+appian-style-note
+This example will not evaluate in your test interface and should only be used as a reference.
+
+
+In the Build view of your application, click NEW > Interface.
+From the COMPONENTS PALETTE, drag and drop the READ-ONLY GRID component onto your interface.
+From the DATA section in the COMPONENT CONFIGURATION pane, select Record Type as your Data Source.
+In the Search record types field, enter the Employee record type. Note: Replace Employee with the name of your record type.
+From the RECORD LIST section in the COMPONENT CONFIGURATION pane, select the Department user filter in the User Filter dropdown. Note: Replace Department with the name of the user filter configured on your record type.
+
+The Department user filter is applied to the grid. When the user selects a specific department, the grid will only display the records that match the filter value. 
+{:.screenshot}
+You can test the grid by selecting a title from the filter dropdown. Notice that only the employee records that match the selected title are visible in the grid. The result displays on page 1 even if the user was previously on a different page number.
+See Create a Record Type for more information about configuring user filters on a record type and Configuring the Read-Only Grid for more information about configuring a read-only grid.   
+Manually creating a filter on the grid
+This pattern demonstrates how to use a!gridField() to configure a read-only grid and manually configure a user filter dropdown for the grid. 
+{:.screenshot}
+Use the pattern in this example as a template to configure a user filter for a specific grid only. If you plan to reuse the user filter across multiple read-only grids, it is best practice to configure the user filter in the record type. This allows you to quickly and easily bring the filter into any grid that uses the record type as the data source. 
+Expression
+The expression pattern below shows you how to: 
+
+Manually configure a user filter for a specific grid only.   
+Use a!localVariables to store the filter value a user selects.
+Use a!dropdownField() to configure a filter dropdown for the grid. 
+
+
+appian-style-note
+If you plan to reuse a user filter across multiple read-only grids, it is best practice to configure the user filter in the record type. This allows you to quickly and easily bring the filter into any grid that uses the record type as the data source. See Applying a filter from the record type
+
+```sail
+a!localVariables(
+  / In your application, replace the values used in local!titles with a 
+   * constant that stores the filter values you want to use in your grid. 
+   * Then use cons! to reference the constant in 
+   * local!titles. /
+  local!titles: {"Analyst", "Consultant", "Director", "Manager", "Sales Associate", "Software Engineer"},
+/ Use a local variable to hold the name of the title filter the user
+   * selects in the filter dropdown. This example, uses 
+   * local!selectedTitle /
+  local!selectedTitle,
+a!sectionLayout(
+       contents: {
+         a!columnsLayout(
+           columns: {
+             a!columnLayout(
+               contents: {
+                 a!richTextDisplayField(
+                   label: "",
+                   labelPosition: "COLLAPSED",
+                   value: {
+                     a!richTextItem(
+                       / We used ampersand (&) to concatenate the title 
+                        * text we want to display at the top of the grid. 
+                        * When the user selects a title filter in the 
+                        * dropdown list, the grid will display "ALL 
+                        *  EMPLOYEES". If no filter 
+                        * is selected, the grid * will display "ALL 
+                        * EMPLOYEES". /
+                       text: {
+                         "All"& " "&if(isnull(local!selectedTitle),"EMPLOYEE", upper(local!selectedTitle))&"S"
+                       },
+                   size: "MEDIUM_PLUS",
+                   style: {
+                     "STRONG"
+                   }
+                 )
+               }
+             ),
+             a!dropdownField(
+               label: "Title",
+               labelPosition: "ABOVE",
+               placeholder: "-- Filter By Title --",
+               choiceLabels: local!titles,
+               choiceValues: local!titles,
+               value: local!selectedTitle,
+               saveInto: local!selectedTitle
+             )
+           },
+           width: "MEDIUM"
+         )
+       }
+     ),
+     a!gridField(
+       labelPosition: "ABOVE",
+       data: a!recordData(
+         recordType: recordType!Employee,
+         filters: a!queryFilter(
+           field: recordType!Employee.fields.title,
+           operator: if(isnull(local!selectedTitle), "not null", "="),
+           value: local!selectedTitle
+         )
+       ),
+       columns: {
+         a!gridColumn(
+           label: "Name",
+           sortField: recordType!Employee.fields.lastName,
+           value: a!linkField(
+             links: a!recordLink(
+               label: fv!row[recordType!Employee.fields.firstName] & " " & fv!row[recordType!Employee.fields.lastName],
+               recordType: {
+                 recordType!Employee
+               },
+               identifier: fv!row[recordType!Employee.fields.lastName]
+             )
+           ),
+           width: "1X"
+         ),
+         a!gridColumn(
+           label: "Title",
+           sortField: recordType!Employee.fields.title,
+           value: fv!row[recordType!Employee.fields.title],
+           width: "1X"
+         ),
+         a!gridColumn(
+           label: "Department",
+           sortField: recordType!Employee.fields.department,
+           value: fv!row[recordType!Employee.fields.department],
+           width: "1X"
+         )
+       },
+       pageSize: 10,
+       showSearchBox: false,
+       showRefreshButton: false,
+    )
+  }
+)
+
+)
+```
+Test the filter and grid
+
+After entering the expression pattern in your interface, click SAVE CHANGES.
+Click TEST to refresh your interface and test the grid features. 
+To filter the grid, select a title from the dropdown. Notice that only the employee records that match the selected title are visible in the grid.
+
+{:.screenshot}
+
+Select "Filter By Title" from the dropdown. All employees will return to the grid.

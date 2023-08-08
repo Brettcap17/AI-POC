@@ -1,0 +1,121 @@
+
+layout: basic
+title: Send Message Event
+excerpt: 'In a process, a Send Message event can be used to generate a message that is made available to all Receive Message events (which are actively listening for messages). Messages sent to events that are not active are discarded.'
+notice: cloud_only
+reftype: smart_service
+sscat: Events
+ssicon: Send_Message_Event.png
+ssparentcat: Workflow
+
+Overview
+
+
+
+In a process, a Send Message event can be used to generate a message that is made available to all Receive Message events (which are actively listening for messages). Messages sent to events that are not active (either paused, yet to be activated, passed in the process flow, or in an unpublished process model) are discarded.
+
+appian-style-note
+System administrators must configure JMS messaging to enable this feature.
+Process-to-process messaging is enabled by default for Appian Cloud sites.
+
+Configuring a Send Message Event
+You can configure the Send Message Event to send messages from a process to any of the following:
+
+Specific Process
+Receive Message Event within a Process Model
+Specific Process Model [Deprecated]
+
+
+appian-style-tip
+As a Messaging Best Practice, we recommending sending an event message to a specific process, since sending the message to a process model results in the message being sent to all processes created from that model.
+
+Sending a message to a specific process
+The content within a message is transferred from the Send Message event to a Receive Message event through mappings. Mappings can be created within a Send Message event to store information, while mappings created in a Receive Message event may be used to retrieve information from messages.
+When you need to send a message to a specific process instance, follow these steps:
+
+Open the properties dialog on any Send Message event. This applies to End Events with send message triggers or escalations.
+Click the Data tab. Ensure that the Message Destination on the Setup tab is left blank.
+On the Data tab, enter the process ID that you want to send a message to in the Value field for the DestinationProcessID mapping. You can select a process variable or use an expression to specify the values you need to pass.
+
+In the Optional Text field, type the information you want to include in the body of the message. This field allows you to specify data values using the Expression Editor, which can be read by expressions in the Receive Message event.
+
+appian-style-note
+All active Receive Message Events within the process specified by DestinationProcessID are triggered by the Send Message Event. Messages sent through the Send Message event are only available to active Receive Message nodes in running processes. If no Receive Message events are active in the destination process model, the message sent is lost.
+
+
+
+Click OK.
+
+Click File > Save & Publish.
+
+To target a specific Receive Message event within the process, complete the following:
+
+On the Data tab of the Edit Send Message Event dialog, create a new custom property by clicking New Mapping.
+Enter a name and value for the new mapping that identifies the message to be sent and save the process model.
+Open the Edit Receive Message Event dialog for the target Receive Message Event.
+On the Setup tab, click Import Custom Properties and import the custom mapping you created for the Send Message node.
+
+Set the value of the condition in the Receive Message event to match the value in the Send Message event custom mapping.
+{:.screenshot}
+
+
+Sending a message to a Receive Message Event
+To send a message to a Receive Message event, follow these steps:
+{:screenshot}
+
+Open the properties dialog on any Send Message event. This applies to End Events with send message triggers or escalations.
+Click the Setup tab. 
+Click Directory....
+Navigate to a process model, then click on it. Only process models that have a Receive Message event configured will be available for selection. 
+Click Select next to the destination Receive Message event.
+Click OK.
+Click File > Save & Publish.
+
+Message information
+Messages can contain two types of custom information: custom properties and a message body.
+Importing custom properties
+All mappings that have been configured using events in process models to which you have at least Editor level access can be reused by selecting this option. 
+To import mappings from a previously configured event:
+
+Click Import Custom Properties. The Message Properties dialog is displayed from which you can navigate through the Process Models navigation tree. 
+Select a process model to display the events configured within the process model. 
+Select an event to import the mappings from that event. 
+Click OK.
+
+Message body
+Apart from mappings, you can also enter additional text as part of the message that is generated. Additional text can be entered directly into the provided text, or it can be entered using the Expression Editor. Like email messages, in the message body you can specify key-value pairs and other text, which can then be extracted using the Expression Editor in a Receive Message event. Also, using the Expression Editor, you can use the insertquestions function to pose questions. Then the answers to these questions can be retrieved in a Receive Message event using the extractanswers function.
+Extract function
+Text entered within a message body can be extracted using the extract function in the Expression Editor, which requires you to specify the text that is to be searched and the delimiters within the text. It returns all content enclosed within the delimiters in the text. The message body, can be referenced in the expression editor using the msg!body property. 
+Other Expression Editor functions that facilitate information-transfer between events in a process model include: 
+- insertkey
+- insertkeyval
+- insertquestions
+- keyval
+- extractanswers.
+
+appian-style-note
+Since the Send Message event is used to generate a message (and produce an action), it cannot be used to create an exception flow.
+
+Sending messages from an End Event or Escalation
+In addition to sending JMS messages from the Send Message Event node, you can send messages from an End Event or from an escalation.
+Add a Send Message Event to an End Event
+
+
+Open the Configure End Event dialog using one of two methods.
+
+Right-click an End Event node on the canvas and point to Results. The Setup option appears. Click Setup.— or —
+Double-click an End Event node on the canvas.
+
+
+
+Click the Results tab.
+
+Click the Send Message link. A Send Message row is added to the events list.
+Type a name for the event in the Name column.
+Click the Configure link in the Setup column. (This link changes to Edit, if the trigger was added previously.)
+
+Send a message event from an escalation
+Learn how to escalate a task.
+Usage considerations
+Limitations
+You cannot use a record data type in this event. This means you cannot reference a process variable of type record data type, use a record field reference, or use a record type constructor; otherwise, an error will occur.

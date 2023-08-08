@@ -1,0 +1,198 @@
+
+layout: pattern
+title: Dynamic Inputs
+excerpt: Use the dynamic inputs pattern to allow users to easily add or remove as many values as needed.
+reftype: pattern
+sr-tags:
+  - Inputs
+  - Dynamic Links
+
+{:.screenshot style="width:60%"}
+Design structure
+This page will break down this expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are columns layouts, side-by-side layouts, dynamic links, and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot style="width:60%"}
+Pattern expression
+When you drag and drop the dynamic inputs pattern onto your interface, 81 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!contractNumbers: {""},
+    a!columnsLayout(
+      columns: a!columnLayout(
+        contents: {
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              a!richTextItem(
+                text: "Contract Number(s)",
+                style: "STRONG"
+              )
+            }
+          ),
+          a!forEach(
+            items: local!contractNumbers,
+            expression: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!textField(
+                      label: "Contract Number" & " " & fv!index,
+                      labelPosition: "COLLAPSED",
+                      placeholder: "123456789",
+                      value: fv!item,
+                      saveInto: fv!item,
+                      refreshAfter: "UNFOCUS",
+                      validations: {}
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "times",
+                          altText: "Remove number",
+                          link: a!dynamicLink(
+                            saveInto: a!save(
+                              local!contractNumbers, remove(local!contractNumbers, fv!index)
+                            )
+                          ),
+                          linkStyle: "STANDALONE"
+                        )
+                      },
+                      showWhen: count(local!contractNumbers) > 1
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "MIDDLE"
+              )
+            }
+          ),
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: a!richTextItem(
+              text: {
+                a!richTextIcon(
+                  icon: "plus",
+                  altText: "plus"
+                ),
+                " ",
+                "Add contract number"
+              },
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(local!contractNumbers, append(local!contractNumbers, ""))
+                }
+              ),
+              linkStyle: "STANDALONE"
+            ),
+            accessibilityText: "Clicking this link will add another contract number input above."
+          )
+        },
+        width: "NARROW_PLUS"
+      )
+    )
+  )
+}
+[Line 1-3] Define the local variable
+The local variable at the top of the expression is used to contain the contract number value entered by the user.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!contractNumbers: {""},
+{% endhighlight %}
+[Line 4-15] Start the columns layouts
+This section starts the columns layout and displays a rich text label for the contract number text field.
+{% highlight sail linenos start_line=4 %}
+    a!columnsLayout(
+      columns: a!columnLayout(
+        contents: {
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              a!richTextItem(
+                text: "Contract Number(s)",
+                style: "STRONG"
+              )
+            }
+          ),
+{% endhighlight %}   
+[Line 16-55] Define a!forEach()
+This section:
+- Contains the text field for the contract number input.
+- Defines a rich text dynamic link to remove a text field. 
+These components are wrapped in the a!forEach() function so that you can add or remove as many text fields as needed without having to define the expression for each component individually.
+{% highlight sail linenos start_line=16 %}
+          a!forEach(
+            items: local!contractNumbers,
+            expression: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!textField(
+                      label: "Contract Number" & " " & fv!index,
+                      labelPosition: "COLLAPSED",
+                      placeholder: "123456789",
+                      value: fv!item,
+                      saveInto: fv!item,
+                      refreshAfter: "UNFOCUS",
+                      validations: {}
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "times",
+                          altText: "Remove number",
+                          link: a!dynamicLink(
+                            saveInto: a!save(
+                              local!contractNumbers, remove(local!contractNumbers, fv!index)
+                            )
+                          ),
+                          linkStyle: "STANDALONE"
+                        )
+                      },
+                      showWhen: count(local!contractNumbers) > 1
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "MIDDLE"
+              )
+            }
+          ),
+{% endhighlight %}
+[Lines 56-81] Define the add contract number rich text display
+This section defines the rich text dynamic link to add a contract number. 
+{% highlight sail linenos start_line=56 %}
+        a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: a!richTextItem(
+              text: {
+                a!richTextIcon(
+                  icon: "plus",
+                  altText: "plus"
+                ),
+                " ",
+                "Add contract number"
+              },
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(local!contractNumbers, append(local!contractNumbers, ""))
+                }
+              ),
+              linkStyle: "STANDALONE"
+            ),
+            accessibilityText: "Clicking this link will add another contract number input above."
+          )
+        },
+        width: "NARROW_PLUS"
+      )
+    )
+  )
+}
+{% endhighlight %}

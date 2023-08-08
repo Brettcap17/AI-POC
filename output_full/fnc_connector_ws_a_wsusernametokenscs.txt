@@ -1,0 +1,28 @@
+
+layout: function
+title: a!wsUsernameTokenScs() Function
+space: function_page
+excerpt: "Constructs a WsUsernameTokenScs object for use with a!wsConfig."
+category: function_page
+fncname: a!wsUsernameTokenScs
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: systemKey
+    types: Text
+    description: |
+      The key of the corresponding external system in the secure credentials store. Credentials associated with this external system will be retrieved.
+  - keyword: usePerUser
+    types: Boolean
+    description: |
+      If true, the current user's credentials for the external system will be used. If false, the system-wide credentials for the external system will be used.    
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} This object will cause the credentials to be retrieved from the secure credentials store at runtime.
+See also: Secure Credentials Store
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

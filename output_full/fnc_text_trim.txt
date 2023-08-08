@@ -1,0 +1,30 @@
+
+layout: function
+title: trim() Function
+space: function_page
+excerpt: "Removes all unnecessary spaces from the text."
+category: function_page
+fncname: trim
+fncexample: "trim(\"    this text needs trimming    \")"
+fncresult: "this text needs trimming"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The string of text from which unnecessary spaces are to be removed.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Only single spaces between words are considered necessary.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+trim("    this text needs trimming    ") returns this text needs trimming

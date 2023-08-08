@@ -1,0 +1,486 @@
+
+layout: pattern
+title: Document List
+excerpt: Use the document list items pattern to display a list of documents that can be searched and filtered. This pattern uses a combination of cards and rich text to show an easy to navigate list of documents of different types.
+reftype: pattern
+sr-tags:
+  - Documents
+
+{:.screenshot}
+Design structure
+This page will break down this expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are card layouts, side by side layouts, and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the document list pattern onto your interface, 227 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!documents: {
+      a!map(name: "Proof of Identity", fileName: "bowan_driver_license.jpg",   uploadDate: "August 4",  size: "89KB",  type: "image"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_aug2018.pdf", uploadDate: "August 4",  size: "102KB", type: "pdf"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_jul2018.pdf", uploadDate: "August 4",  size: "103KB", type: "pdf"),
+      a!map(name: "Bank Statement",    fileName: "bowan_checking_aug2018.doc", uploadDate: "August 4",  size: "92KB",  type: "word"),
+      a!map(name: "Monthly Statement", fileName: "bowan_checking_2018.xls",    uploadDate: "July 31",   size: "96KB",  type: "excel"),
+      a!map(name: "Proof of Identity", fileName: "bowan_driver_license.jpg",   uploadDate: "July 30",   size: "89KB",  type: "image"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_aug2017.pdf", uploadDate: "July 27",   size: "102KB", type: "pdf"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_jul2017.pdf", uploadDate: "July 27",   size: "103KB", type: "pdf"),
+      a!map(name: "Bank Statement",    fileName: "bowan_checking_aug2017.doc", uploadDate: "July 26",   size: "92KB",  type: "word"),
+      a!map(name: "Monthly Statement", fileName: "bowan_checking_2017.xls",    uploadDate: "July 20",   size: "96KB",  type: "excel")
+    },
+    /* This value determines the max number of documents *
+     * to display on each page of the document list.     */
+    local!docBatchSize: 5,
+    local!docStartIndex: 1,
+    /* This document dataSubset can be replaced with a query */
+    local!docDataSubset: todatasubset(
+      local!documents,
+      a!pagingInfo(
+        local!docStartIndex,
+        local!docBatchSize
+      )
+    ),
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextIcon(
+                    icon: "folder-open",
+                    color: "SECONDARY",
+                    size: "MEDIUM"
+                  ),
+                  a!richTextItem(
+                    text: " " & upper("Documents"),
+                    color: "SECONDARY",
+                    size: "MEDIUM"
+                  )
+                }
+              ),
+              /* Document list filters */
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!textField(
+                      label: "Search Documents",
+                      labelPosition: "COLLAPSED",
+                      placeholder: "Search documents...",
+                      refreshAfter: "KEYPRESS"
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!dropdownField(
+                      label: "Filter Document Types",
+                      labelPosition: "COLLAPSED",
+                      placeholder: "--- " & "All types" & " ---",
+                      choiceLabels: {"Option 1", "Option 2"},
+                      choiceValues: {1, 2}
+                    )
+                  )
+                }
+              ),
+              /* Displays a card for each document in the dataSubset */
+              a!forEach(
+                items: local!docDataSubset,
+                expression: a!cardLayout(
+                  contents: {
+                    a!sideBySideLayout(
+                      items: {
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              /* Displays an icon for the corresponding document type */
+                              a!richTextIcon(
+                                icon: "file-" & fv!item.type & "-o",
+                                color: "ACCENT",
+                                size: "LARGE"
+                              )
+                            }
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(
+                                text: fv!item.name,
+                                color: "STANDARD",
+                                style: "STRONG"
+                              ),
+                              char(10),
+                              a!richTextItem(
+                                text: fv!item.fileName,
+                                color: "#767676"
+                              )
+                            }
+                          )
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(
+                                text: fv!item.uploadDate
+                              ),
+                              char(10),
+                              a!richTextItem(
+                                text: fv!item.size,
+                                color: "SECONDARY"
+                              )
+                            },
+                            align: "RIGHT"
+                          ),
+                          width: "MINIMIZE"
+                        )
+                      },
+                      alignVertical: "MIDDLE"
+                    )
+                  },
+                  link: a!dynamicLink(),
+                  height: "AUTO",
+                  marginBelow: "STANDARD"
+                )
+              ),
+              /* Document list paging */
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "chevron-left",
+                          link: a!dynamicLink(
+                            value: local!docStartIndex - local!docBatchSize,
+                            saveInto: local!docStartIndex,
+                            showWhen: not(local!docStartIndex = 1)
+                          ),
+                          linkStyle: "STANDALONE",
+                          color: if(
+                            not(local!docStartIndex = 1),
+                            "ACCENT",
+                            "#bbb"
+                          ),
+                          size: "MEDIUM"
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        /* Displays a number range which indicates     * 
+                         * the current subset of documents in the list */
+                        a!richTextItem(
+                          text: local!docStartIndex &
+                          a!localVariables(
+                            local!docEndIndex: if(
+                              (local!docStartIndex + local!docBatchSize - 1) > local!docDataSubset.totalCount,
+                              local!docDataSubset.totalCount,
+                              (local!docStartIndex + local!docBatchSize - 1)
+                            ),
+                            if(
+                              local!docStartIndex = local!docEndIndex,
+                              "",
+                              " - " & local!docEndIndex
+                            )
+                          ),
+                          style: "STRONG"
+                        ),
+                        /* Displays the total number of documents */
+                        a!richTextItem(
+                          text: " " & "of" & " " & local!docDataSubset.totalCount
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "chevron-right",
+                          link: a!dynamicLink(
+                            value: local!docStartIndex + local!docBatchSize,
+                            saveInto: local!docStartIndex,
+                            showWhen: not((local!docStartIndex + local!docBatchSize) > local!docDataSubset.totalCount)
+                          ),
+                          linkStyle: "STANDALONE",
+                          color: if(
+                            not((local!docStartIndex + local!docBatchSize) > local!docDataSubset.totalCount),
+                            "ACCENT",
+                            "#bbb"
+                          ),
+                          size: "MEDIUM"
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "MIDDLE",
+                showWhen: local!docDataSubset.totalCount > local!docBatchSize
+              )
+            },
+            width: "MEDIUM_PLUS"
+          )
+        }
+      )
+    }
+  )
+}
+[Line 1-26] Define local variables
+The local variables at the top of the expression are used to define the data that will be displayed for each document in the list, as well as the batch size and data subset. 
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!documents: {
+      a!map(name: "Proof of Identity", fileName: "bowan_driver_license.jpg",   uploadDate: "August 4",  size: "89KB",  type: "image"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_aug2018.pdf", uploadDate: "August 4",  size: "102KB", type: "pdf"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_jul2018.pdf", uploadDate: "August 4",  size: "103KB", type: "pdf"),
+      a!map(name: "Bank Statement",    fileName: "bowan_checking_aug2018.doc", uploadDate: "August 4",  size: "92KB",  type: "word"),
+      a!map(name: "Monthly Statement", fileName: "bowan_checking_2018.xls",    uploadDate: "July 31",   size: "96KB",  type: "excel"),
+      a!map(name: "Proof of Identity", fileName: "bowan_driver_license.jpg",   uploadDate: "July 30",   size: "89KB",  type: "image"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_aug2017.pdf", uploadDate: "July 27",   size: "102KB", type: "pdf"),
+      a!map(name: "Pay Statement",     fileName: "bowan_pay_stub_jul2017.pdf", uploadDate: "July 27",   size: "103KB", type: "pdf"),
+      a!map(name: "Bank Statement",    fileName: "bowan_checking_aug2017.doc", uploadDate: "July 26",   size: "92KB",  type: "word"),
+      a!map(name: "Monthly Statement", fileName: "bowan_checking_2017.xls",    uploadDate: "July 20",   size: "96KB",  type: "excel")
+    },
+    / This value determines the max number of documents *
+     * to display on each page of the document list.     /
+    local!docBatchSize: 5,
+    local!docStartIndex: 1,
+    / This document dataSubset can be replaced with a query /
+    local!docDataSubset: todatasubset(
+      local!documents,
+      a!pagingInfo(
+        local!docStartIndex,
+        local!docBatchSize
+      )
+    ),
+{% endhighlight %}
+[Line 27-68] Create search field and filter
+This section uses rich text, text fields, and dropdown fields to create the list header, search field, and dropdown filter. Here, the example search field and dropdown filter are placeholders that you can configure to work with your own data when you adapt this pattern to fit your use case.
+{% highlight sail linenos start_line=27 %}
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextIcon(
+                    icon: "folder-open",
+                    color: "SECONDARY",
+                    size: "MEDIUM"
+                  ),
+                  a!richTextItem(
+                    text: " " & upper("Documents"),
+                    color: "SECONDARY",
+                    size: "MEDIUM"
+                  )
+                }
+              ),
+              / Document list filters /
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!textField(
+                      label: "Search Documents",
+                      labelPosition: "COLLAPSED",
+                      placeholder: "Search documents...",
+                      refreshAfter: "KEYPRESS"
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!dropdownField(
+                      label: "Filter Document Types",
+                      labelPosition: "COLLAPSED",
+                      placeholder: "--- " & "All types" & " ---",
+                      choiceLabels: {"Option 1", "Option 2"},
+                      choiceValues: {1, 2}
+                    )
+                  )
+                }
+              ),
+{% endhighlight %}
+[Line 69-132] Configure cards and document details
+This section uses a!forEach() to define the display and details for each document using card layouts, rich text, and side  by side layouts. The expression is set up so that each document has its own card, an icon for the document type, file name, and upload date. The a!forEach() function loops through this expression for each document and creates a unique card with details for each. 
+{% highlight sail linenos start_line=69 %}
+  / Displays a card for each document in the dataSubset /
+              a!forEach(
+                items: local!docDataSubset,
+                expression: a!cardLayout(
+                  contents: {
+                    a!sideBySideLayout(
+                      items: {
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              / Displays an icon for the corresponding document type /
+                              a!richTextIcon(
+                                icon: "file-" & fv!item.type & "-o",
+                                color: "ACCENT",
+                                size: "LARGE"
+                              )
+                            }
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(
+                                text: fv!item.name,
+                                color: "STANDARD",
+                                style: "STRONG"
+                              ),
+                              char(10),
+                              a!richTextItem(
+                                text: fv!item.fileName,
+                                color: "#767676"
+                              )
+                            }
+                          )
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(
+                                text: fv!item.uploadDate
+                              ),
+                              char(10),
+                              a!richTextItem(
+                                text: fv!item.size,
+                                color: "SECONDARY"
+                              )
+                            },
+                            align: "RIGHT"
+                          ),
+                          width: "MINIMIZE"
+                        )
+                      },
+                      alignVertical: "MIDDLE"
+                    )
+                  },
+                  link: a!dynamicLink(),
+                  height: "AUTO",
+                  marginBelow: "STANDARD"
+                )
+              ),
+{% endhighlight %}
+[Line 133 - 227] Paging
+This section defines the paging information for the list and sets up rich text styling for the dynamic links that allow for navigation through the list pages. 
+{% highlight sail linenos start_line=133 %}
+       / Document list paging /
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "chevron-left",
+                          link: a!dynamicLink(
+                            value: local!docStartIndex - local!docBatchSize,
+                            saveInto: local!docStartIndex,
+                            showWhen: not(local!docStartIndex = 1)
+                          ),
+                          linkStyle: "STANDALONE",
+                          color: if(
+                            not(local!docStartIndex = 1),
+                            "ACCENT",
+                            "#bbb"
+                          ),
+                          size: "MEDIUM"
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        / Displays a number range which indicates     * 
+                         * the current subset of documents in the list /
+                        a!richTextItem(
+                          text: local!docStartIndex &
+                          a!localVariables(
+                            local!docEndIndex: if(
+                              (local!docStartIndex + local!docBatchSize - 1) > local!docDataSubset.totalCount,
+                              local!docDataSubset.totalCount,
+                              (local!docStartIndex + local!docBatchSize - 1)
+                            ),
+                            if(
+                              local!docStartIndex = local!docEndIndex,
+                              "",
+                              " - " & local!docEndIndex
+                            )
+                          ),
+                          style: "STRONG"
+                        ),
+                        / Displays the total number of documents /
+                        a!richTextItem(
+                          text: " " & "of" & " " & local!docDataSubset.totalCount
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextIcon(
+                          icon: "chevron-right",
+                          link: a!dynamicLink(
+                            value: local!docStartIndex + local!docBatchSize,
+                            saveInto: local!docStartIndex,
+                            showWhen: not((local!docStartIndex + local!docBatchSize) > local!docDataSubset.totalCount)
+                          ),
+                          linkStyle: "STANDALONE",
+                          color: if(
+                            not((local!docStartIndex + local!docBatchSize) > local!docDataSubset.totalCount),
+                            "ACCENT",
+                            "#bbb"
+                          ),
+                          size: "MEDIUM"
+                        )
+                      },
+                      align: "RIGHT"
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                alignVertical: "MIDDLE",
+                showWhen: local!docDataSubset.totalCount > local!docBatchSize
+              )
+            },
+            width: "MEDIUM_PLUS"
+          )
+        }
+      )
+    }
+  )
+}
+{% endhighlight %}

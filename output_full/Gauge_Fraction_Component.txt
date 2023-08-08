@@ -1,0 +1,40 @@
+
+layout: function
+title: Gauge Fraction
+category: function_page
+compatibility: -crf
+excerpt: ' Displays text in fractional format for use within the gauge field primary text parameter.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gaugeFraction
+fncsubcat: Display
+parameters:
+  - keyword: denominator
+    name: Denominator
+    types: Number (Integer)
+    description: 'Value to display as the bottom portion of the fraction. Value cannot be negative. Default: 100. Numerator is calculated automatically based on denominator and fill percentage.'
+reftype: sailcomponent
+scdisplayname: Gauge Fraction
+scsubcat: Gauge_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays text in a fractional format for use within the gauge field primaryText parameter.
+See also: Gauge design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+
+appian-style-tip
+This component captures the percentage value from its parent gauge and automatically calculates the numerator based on the provided denominator, rounding to an integer.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+=a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primarytext: a!gaugeFraction(denominator: 26)
+)
+{% endsailbox %}

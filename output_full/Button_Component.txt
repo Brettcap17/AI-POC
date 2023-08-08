@@ -1,0 +1,289 @@
+
+layout: function
+title: Button Component
+category: function_page
+compatibility: -crf
+excerpt: Displays a button that can conditionally be used to submit a form.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!buttonWidget
+fncsubcat: Action
+reftype: sailcomponent
+scdisplayname: Button
+scsubcat: Button_Types
+space: sail_component
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Optional text to display on the button.
+  - keyword: style
+    name: Style
+    types: Text
+    description: |
+      Determines the color of the button, where
+        - "NORMAL" default) Displays it with accent color label and border.
+        - "PRIMARY" Displays it in the accent color.
+        - "SECONDARY" Displays it in gray.
+        - "LINK" Displays it with an accent color label and no border until focused.
+        - "DESTRUCTIVE" Displays it in red.
+  - keyword: confirmMessage 
+    name: Confirmation Message
+    types: Text
+    description: |
+      Text to display in an optional confirmation dialog where a null argument disables the confirmation dialog and a text argument enables it with the text entered as the confirmation message.
+  - keyword: value
+    name: Value
+    types: Any Type
+    description: 'The value associated with this button.'
+  - keyword: saveInto
+    name: Save Value To
+    types: Save Array
+    description: |
+      One or more variables that are updated with the button value when the user presses it. Use a!save() to save a modified or alternative value to a variable. 
+  - keyword: disabled 
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the user is prevented from clicking the button and triggering the state change. Default is false.
+  - keyword: submit 
+    name: Submit
+    types: Boolean
+    description: |
+      Determines whether this button submits a form after saving its value. 
+  - keyword: validate 
+    name: Validate
+    types: Boolean
+    description: |
+      Determines whether this button performs validation before saving its value. When submit is true, this defaults to true, otherwise it defaults to false.
+  - keyword: validationGroup
+    name: Validation Group  
+    types: Text
+    description: |
+      When present, components in the same validation group are validated when this button is clicked.
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the size of the button. Valid values: "SMALL", "STANDARD" (default), and "LARGE".
+  - keyword: width
+    name: Width
+    types: Text
+    description: |
+      Determines button width. Valid values are "MINIMIZE" and "FILL".   Default behavior displays "FILL" width buttons on phone size screens and "MINIMIZE" buttons on wider screens.
+        -  "MINIMIZE" width is determined by button label.
+        - "FILL" width fills the button container.
+  - keyword: confirmHeader 
+    name: Confirmation Header
+    types: Text
+    description: |
+      Text to display at the top of the confirmation dialog.
+  - keyword: confirmButtonLabel
+    name: Confirmation Button Label
+    types: Text
+    description: |
+      Text to display on the confirmation button. Default: "Yes".
+  - keyword: cancelButtonLabel 
+    name: Cancel Button Label
+    types: Text
+    description: |
+      Text to display on the cancel button. Default: "No". 
+  - keyword: showWhen 
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the button is displayed on the interface. When set to false the button is hidden and is not evaluated. Default: true.
+  - keyword: icon
+    name: Icon 
+    types: Text
+    description: |
+      Icon to display before any text inside the button. See the list of available icons.
+  - keyword: accessibilityText 
+    name: Accessibility Text 
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: |
+      Text to display on mouseover (web) or long press (mobile).
+  - keyword: recaptchaSaveInto 
+    name: reCAPTCHA Save Value To
+    types: List of saves
+    description: |
+      One or more variables that are updated after reCAPTCHA executes. Use a!verifyRecaptcha() to verify the reCAPTCHA result and a!save() to save a modified or alternative value to a variable. Only for use in Portals.
+  - keyword: loadingIndicator 
+    name: Show loading indicator on press
+    types: Boolean
+    description: |
+      Determines whether the button will display a loading indicator on press and be disabled while processing. Default: false.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Button design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the confirmation parameters
+
+In the confirmation dialog there are two buttons. The confirm button is in the primary position and the cancel button is in the secondary position.
+If confirmHeader and confirmMessage are both null, the interface refreshes and the saveInto state change occurs once the user clicks the button. If either is not null, the confirmation dialog displays. The interface only refreshes and the Save Value To state change only occurs if the user clicks the confirm button.
+
+Styling buttons
+
+When style is "DESTRUCTIVE" and a confirmation dialog is enabled, the confirm button displays in "DESTRUCTIVE" and the cancel button displays in grey. All other style options result in a "PRIMARY" confirm button and a "SECONDARY" cancel button.
+You can only configure button shapes on sites and not at the component level. The same shape will be applied to all buttons sitewide.
+
+Using the recaptchaSaveInto parameter in a Portal
+reCAPTCHA allows you to monitor your public portals for potentially malicious or fraudulent activity. Appian works with Google’s reCAPTCHA services to provide you with a configurable experience that allows you to choose your thresholds for and responses to potential misuses of your Portal.
+reCAPTCHA works on the button component so that you can apply it to submission buttons in a Portal. This allows you to have more control over what kinds of users are submitting entries using your Portal. To use reCAPTCHA, you must use the a!verifyRecaptcha() function within the recaptchaSaveInto parameter and define logic to determine what to do when a bot may be using your Portal.
+You can use the a!save() function to save new or updated values to variables in the same way that you would for configuring any button, but make sure to nest a!save() inside the a!verifyRecaptcha() function.
+For more information on using reCAPTCHA in Portals or a breakdown of examples, check out our reCAPTCHA guidance.
+
+appian-style-note
+reCAPTCHA does not work within Appian designer and will always evaluate the onError parameter of the a!verifyRecaptcha()) function. For more information on testing reCAPTCHA, check out our reCAPTCHA guidance.
+
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Button styles and sizes
+INCLUDE PAGE: SAIL intro
+{% sailbox 580 %} 
+a!localVariables(
+  local!styles: {"NORMAL","PRIMARY","SECONDARY","LINK","DESTRUCTIVE"},
+  local!sizes: {"SMALL","STANDARD","LARGE"},
+  {
+    a!forEach(
+      items: local!sizes,
+      expression: a!localVariables(
+        local!size: fv!item,
+        a!buttonLayout(
+          secondaryButtons: a!forEach(
+            items: local!styles,
+            expression: a!buttonWidget(
+              size: local!size,
+              style: fv!item,
+              label: fv!item
+            )
+          )
+        )
+      )
+    )
+  }
+)
+{% endsailbox %}
+Icon-only button with tooltip
+INCLUDE PAGE: SAIL intro
+{% sailbox 470 %}
+a!buttonArrayLayout(
+  buttons: {
+    a!buttonWidget(
+      icon: "download",
+      tooltip: "Download File"
+    )
+  }
+)
+{% endsailbox %}
+Confirmation dialog
+INCLUDE PAGE: SAIL intro
+{% sailbox 470 %} 
+a!buttonArrayLayout(
+  buttons: {
+    a!buttonWidget(
+      label: "Delete Request",
+      icon: "times-circle",
+      style: "DESTRUCTIVE",
+      confirmHeader: "Warning!",
+      confirmMessage: "This request will be permanently deleted. Do you want to continue?",
+      confirmButtonLabel: "Delete Request",
+      cancelButtonLabel: "Cancel"
+    )
+  },
+  align: "START"
+)
+{% endsailbox %}
+reCAPTCHA in a button
+The following is an example of what the expression for a button using reCAPTCHA might look like when separated out from the rest of the interface. If you copy and paste the example into an expression editor, reCAPTCHA will not work. Use this example only as a reference. Only for use in Portals.
+sail
+a!localVariables(
+  local!submissionDetails: a!map(needsReview: null),
+  local!submissionStatus,
+  local!confirmationMessage,
+  {
+    a!buttonArrayLayout(
+      buttons: {
+        a!buttonWidget(
+          label: "Submit",
+          recaptchaSaveInto: a!verifyRecaptcha(
+            onSuccess: {
+              if(
+                fv!score > .7,
+                /* Score >.7 indicates the user is likely human */
+                {
+                  /* No need for a manual review since the user was confirmed by reCAPTCHA to be human*/
+                  a!save(
+                    local!submissionDetails.needsReview,
+                    false
+                  ),
+                  a!writeToDataStoreEntity(
+                    dataStoreEntity: cons!PORTAL_ENTITY,
+                    valueToStore: local!submissionDetails,
+                    onSuccess: {
+                      a!save(local!submissionStatus, "SUCCESS"),
+                      a!save(
+                        local!confirmationMessage,
+                        "Your submission is confirmed."
+                      )
+                    }
+                  )
+                },
+                if(
+                  fv!score > .3,
+                  /* Score is between .3 & .7 indicating that the user may be human or a bot*/
+                  {
+                    /* No need for a manual review since the user was confirmed by reCAPTCHA to be human*/
+                    a!save(
+                      local!submissionDetails.needsReview,
+                      true
+                    ),
+                    a!writeToDataStoreEntity(
+                      dataStoreEntity: cons!PORTAL_ENTITY,
+                      valueToStore: local!submissionDetails,
+                      onSuccess: {
+                        a!save(local!submissionStatus, "WARN"),
+                        a!save(
+                          local!confirmationMessage,
+                          "Your submission is processing. You will receive an email shortly with confirmation details. If you do not hear from us soon, please try again or give us a call."
+                        )
+                      }
+                    )
+                  },
+                  /* Score <.3 indicates the user is most likely a bot*/
+                  {
+                    a!save(local!submissionStatus, "BOT"),
+                    a!save(
+                      local!confirmationMessage,
+                      "Your submission was not successful. Please try again or call us at (202) 555-7171."
+                    )
+                  }
+                )
+              )
+            },
+            onError: {
+              /* Cannot connect to Google reCAPTCHA services.*/
+              a!save(local!submissionStatus, "ERROR"),
+              a!save(
+                local!confirmationMessage,
+                "Your submission was not successful. Please try again or call us at (202) 555-7171."
+              )
+            }
+          ),
+          width: "FILL",
+          style: "PRIMARY",
+          loadingIndicator: true
+        )
+      }
+    )
+  }
+)

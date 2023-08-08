@@ -1,0 +1,35 @@
+
+layout: function
+title: extractanswers() Function
+space: function_page
+excerpt: "Returns an array of strings that respond to the questions provided."
+category: function_page
+fncname: extractanswers
+fncexample: "extractanswers( {\"What is your name?\", \"What is your age?\"}, \"1. What is your name? Ben 2. What is your age? 47 \" )"
+fncresult: "{\"Ben\", \"47\"}"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: questions
+    types: Text Array
+    description: |
+      Array of questions.
+  - keyword: text
+    types: Text
+    description: |
+      Text representing the questions and answers.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} The expected format of the question and answer text is the format returned by insertquestions().
+See also: insertquestions()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+extractanswers({"What is your name?", "What is your age?"}, "1. What is your name? Ben 2. What is your age? 47 <<<###>>>") returns {"Ben", "47"}

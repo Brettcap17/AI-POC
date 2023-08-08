@@ -1,0 +1,41 @@
+
+layout: basic
+title: Google Cloud Vision
+topic-group: A
+proxy-topic: ai
+proxy-topic-group: B
+weight: 700
+
+Overview
+The Appian AI offering supports the integration of Google AI services in your Appian application. As part of the offering, you can leverage the power of Google Cloud Vision to collect key information and structure from images and PDFs. Once you're connected to Google Cloud Vision machine learning models, you can extract information like logos, landmarks, and text from your selected file.
+To use this connected system, you must have a Google Service Account. If you are an Appian AI customer, you are provided with fully setup and managed Google Cloud services by Appian on your behalf. Contact your Appian technical contact administrator for your service account credentials. Learn how to enroll in Appian AI, or to continue using the connected system with your own Google Cloud account, ensure you've set up the required Google Cloud service credentials.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Google Cloud Vision connected system has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Project ID      | Required. Found in your Google Service Account file.           |
+| Private Key ID  | Required. Found in your Google Service Account file.           |
+| Private Key     | Required/Sensitive. Found in your Google Service Account file.           |
+| Client Email    | Required. Found in your Google Service Account file.           |
+| Client ID       | Required*. Found in your Google Service Account file.           |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|Analyze and Detect text in images | Run analysis on the provided image to extract structure and information from images, including logos, landmarks, and text (Optical Character Recognition). Provide an image and select different dimensions to analyze. | READ |
+|Detect text in files (PDF/TIFF) | Detect and transcribe text from PDF and TIFF files. Uploads a document to Google Cloud Storage, starts OCR analysis, and returns the output. | WRITE |
+Analyze and Detect text in images
+Extract structure and information from images, including logos, landmarks, and colors, or detect text using Optical Character Recognition (OCR). Select one or more types of analysis to perform on an image selected from the Image Source dropdown. Your image can be from a URL, Google Cloud Storage, or a document in your application.
+This integration uses the method images.annotate from the Google Cloud Vision API to run image detection and annotation on images. Using detection and analysis options available in the integration, you can retrieve data about the type of objects viewed in the image, the emotions displayed, the text located in the background or on the image, and more.
+{:.screenshot}
+Detect text in files (PDF/TIFF)
+Detect and transcribe text from PDF or TIFF files. To use the integration, simply choose an existing document from your application or upload a new document, identify the file type, and choose the name of your Google Cloud Storage bucket. When you use this integration, the selected file is uploaded to your Google Cloud Storage bucket where OCR analysis occurs on the file. The output of the analysis is a Text value that is returned in the integration where you can then use it in your application.
+
+appian-style-note 
+Detect text in files (PDF/TIFF) is a WRITE type Integration. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+
+{:.screenshot}

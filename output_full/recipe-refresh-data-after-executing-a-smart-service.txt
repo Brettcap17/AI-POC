@@ -1,0 +1,146 @@
+
+layout: "basic"
+title: "Refresh Data After Executing a Smart Service"
+exerpt: "Refresh a variable after a smart service is executed."
+reftype: "sailrecipe"
+sr-tags: ["Auto-Refresh","Smart Services"]
+offline_not_recommended: true
+
+This scenario demonstrates:
+
+How to force a variable to be refreshed after a smart service is executed to get the latest data.
+
+Expression
+sail
+a!localVariables(
+  local!updateCounter: 0,
+  local!employee: a!refreshVariable(
+    value: a!queryEntity(
+      entity: cons!EMPLOYEE_ENTITY,
+      query: a!query(
+        logicalExpression: a!queryLogicalExpression(
+          operator: "AND",
+          filters: {
+            a!queryFilter(field: "id", operator: "=", value: 1)
+          },
+          ignoreFiltersWithEmptyValues: true
+        ),
+        pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 1)
+      ),
+      fetchTotalCount: false
+    ).data[1],
+    refreshOnVarChange: local!updateCounter
+  ),
+  local!edit: false,
+  {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "First Name",
+              value: local!employee.firstName,
+              saveInto: local!employee.firstName,
+              readOnly: not(local!edit)
+            ),
+            a!textField(
+              label: "Last Name",
+              value: local!employee.lastName,
+              saveInto: local!employee.lastName,
+              readOnly: not(local!edit)
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Department",
+              value: local!employee.department,
+              saveInto: local!employee.department,
+              readOnly: not(local!edit)
+            ),
+            a!textField(
+              label: "Title",
+              value: local!employee.title,
+              saveInto: local!employee.title,
+              readOnly: not(local!edit)
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Phone Number",
+              value: local!employee.phoneNumber,
+              saveInto: local!employee.phoneNumber,
+              readOnly: not(local!edit)
+            ),
+            a!dateField(
+              label: "Start Date",
+              value: local!employee.startDate,
+              saveInto: local!employee.startDate,
+              readOnly: not(local!edit)
+            )
+          }
+        )
+      }
+    ),
+    a!sideBySideLayout(
+      items: {
+        a!sideBySideItem(
+          item: a!buttonArrayLayout(
+            buttons: {
+              a!buttonWidget(
+                label: "Cancel",
+                style: "SECONDARY",
+                value: false,
+                saveInto: local!edit,
+                showWhen: local!edit
+              )
+            },
+            align: "START"
+          )
+        ),
+        a!sideBySideItem(
+          item: a!buttonArrayLayout(
+            buttons: {
+              a!buttonWidget(
+                label: "Edit",
+                value: true,
+                saveInto: local!edit,
+                showWhen: not(local!edit)
+              ),
+              a!buttonWidget(
+                label: "Save",
+                style: "PRIMARY",
+                showWhen: local!edit,
+                value: false,
+                saveInto: {
+                  local!edit,
+                  a!writeToDataStoreEntity(
+                    dataStoreEntity: cons!EMPLOYEE_ENTITY,
+                    valueToStore: local!employee,
+                    onSuccess: a!save(
+                      local!updateCounter,
+                      local!updateCounter + 1
+                    )
+                  )
+                }
+              )
+            },
+            align: "END"
+          )
+        )
+      }
+    )
+  }
+)
+Test it out
+
+Click the Edit button
+Edit one of the employee fields
+Click the Save button
+
+Notable implementation details
+
+The Save button increments a counter to make sure the value of local!updateCounter always changes. Using a boolean flag that gets set to true when you click the button wouldn't work because the value wouldn't change between the first and second time you clicked the button.

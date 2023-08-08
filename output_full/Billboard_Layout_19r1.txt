@@ -1,0 +1,172 @@
+
+layout: "basic" 
+title: "a!billboardLayout_19r1 Component" 
+space: "sail_component" 
+reftype: "sailcomponent" 
+excerpt: "Displays a background color, image, or video with optional overlay content." 
+category: "function_page" 
+compatibility: -crf, -om
+fncname: "a!billboardLayout_19r1" 
+fncsubcat: "Layouts" 
+fncexample: "Click on the function name for examples." 
+fncsyntax: "a!billboardLayout( [backgroundMedia], [backgroundColor], [overlayPositionBar], [overlayPositionColumn], [overlayColumnWidth], [overlayStyle], [overlayContents], [height], [showWhen] )" 
+fnccat: "Interface_Component" 
+scdisplayname: "Billboard Layout"
+evolved_fncname: "a!billboardLayout"
+evolved_reason: "Replaced multiple parameters with a new parameter that allows the designer to choose between a bar, column, or full overlay style. Added the full overlay style. Added the alignVertical parameter for the column and full overlay styles."
+
+Billboard
+Function: a!billboardLayout_19r1()
+Displays a background color, image, or video with optional overlay content.
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Background Media 
+ backgroundMedia 
+ Any Type 
+ Determines the background content. Takes priority over background color. Configure with  a!documentImage(), a!webImage(), or a!webVideo() 
+
+
+ Background Color 
+ backgroundColor 
+ Text 
+ Determines the background color. When background media is also specified, the background color shows while media is loading or when background image is transparent. Must be a valid hex code. Default is #f0f0f0. 
+
+
+ Bar Overlay Position 
+ overlayPositionBar 
+ Text 
+ Determines where the bar overlay appears. Takes priority over column overlay when both are specified. Valid values: "TOP", "MIDDLE", "BOTTOM" (default). 
+
+
+ Column Overlay Position 
+ overlayPositionColumn 
+ Text 
+ Determines where the column overlay appears. Ignored when a bar overlay is also specified. Valid values: "START", "CENTER", "END". 
+
+
+ Column Overlay Width 
+ overlayColumnWidth 
+ Text 
+ Determines the column overlay width. Ignored when a bar overlay is also specified. Valid values: "NARROW", "MEDIUM" (default), "WIDE". 
+
+
+ Overlay Style 
+ overlayStyle 
+ Text 
+ Determines the overlay style. Valid values: "DARK" (default), "LIGHT", "NONE". 
+
+
+ Overlay Contents 
+ overlayContents 
+ Any Type 
+ The interface to display on top of the background. Accepts layouts and display components. Supported layouts and components: Button, Columns, Image, Link, Milestone, Progress Bar, Rich Text, Section, Side by Side. 
+
+
+ Height 
+ height 
+ Text 
+ Determines the layout height. Valid values: "SHORT", "MEDIUM" (default), "TALL". 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true. 
+
+
+ Margin Below 
+ marginBelow 
+ Text 
+ Determines how much space is added below the layout. Valid values: “NONE” (default), “STANDARD”. 
+
+
+Notes
+
+A billboard layout may have either a bar overlay or a column overlay.
+When overlay content does not fit within the layout, it scrolls vertically.
+When a video is used as the background, it plays automatically and does not have audio.
+A billboard layout displays background media as large as possible to fill the available width. When the background media's aspect ratio is different from the layout's aspect ratio, the background will be cut off at the top and bottom. It's recommended to use this layout for decoration, rather than for displaying content that must be fully visible at all times.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+sail 
+=a!billboardLayout_19r1(
+  backgroundColor: "#619ed6",
+  overlayPositionBar: "BOTTOM",
+  overlayStyle: "DARK",
+  overlayContents: {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {
+                a!richTextItem(
+                  text: "Finance Summary",
+                  size: "LARGE"
+                )
+              }
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!columnsLayout(
+              columns: {
+                a!columnLayout(
+                  contents: {
+                    a!richTextDisplayField(
+                      label: "Total Spending",
+                      value: a!richTextItem(
+                        text: "$31,000.00",
+                        size: "MEDIUM"
+                      )
+                    )
+                  }
+                ),
+                a!columnLayout(
+                  contents: {
+                    a!richTextDisplayField(
+                      label: "Remaining Budget",
+                      value: a!richTextItem(
+                        text: a!richTextItem(
+                          text: "79%",
+                          size: "MEDIUM"
+                        ),
+                        color: "POSITIVE"
+                      )
+                    )
+                  }
+                ),
+                a!columnLayout(
+                  contents: {
+                    a!richTextDisplayField(
+                      label: "Open Requests",
+                      value: a!richTextItem(
+                        text: "36",
+                        size: "MEDIUM"
+                      )
+                    )
+                  }
+                )
+              },
+              alignVertical: "TOP"
+            )
+          }
+        )
+      },
+      alignVertical: "MIDDLE"
+    )
+  },
+  height: "SHORT",
+  marginBelow: "STANDARD"
+)
+Displays the following:

@@ -1,0 +1,161 @@
+
+layout: function
+title: Billboard Layout Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays a background color, image, or video with optional overlay content.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!billboardLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: backgroundMedia
+    name: Background Media
+    types: Any Type
+    description: |
+      Determines the background content. Takes priority over background color. Configure using a!documentImage, a!userImage, a!webImage, or a!webVideo.
+  - keyword: backgroundColor
+    name: Background Color
+    types: Text
+    description: |
+      Determines the background color. When background media is also specified, the background color shows while media is loading or when background image is transparent. Must be a valid hex code. Default is #f0f0f0.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the layout height. Valid values: "EXTRA_SHORT", "SHORT", "SHORT_PLUS", "MEDIUM" (default), "MEDIUM_PLUS", "TALL", "TALL_PLUS", "EXTRA_TALL", "AUTO". Auto renders as medium when no background media is set.
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE".
+  - keyword: overlay
+    name: Overlay Configurations
+    types: Any Type
+    description: |
+      Determines the overlay. Configure using a!columnOverlay, a!barOverlay, or a!fullOverlay.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Billboard Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Billboard layout design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Default text colors for light and dark backgrounds
+
+When the overlay style is none, the standard text color changes based on the selected background color. 
+For light background colors, standard text is dark gray. 
+For dark background colors, standard text is switched to white. 
+These automatic text color changes apply even when background media is set.
+
+Using overlays
+
+A billboard layout may have either a bar, column, full, or no overlay.
+When overlay content does not fit within the layout, it scrolls vertically.
+
+Sizing and displaying background media
+
+For billboards with a value of "SHORT", "MEDIUM", or "TALL" for the height parameter, background media is displayed as large as possible to fill the available width. 
+When the background media's aspect ratio is different from the layout's aspect ratio, the background will be cut off at the top and bottom. 
+If it is important that the background media be fully visible, use auto height. See the UXDG for guidance on this setting.
+When a video is used as the background, it plays automatically and does not have audio.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Billboard with overlay
+sail
+a!billboardLayout(
+  backgroundColor: "#619ed6",
+  overlay: a!barOverlay(
+    position: "BOTTOM",
+    contents: {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextItem(
+                    text: "Finance Summary",
+                    size: "LARGE"
+                  )
+                }
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!richTextDisplayField(
+                        label: "Total Spending",
+                        value: a!richTextItem(
+                          text: "$31,000.00",
+                          size: "MEDIUM"
+                        )
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!richTextDisplayField(
+                        label: "Remaining Budget",
+                        value: a!richTextItem(
+                          text: a!richTextItem(
+                            text: "79%",
+                            size: "MEDIUM"
+                          ),
+                          color: "POSITIVE"
+                        )
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!richTextDisplayField(
+                        label: "Open Requests",
+                        value: a!richTextItem(
+                          text: "36",
+                          size: "MEDIUM"
+                        )
+                      )
+                    }
+                  )
+                },
+                alignVertical: "TOP"
+              )
+            }
+          )
+        },
+        alignVertical: "MIDDLE"
+      )
+    },
+    style: "DARK"
+  ),
+  height: "SHORT"
+)
+Displays the following:
+{:.screenshot}
+See the SAIL Design System: Billboard Layout for guidance on when to use each overlay style.

@@ -1,0 +1,37 @@
+
+layout: function
+title: tointeger() Function
+space: function_page
+excerpt: "Converts a value to Integer."
+category: function_page
+fncname: tointeger
+fncexample: "tointeger(\"3\")"
+fncresult: "3"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+Using the value parameter
+The value parameters also accept decimal numbers, which get rounded.
+Values passed must remain within the limits of the Integer data type.
+Using tointeger() with arrays
+When operating on arrays, it is not necessary to use apply with tointeger. If multiple parameters are passed, or one parameter is an Array, tointeger will return an Integer Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tointeger("3") returns 3
+tointeger("3","4") and tointeger({"3","4"}) both return {3,4}

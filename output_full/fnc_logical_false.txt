@@ -1,0 +1,29 @@
+
+layout: function
+title: false() Function
+category: function_page
+excerpt: Returns the Boolean value false.
+fnccat: Logical
+fncexample: false()
+fncname: false
+fncresult: 'false'
+parameters: 
+  - keyword: returns
+    types: Boolean
+    description: 'Returns the boolean value false.'
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+false() returns false

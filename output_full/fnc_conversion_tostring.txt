@@ -1,0 +1,38 @@
+
+layout: function
+title: tostring() Function
+space: function_page
+excerpt: "Converts a value to Text."
+category: function_page
+fncname: tostring
+fncexample: "tostring(17)"
+fncresult: "\"17\""
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} If an array is passed in, its values will be concatenated to form one string. To preserve the original array structure, use touniformstring.
+See also: touniformstring()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Arguments after the first are ignored.
+Values that hold a Number (Decimal) data type are displayed using 7 digits of precision, when cast to a string of plain text.
+This function returns a null Text when passed a null value.
+Usage considerations
+Do not use apply with tostring; use touniformstring() instead.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tostring(17) returns "17"
+tostring({1,2,3}) returns "1, 2, 3" (note that this is a single Text, not an Array of Text)

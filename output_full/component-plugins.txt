@@ -1,0 +1,23 @@
+
+layout: "basic"
+title: "Component Plug-ins"
+proxy-topic: "Extending Appian"
+proxy-topic-group: "B"
+type: "Home"
+weight: 400
+
+Have you ever wanted to...
+
+Embed Google Maps to select locations and pass them into an action?
+Capture signatures using DocuSign without leaving the task form?
+Drag-and-drop files to Box in an action and store the metadata in a record?
+
+Component plug-ins let you extend the capabilities of Appian interfaces by adding new components that integrate with external systems directly from your user's browser or mobile device.
+Built for integration
+Component plug-ins are part of the Integration SDK, designed for integration with third-party systems. They allow for more complex integrations than the web content component and can be paired with connected system plug-ins to access secure data.
+Built for web developers
+Component plug-ins are created by developers using standard web languages like HTML, JavaScript, and CSS. You can pull in third-party libraries to quickly build powerful components.
+Built for sharing
+Component plug-ins can be listed on the Appian AppMarket where Appian customers can find and use them. We review all submissions to ensure they meet our standards for customer use.
+Built for low-code
+Once installed by an Appian administrator they're available to any Appian developer when they create interfaces in their application. Your custom components are used just like the components that ship with Appian. They're fully interactive, with the ability to both send and receive data from the interface.

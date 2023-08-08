@@ -1,0 +1,178 @@
+
+layout: function
+title: a!recordData() Function
+category: function_page
+excerpt: 'This function references a set of records from a record type and allows additional filtering in a read-only grid or chart that uses a record type as the source. When referencing one-to-many relationships in grid columns, you can filter, sort, and limit that related record set using the relatedRecordData parameter and the a!relatedRecordData() function.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!recordData
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: recordType
+    types: RecordType
+    description: |
+      A reference to a record type, configured using the recordType! domain. For example, recordType!Employee. 
+  - keyword: filters
+    types: Any Type
+    description: |
+      A single logical expression or a list of query filters, which are applied together with an AND operation, can be provided to apply additional filters to the record set. Queries also inherit the default filters defined on the referenced record type. When filtering, use only record fields or related record fields from the referenced record type. Record types sourced from a web service or other expression only support this parameter if the data is synced.
+  - keyword: relatedRecordData
+    types: List of RelatedRecordData
+    description: |
+      When selecting one-to-many related record data, use a!relatedRecordData() to filter, sort, and limit the related record sets. This parameter is only supported when a!recordData is used in a read-only grid.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- Record Type Object
+- Read-only grid component
+- Configure charts using records
+- a!queryFilter() function
+- a!relatedRecordData() function
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+RecordData
+Usage considerations
+Supported use case
+
+The a!recordData() function is only supported in the data parameter of the read-only grid and charts. 
+
+Using the filters parameter
+
+When defining query filters, you can reference record fields or related record fields from the record type specified in the recordType parameter. Use a record type field reference or relationship reference to specify the field you want to filter by. For example, recordType!Employee.fields.department or recordType!Employee.relationships.cases.fields.status. 
+Filters are not supported on service-backed record types without data sync enabled.
+
+Using the relatedRecordData parameter
+
+This parameter is only supported when a!recordData() is used in a read-only grid, and references a record type that has a one-to-many relationship.
+By default, when you add a related record field from a one-to-many relationship as a column in a grid, the maximum number of related records returned for each base record is 10. The list of related records returned for each base record is sorted in ascending order by the primary key value from the related record type. 
+To change the default limit and sort behavior on your one-to-many related records, you can configure the  a!relatedRecordData() function to apply a new limit and sort, as well as filter the related record set.
+
+For example, let's say you have a read-only grid that displays customer information, and you add the related record field orderNumber as a new column in the grid. By default, each customer will have a maximum of 10 orders listed in their row. The orders for each customer will be sorted in ascending order by the primary key field in the Order record type.
+{:.screenshot}
+To only display the latest order for each customer, you can configure the a!relatedRecordData() function in the relatedRecordData parameter so you can limit the related orders to 1 and sort by orderDate in descending order.
+{:.screenshot}
+
+See the a!relatedRecordData() function for additional usage considerations.
+
+Examples
+The following examples reference an Employee record type, which has a one-to-many relationship with the Case record type.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Display employees that do not have a title of manager
+sail
+   a!gridField(
+     label: "Employees",
+     data: a!recordData(
+       recordType: recordType!Employee,
+       filters: a!queryFilter(
+         field: recordType!Employee.fields.title,
+         /* This filter removes all records where "Manager" is found in the "Title" column. */
+         operator: "<>",
+         value: "Manager"
+       )
+     ),
+     columns: {
+       a!gridColumn(
+         label: "ID",
+         sortField: recordType!Employee.fields.id,
+         value: fv!row[recordType!Employee.fields.id],
+         align: "END",
+         width: "ICON"
+       ),
+       a!gridColumn(
+         label: "First Name",
+         sortField: recordType!Employee.fields.firstName,
+         value: fv!row[recordType!Employee.fields.firstName]
+       ),
+       a!gridColumn(
+         label: "Last Name",
+         sortField: recordType!Employee.fields.lastName,
+         value: fv!row[recordType!Employee.fields.lastName]
+       ),
+       a!gridColumn(
+         label: "Phone Number",
+         sortField: recordType!Employee.fields.phoneNumber,
+         value: fv!row[recordType!Employee.fields.phoneNumber]
+       ),
+       a!gridColumn(
+         label: "Title",
+         sortField: recordType!Employee.fields.title,
+         value: fv!row[recordType!Employee.fields.title]
+       )
+     }
+   )
+This would return something like:
+{:.screenshot}
+Display the lastest open support case assigned to each employee
+sail
+   a!gridField(
+     label: "Employees",
+     data: a!recordData(
+       recordType: recordType!Employee,
+       /* This filter removes all records where "Manager" is found in the "Title" column. */
+       filters: a!queryFilter(
+         field: recordType!Employee.fields.title,
+         operator: "<>",
+         value: "Manager"
+       ),
+        /* This function limits the number of returned support cases to 1
+        and returns that latest open support case based on its creation 
+        date and status. */
+       relatedRecordData: 
+        a!relatedRecordData(
+          relationship: recordType!Employee.relationships.cases,
+          limit: 1,
+          sort:
+            a!sortInfo(
+              field: recordType!Case.fields.createdOn,
+              ascending: false
+            ),
+          filters: 
+            a!queryFilter(
+              field: recordType!Case.fields.status,
+              operator: "=",
+              value: "Open"
+           )
+         )
+       ),
+     columns: {
+       a!gridColumn(
+         label: "ID",
+         sortField: recordType!Employee.fields.id,
+         value: fv!row[recordType!Employee.fields.id],
+         align: "END",
+         width: "ICON"
+       ),
+       a!gridColumn(
+         label: "First Name",
+         sortField: recordType!Employee.fields.firstName,
+         value: fv!row[recordType!Employee.fields.firstName]
+       ),
+       a!gridColumn(
+         label: "lastName",
+         sortField: recordType!Employee.fields.lastName,
+         value: fv!row[recordType!Employee.fields.lastName]
+       ),
+       a!gridColumn(
+         label: "Phone Number",
+         sortField: recordType!Employee.fields.phoneNumber,
+         value: fv!row[recordType!Employee.fields.phoneNumber]
+       ),
+       a!gridColumn(
+         label: "Title",
+         sortField: recordType!Employee.fields.title,
+         value: fv!row[recordType!Employee.fields.title]
+       ),
+       a!gridColumn(
+         label: "Latest Case",
+         sortField: recordType!Employee.relationships.cases.fields.caseTitle,
+         value: fv!row[recordType!Employee.relationships.cases.fields.caseTitle]
+       )
+     }
+   )
+This would return something like:
+{:.screenshot}

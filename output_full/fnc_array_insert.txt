@@ -1,0 +1,41 @@
+
+layout: function
+title: insert() Function
+space: function_page
+excerpt: "Inserts a value into the given array and returns the resulting array."
+category: function_page
+fncname: insert
+fncexample: "insert({10, 20, 30, 40}, 99, 1)"
+fncresult: "{99, 10, 20, 30, 40}"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: The array to modify.
+  - keyword: value
+    types: Any Type or Any Type Array
+    description: The value or values to insert.
+  - keyword: index
+    types: Integer or Integer Array
+    description: The index or array of indices at which the value should be inserted.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+An index value less than 1 appends the value to the left-side of the array, and an index value greater than the array length appends the value to the right-side of the array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+insert({10, 20, 30, 40}, 100, 1) returns 100, 10, 20, 30, 40
+insert({10, 20, 30, 40}, 100, 5) returns 10, 20, 30, 40, 100
+insert({10, 20, 30, 40}, {100, 200}, 1) returns 100, 200, 10, 20, 30, 40
+insert({10, 20, 30, 40}, 100, {1, 2}) returns 100, 10, 100, 20, 30, 40
+insert({10, 20, 30, 40}, {100, 200}, {1, 2}) returns 100, 10, 200, 20, 30, 40

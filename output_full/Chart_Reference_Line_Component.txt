@@ -1,0 +1,102 @@
+
+layout: function
+title: Chart Reference Line Component
+category: function_page
+excerpt: 'Contains the reference line value for each threshold that is defined on a column, bar, line, or area chart.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!chartReferenceLine
+fncsubcat: Charts
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display on top of the reference line.
+  - keyword: value
+    name: Value
+    types: Decimal
+    description: The numeric value at which the reference line will be drawn.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the reference line is displayed on the interface. When set to false, the reference line is hidden and is not evaluated. Default: true.
+  - keyword: color
+    name: Color
+    types: Text
+    description: |
+      Color for the reference line. Valid values: Any valid hex color or "ACCENT", "BLUEGRAY", "GREEN", "GOLD", "ORANGE", "PURPLE", "RED","SKYBLUE", "LIMEGREEN", "YELLOW", "AMBER", "PINK", and "VIOLETRED".
+  - keyword: style
+    name: Style
+    types: Text
+    description: |
+      Style of the reference line. Valid values are: "SOLID", "DOT", "DASH" (default), "DASHDOT", "SHORTDASH".
+reftype: sailcomponent
+scdisplayname: Chart Reference Line
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Area Chart
+Bar Chart
+Column Chart
+Line Chart
+Scatter Chart
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Displaying reference lines
+
+Reference lines will not display if used in a chart when the yAxisStyle is set to "NONE".
+
+Examples
+This example demonstrate how to configure a chart using categories and series. For examples on using record data, see Chart Configuration Using Record Data.
+Single series column chart with reference lines
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %} 
+a!localVariables(
+  local!data:{
+    {quarter: "2015-Q1", spent: 15804},
+    {quarter: "2015-Q2", spent: 13432},
+    {quarter: "2015-Q3", spent: 23400},
+    {quarter: "2015-Q4", spent: 15900},
+    {quarter: "2016-Q1", spent: 12004},
+    {quarter: "2016-Q2", spent: 13901},
+    {quarter: "2016-Q3", spent: 14142},
+    {quarter: "2016-Q4", spent: 17980},
+    {quarter: "2017-Q1", spent: 13822},
+    {quarter: "2017-Q2", spent: 11053},
+    {quarter: "2017-Q3", spent: 16607},
+    {quarter: "2017-Q4", spent: 15449}
+  },
+  a!lineChartField(
+    label: "Money Spent per Quarter",
+    categories: local!data.quarter,
+    series: a!chartSeries(
+      data: local!data.spent
+    ),
+    colorScheme: "CLASSIC",
+    xAxisTitle: "Quarter",
+    yAxisTitle: "Amount Spent (in $)",
+    referenceLines: {
+      a!chartReferenceLine(
+        label: "100% Budget",
+        value: 18000,
+        color: "ORANGE"
+      ),
+      a!chartReferenceLine(
+        label: "125% Budget",
+        value: 22500,
+        color: "RED",
+        style: "DASH"
+      )
+    },
+    showLegend: false
+  )
+)
+{% endsailbox %}

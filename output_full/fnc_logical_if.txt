@@ -1,0 +1,57 @@
+
+layout: function
+title: if() Function
+category: function_page
+excerpt: Returns valueIfTrue if condition returns true; returns valueIfFalse otherwise.
+fnccat: Logical
+fncexample: 'if(isleapyear(2021), 1, 2)'
+fncname: if
+fncresult: '2'
+compatibility: +pe, +pr
+parameters:
+  - keyword: condition
+    types: Boolean
+    description: A test that determines whether valueIfTrue or valueIfFalse will be returned.
+  - keyword: valueIfTrue
+    types: Any Type
+    description: The value to be returned if condition returns true.
+  - keyword: valueIfFalse
+    types: Any Type
+    description: The value to be returned if condition returns false.
+space: function_page
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: a!match()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type 
+Usage considerations
+Evaluation order
+
+Unlike most functions, if() does not always evaluate all of its parameters. When passed a single condition, the function evaluates the condition and then only the value parameter that is returned.
+
+Null and empty values
+
+When null values are passed to the condition parameter, they are considered to be false.
+When a list is passed to the condition parameter, it is treated as a list of conditions and the value parameters will be treated as lists of values to return. 
+This means that when passed an empty list, if() always returns an empty list. 
+When passed a list containing a single boolean and lists in the value parameters, only the first item of the selected list will be returned.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+if(isleapyear(1996), 1, 0) returns 1
+if(isleapyear(1997), 1, 0) returns 0
+if(null, 1, 0) returns 0
+if(true, 1, error("Doesn't get evaluated")) returns 1 (because the parameter with error() does not get evaluated)
+if(true, { 2, 4, 6 }, { 1, 3, 5 }) returns { 2, 4, 6 }
+if({true, false, true}, { 2, 4, 6 }, { 1, 3, 5 }) returns { 2, 3, 6 }
+if({true}, { 2, 4, 6 }, { 1, 3, 5 }) returns { 2 }
+if({}, { 2, 4, 6}, { 1, 3, 5 }) returns {}
+See also
+a!defaultValue: Consider using the a!defaultValue function when you are replacing a null value with another value or have nested if and isnull statements.

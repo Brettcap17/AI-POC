@@ -1,0 +1,28 @@
+
+layout: function
+title: useryear() Function
+space: function_page
+excerpt: "Returns the year from the date or datetime specified in the user preferred calendar."
+category: function_page
+fncname: useryear
+fncexample: "useryear(11/20/2018)"
+fncresult: "2018"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date or datetime from which the year is to be extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+useryear(11/20/2006) returns 2006

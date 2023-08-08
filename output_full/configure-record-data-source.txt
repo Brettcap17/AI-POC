@@ -1,0 +1,337 @@
+
+layout: basic
+title: Choose a Source for Your Record Type
+permalink: configure-record-data-source.html
+title_short: Choose a Source
+topic-group: B
+weight: 101
+
+This page provides guidance on which source of data to select for a record type and how to configure that source when you first create the record type.
+Overview
+Using data modeling concepts and a guided experience, the record type object makes it easy for you to bring in the data you need to create an application that simplifies and streamlines your business processes. Our guided experience helps you select the right source of data for your record type based on where your data lives.
+To get started, click Tell Us About Your Data.
+In the Configure Data Source dialog, the option you choose will depend on whether you want to connect to an existing source or generate a new source for your record type.
+To connect to an existing source, you can choose one of the following options:
+- Database
+- Process
+- Salesforce
+- Web Service
+To generate a source for your record type, you can choose New Data Model instead.
+When you select a database, Salesforce, or a web service as the source of your record type, you have the option to enable data sync. When you generate a source from your record type, data sync is automatically enabled.
+With data sync, your source is cached in Appian. Keeping this data synced, and close by in Appian, means Appian can execute queries against your data much faster. Appian leverages this increased performance not only to give you more responsive queries and reports, but also to enable a host of powerful features, like record type relationships and custom record fields.
+The sections below explain how to configure a record type using the different sources, and how to enable data sync when you select a database, Salesforce, or a web service as the source.
+Database
+A record type that uses an existing database as the source is the easiest and the most common to configure.
+If your data lives in a relational database, the record type can access your source data through a data store entity (DSE) or from a cached copy if you sync your data in Appian. Learn more about data sync and when to use it.
+
+appian-style-tip
+See the Records Tutorial for detailed guidance on configuring a record type that uses a database table as the source of its data.
+
+Use a database table with data sync enabled
+To use a database table with data sync enabled as the source of your record type, you will:
+
+Choose a source
+Define source filters
+Select and configure record fields
+
+Choose a source {#sync-database}
+The first step of the Configure Data Source guided experience is to select a source. With all supported databases, you can select a table as the record type's source. If you are sourcing data from an Oracle database, you can select either a table or table synonym.
+To choose the source:
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Database.   
+Click NEXT.
+For Data Sync, keep the default option Build Apps Faster with Sync.  
+Click NEXT.
+For Choose Database Table, select a database table for your record type.
+Click NEXT.
+
+Define source filters {#define-database}
+INCLUDE PAGE: Define Source Filters
+Select and configure record fields {#database-fields}
+INCLUDE PAGE: Define Source Filters
+Configure the primary key field to use a sequence {#prodlink-database-fields}
+
+appian-style-note
+This configuration step only applies if you want to use a sequence to create  unique primary key values. Appian supports sequences for record types backed by MariaDB and Oracle databases.
+
+Once you've chosen a source and selected your record fields, you can select a sequence to generate primary key values for records created by Appian.
+A sequence is a value-generating object created in your database. Appian can reference a sequence when creating new records to set the primary key's value. For instance, when one of your app's processes uses the Write Records smart service, the smart service uses the primary key configuration to add a new record. If you've selected a sequence, it will be used to create the record's primary key.
+To select the sequence:
+
+On the Data Model page, locate the primary key field and click Edit.
+On the Edit Record Field dialog, select the option to Use a sequence to generate values for the primary key.
+
+{:.screenshot}
+
+For Sequence Name, select the sequence for Appian to use when writing new data to the source.
+Click OK.
+Click SAVE CHANGES.
+
+Use a database without data sync enabled
+To use a database as the source of your record type:
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For the source type, select Database.   
+Click NEXT.
+For Data Sync, choose Disable sync and related features.
+Click NEXT.
+For Choose Data Store and Entity, select a data store for your record type.
+Select an entity from the selected data store.
+
+
+appian-style-note
+The CDT that connects to the DSE must have a primary key.
+
+
+Click FINISH.
+
+Process model
+You can use any process model as the source for a record type. Each running instance of that process model will be treated as an individual record of your record type. This type of record is less common, and can be a little more challenging to configure. 
+To create a record type from a process model: 
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Process.   
+Click NEXT.
+For Choose Process Model, select a process model.
+Click FINISH.
+
+Now, each active (unarchived) process instance will appear as a record.
+Salesforce object
+You may have external data in Salesforce that you want to use in a record type. Appian allows you to bring that data in through a Salesforce connected system and use it as the source of data for your record type. 
+You can either select an existing Salesforce connected system or configure a new one, if none exist. When configuring a record type to use a Salesforce object, you have the option to enable data sync. By syncing your Salesforce data in Appian, you'll experience faster queries and enable more powerful features. Learn more about data sync and when to use it.
+Use a Salesforce object with data sync enabled
+To use a Salesforce object with data sync enabled as the source of your record type, you will:
+- Choose a source type
+- Define source filters
+- Select and configure record fields
+
+appian-style-note
+Syncing 1,000 rows of data requires a single API call, so ensure the API limit on your Salesforce instance is large enough to support all Salesforce-backed record types with data sync enabled. Learn more about the row limit for record types with sync enabled.
+
+Choose a source type {#sync-salesforce}
+The first step of the Configure Data Source guided experience is to select a source type.
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Salesforce.
+Click NEXT.
+For Data Sync, keep the default option Build Apps Faster with Sync.
+Click NEXT.
+For Choose Salesforce Object, select a Salesforce connected system for your record type.
+Click NEXT.
+
+Define source filters {#define-salesforce}
+INCLUDE PAGE: Define Source Filters
+Select and configure record fields {#salesforce-fields}
+INCLUDE PAGE: Define Source Filters
+Use a Salesforce object without data sync enabled
+To create a record type that uses a Salesforce object without data sync enabled:
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Salesforce.   
+Click NEXT.
+For Data Sync, choose Disable sync and related features.
+Click NEXT.
+For Choose Salesforce Object, select a Salesforce connected system for your record type.
+For Data Type, select a custom data type. This custom data type must match the output of the integration's expected response.
+Click FINISH.
+
+Web service {#prodlink-web-service}
+Your enterprise data may be spread across a number of different systems. With the power of Appian integrations, you can use a web service as the source of data for a record type.
+When configuring a record type to use a web service, you have the option to enable data sync. By syncing your external data in Appian, you'll experience faster queries and enable more powerful features. Learn more about data sync and when to use it.
+Use a web service with data sync enabled
+To use a web service with data sync enabled as the source of your record type, you'll use the Configure Data Source guided experience.
+In this wizard, you will:
+- Choose a source type
+- Choose the Record Data Source
+- Select and configure record fields
+To allow Appian to sync data changed in your web service, configure a Sync Expression after configuring your source.
+Choose a source type {#choose-web-service}
+The first step of the Configure Data Source guided experience is to select a source type.
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Web Service.  
+Click NEXT. 
+For Data Sync, keep the default option Build Apps Faster with Sync.
+Click NEXT.
+
+Choose the Record Data Source {#sync-record-data-source}
+After selecting a web service as your source type, the next step is to choose the Record Data Source. 
+The Record Data Source is an expression rule that calls an integration and returns record data from the response body. This data needs to cast to a List of Map. This means you can return a List of Dictionary or a List of CDT as well. The response must have at least one field that's non-null for every entry, to act as the primary key for the record type.
+To choose the record data source, you can enter the name of an existing expression rule that calls your integration, or click Create Record Data Source to create a new expression rule.
+{:.screenshot}
+See the Service-Backed Record Type Tutorial for detailed guidance on configuring the record data source.
+Create a new expression rule
+To create a new Record Data Source:
+1. For Choose Record Data Source, click Create Record Data Source. 
+1. For SELECT INTEGRATION, select or create an integration that returns data in its response: 
+   - Select Create a new integration to create a new integration object using a connected system. If you do not have a connected system, click Create Connected System to create one.
+   - Select Use an existing integration to choose an existing integration object. 
+1. Click NEXT.
+1. For CREATE EXPRESSION RULE, configure the following properties:
+  |Property|Description|
+  |-|-|
+  |**Name**|Enter the name of your expression rule.|
+  |**Description**|Enter a description for your expression rule.|
+  |**Application**|Specify the application where you want Appian to create the expression rule.|
+  |**Save In**|Specify the folder where you want to save the expression rule.|
+
+
+Click NEXT.
+For SYNCING IN BATCHES, select the Enable Syncing in Batches checkbox to allow the record type to sync more than 1,000 records from your web service. Learn more about syncing in batches.
+Click CREATE. The created objects are listed in the dialog.
+Click OK to return to the Configure Data Source dialog.
+Click NEXT.
+
+Choose an existing expression rule
+To choose an existing expression rule:
+1. For Choose Record Data Source, enter the name of the expression rule that calls your integration.
+  > appian-style-note
+  > The **Record Data Source** cannot use plugins, query rules, or any of the following functions: `query`, `queryEntity`, `queryProcessAnalytics`, `queryRecordType`.
+
+
+Click NEXT.
+
+Syncing in batches
+By default, a record type can sync up to 1,000 records from a web service. To sync more than 1,000 records, you can sync data in batches. Syncing in batches allows Appian to execute the Record Data Source multiple times in order to pull back multiple batches of data. Each batch can contain up to 1,000 records.
+To enable syncing in batches, the Record Data Source must have exactly one rule input of type Number (Integer). If the Record Data Source has no rule input, the record type will be limited to syncing 1,000 records. If the Record Data Source has more than one rule input or the rule input is any type other than Number (Integer), then it is invalid. You will need to update the expression rule to proceed.
+Once you add the rule input to your expression rule, you must modify the underlying integration to apply the rule input too. This allows the expression rule to execute multiple times with sequential values {1,2,3...} being passed to the rule input. The expression will continue to execute until an empty set or null is returned.
+If you do not modify your underlying integration, sequential calls will just pull back the same data and the sync will fail.
+If the underlying API requires a Start Index, you can calculate it with the formula 1 + ((batchNumber - 1) * batchSize) = startIndex. For an example of how this works with a batch size of 1000, see the table below:
+| Batch Number         | Start Index                             |
+|---------------|------------------------------------------|
+| 1     | 1 + ((1 - 1) * 1000) = 1 |
+| 2    | 1 + ((2 - 1) * 1000) = 1001  |
+| 3        | 1 + ((3 - 1) * 1000) = 2001 |
+| 4        | 1 + ((4 - 1) * 1000) = 3001 |
+
+appian-style-note
+While the example above uses a batch size of 1,000, Appian also supports fewer records per batch. For example, you could use a batch size of 100 if that's the largest number the web service can return in a single response.
+
+An error will appear if the Record Data Source returns anything other than an empty set, a null, or something that casts to a List of Map (e.g. a List of Dictionary). An error will also appear if the same primary key shows up in a single batch more than once.
+Select and configure record fields {#web-service-fields}
+The last step is to select and configure the record fields in your record type. 
+By default, Appian creates a mapping between the source schema and the record type schema. As a result, the names of your record fields will match the source field names, and the types of your record fields will be the Appian data types that correspond with the source field types.
+To select and configure the record fields:
+1. For Primary Key, choose a Number (Integer) field to be the primary key.
+1. Use the checkbox next to a Source Field Name to add or remove a field from your record type. You can have up to 100 fields.
+1. In Record Field Name, enter the name for the record field. This is the name that will be used to reference the field in Appian. 
+1. Use the up and down arrows to change the order in which the record fields are displayed.
+1. In Record Field Type, use the dropdown to select the record field type. You can change Text record field types to type User, and Number (Integer) record field types to type Group.
+> appian-style-tip
+> As a best practice, you should use [User](Appian_Data_Types.html#user) field types for fields that represent usernames and [Group](Appian_Data_Types.html#group) field types for fields that represent group identifiers. This allows you to reference these fields in your [record-level security](record-level-security.md) configuration.
+
+
+Click FINISH.
+Click SAVE CHANGES to sync your data.
+
+Configure a Sync Expression {#prodlink-getbyid}
+Once you configure the source of your record type, you can keep your synced data up to date with the data in your web service using different sync options.
+When you trigger a full sync, Appian will use the Record Data Source expression to fetch and sync all of your data. If you want to sync data more frequently, you can configure a Sync Expression so that you can leverage the Sync Records smart service to sync changed data.
+
+appian-style-note
+A Sync Expression is only required when you want to use the Sync Records smart service to sync data in a record type that uses a web service as the source. You do not need this expression to sync data in a record type that uses a database or Salesforce as the source.  
+
+A Sync Expression is similar to a Record Data Source expression; the only difference is that you pass individual record identifiers to your Sync Expression to fetch and return a row or set of rows from the web service. This enables Appian to sync specific rows of data from the web service when you use the Sync Records smart service.
+You can generate and configure a Sync Expression directly from the record type. Learn how to generate a Sync Expression.
+Use a web service without data sync enabled
+To use a web service without data sync enabled as the source of your record type:  
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+For your source type, select Web Service.
+Click NEXT.   
+For Data Sync, choose Disable sync and related features.
+Click NEXT.
+
+For Choose Record Data Source, select an expression that returns a list of records. 
+
+appian-style-note
+See the Service-Backed Record Type Tutorial to walk through how to configure a record type that uses a web service as the source of its data.
+
+
+
+Click NEXT.
+
+For Data Type, select a custom data type. This custom data type must match the output of the integration's expected response.
+Click FINISH.
+
+Record Data Source (data sync not enabled)
+After selecting a web service as your source type, the next part of the configuration is to use the rule picker for Record Data Source. This is where you'll configure the data for your record type.
+The Record Data Source configuration section is where you'll configure the data for your record type. This allows you to configure the integration that pulls in your external data source, the expression rule that calls your integration, and the rule inputs that define your paging, searching, and filtering parameters. Learn how to create user filters for a web service.
+You can either select an existing expression rule, or create a new one by clicking the Create Record Data Source link to launch a guided experience that helps you easily create and configure the objects you'll need.
+Single record source
+The Single Record Source configuration section is where you'll configure the data for a single record view. This allows you to configure an integration that pulls in the data for a single record, the expression rule that calls in the integration, and the rule input that defines the record identifier for the record view that returns when the integration is called.
+
+{:.screenshot}
+Enable paging, search, and filtering
+After configuring your record type to use a web service, you can enable paging and search for your record list by adding appropriate rule inputs to the record data source expression rule.
+Add a rule input of type PagingInfo to the record data source expression rule to enable paging and sorting. Then, select the rule input from the Paging Info dropdown.
+Similarly, to configure searching on your record, you must add a rule input of type Text and select the rule input from the Search Text dropdown in the record type.
+{:.screenshot}
+To enable filtering on the record list, you must add a rule input for each user filter to the integration for your connected system and the Record Data Source expression rule for the record type. 
+Each rule input should correspond to the type that will be returned by the associated user filter dropdown. The selected value will then be passed to the Record Data Source expression rule, where the developer can apply it to the integration.  
+To learn more, see User Filters for Service-Backed Record Types.
+Test the record type
+After configuring the expression rules that call the integrations for your record type, you can use the Test Record Source box to verify that the data results returned for your Record Data Source expression and Single Record Data expression are correct. 
+Simply select the view for the source expression you want to verify and click the TEST button.
+
+{:.screenshot}
+The results of your record data source expression will be cast to the data type you selected for your record type, and displayed in a grid.
+
+{:.screenshot}
+Although this view may look similar to the record list view you configured, it is not the same. Rather than showing your configured columns, the Test Record Source view will show you all of the fields on the data type that correspond to the record type. These record type fields can be used as inputs when configuring your record list. Note that in the record list you must use fv!row to reference the record fields values, not rv!.
+You can also use this view to evaluate your rule inputs for paging, searching, and filtering. The rule inputs for these parameters apply to your record list view so you'll want to ensure they're working as expected.
+When you select Single Record Source view, you will see the expression output cast to your selected data type. This displays all of the fields and values available for a single record. You can also choose how you want these record fields and values displayed in the view.
+
+{:.screenshot}
+The Test Record Source pane displays the first 100 records of the DataSubset only.
+
+appian-style-note
+See the Appian 20.1 documentation for more information about service-backed record types, formerly called expression-backed record types, created with Appian 20.1 or earlier.
+
+Modify the data model
+If you configured your record type with data sync enabled, you have the flexibility to update or change your data model at any point during the development process. For example, if you did not add a source filter while configuring the source of your record type, you can always add one later to filter out unnecessary data. 
+From the Data Model, you can change your record field names and data types, add or remove record fields, and modify your source filters.
+Change record field names and data types
+If you need to change the name of a record field, or you want to change a field like username from type Text to User, you can easily change your record field configuration.
+To change a record field name or data type:
+1. Go to Data Model.
+1. Click CONFIGURE FIELDS. 
+1. In Record Field Name, enter the name for the record field. This is the name that will be used to reference the field in Appian.
+1. In Record Field Type, use the dropdown to select the record field type. You can change Text and Number (Integer) record field types to type User or Group.
+> appian-style-tip
+> As a best practice, you should use [User](Appian_Data_Types.html#user) and [Group](Appian_Data_Types.html#group) field types for any fields that represent usernames or group Ids. This allows you to reference these fields in your [record-level security](record-level-security.md) configuration.
+
+
+Click FINISH.
+Click SAVE CHANGES. 
+
+If you change the record field type, you will need to update any existing references to the field. See the Health Dashboard to quickly find all invalid field references.
+Add or remove record fields
+If a new field is added to your source data, you'll also need to add that new field in your record type. Similarly, if a field is removed from your source data, you'll want to remove it from the record type as well. 
+To add or remove record fields from the record type:
+1. Go to Data Model.
+1. Click CONFIGURE FIELDS. 
+1. In the Configure Fields dialog, select or deselect the checkbox next to any record field. 
+1. Click FINISH.
+1. Click SAVE CHANGES. 
+Modify source filters
+
+appian-style-note
+Source filters are not applicable for record types that use a web service as the source of their data.
+
+If you didn't add source filters during the original record type configuration, or perhaps you need to update or remove your source filters, you can add or edit your source filters.
+To add source filters after configuring the source of your record type, see Source filters.
+To modify source filters:
+1. Go to Data Model.
+1. Under SOURCE FILTERS, click EDIT FILTERS.
+1. Update your filter configurations.
+1. Click OK.
+1. Click SAVE CHANGES. 

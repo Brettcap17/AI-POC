@@ -1,0 +1,32 @@
+
+layout: function
+title: userdaysinmonth() Function
+space: function_page
+excerpt: "Interprets the year/month specified in the user preferred calendar and returns the number of days in a that month."
+category: function_page
+fncname: userdaysinmonth
+fncexample: "userdaysinmonth(04, 2006)"
+fncresult: "30"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: month
+    types: Number
+    description: |
+      The month for which days are requested.
+  - keyword: year
+    types: Number
+    description: |
+      The year for which days in month is requested.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+userdaysinmonth(04,2006) returns 30

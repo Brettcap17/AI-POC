@@ -1,0 +1,43 @@
+
+layout: "basic"
+title: "a!distanceBetween() Function"
+category: "function_page"
+excerpt: "Returns the distance between the two locations (in meters) specified by the start and end coordinates. The distance is calculated by tracing a line between the two locations that follows the curvature of the Earth, and measuring the length of the resulting arc."
+fnccat: "Mathematical"
+fncexample: "a!distanceBetween(startLatitude: 38.932290, startLongitude: -77.218490, endLatitude: 38.963058, endLongitude: -77.363701)"
+fncname: "a!distanceBetween"
+fncresult: "13015.34"
+space: "function_page"
+reftype: function
+parameters:
+  - keyword: startLatitude
+    types: Number (Decimal)
+    description: |
+       Latitude of the start location in degrees.
+  - keyword: startLongitude
+    types: Number (Decimal)
+    description: |
+       Longitude of the start location in degrees.
+  - keyword: endLatitude
+    types: Number (Decimal)
+    description: |
+       Latitude of the end location in degrees.
+  - keyword: endLongitude
+    types: Number (Decimal)
+    description: |
+       Longitude of the end location in degrees.
+
+Functions
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number (Decimal) 
+Usage considerations
+
+Valid range for latitude values is -90 and +90 degrees, specifying coordinates to the south and north of the equator respectively. 
+Valid range for longitude values is -180 and +180 degrees, specifying coordinates to the west and east of the Prime Meridian respectively.
+
+Examples
+a!distanceBetween(startLatitude: 38.932290, startLongitude: -77.218490, endLatitude: 38.917370, endLongitude: -77.220760) returns 1670.609

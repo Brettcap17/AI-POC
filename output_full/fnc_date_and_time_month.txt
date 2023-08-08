@@ -1,0 +1,30 @@
+
+layout: function
+title: month() Function
+space: function_page
+excerpt: "Returns the month from the specified date."
+category: function_page
+fncname: month
+fncexample: "month(date(2011, 12, 13))"
+fncresult: "12"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date from which the month is extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+month(date(2011,2,28)) returns 2

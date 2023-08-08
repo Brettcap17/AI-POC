@@ -1,0 +1,111 @@
+
+layout: function
+title: Modify User Security Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: This smart service allows you to overwrite a specific user's entire role map with different users and groups.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!modifyUserSecurity
+fncsubcat: Identity_Management
+parameters:
+  - keyword: group
+    types: Group
+    description: The user that will be updated.
+  - keyword: administrators
+    types: List of User or Group
+    description: List of users or groups that will have administrative privileges on the user.
+  - keyword: editors
+    types: List of User or Group
+    description: The users to add as administrators to this group.
+  - keyword: viewers
+    types: List of User or Group
+    description: The users to add as administrators to this group.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Modify_User_Security.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} See role map in the glossary. 
+Enter the users and groups to overwrite with in the node input roles (Administrator, Editor, Viewer) for this smart service. If no user or group is entered for a particular role, the role defaults to the Site-wide Default Role Map behavior for that role and is considered "cleared."
+By using this smart service, you can easily "lock down" a user and make them invisible to all basic users. Instead of needing to remove the Viewer role from every user or group for that specific user, you can run this smart service with no values in the Viewer input, so the Viewer role defaults to the Site-wide Default Role Map of no viewers.
+
+appian-style-caution
+The user running the smart service must have Administrator privileges over the target user or be a system administrator. Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process.
+
+The activity is unattended by default. If the activity is run without being assigned to a user (or a group) you must specify values for the node inputs listed in the table below. You can either manually enter data into the text-field or generate a value using the Expression Editor. When using the Expression Editor, you can reference and modify process variables, rules, constants, and other data. The expressions then populate your node input values.
+Process designers can switch the activity to attended. If switched, a default form is available to allow the task user to enter users or groups for the node input roles.
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+The data tab displays the node inputs and outputs for the activity. You can add additional inputs and custom outputs, if needed. 
+Node inputs
+The default inputs include the following:
+
+
+
+Input
+Data Type
+Description
+Required
+Multiple
+
+
+
+
+User
+People
+The user to update (target user). Valid values include deactivated users. By default, you can only run this service against one user at a time. Click here for instructions on running this service against multiple users.
+Yes
+No
+
+
+Administrators
+People
+The list of People who will be Administrators in the User role map. In addition to the system administrators, people set in this role can administer the user. If no value is set, no one but a system administrator can administer the target user.
+No
+Yes
+
+
+Editors
+People
+The list of People who will be Editors in the User role map. The user cannot edit his/her self unless you explicitly include them in the value.
+No
+Yes
+
+
+Viewers
+People
+The list of People who will be Viewers in the User role map. The list of users and groups set in this role will be honored, and the site-wide default will be overridden for this user. If not set, the site-wide default for user visibility will be used to determine who can see this user.
+No
+Yes
+
+
+
+a!modifyUserSecurity()
+The Modify User Security smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Running the Smart Service Against Multiple Users
+In order to update multiple users, use a rule defined as user(getdistinctusers(topeople(ri!gr)),"username") where ri!gr is the group containing the users you want to modify to get the list of all usernames to MNI over.

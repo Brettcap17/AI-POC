@@ -1,0 +1,27 @@
+
+layout: function
+title: a!wsUsernameToken() Function
+space: function_page
+excerpt: "Constructs a WsUsernameToken object for use with a!wsConfig."
+category: function_page
+fncname: a!wsUsernameToken
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: username
+    types: Text
+    description: |
+      The username used to authenticate.
+  - keyword: password
+    types: Text
+    description: |
+      The password used to authenticate.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

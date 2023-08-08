@@ -1,0 +1,104 @@
+
+layout: function
+title: Header Text Component
+category: function_page
+compatibility: -crf
+excerpt: Displays heading-styled text within a rich text component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!richTextHeader
+fncsubcat: Display
+parameters:
+  - keyword: text
+    name: Text
+    types: Text or Styled Text
+    description: Array of text to display as a rich text item.
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the text size. Valid values: "ICON" (default), "TINY", "GALLERY", "SMALL", "MEDIUM", and "LARGE".
+  - keyword: link
+    name: Link
+    types: Link
+    description: |
+      Link to apply to the text. Create links with:
+        - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink()
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: linkStyle
+    name: Link Style
+    types: Text
+    description: |
+      Determines how the link is underlined. Valid values: "INLINE" (default), "STANDALONE".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Header Text
+scsubcat: Rich_Text_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays heading-styled text within a rich text component.
+See also: Rich text style guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the text and link parameters
+
+If text is null or contains an empty array, no text is displayed.
+If link is null, the text is not displayed as a link.
+
+Header text and grids
+
+While rich text components can be placed inside a grid layout, header styles are not supported within a grid layout.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 840 %}
+a!richTextDisplayField(
+  label: "Heading Sizes",
+  labelPosition: "ABOVE",
+  value: {
+    a!richTextHeader(
+      text: "Small Heading",
+      size: "SMALL"
+    ),
+    a!richTextHeader(
+      text: "Medium Heading",
+      size: "MEDIUM"
+    ),
+    a!richTextHeader(
+      text: "Large Heading",
+      size: "LARGE"
+    ),
+    a!richTextHeader(
+      text: "Medium Standalone Link Heading",
+      link: a!dynamicLink(
+      ),
+      linkstyle: "STANDALONE",
+      size: "MEDIUM"
+    ),
+    a!richTextHeader(
+      text: "Medium Inline Link Heading",
+      link: a!dynamicLink(
+      ),
+      linkstyle: "INLINE",
+      size: "MEDIUM"
+    )
+  }
+)
+{% endsailbox %}

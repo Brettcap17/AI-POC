@@ -1,0 +1,42 @@
+
+layout: function
+title: a!getDataSourceForPlugin() Function
+category: function_page
+excerpt: 'Provides capability for plug-ins to connect to Data Source Connected Systems and apply corresponding role map security configurations.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!getDataSourceForPlugin
+compatibility: -crf, ~portal, -om
+parameters:
+  - keyword: dataSourceConnectedSystem
+    types: Any Type
+    description: |
+      Constant that references a Data Source Connected System value. 
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage Considerations
+The user must have at least Viewer permission to the Data Source Connected System in order to call the function. 
+Review security role map permissions for a Data Source Connected System.
+Example
+Invoking a!getDataSourceForPlugin within executestoredprocedure plug-in function. 
+sail 
+executestoredprocedure(
+  dataSourceName: a!getDataSourceForPlugin(cons!APP_DATA_SOURCE_POINTER),
+  procedureName: "spRetrieveData",
+  inputs: {
+    a!storedProcedureInput(
+      name: "input",
+      value: 0
+    )
+  }
+)
+See also:
+Data Source Connected Systems

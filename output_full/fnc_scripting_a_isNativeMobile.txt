@@ -1,0 +1,33 @@
+
+layout: function
+title: a!isNativeMobile() Function
+category: function_page
+excerpt: |
+  Returns true if the interface is being viewed within the Appian for Mobile application. Returns false otherwise.
+fnccat: Scripting
+fncexample: Click on the function name for examples.
+fncname: a!isNativeMobile
+fncresult: Boolean
+compatibility: -crf
+parameters: none
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Use a!isNativeMobile() when you are specifying behavior unique to a mobile app. For example, you might use a!isNativeMobile() to check for mobile browser users who are not using the Appian Mobile application and show them a redirect link to download the application.
+See also:
+
+a!isPageWidth
+Responsive Design
+Columns Layout
+Side By Side Layout
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Using isNativeMobile to set site visibility
+
+Do not use the a!isNativeMobile function to set site page visibility.

@@ -1,0 +1,214 @@
+
+layout: basic
+title: Create a Portal
+weight: 400
+topic-group: B
+
+Overview
+Every portal needs at least a portal object and a primary interface, but a portal can contain that and so much more. This page walks you through creating a portal, from the very beginning of development through deployment.
+Each step in this walk-through will give you a high level overview of what to do for the main action of the section. Some steps are optional and, depending on your use case, you may not need every step for your portal.
+Step 1: Create a service account and set permission for your portal
+Before we dive into creating your primary interface and portal object, we need to set up a service account to allow your users access to any data or document connections they may need.
+There are a few ways to create a service account. You can create one while creating an API key or you can create one from scratch. Since most portals will require an API key to use with a web, we'll walk through how to create a service account when creating an API key.
+To create a new service account:
+
+Go to the Administration Console.
+Under Authentication, click Web API Authentication.
+In the API Keys tab, click CREATE.
+Enter a Description. 
+Under Service Account, click  to create a new service account.
+For Username, enter a name for the service account for your portal.
+Click CREATE.
+Back on the Create New API Key dialog, your new service account has been populated.
+Click CREATE.
+Click Copy API Key to clipboard and store it externally. Appian will never show the value of the API key a second time.
+Click OK.
+
+If you don't plan on using a web API to write or query data using your portal and you need a new service account, you can create one from scratch by creating a new user and adding the user to the Service Accounts group.
+You'll add your service account to your portal object later on. For more information, see Step 4.
+
+appian-style-note
+Before you deploy a portal to a new environment, deploy any groups used to set permissions for your portal and create a service account with the same name as the service account used for your portal. To learn more, see deploying a portal.
+
+Set service account permissions
+When you create the supporting objects for your portal, grant your service account permission to access your portal by giving it the appropriate permissions and group membership.
+Below is general guidance for giving your service account permissions to your objects. Alternatively, you can create new end-user groups with more granular permissions to your application objects.
+Generally, to grant access to your portal:
+
+Add your service account to the Users group in your application. 
+
+Give the Users group the appropriate permissions below depending on your use case.
+
+
+For uploading documents, grant the User group Editor permissions to the document folders they'll be uploading documents to. They will also need at least Viewer permission to any folders and knowledge centers that the document folder is in.
+
+For viewing or downloading documents, grant the User group Viewer permissions to the document folders that they will need access to.
+For writing or querying data, grant the User group Viewer permissions to the record type or data store that they'll need access to. For records, be sure to configure the source security, as well as any necessary record-level security.
+If you are using a web API, grant the user group Viewer permissions to the web API.
+For starting a process, grant the user group  at least Initiator permissions to the process model.
+
+Step 2: Create your data connection objects
+It's important to consider not only the data that you want your users to see or submit, but consider where that data lives and the structure of the data.
+For most cases to query and write data in a portal, you can connect your portal to Appian data and records using integrations and web APIs.
+This section points you to content on how to write to or query from an Appian record type or data source. You'll need to set up a web API, connected system, and integration to connect your portal to Appian.
+For writing data in a portal, see Writing data.
+For querying data in a portal, see Querying data.
+For a checklist of all the objects that you'll need for querying and writing data, see What is a Portal.
+For instructions on directly writing or querying data using an external database, see Connecting to external databases in a Portal.
+Step 3: Create your document connection objects
+Using documents in your portal is similar to using them in a standard interface or application. This section points you to content on how to upload, download, and view documents in your portal.
+For uploading files, see Uploading files in a portal.
+For downloading files, see Downloading and viewing files in a portal.
+Step 4: Create and configure a portal object
+With all of our supporting objects and connections set up, we can now create and configure our portal object and connect everything in just a few steps.
+This section will provide a brief overview of the steps to make a fully configured portal object, complete with credentials.
+Create a portal object and add contents
+To create a portal object:
+
+In the Object view, select Portal from the NEW menu.
+Enter values for the Properties and click CREATE.
+
+Later on, we'll create and add the primary interface to the Content field in Step 6.
+Add your service account
+With the portal object created, we can now add our service account.
+To add your service account:
+
+Go to the Service Access section of your portal object.
+For Service Account, select the service account. You can only associate one service account with your portal. For more information, see Service Accounts in a Portal.
+
+Configure branding and PWA
+Before we move on to setting up reCAPTCHA and our primary interface, you can take some time to configure the Branding and Progressive Web App sections.
+In the Branding section, you can make changes to any of the default branding configurations to fit your organization's branding guidelines. After we add our primary interface as the content of our portal object, you can preview some of your configurations the Branding Preview.
+In the Progressive Web App (PWA) section, you can configure your portal to be a progressive web app. A progressive web app looks and behaves like a native application and allows your users to install the portal on their device for easy and frequent access. 
+Step 5: Create a reCAPTCHA connected system
+You can add reCAPTCHA to your portal to help you monitor your portals for spam or potentially malicious activity. Using a reCAPTCHA connected system, Appian works with Google’s reCAPTCHA services so that you can help mitigate misuse of your portal.
+For more reCAPTCHA guidance or further information on setting up and using a reCAPTCHA connected system, check out Configuring reCAPTCHA and the Google reCAPTCHA connected system page.
+To create a reCAPTCHA connected system from your portal object:
+
+In your portal object, go to the Service Access section.
+Under Google reCAPTCHA, click .
+Enter a Name and Description for the connected system.
+In reCAPTCHA Project ID, enter the project ID provided by Google when you created the project.
+In reCAPTCHA Site Key, enter the reCAPTCHA key ID from your Google Cloud Console.
+In reCAPTCHA API Key, enter the API key with reCAPTCHA Enterprise API enabled from your Google Cloud Console.
+Click Test Connection to test that your credentials are valid for getting a reCAPTCHA score.
+Click CREATE.
+
+Step 6: Create your primary interface
+Now it's time to create primary interface to use as the content of your portal object and the main UI that your users will interact with in your portal.
+To create a primary interface through the portal object: 
+
+Click  under the Content field in the Configurations section.
+Enter a name and description.
+Click CREATE.
+Configure and design an interface like you normally would.
+
+Keep in mind a few guidelines that are specific to the primary interface for your portal:
+
+Don't use rule inputs in the primary interface for your portal.
+Don't use incompatible functions or components. For a full list, use the filters on the Appian functions table.
+Write to or query from Appian using a web API and integration.
+
+For a full list of design considerations for your primary interface, see Portal Design Best Practices.
+Step 7: Add your connections to your primary interface
+Now that you have your primary interface created, it's time to add the connections you created earlier.
+This section provides an overview of the steps to add integrations, document upload and download components, and reCAPTCHA functionality to your primary interface.
+Add data connections to your interface
+After you've created both your data connection objects for querying and writing data and your primary interface, you can call your integration from your primary interface.
+For more in-depth instructions for both writing and querying data with a portal, see Working with Data in a portal.
+For instructions on writing or querying data using an external database, see Connecting to external databases in a Portal.
+Writing data
+To call your integration to write data from an interface:
+
+In the expression of your interface, use rule! and the name of your integration inside the saveInto parameter of a component.
+Set values for the onSuccess and onError parameters.
+
+For an example of calling your integration for writing data from an interface, see Calling an Integration to Modify Data.
+Querying data
+To call your integration to query data from an interface:
+
+In the expression of your interface, use rule! and the name of your integration in a local variable or wherever relevant in your expression.
+Cast the dictionary results returned by your query into the record type or CDT that you're using for your data. This lets you easily reference your queried data throughout your portal without extra formatting.
+
+For an example of calling your integration for querying data from an interface, see call your integration. For an example of casting your dictionary results, see the example on Working with Data in a Portal
+Add document connections to your interface
+You can use documents in your portal similarly to using them in a standard interface or application. This section gives you a high-level overview of how to add the connections needed to upload, download, and view documents to the primary interface for your portal.
+For more in-depth instructions on using documents in your portal, see Working with Documents in a Portal.
+Uploading files in a portal
+To allow your users to upload files in your portal: 
+
+In your interface, add a file upload or signature components.
+Add a submission link or button.
+In the saveInto parameter of the submission link or button, use the a!submitUploadedFiles function.
+
+Use the following function variables as you normally would with any other file upload or signature components:
+
+
+fv!file.name
+
+fv!file.size
+fv!file.extension
+fv!file.index
+
+Downloading files and viewing document images in a portal
+To allow your users to download files and view document images in a portal: 
+
+In your interface, add a!documentDownloadLink, a!documentImage, and/or a!documentViewerField components and use as you normally would.
+In the document parameter of either component, use a constant of type document or a document ID.
+
+Add reCAPTCHA connections to your interface
+To use your reCAPTCHA connected system in your portal, connect to it in your primary interface using the recaptchaSaveInto parameter and the a!verifyRecaptcha(). 
+To call your reCAPTCHA connected system from an interface:
+
+In your interface, add a button to use for submitting data or documents.
+In the recaptchaSaveInto parameter of the button or link, use the a!verifyRecaptcha() function. 
+In the onSuccess parameter of the verifyRecaptcha function, use the a!save function. 
+In the onSuccess parameter of the verifyRecaptcha function, use fv!score and create conditional logic to define what happens when reCAPTCHA successfully evaluates and returns a score.
+In the onError parameter of the verifyRecaptcha function, use the a!save function. 
+In the onError parameter of the verifyRecaptcha function, use fv!error to show the error and define what happens when reCAPTCHA does not successfully evaluate.
+
+For more in-depth instructions and examples, see Configuring reCAPTCHA and The Verify reCAPTCHA Function.
+Step 8: Publish your portal object
+With your supporting objects and portal object all created and configured, your portal object is now ready for publishing!
+To publish your portal object:
+
+In the Configurations section of your portal object, toggle on Published. 
+Click SAVE CHANGES. The portal won't be published until you save.
+Once your portal is successfully published, click the URL under Web Address to see your published portal.
+
+For more information on publishing, see Manage a Portal.
+Step 9: Test your published portal
+Now that your portal is published, it's time to test it. It's important to test both your individual objects and the published portal as a whole.
+Navigate to the published portal using the URL under Web Address and test your portal as a user would interact with it. 
+To make sure that everything is functioning correctly, fully test all of the objects, connections, and primary interface fields and components that your portal relies on, including the following:
+
+Input fields and document upload fields in an interface.
+Selection fields and document download fields in an interface.
+Web API, connected system, and integration objects, as well any connections to them in interfaces.
+Data source connected systems for external databases and connections to them in interfaces.
+reCAPTCHA connected system and any connections to them in interfaces.
+Expression rules.
+Constants.
+All other objects and connections.
+
+Be sure to fill out all of the fields, whether they are required or not, and go through all of the steps in your portal. If you run into any issues while testing, check out the Visitor Activity Logs in your portal object.
+Step 10: Republish your portal
+If you found any problems with your portal during testing, go ahead and make changes to your primary interface, supporting objects, portal object, or connections. Once you've made and saved your changes, you must republish your portal to be up-to-date.
+To republish your portal:
+
+Return to the portal object.
+In the blue banner, click Republish.
+Click SAVE CHANGES.
+Once your portal is successfully republished, click the URL under Web Address to see your published portal and your most recent changes.
+Continue testing, making changes, and republishing your portal until you're happy with it.
+
+To learn about who can see your portal during testing, see Manage a Portal.
+Step 11: Deploy your portal
+Once you've created, published, and tested your portal object, it's time to deploy your portal to the next environment. To deploy your portal, just include it in your existing deployment pipeline with an application or in a package.
+If you have your environments set up for direct deployment, use Compare and Deploy to get your portal ready for deployment.
+When you're ready to deploy, remember to include all of the portal's precedents and an ICF with your API key and connected system credentials. In the new environment, make sure that there's already a service account of the same name as the service account associated with your portal with the correct group membership and permissions.
+You're ready to go!
+To learn more about deploying your portal, see Manage a Portal.
+Step 12: Share your portal and celebrate!
+Congratulations! You created a nice and shiny new portal!
+After a successful deployment to your target environment, you can now share your portal with your users at the web address specified in the portal object and celebrate.

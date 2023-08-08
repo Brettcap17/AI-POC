@@ -1,0 +1,32 @@
+
+layout: function
+title: radians() Function
+space: function_page
+excerpt: "Converts the measure of the specified angle from degrees to radians."
+category: function_page
+fncname: radians
+fncexample: "radians(180)"
+fncresult: "3.141593"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: angle_in_degrees
+    types: Decimal
+    description: |
+      An angle measure that will be converted into radians.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+This function can only be used for values between 0 and 2π (~6.286).
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+radians(180) returns 3.141592653589793

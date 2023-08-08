@@ -1,0 +1,11 @@
+
+layout: basic
+title: HTTP Query Smart Service [Deprecated]
+space: no_toc
+depver: 17.3
+reftype: smart_service
+ssicon: Deprecated.gif
+ssparentcat: "一Deprecated一"
+
+This feature has been deprecated, and will be removed in a future release of Appian. To implement the same functionality,  use the Call Integration Smart Service with an Integration. 
+For information about the HTTP Query Smart Service, see the Appian 17.2 documentation.

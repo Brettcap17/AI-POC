@@ -1,0 +1,30 @@
+
+layout: function
+title: lcm() Function
+space: function_page
+excerpt: "Returns the least common multiple of the specified non-negative number(s), which is the smallest number that is a multiple of all the given numbers."
+category: function_page
+fncname: lcm
+fncexample: "lcm(5,10,15)"
+fncresult: "30"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      The list of non-negative numbers.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+lcm(5,10,15) returns 30

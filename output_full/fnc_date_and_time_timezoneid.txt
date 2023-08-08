@@ -1,0 +1,28 @@
+
+layout: function
+title: timezoneid() Function
+space: function_page
+excerpt: "Returns the time zone ID for the current context."
+category: function_page
+fncname: timezoneid
+compatibility: -om, +pe, +pr
+fncexample: "timezoneid()"
+fncresult: "GMT"
+fnccat: Date_and_Time
+reftype: function
+parameters: none  
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Expect differing results when the process takes the initiator's time zone versus the configured time zone. In reports, rules, and dashboards, the current user's time zone is returned.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+timezoneid() returns GMT where the user's time zone is Gereenwich Mean Time. 

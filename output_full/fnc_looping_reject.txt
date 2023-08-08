@@ -1,0 +1,39 @@
+
+layout: function
+title: reject() Function
+category: function_page
+excerpt: 'Calls a predicate for each item in a list, rejects any items for which the returned value is true, and returns all remaining items.'
+fnccat: Looping
+fncexample: 'reject(fn!isnull, {1, null, 3})'
+fncname: reject
+fncresult: '{1, 3}'
+space: function_page
+reftype: function
+parameters:
+  - keyword: predicate
+    types: Function, Rule, or Data Type Constructor
+    description: Expression that returns a Boolean (true or false).
+  - keyword: list
+    types: Any Type Array
+    description: List of elements that the predicate iterates through.
+  - keyword: context
+    types: Any Type Array
+    description: Variable number of parameters passed directly into each function evaluation.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Referencing expressions and rules
+Use fn!functionName to reference an expression function and rule!ruleName to reference a rule.
+Limitations and alternatives
+a!forEach() cannot be used within rules used in this function. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+reject(fn!isnull, {1, null(), 3}) returns 1, 3

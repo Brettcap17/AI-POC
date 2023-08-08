@@ -1,0 +1,40 @@
+
+layout: function
+title: workday() Function
+space: function_page
+excerpt: "Returns the date the given number of workdays before or after the given date."
+category: function_page
+fncname: workday
+fncexample: "workday(date(2011, 12, 13), -6)"
+fncresult: "12/5/2011"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: starting_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: days
+    types: Integer
+    description: |
+      The number of days to advance into the future (positive numbers) or days to retreat into the past (negative numbers).
+  - keyword: holidays
+    types: Date
+    description: |
+      A list of holidays not counted as workdays.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+Usage considerations
+An array of holidays may be given by enclosing them in braces, such as {"12/25/2004","12/31/2004"}.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+workday(date(2011,12,13),-6) returns 12/5/2011

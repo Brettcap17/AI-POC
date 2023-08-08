@@ -1,0 +1,39 @@
+
+layout: function
+title: weeknum() Function
+category: function_page
+excerpt: Returns the week number within the year for the given date using a given methodology.
+fnccat: Date_and_Time
+fncexample: 'weeknum(date(2011, 12, 13))'
+fncname: weeknum
+fncresult: '51'
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date for which the week number will be determined.
+  - keyword: methodology
+    types: Integer
+    description: |
+      Controls what day is the first of the week with 1 correlating with the week beginning on Sunday and 2 correlating with the week beginning on Monday. The default value of methodology is 1.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+1 is returned for any week that contains January 1st.
+Usage considerations
+
+The last days of the year will return 1 if the first day of the next year is within the same calendar week. For example, the date December 31, 2021 is on a Friday, so this will return 1 because the date January 1, 2022 is on the Saturday of that week.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+weeknum(date(2011,12,13)) returns 51

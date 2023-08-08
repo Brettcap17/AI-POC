@@ -1,0 +1,59 @@
+
+layout: "basic"
+title: "Package Structure"
+topic-group: "Reference"
+weight: 200
+
+Component plug-ins are packaged in ZIP files. This page describes the required ZIP structure.
+
+appian-style-tip
+This version of Appian supports component plug-ins that use SDK version 2.0.0. Refer to the Integration SDK compatibility table for version details.
+
+Package structure
+The folder structure of your component plug-ins references properties from the plug-in manifest file including the component's rule-name and version attributes. 
+
+ Plug-in, packaged as a ZIP file
+ appian-component-plugin.xml - Component plug-in package manifest
+ Component folder, one for each component rule-name defined in the plug-in
+ Component version folder, one for each major version (For example: v1, v2)
+ Plug-in web content, including HTML, JS, CSS, etc. files. The HTML file used as the component's html-entry-point should be placed in this folder. Use subfolders for organization.
+ Internationalization bundles (For example: <rule-name>_en_US.properties)
+
+
+
+Notes
+
+The appian-component-plugin.xml manifest file and all component rule name folders must be at the root directory of the zip file.
+All paths for web content should be relative to its version folder as it will be unpacked into separate directories inside the container on deployment.
+Internationalization bundles are removed from the folder structure when the plug-in is deployed. Don't reference these files in your code.
+
+Example
+In the following example:
+- The package version is 2.1.0
+- The package contains two components: mapField and directionsField
+- mapField has two major versions
+- directionsField has a single major version
+ geo-components_2.1.0.zip
+  -  appian-component-plugin.xml
+  -  mapField
+    -  v1
+      -  index.html
+      -  map.js
+      -  mapField_en_US.properties
+      -  images
+        -  maps.svg
+    -  v2
+      -  index.html
+      -  map-advanced.js
+      -  mapField_en_US.properties
+      -  mapField_en_GB.properties
+      -  images
+        -  maps.svg
+  -  directionsField
+    -  v1
+      -  index.html
+      -  directions.js
+      -  directionsField_en_US.properties
+      -  directionsField_en_GB.properties
+      -  images
+        -  directions.svg

@@ -1,0 +1,1456 @@
+
+layout: basic
+title: Smart Service Plug-ins
+permalink: Custom_Smart_Service_Plug-ins.html
+topic-group: C
+weight: 200
+
+Overview
+Custom smart service plug-ins are reusable code objects built using annotated Java classes, XML, and resource bundles. They appear in the Process Modeler and can be used in your process models in the same manner as any other smart service.
+See also: Smart Services
+Building your custom smart service as a plug-in is the recommended approach, because it greatly simplifies the creation and deployment of your custom smart service. Plug-ins are based on the OSGi model, an industry standard approach to packaging modular functionality.
+
+appian-style-tip
+The bundled Plug-ins that are included in the product installer are contained in a file named appian-bundled-plugins.zip.
+
+See also:  Appian Plug-ins
+Creating and deploying the plug-in
+To create and deploy the smart service plug-in:
+
+Create a new Java project in Eclipse.
+Click File > New > Other.... 
+Select Java Project from the Select a wizard options. Click Next. 
+Type a name for your project. Click Finish (accepting the default settings).
+Configure the Java Build Path.
+Right-click the project. Click Properties. 
+In the left navigation, select Java Build Path. 
+Select the Libraries tab. Click the Add External JARs... button. 
+Add the following Appian JAR as an external dependency and click OK.
+<APPIAN_HOME>/_admin/sdk/appian-plug-in-sdk.jar
+Your plug-in must be designed to access only the classes and methods documented in the Public API javadocs.
+
+
+
+
+Configure Project Folders.
+In the Package Explorer (left navigation) right-click the src folder. 
+Select New > Folder. 
+Type META-INF in the folder name field and click Finish. 
+With the META-INF folder selected, right-click and select New > Folder. 
+Type lib in the folder name field and click Finish. 
+With the src folder selected, right-click and select New > Package. 
+Type your desired package structure in the name field.   For example: com.example.plugins.<YOUR_PLUGIN>
+Click Finish.   Your file structure should appear similar to the following:    |_src
+        |_com.example.plugins.<YOUR_PLUGIN>
+        |
+        |_ META-INF
+            |_ lib
+
+
+Add the JAR files required by your smart service to the src/META-INF/lib/ folder.
+These JAR files are deployed by your plug-in. 
+If your plug-in needs a resource included in an Appian JAR file, do not add that file to this folder. Instead, reference the Appian JAR from your build path. 
+Any third party libraries that are specifically used by your plug-in must be included in the src/META-INF/lib/ folder.
+Create your class and add it to the src/com.example.plugins.<YOUR_PLUGIN> package.
+Right-click the project and select New > Class.
+Enter the package for the class (such as com.example.pluginname).
+Enter the name of the class (the smart service name).
+In superclass, click Browse. 
+Type AppianSmartService — OR — Type com.appiancorp.suiteapi.process.framework.AppianSmartService.
+Ensure that the Inherited Abstract Methods checkbox is selected and click Finish.
+Note: Do not use Java 8 constructs (streams, lambdas, etc.) in the code for your custom plug-in. Doing so will cause the plug-in to fail to deploy. 
+Note: Only use Appian's public Java API to invoke Appian functionality. Generally, public interfaces are found in com.appiancorp.suiteapi.  
+Update your Java Build Path to include any new JAR files; otherwise, Eclipse won't compile. 
+Right-click the project and select Properties. 
+In the Package Explorer (left navigation) click Java Build Path. 
+On the Libraries tab, click Add JARs.... 
+Select the JAR files in your project.
+Register the smart service in an appian-plugin.xml file. 
+   See below: Configuring the appian-plugin.xml File
+Add your appian-plugin.xml file at the root level. 
+Add your internationalization bundles to the src/com.example.plugins.<YOUR_PLUGIN> package. 
+   See below: Internationalization.
+Export your project as a JAR file.
+Right-click your project and click Export.... 
+Select the JAR file option as the Export destination. 
+On the Resources to export dialog, clear the .classpath and .project selections as these files are used exclusively by Eclipse. 
+Select the _admin/plugins folder of your installation directory for your export destination. This directory is created during application server startup. 
+Click Finish. 
+
+
+
+Your plug-in is deployed. The plug-ins framework locates the new JAR file and deploys your custom smart service when the application server starts.
+Java component
+A custom Smart Service is built using a class that extends AppianSmartService.
+
+Annotations on the class and the methods within the class determine its behavior.
+Activity class parameters (node inputs) and Activity return variables are created using setter and getter methods of your class. 
+Validation 
+A helper class is not needed.
+
+Plug-in class
+The plug-in uses a Java class that defines the function to be performed when the node executes. This class extends the AppianSmartService class and contains the logic for the smart service.
+
+It must extend the class com/appiancorp/suiteapi/process/framework/AppianSmartService.java AppianSmartService, whose run method is overridden. 
+This method is where the main logic of the smart service resides. 
+Annotations on the class can be used to define smart service properties and attributes.
+Methods within the class determine its behavior as a smart service.
+
+Inputs and outputs
+Inputs (Activity Class Parameters) and Outputs (Activity Class Return Variables) are defined using public getter and setter methods within your class. 
+
+For an input, set<InputName> methods return void and take a single parameter. 
+An an alternate, input or output names can be set using the @Name annotation. For example: @Name("NewTopic"). Names should use camel case. (Capitalize each word and do not use spaces.) 
+If you do not define an internationalization key for an input or output, the display name of the input can be automatically derived from the <InputName> where each capital letter in your (camel case) getter or setter method name indicates a new word in the display name. 
+See below: Internationalization
+Node inputs must be defined using the correct Java data type for the data type that you need to use.
+See below: Defining Data Types for Inputs and Outputs.
+Appian types can be implied by passing a Long parameter and annotating the method with a type annotation.
+Overloaded methods are not supported.  
+If two methods have the same name (but different signatures because they take different parameters), only the first encountered is available as an input or output.
+Input methods that take Java primitives must be marked as required. 
+Passing a null value to a Java primitive is not possible.  
+If an input is optional, you must use a wrapper class (such as Boolean for boolean) to allow the input to accept nulls, and then handle that null scenario in the body of the method.  
+Use the Required.OPTIONAL designation when upgrading custom smart services from earlier versions (before Appian 6.0.3) which used a value of 2 for the required element in the activity class parameter schema. 
+See below:  Validation
+For an output, get<OutputName> methods are used without an explicit setter. 
+If you define a corresponding setter method, the getter method is treated as an input.
+There is no annotation for outputs.
+When configuring node inputs and outputs ensure that the name given to these parameters are not identical to one another. The names of all inputs (Activity Class Parameters) and outputs (Activity Return Variables) in a smart service must be unique.
+
+Defining input attributes and behavior
+
+@Input: (Optional) This annotation can be used with a setter method to define the attributes and behavior of the input.  If not present, the following values are used, taking their default settings.
+required: (Optional) defines whether or not the input is required. 
+The possible values are fields of the Required class: com.appiancorp.suiteapi.process.framework.Required.ALWAYS is the default setting. 
+A value of OPTIONAL allows the process designer to select whether a form element that maps to the input is required or not).  
+enumeration: (Optional) use this attribute if the value for the input should be from a list of acceptable values. 
+This attribute is set to name of the enumeration as defined in the enumerations element in the appian-plugin.xml.
+See below: Enumerations
+localId: (Optional) used for converting preexisting smart services to the annotated smart service plugins.  
+It should be used when the target system already has models that use the existing smart service that is being replaced by the new plug-in.  
+The value of the activity-class-parameter-schema local-id should be passed to this attribute. 
+This attribute is not recommended for new smart service plug-ins, nor is it required.
+customDisplayReference: (Optional) If a picker used by the input should be something other than the standard picker for the type, the picker name should be given here. 
+For text inputs, the htmlarea value can be given (to give a rich text editor like that in the Send Alert smart service).
+hiddenFromDesigner: (Optional) Should the input need to be hidden from the designer in the modeler, set this to true using a default value.  
+Unless a default value of true is set, this attribute is always false. 
+defaultValue: (Optional) if the input should have a default value, this attribute is used to list a String representation of that default. 
+Multiple default values are listed as an array of strings. 
+The following example could be used to list a multiple Boolean default: @Input(defaultValue={"false","true","true"})
+Values for custom data types must be provided in the appian-plugin.xml. 
+In addition to the string representation in the defaultValue attribute of the @Input annotation, default values can be defined in XML in the smart-service element of the appian-plugin.xml.
+
+Defining data types used by inputs and outputs
+Your plug-ins can use complex and primitive system data types.
+@Type annotations can be used on getter and setter methods to indicate which Appian type they take or return. 
+Appian objects are represented by their long ID or in some cases by their string. 
+The following data types are deprecated and may be removed from Appian in a future release:
+- DiscussionMessageDataType [Deprecated]
+- DiscussionThreadDataType [Deprecated]
+- ForumDataType [Deprecated]
+- TaskDataType [Deprecated]
+The following table lists available data type annotations for Appian data types.
+
+ Annotation 
+ Appian Type 
+ Definition 
+
+@ApplicationDataType
+Application
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Application")
+
+
+@CommunityDataType
+Community
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Community")
+
+
+@ConstantDataType
+Constant
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Constant")
+
+
+@DocumentDataType
+Document
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Document")
+
+
+@DocumentOrFolderDataType
+Document or Folder
+@Type(namespace = Type.APPIAN_NAMESPACE, name="ContentItem")
+
+
+@EmailAddressDataType
+Email Address
+@Type(namespace = Type.APPIAN_NAMESPACE, name="EmailAddress")
+
+
+@EmailRecipientDataType
+Email Recipient
+@Type(namespace = Type.APPIAN_NAMESPACE, name="EmailRecipient")
+
+
+@EncryptedTextDataType
+Encrypted Text
+@Type(namespace = Type.APPIAN_NAMESPACE, name="EncryptedText")
+
+
+@FolderDataType
+Folder
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Folder")
+
+
+@GroupDataType
+Group
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Group")
+
+
+@KnowledgeCenterDataType
+Knowledge Center
+@Type(namespace = Type.APPIAN_NAMESPACE, name="KnowledgeCenter")
+
+
+@PageDataType
+Page
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Page")
+
+
+@PasswordDataType
+Password
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Password")
+
+
+@ProcessModelDataType
+Process Model
+@Type(namespace = Type.APPIAN_NAMESPACE, name="ProcessModel")
+
+
+@RuleDataType
+Rule
+@Type(namespace = Type.APPIAN_NAMESPACE, name="Rule")
+
+
+@UserDataType
+User
+@Type(namespace = Type.APPIAN_NAMESPACE, name="User")
+
+
+@UserOrGroupDataType
+User or Group
+@Type(namespace = Type.APPIAN_NAMESPACE, name="UserOrGroup")
+
+
+The table below maps Java data types to Appian data types. Arrays of a Java Data type [] map to the corresponding multiple-value Appian data type. The Java data types listed are the only types supported for inferring an Appian data type.
+
+ Java Type(s) 
+Appian Type 
+
+java.lang.Boolean, primitive boolean
+Boolean
+
+
+java.lang.Integer, primitive int
+Number (Integer)
+
+
+java.lang.Long, primitive long
+Number (Integer)
+
+
+java.lang.Double, primitive double
+Number (Decimal)
+
+
+java.lang.String
+Text
+
+
+java.sql.Date
+Date
+
+
+java.sql.Time
+Time
+
+
+java.sql.Timestamp
+Date & Time
+
+
+The following Java data types are expressly not supported for inferring an Appian data type:
+
+java.lang.Byte, byte, byte[]
+java.lang.Char, char
+java.lang.Short, short
+java.lang.Float, float
+java.util.Currency
+java.util.Date
+
+Defining custom data types for inputs and outputs
+You can reference a custom type using the @Type annotation.
+The table below lists a data type annotation example for custom data types.
+
+Annotation 
+Definition 
+
+@Type
+@Type (namespace="http://example.org", name="MyCustomType") 
+
+
+Defining Java objects for custom data types
+Java objects can be used to create custom data types for use in your plug-ins.
+See also: Custom Data Types from Java Object
+Annotations on the class
+The following properties and attributes of a smart service activity can be defined using attributes within your Java class:
+
+Palette: Smart service activities appear as a flowchart tool in the left toolbar of the Process Modeler either within an existing palette, or within a new palette that you define. 
+This property is set using the @PaletteInfo annotation. 
+Each activity is organized first into categories (folders), then into a palette (as a subcategory). 
+You can select any existing category. Smart services should not be placed in the following palette subcategories:
+Human Tasks
+Activities
+Events
+Gateways
+
+
+Within each subcategory, activities appear alphabetically.  
+Assignability: Smart service activities can be defined as assigned activities, automated activities, or this option can be left to the process designer. 
+These settings are defined using the @Attended and @Unattended annotations. 
+If you intend the activity to be assigned, set the activity to use a form.  
+Order: The ordering in which your node inputs appear on the Data tab of your smart service properties dialog can be set using the @Order annotation. 
+
+@PaletteInfo annotation
+The following attributes of the @PaletteInfo annotation define the palette placement for the smart service:
+
+paletteCategory: The Process Modeler palette category (folder) where the smart service appears; if it's not already present, it is created. If the category palette doesn't exist, it is mapped to Automation Smart Services. (This information is not internationalized.)
+palette: The palette (subcategory) where the smart service appears; if it's not already present, it is created. (This information is not internationalized.)
+A set of convenience annotations that extend PaletteInfo are defined for the standard smart service palette categories. The table below describes the standard palette annotations that you can use. 
+Use the following paletteCategory and palette values when you need to deprecate a custom smart service: @PaletteInfo(paletteCategory="#Deprecated#", palette="#Deprecated#"). Deprecated services do not appear in the palette, only via search.
+
+|Annotation|Definition|
+|-|-|
+|@WorkflowHumanTasks|@PaletteInfo(paletteCategory = PaletteCategoryConstants.WORKFLOW, palette = PaletteConstants.HUMAN_TASKS)|
+|@WorkflowGateways|@PaletteInfo(paletteCategory = PaletteCategoryConstants.WORKFLOW, palette = PaletteConstants.GATEWAYS)|
+|@WorkflowEvents|@PaletteInfo(paletteCategory = PaletteCategoryConstants.WORKFLOW, palette = PaletteConstants.EVENTS)|
+|@WorkflowActivities|@PaletteInfo(paletteCategory = PaletteCategoryConstants.WORKFLOW, palette = PaletteConstants.ACTIVITIES)|
+|@AutomationSmartServicesTestManagement|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.TEST_MANAGEMENT)|
+|@AutomationSmartServicesSocial|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.SOCIAL)|
+|@AutomationSmartServicesRoboticProcesses|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.ROBOTIC_PROCESSES)|
+|@AutomationSmartServicesProcessManagement|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.PROCESS_MANAGEMENT)|
+|@AutomationSmartServicesIntegrationAPIs|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.INTEGRATION_APIS)|
+|@AutomationSmartServicesIdentityManagement|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.IDENTITY_MANAGEMENT)|
+|@AutomationSmartServicesDocumentManagement|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.DOCUMENT_MANAGEMENT)|
+|@AutomationSmartServicesDocumentGeneration|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.DOCUMENT_GENERATION)|
+|@AutomationSmartServicesDataServices|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.DATA_SERVICES)|
+|@AutomationSmartServicesCommunication|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.COMMUNICATION)|
+|@AutomationSmartServicesBusinessRules|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.BUSINESS_RULES)|
+|@AutomationSmartServiceAnalytics|@PaletteInfo(paletteCategory = PaletteCategoryConstants.AUTOMATION_SMART_SERVICES, palette = PaletteConstants.ANALYTICS)|
+@Attended and @Unattended annotations
+The @Attended annotation is optional. 
+
+When present, it requires that the activity be assigned, and is not permitted to run unattended. 
+
+The @Unattended annotation is also optional.
+
+When present, the activity is configured to run unattended, and cannot be assigned. 
+
+If neither the @Attended nor the @Unattended annotations are present, the process designer can determine whether the activity is attended or not. 
+
+This is also true if both annotations are present.
+
+@Order annotation
+The @Order annotation accepts a list of input and output names in the order they should appear in the data tab.  If not present, inputs appear in alphabetical order.
+For example, if there is an input defined using a setMyInput() method, list it first by setting @Order({"MyInput",...}). If there is also an input defined using the @Name annotation, such as @Name("TopicName"), specify it before MyInput by using @Order({"TopicName","MyInput",...}).
+Dynamic inputs and outputs
+Dynamic inputs can be added by the process designer, as with all smart services. 
+You can handle such inputs in your smart service by overriding the setDynamicInputs method. The setDynamicInputs() method gives you a List of NamedTypeValue objects, one for each input. 
+For example, the body of the setDynamicInputs method could be used to store the inputs into a member variable, which can then be used in the body of your run method implementation.
+There is no public API for converting TypedValues to Java objects registered as data type plug-ins (POJO data types). Instead, use the methods available on TypedValue and the TypeService to handle the data.
+Constructor parameters
+Instances of certain interfaces can be injected into the smart service by declaring constructor parameters of their type.
+
+The SmartServiceContext can be obtained by passing it in the constructor of the smart service class.
+If you configure the activity to be executed without a form (as an automated activity) the process designer can select whether the activity executes with the user rights of the process designer, or the user rights of the process initiator.  You can retrieve the user under whose context the smart service is running using the getUsername method in SmartServiceContext.
+Any of the *Service interfaces in the public API (such as, ProcessAnalyticsService, or ContentService) can be obtained by passing them as parameters to the constructor.
+In order for the plug-in to be authorized to use the EncryptionService, the plug-in key must be granted access by an administrator in the Plug-ins page of the Admin Console.
+You can only access the EncryptionService from within the run() method, not from within your smart service's getters and setters.
+Deprecated services, such as com.appiancorp.suiteapi.collaboration.DocumentService, are not injected. In place of the DocumentService, use the com.appiancorp.suiteapi.content.ContentService.
+Note: This is the only valid method for obtaining a *Service within custom Smart Service code.  Do not call ServiceLocator.get*.
+The javax.naming.Context can be used in the smart service by adding it as a constructor parameter. 
+Use the lookup method in Context to get access to the objects that are registered in the JNDI tree, such as data sources.
+
+See also: Admin Console
+
+appian-style-tip
+The only way to access data sources is by injecting the javax.naming.Context into your plug-in function constructor. Plug-in functions, smart services, and servlets using new InitialContext() will fail when trying to access a data source configured in the Admin Console.
+
+Plug-in constructor example
+The following example illustrates how the InitialContext should be injected into the constructor of the plug-in:
+public MySmartService(SmartServiceContext smartServiceCtx, Context initialContext) {
+super();
+this.smartServiceCtx = smartServiceCtx;
+this.initialContext = initialContext;
+}
+
+Handling credentials securely
+Smart services that integrate with external systems should use the Secure Credentials Store to securely handle the third-party credentials. The credentials stored in and retrieved from the Secure Credentials Store can be site-wide credentials, such as those used to represent a single integration user, or per-user credentials, where each individual user's credentials are used to authenticate against the external system. When using per-user credentials, the smart service must be attended or activity-chained and the user whose credentials are being used must be the user executing the smart service.
+The SecureCredentialsStore is injected just like other Appian services, by adding it to the constructor of the smart service. The injected SecureCredentialsStore object provides a getSystemSecuredValues(String) and a getUserSecuredValues(String) method, which take the external system key as the parameter and returns a Map of unencrypted values keyed by their corresponding attributes. You can only access the SecureCredentialsStore object from within the run() method, not from within your smart service's getters and setters.
+Before the credentials can be used by the plug-in, the following steps must be taken: 
+
+Create an entry for the external system credentials in the Third-Party Credentials page in the Admin Console.
+Note the system key that is generated based on the given name.
+Pass this value as the parameter to SecureCredentialsStore.getSystemSecuredValues(String)  or SecureCredentialsStore.getUserSecuredValues(String) to obtain the map of credentials.
+Create credentials. The given field names translate into the attribute keys that are used in the map according to the following rules: 
+The name is lower-cased.
+Any punctuation is stripped.
+Any spaces are translated into dots.
+Once the plug-in is deployed, add it to the list of plug-ins allowed to access the credentials by picking the plug-in in the Plug-ins List section on the Third-Party Credential page.
+
+
+appian-style-tip
+Create your function to take the external system key as a parameter, and create a constant that holds the value of the generated key from the Third-Party Credentials page. Encourage designers to use the constant when calling the function.
+
+See also:
+
+Secure Credentials Store.
+Admin Console.
+
+Secure credentials store example
+public class UpdateCustomerSmartService extends AppianSmartService {
+
+    private final SecureCredentialsStore scs;
+    private String externalSystemKey;
+
+    public UpdateCustomerSmartService(SecureCredentialsStore scs){
+        this.scs = scs;
+    }
+
+    @Input(required = Required.ALWAYS)
+    public setExternalSystemKey(String externalSystemKey) {
+        this.externalSystemKey = externalSystemKey;
+    }
+
+    public void run() throws SmartServiceException {
+        /* This example uses scs.getSystemSecuredValue to get the site-wide
+         * credentials for the external system. To get the map of per-user 
+         * credentials, use scs.getUserSecuredValues
+         */
+        Map credentials = scs.getSystemSecuredValues(externalSystemKey);
+
+        CRMClient client = //some client object provided by a 3rd party sdk
+        //The field name set as "Username" in the Third-Party Credentials page
+        client.setUsername(credentials.get("username"));
+        //The field name set as "Auth Token" in the Third-Party Credentials page
+        client.setAuthToken(credentials.get("auth.token"));
+        Connection conn = client.connect();
+
+        //use the authenticated connection to update the remote system
+    }
+}
+
+Validation
+Smart services are validated when executed. The standard validation rules check a number of criteria for the user, including required inputs. You can optionally add your own validation to your smart service to ensure that expected values are provided by the process designer. 
+
+Override the validate method to define your custom validation.
+The method takes a MessageContainer as a parameter.
+The validate method is called before the run method for both attended and unattended activities. 
+For assigned activities, validation takes place after the user submits the task.
+When creating a custom validation, ensure that you do whatever validation is necessary to make sure that the run method is successful and populate the MessageContainer parameter with your error messages to be displayed to the user.
+When validate adds to the MessageContainer parameter using the addErrors method, the form is not submitted and the run method is not called.  
+The errors appear on the form for the user to correct before attempting to submit the form again.
+The onSave method allows the developer to define whatever actions (typically validations) should take place when a user saves an attended form instead of submitting it.
+You do not have to implement additional logic to save the values of inputs with the onSave method.  
+That function is taken care of automatically.  
+The onSave method is only used to add validation routines that are applied when the user saves a draft of a form for completion at a later time.
+If the onSave method adds any errors to the MessageContainer parameter, the form is not saved and these messages appear on the form.
+The validate and onSave methods are not required. 
+
+Legacy smart service validation
+In legacy smart services, the validate method accepted a Boolean isSubmit parameter which you could use to determine whether validation was running due to form submission or when the form was saved.  Now, validate is only called when the form is submitted, and onSave is only called when the form is saved.
+Class example
+The following example class is used by the Process Upgrade Smart Service:
+package com.appiancorp.ps.ss.processupgrade.process;
+
+import org.apache.log4j.Logger;
+
+import com.appiancorp.ps.ss.processupgrade.util.ProcessUpgradeDryRun;
+import com.appiancorp.suiteapi.process.ProcessDesignService;
+import com.appiancorp.suiteapi.process.ProcessExecutionService;
+import com.appiancorp.suiteapi.process.ProcessModel;
+import com.appiancorp.suiteapi.process.ProcessModel.Descriptor;
+import com.appiancorp.suiteapi.process.analytics2.ProcessAnalyticsService;
+import com.appiancorp.suiteapi.process.exceptions.SmartServiceException;
+import com.appiancorp.suiteapi.process.framework.AppianSmartService;
+import com.appiancorp.suiteapi.process.framework.Input;
+import com.appiancorp.suiteapi.process.framework.Required;
+import com.appiancorp.suiteapi.process.framework.SmartServiceContext;
+import com.appiancorp.suiteapi.process.palette.ProcessManagement;
+import com.appiancorp.suiteapi.process.upgrade.ProcessUpgrade;
+import com.appiancorp.suiteapi.process.upgrade.ProcessUpgrade.Outcome;
+
+@AutomationSmartServicesProcessManagement
+public class UpgradeProcessesFromVersion extends AppianSmartService {
+    private static final Logger LOG = Logger.getLogger(UpgradeProcessesFromVersion.class);
+    private static final String USER_MSG_GETTING_MODEL = "error.gettingProcessModel.userMsg";
+    private static final String ALERT_MSG_GETTING_MODEL = "error.gettingProcessModel.alertMsg";
+    private static final String USER_MSG_GETTING_MODEL_VERSIONS = "error.gettingProcessModelVersions.userMsg";
+    private static final String ALERT_MSG_GETTING_MODEL_VERSIONS = "error.gettingProcessModelVersions.alertMsg";
+    private static final String USER_MSG_UPDATING = "error.updating.userMsg";
+    private static final String ALERT_MSG_UPDATING = "error.updating.alertMsg";
+    private SmartServiceContext ctx;
+    private ProcessDesignService pds;
+    private ProcessExecutionService pes;
+    private ProcessAnalyticsService pas;
+    private Boolean dryRun;
+    private String fromVersions[];
+    private Long fromProcessModelId;
+    private Long toProcessModelId;
+    private String toVersion;
+    private ProcessUpgrade processUpgrade[];
+
+    public UpgradeProcessesFromVersion(
+        SmartServiceContext ctx,
+        ProcessDesignService pds,
+        ProcessExecutionService pes,
+        ProcessAnalyticsService pas
+    ) {
+        this.ctx = ctx;
+        this.pds = pds;
+        this.pes = pes;
+        this.pas = pas;
+    }
+
+    @Override
+    public void run() throws SmartServiceException {
+        if (fromProcessModelId == null || toProcessModelId == null)
+            return;
+        if (fromVersions == null || fromVersions.length == 0)
+            try {
+                Descriptor pmd[] = (Descriptor[]) (Descriptor[]) pds
+                        .getVersionsForProcessModel(fromProcessModelId, 0, -1,
+                                Integer.valueOf(1), Integer.valueOf(1))
+                        .getResults();
+                fromVersions = new String[pmd.length];
+                for (int i = 0; i < pmd.length; i++)
+                    fromVersions[i] = pmd[i].getVersion();
+
+            } catch (Exception e) {
+                throw createException(e, USER_MSG_GETTING_MODEL,
+                        ALERT_MSG_GETTING_MODEL,
+                        new Object[] { fromProcessModelId });
+            }
+        ProcessModel pm;
+        try {
+            if (toVersion == null || toVersion.equals("")) {
+                pm = pds
+                        .getProcessModelLatestPublishedVersion(toProcessModelId);
+                toVersion = pm.getVersion();
+            } else {
+                pm = pds.getProcessModelVersion(
+                        toProcessModelId, toVersion);
+            }
+        } catch (Exception e) {
+            throw createException(e,
+                    USER_MSG_GETTING_MODEL_VERSIONS,
+                    ALERT_MSG_GETTING_MODEL_VERSIONS,
+                    new Object[] { fromProcessModelId });
+        }
+        if (LOG.isDebugEnabled())
+            LOG.debug((new StringBuilder()).append("Editing processes: ")
+                    .append(getParametersDescription(pm)).toString());
+        try {
+            if (dryRun) {
+                processUpgrade = new ProcessUpgradeDryRun(pes, pds, pas).upgradeProcesses(
+                        toProcessModelId, toVersion, fromProcessModelId,
+                        fromVersions);
+            } else {
+                processUpgrade = pes.upgradeProcesses(
+                    toProcessModelId, toVersion, fromProcessModelId,
+                    fromVersions).getResults();
+            }
+        } catch (Exception e) {
+            throw createException(e, USER_MSG_UPDATING,
+                    ALERT_MSG_UPDATING, new Object[] {
+                            fromProcessModelId, pm.getUuid(),
+                            getProcessModelVersions(), toProcessModelId,
+                            toVersion });
+        }
+        if (LOG.isDebugEnabled())
+            LOG.debug((new StringBuilder())
+                    .append("Finished editing processes: ")
+                    .append(getParametersDescription(pm)).toString());
+    }
+
+    @Input(required = Required.ALWAYS, defaultValue = "true")
+    public void setDryRun(Boolean val) {
+        this.dryRun = val;
+    }
+
+    @Input(required = Required.ALWAYS)
+    public void setToProcessModelId(Long toProcessModelId) {
+        this.toProcessModelId = toProcessModelId;
+    }
+
+    @Input(required = Required.OPTIONAL)
+    public void setToVersion(String toVersion) {
+        this.toVersion = toVersion;
+    }
+
+    @Input(required = Required.ALWAYS)
+    public void setFromProcessModelId(Long fromProcessModelId) {
+        this.fromProcessModelId = fromProcessModelId;
+    }
+
+    @Input(required = Required.OPTIONAL)
+    public void setFromVersions(String fromVersions[]) {
+        this.fromVersions = fromVersions;
+    }
+
+    public boolean getWasSuccessful() {
+        Outcome outcomes[] = (Outcome[]) ProcessUpgrade.getOutcomes(processUpgrade);
+
+        for (Outcome outcome : outcomes) {
+            if (!outcome.isSuccessfulUpgrade()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Long[] getResultProcessIds() {
+        return ProcessUpgrade.getProcessIds(processUpgrade);
+    }
+
+    public String[] getResultCodes() {
+        Outcome outcomes[] = (Outcome[]) ProcessUpgrade
+                .getOutcomes(processUpgrade);
+        String results[] = new String[outcomes.length];
+        int i = 0;
+        Outcome arr$[] = outcomes;
+        int len$ = arr$.length;
+        for (int i$ = 0; i$ < len$; i$++) {
+            Outcome outcome = arr$[i$];
+            results[i++] = outcome.toString();
+        }
+
+        return results;
+    }
+
+    private String getProcessModelVersions() {
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < fromVersions.length; i++) {
+            if (i != 0)
+                msg.append(", ");
+            msg.append(fromVersions[i]);
+        }
+
+        return msg.toString();
+    }
+
+    private String getParametersDescription(ProcessModel pm) {
+        return (new StringBuilder()).append("New process model [id: ")
+                .append(pm.getId()).append(", version: ")
+                .append(pm.getVersion()).append(", name: ")
+                .append(pm.getName().get(ctx.getUserLocale())).append(", uuid:")
+                .append(pm.getUuid()).append("], From process model: ")
+                .append(fromProcessModelId).append(", to Process Model: ")
+                .append(toProcessModelId).append(" fromVersions: ")
+                .append(getProcessModelVersions()).append(" toVersion: ")
+                .append(toVersion).append("]").toString();
+    }
+
+    private SmartServiceException createException(Throwable t, String userKey, String alertKey, Object args[]) {
+        SmartServiceException.Builder b = new SmartServiceException.Builder(getClass(), t);
+        b.userMessage(userKey, args);
+        b.alertMessage(alertKey, args);
+        b.addCauseToUserMessageArgs();
+        b.addCauseToAlertMessageArgs();
+        return b.build();
+    }
+}
+
+See also: Process Upgrade
+Configuration files
+Each Appian plug-in is defined using a file named appian-plugin.xml. This file describes the configuration settings that are used by Appian to render your smart service in the Process Modeler, and execute it at runtime. 
+Configuring the appian-plugin.xml file
+Each plug-in requires that an appian-plugin.xml file appear in the root (highest level) of a Plug-in.  
+
+When this file is not present, the Plug-in is entirely ignored. 
+
+This file can use The following elements and attributes:
+appian-plugin: (Required) 
+
+For a smart service plug-in, this root element holds one plugin-info, one or more enumeration, and one or more smart-service child elements.
+The element itself contains the plug-in name (name=) and plug-in key (key=) attributes. 
+
+key Attribute: (Required) A Unique identifier for each Plug-in.
+
+Bundled Plug-ins use a appian.system.- key, which is reserved for exclusive use by plug-ins that are bundled with the product.
+
+name Attribute: (Required) List a readable name for the Plug-in.
+plugin-info: A subelement of appian-plugin that contains the following required and optional child elements:
+
+Description
+Vendor
+Version
+Application-version
+
+description: (Optional) 
+
+
+List a description for the Plug-in.
+vendor: (Optional) A subelement of plugin-info. It holds name and url attributes.
+
+
+Name example: "Example Company" 
+
+URL example: "http://www.example.com"
+
+version: (Required) A subelement of plugin-info.
+
+Plug-in version example: 2.0.0
+
+application-version: (Optional) A subelement of plugin-info. It accepts the min attribute, indicating a minimum product version.
+
+min example: "6.0.2"
+
+smart-service: (Required) A subelement of appian-plugin that contains the following attributes and elements:
+
+name: (Optional attribute) The name of the smart service (as referred to in log entries) regarding the plug-in deployment. 
+The display name in the modeler comes from the internationalization bundle, unless it is not defined there, in which case it uses this name. If a name is not defined, the class name is used, separating each camelCase part of the class name with spaces before each capital letter.
+key: (Required attribute) The identifier of the smart service, which must be unique in the system.
+class: (Required attribute) The class that implements the smart service. 
+form: (Optional subelement) A default form can be defined for your smart service.
+local-id: (Optional attribute) Use when migrating a custom smart service built for a prior version of Appian. 
+The value should be the same as the value of the local-id attribute of the legacy Appian 5.x custom smart service. 
+
+activity-class-schema: (Deprecated Element)
+
+Smart service plug-ins no longer require that you define an <activity-class-schema> element for the smart service in your appian-plugin.xml file. Activity class schemas are available to support backwards compatibility. 
+See also: Appian 6.0.2 Custom Smart Service Plug-ins
+
+Example appian-plugin.xml File
+<appian-plugin name="Start Topic Smart Service" key="exampleOrganization.startTopicSmartService">
+    <plugin-info>
+        <description>Smart service used to start a topic</description>
+        <vendor name="Appian Corporation" url="http://www.appian.com" />
+        <version>1.0.0</version>
+        <application-version min="6.1" />
+    </plugin-info>
+    <smart-service name="Start Topic Smart Service" key="start-topic" class="com.appiancorp.process.runtime.activities.StartTopicSmartService" /> 
+</appian-plugin>
+
+Defining Default Forms
+A default form can be defined as a dynamic form (a form that uses the Appian form components).
+To define a dynamic form, include form-elements (with form-element subelements) to define a default form. 
+
+These elements nest as subelements of the smart-service > dynamic-form element in your appian-plugin.xml file.
+
+label: A child element of form-element that contains text, which appears within a message component.
+type: When present, this type of component is used to specify the node input mapping. If this element is missing, the form component type is automatically inferred from the input type according to the Data Type Mappings table (below).
+mapped-to: A child element of form-element that defines the node input name, which the form input is mapped to. 
+The node input (ACP) name is determined by the text that follows after set- for the setter methods of your Java class or by the @Name annotation if one is used to specifically set the node input name.
+<smart-service name="..." ...>
+    <form>
+        <dynamic-form>
+            <form-elements>
+                <form-element>
+                    <label>LabelKey</label>
+                    <type>17</type>
+                </form-element>
+                <form-element>
+                    <mapped-to>TopicSubject</mapped-to>
+                </form-element>
+            </form-elements>
+        </dynamic-form>
+    </form>
+</smart-service>
+
+Data Type Mappings
+The table below compares the ACP (node input) type with its associated AppianType mapping.  
+
+Input Type 
+AppianType 
+
+Number (Integer)
+AppianType.INTEGER
+
+
+Number (Decimal)
+AppianType.DOUBLE
+
+
+Text
+AppianType.STRING
+
+
+User
+AppianType.USERNAME
+
+
+Group
+AppianType.GROUP
+
+
+ User or Group
+AppianType.USER_OR_GROUP
+
+
+Date
+ AppianType.DATE
+
+
+Time
+AppianType.TIME
+
+
+Date & Time
+AppianType.TIMESTAMP
+
+
+Knowledge Center
+ AppianType.CONTENT_KNOWLEDGE_CENTER
+
+
+Folder
+AppianType.CONTENT_FOLDER
+
+
+Document
+ AppianType.CONTENT_DOCUMENT
+
+
+Community
+ AppianType.CONTENT_COMMUNITY
+
+
+ Boolean
+ AppianType.BOOLEAN
+
+
+ Document or Folder
+ AppianType.CONTENT_ITEM
+
+
+ Password
+ AppianType.PASSWORD
+
+
+ Email Address
+ AppianType.EMAIL_ADDRESS
+
+
+ Email Recipient
+ AppianType.EMAIL_RECIPIENT
+
+
+ Process Model
+ AppianType.PROCESS_MODEL
+
+
+ Process
+ AppianType.PROCESS
+
+
+ Enumerations
+This optional subelement of the appian-plugin element can be used to provide custom enumerations to your node inputs. 
+
+Add one <enumeration> tag per enumeration being added by this plugin. 
+The enumerations added in a plugin are available throughout the system. 
+Within the appian-plugin.xml, the enumeration declaration must appear before any smart service that uses it.
+The enumeration attribute of the @Input annotation is used to reference an enumeration in your class. 
+
+For example: 
+language:xml
+    <appian-plugin name="Issue Tracking Smart Service" key="com.example.issue-tracking-smart-service">
+        ...
+        <enumeration key="issue-severity" type="3" >
+            <items>
+                <item>
+                    <label>Fatal</label>
+                    <detail>Severity: Fatal</detail>
+                    <value>fatal</value>
+                </item>
+                <item>
+                    <label>Major</label>
+                    <detail>Severity: Major</detail>
+                    <value>major</value>
+                </item>
+                <item>
+                    <label>Normal</label>
+                    <detail>Severity: Normal</detail>
+                    <value>normal</value>
+                </item>
+                <item>
+                    <label>Minor</label>
+                    <detail>Severity: Minor</detail>
+                    <value>minor</value>
+                </item>
+            </items>
+        </enumeration>
+        <smart-service name="Create Trouble Ticket Smart Service" key="trac-create-ticket" 
+            class="com.example.services.CreateTracTicketActivity"/>
+        <smart-service name="Modify Ticket Smart Service" key="trac-modify-ticket" 
+            class="com.example.services.ModifyTracTicketActivity"/>
+    </appian-plugin>
+
+Schema
+An enumeration includes the following attributes and subelements:
+
+key: The key of the enumeration, which should be referenced when the enumeration is referenced by a smart service in an @Input annotation; in the example above, the annotation would appear as '@Input(enumeration="issue-severity")'.
+name: (optional) The name is an alias that can be used to reference the enumeration instead of using the key – which is included only for backwards compatibility.
+type: The type of the value, using the standard Appian data type ID numbers or name{namespace}
+items/item: List one item element per option in the enumeration.
+label: The label displayed on the input list. 
+detail: The label appears in a tooltip when resting your pointer on this item when it is displayed.
+value: The value that is used for an input when this item is selected. It must hold the same data type as the enumeration/@type annotation reference. 
+For Custom Data Types, an XML structure that represents the value can be used. 
+The default value of an input is defined on the input, independent of any enumerations.
+desc and displayName attributes are not used.
+
+Appian data type ID numbers
+The table below lists the values accepted for TypedVariable items used in enumerations. 
+
+Appian Typed Variable 
+ID
+
+ Integer 
+ 1
+
+
+ Double 
+ 2 
+
+
+ String 
+ 3 
+
+
+ Username 
+ 4
+
+
+ Group 
+ 5 
+
+
+ Currency 
+ 6
+
+
+ Date 
+ 7
+
+
+ Time 
+ 8
+
+
+ Timestamp 
+ 9
+
+
+ Binary 
+ 10
+
+
+ Folder 
+ 12
+
+
+ Document 
+ 13
+
+
+ Portlet 
+ 14
+
+
+ Page 
+ 15
+
+
+ Knowledge Center 
+ 19
+
+
+ Community 
+ 20
+
+
+ Task 
+ 21
+
+
+ Process 
+ 22
+
+
+ Process Model 
+ 23
+
+
+ Attachment 
+ 24
+
+
+ Role 
+ 25
+
+
+ Boolean 
+ 26
+
+
+ User or Group 
+ 27
+
+
+ Document or Folder 
+ 28
+
+
+ Interval D S 
+ 29
+
+
+ Simulation Scenario 
+ 30
+
+
+ Note 
+ 31
+
+
+ Password 
+ 32
+
+
+ Event 
+ 33
+
+
+ Email Address 
+ 34
+
+
+ Email Recipient 
+ 35
+
+
+ Content Rule 
+ 36
+
+
+ Content Item 
+ 37
+
+
+ Content Custom 
+ 38
+
+
+ Content Freeform Rule 
+ 39
+
+
+ Content Constant 
+ 40
+
+
+ Group Type 
+ 41
+
+
+ Fixed 
+ 51 
+
+  List of Folder 
+ 112
+
+
+ List of Document 
+ 113
+
+
+ List of Portlet 
+ 114
+
+
+ List of Page 
+ 115
+
+
+ List of Knowledge Center 
+ 119
+
+
+ List of Community 
+ 120
+
+
+ List of Task 
+ 121
+
+
+ List of Process 
+ 122
+
+
+ List of Process Model 
+ 123
+
+
+ List of Attachment 
+ 124
+
+
+ List of Role 
+ 125
+
+
+ List of Boolean 
+ 126
+
+
+ List of User or Group 
+ 127
+
+
+ List of Document or Folder 
+ 128
+
+
+ List of Interval D S 
+ 129
+
+
+ List of Simulation Scenario 
+ 130
+
+
+ List of Note 
+ 131
+
+
+ List of Password 
+ 132
+
+
+ List of Event 
+ 133
+
+
+ List of Email Address 
+ 134
+
+
+ List of Email Recipient 
+ 135
+
+
+ List of Content Rule 
+ 136
+
+
+ List of Content Item 
+ 137
+
+
+ List of Content Custom 
+ 138
+
+
+ List of Content Freeform Rule 
+ 139
+
+
+ List of Content Constant 
+ 140
+
+
+ List of Fixed 
+ 151
+
+
+ List of Integer Key 
+ 152
+
+
+ List of String Key 
+ 153
+
+
+ List of Null 
+ 157
+
+
+ List of Content Document 
+ 160
+
+
+ List of Content Folder 
+ 161
+
+
+ List of Content Knowledge Center 
+ 162
+
+
+ List of Content Community 
+ 163
+
+
+ List of Range 
+ 172
+
+
+ List of Process Model Folder 
+ 202
+
+
+ List of Links Channel Folder 
+ 203
+
+
+ Bean 
+ 11
+
+
+ External Reference 
+ 78
+
+
+ External Reference with Indices 
+ 79
+
+
+ Alias 
+ 90
+
+
+ Array 
+ 92
+
+
+ List 
+ 93
+
+
+ Dictionary 
+ 94
+
+
+ Record 
+ 95
+
+
+ Union 
+ 96
+
+
+ Variant 
+ 97
+
+
+ List of External Reference 
+ 78
+
+
+ List of External Reference with Indices 
+ 81
+
+
+ List of Variant 
+ 197
+
+
+ List of Bean 
+ 111
+
+
+ List of Record 
+ 195
+
+
+Example plug-in file tree
+
+Smart service icon
+Each plug-in should include an icon to display in the Process Modeler along with the other smart services.
+
+If no icon is provided, the default icon is used.
+The icon should be sized to display in the Process Modeler palette (left toolbar) and the Process Modeler canvas. 
+The following default image can be used as a palette icon template: 
+The default palette icon is 27 pixels wide by 19 pixels high. 
+Name the palette icon image palette-icon.gif. 
+The ALT tag for a palette icon is the smart service name. (Canvas icons do not display ALT tags.)
+The following default image can be used as a canvas icon template: 
+The default canvas icon is 60 pixels wide by 40 pixels high. 
+Name the canvas icon image canvas-icon.gif. 
+Store the images within your JAR file in the following path:  /{plug-in key}/{smart service key}/images/. 
+For example, if the plug-in key is com.example.pluginKey, and the smart service key is yourKey, store the images in the com.example.pluginKey.yourKey package, in a folder named images.
+
+Internationalization
+Each Plug-in must provide internationalization bundles for the US English locale (en_US). All other locales are optional. 
+
+Plug-ins without a required resource bundle fail to deploy. 
+
+Resource bundle strings
+The following items must have keys and text strings listed in your resource bundles:
+
+Node inputs (ACP) and output (ARV) display names and comments.
+Default Forms.
+Error messages.
+
+Currently, only error messages are read from bundles other than the default locale (en_US). 
+en_US is the default locale for text that appears in the Process Modeler.
+Resource bundle files are named according to the following pattern: </smart-service@key from appian-plugin.xml>_<locale>.properties
+The bundle file is stored in the package structure where the plugin-key is broken down into a path (by switching dots for path separators). 
+
+For example, /com/example/smart-services/trac-create-ticket_en_US.properties
+
+Translation keys
+Translation keys in your resource bundles must include the following items:
+
+name: the name of the smart service as it appears in the palette, ALT tags, and other places such as the canvas.
+If a name is not defined, the system falls back on the value of the name of the smart-service module.
+input.<InputName>.displayName: The name of the input displayed on the Inputs tabbed property sheet, on the Data tab of the smart service properties dialog. 
+output.<OutputName>.displayName:  The name of the output (if any) that appears on the Outputs tabbed property sheet, on the Data tab of the smart service properties dialog. 
+Input and output names must be unique, or deployment fails.
+If you do not define names for your inputs and outputs in your resource bundles, the display name is rendered automatically using the node input (ACP) name, with spaces separating the camel cased name: For example: MySmartServiceInput is rendered as My Smart Service Input. 
+input.<InputName>.comment: The tooltip that appears when a user rests a pointer on a node input that appears on the Data tab.
+output.<OutputName>.comment: the tooltip that appears when a user rests a pointer on an output that appears on the Data tab.
+If a comment is not defined, no tooltip is displayed.
+InputName and OutputName are the camelCase names (or @Name annotated names) of the targets of the getter and setter methods (after removing the prepended get- or set-).
+
+Best practices
+Development
+
+All smart services should be shipped as plug-ins.  All smart services built prior to the release of the Plug-in Architecture should be upgraded to the Plug-in Architecture.
+See also: Appian Plug-ins
+Use the appropriate annotations.
+See above: Annotations on the Class
+Inject Appian Services as Constructor Parameters instead of instantiating them manually.
+See above:  Constructor Parameters
+Provide internationalization bundles for as many locales as possible - the US English locale (en_US) is required.
+See above: Internationalization
+Use enumerations when restricting inputs or outputs to a predefined list of values.
+See above: Enumerations
+Where possible, use Appian type inputs and outputs instead of passing Appian object IDs.
+See above: Defining Data Types Used by Inputs and Outputs
+Create and use custom types for inputs and outputs that require a nested structure.
+See above: Defining Custom Data Types for Inputs and Outputs and also Custom Data Types from Java Object
+Validate inputs for all attended custom smart services.
+See above: Validation
+Create new canvas and palette icons for all custom smart services.
+See above: Smart Service Icons
+If you need to modify a plug-in, but you anticipate some users will still need to run the previous version in active processes, deprecate the previous version and use either a different class name or different package name to avoid class conflicts when running both plug-ins on the same system.
+See above, steps 3 and 4: Creating and Deploying the Plug-in
+
+Upgrading
+The required upgrade approach varies depending on whether or not you have modified the node inputs or outputs of your smart service. 
+
+
+Changed Node Inputs/Outputs
+No Changes to Node Inputs/Outputs
+
+
+You must use a new key.
+
+
+
+If you overwrite the plug-in, existing nodes may fail.
+Changed plug-in logic must return similar values.
+
+
+To upgrade a production system, deprecate the previous plug-in.
+Existing models may experience issues if plug-in logic changed.
+
+
+Versioning
+
+Custom smart services use standard OSGi versioning: Later versions override earlier versions.
+Appian always uses the most current version of a smart service. 
+If you upgrade a smart service, you must ensure that the smart service's behavior does not break preexisting code that relied on an older version. 
+You cannot change the outputs or inputs of a deployed custom smart service. 
+If you need to modify the inputs or outputs of a smart service, create a new smart service and deprecate the previous version rather than upgrading the existing one.
+Deprecated smart services are still available at runtime, but are hidden at design time. 
+To avoid any class conflicts when using a deprecated plug-in on the same system as the new one, use a different class name or package name for the two versions.
+
+Deployment issues
+Deployment of a plug-in that contains new or updated smart services can cause a temporary degradation in process design and execution engine performance while the new smart services register with the engines.  The duration of the performance degradation increases with the number of new and updated smart services as well as with the amount of data (process models and processes) in the system.  Therefore, Appian recommends deploying plug-ins with new and updated smart services, especially those with a large number of affected smart services, during a period of low usage to minimize the impact on users.  Deploying plug-ins with few or no new or updated smart services does not cause performance degradation.
+The following conditions can cause plug-in deployment failures. If you encounter one of the following errors, you may need to change the smart service key in appian-plugin.xml to register the smart service as a new object rather than an update.
+
+
+Issue 
+ Description 
+ Error Message
+
+
+Duplicate Smart Service
+
+Failed registration for duplicate name or identifier should, as the error explanation, report the duplicate identifier, indicating the type of object and the source of the conflict (the other bundle declaring the same identifier.)
+
+
+ Timestamp Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version].  Reason: Error Code The name of this Smart Service Module [name] is a duplicate of an existing Smart Service identifier from the following Plug-in [Plug-in name] version [Plug-in version].
+
+
+
+Smart Service with Custom Setup URL
+
+Some legacy smart services are built with a setup tab that uses a custom JSP. Custom Setup URLs with JSPs are not supported.
+
+
+ Timestamp Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version].  Reason: Error Code Custom Setup URLs are not currently supported.
+
+
+
+Inputs of Java Primitive Type
+
+If a node input uses a Java primitive as a parameter, it must be required, or the plug-in fails to deploy.
+
+
+ [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version].  Reason: Error Code The input [input name] represented by the set method [offending method] is defined to take a Java primitive as a parameter, but is defined as optional.  Since no null value can be given for a primitive, the input must be defined as always required.
+
+
+
+New plug-in version is incompatible with previous definition
+
+If a new version of a smart service is uploaded (with the same key as an existing one), the system verifies the plug-in definition. If any of the following conditions change, deployment fails:
+ The number of inputs or outputs has changed.
+ An input or output was removed.
+ Switching an input to an output (or an output to an input).
+ Changing the data type of an input or output.
+ Changing whether an input is required.
+ Switching an input to use an enumeration (or removing an enumeration).
+
+
+
+ [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Smart service input and output count does not match the count for the existing smart service registered as [smart service]"
+  [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Illegal attempt to remove an existing input or output with name [name] 
+ [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Illegal attempt to change an input to an output (or vice versa) for smart service [smart service]. Input/output name: [name] 
+  [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Illegal attempt to change the data type for smart service [smart service] input or output named [name] 
+  [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Illegal attempt to change the whether the input, [name], is required for smart service [smart service] 
+  [Timestamp] Failed to register Smart Service [Module Name] Plug-in [Plug-in name] version [Plug-in version]: Illegal attempt to change the enumeration for smart service [smart service] associated with input [name] 
+
+
+
+Missing bundle file
+
+A plug-in fails to deploy if a required internationalization file is not present for one of the configured locales.
+
+
+ [Timestamp] The Plug-in [plugin key] Module [module key] is missing the following internationalization bundle(s) for Locale [missing locale]: [bundle key (minus the .properties)]
+
+
+
+Limitations
+Smart services that run as unattended must be able to complete within 60 minutes or it will pause by exception. The thread, however, running the code will not be terminated.
+Appian Cloud customers ONLY
+In order to individually build a custom smart service plug-in, a licensed local installation of Appian is required. Appian Cloud customers who have a local installation must develop and test the custom smart service locally and coordinate with Appian Technical Support to deploy it on their site.
+
+An alternative is to utilize Appian professional services to build and test these custom smart services.
+Appian Technical Support is not responsible for any issue caused by custom smart services deployed on a site, Appian Cloud customers are responsible for maintaining these customizations.
+Once all the appropriate custom code is provided to Appian Technical Support, the custom node is available on the corresponding Appian Cloud site within a week.

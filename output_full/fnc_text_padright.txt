@@ -1,0 +1,38 @@
+
+layout: function
+title: padright() Function
+space: function_page
+excerpt: "Pads text with spaces on the right so that it is a certain length."
+category: function_page
+fncname: padright
+fncexample: "padright(\"Boston\", 10)"
+fncresult: "Boston    "
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be padded.
+  - keyword: length
+    types: Number
+    description: |
+      The target number of characters desired in the final text.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Padding and text length
+Spaces will be added until the text has the number of characters entered for the length parameter.
+Text longer than the specified length remains untouched.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+padright("boston",10) returns boston&nbsp;&nbsp;&nbsp;&nbsp;

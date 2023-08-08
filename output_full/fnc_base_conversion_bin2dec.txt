@@ -1,0 +1,32 @@
+
+layout: function
+title: bin2dec() Function
+space: function_page
+excerpt: "Converts a Binary number as text to a Decimal number."
+category: function_page
+fncname: bin2dec
+compatibility: ~portal, ~om, +pe, +pr
+fncexample: "bin2dec(10000)"
+fncresult: "16"
+fnccat: Base_Conversion
+reftype: function
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+      Binary value as text to convert, such as 1100100.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+Invalid digits for a value parameter, including signs, are ignored.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+bin2dec(10000) returns 16

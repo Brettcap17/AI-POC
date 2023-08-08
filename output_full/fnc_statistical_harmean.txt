@@ -1,0 +1,32 @@
+
+layout: function
+title: harmean() Function
+space: function_page
+excerpt: "Returns the harmonic mean of the specified number(s), which is the number of terms divided by the sum of the terms' reciprocals."
+category: function_page
+fncname: harmean
+fncexample: "harmean(1, 2, 3)"
+fncresult: "1.636364"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      Numbers over which to calculate the harmonic mean.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+Use this function for the average of rates.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+harmean(1,2,3) returns 1.636364

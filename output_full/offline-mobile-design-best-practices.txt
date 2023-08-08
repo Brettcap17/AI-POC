@@ -1,0 +1,727 @@
+
+layout: basic
+title: Design Best Practices for Offline Mobile
+weight: 500
+
+ .codeTable { border: 2px solid #3ca7ce; width: 100%; margin-top: 10px; } .codeTable tr td div pre { font-size: 13px; padding: 0px; border: 0px; } .codeTable tr td { border: 2px solid #38a7ce; } .codeTable th { font-weight: 600; background-color: #3ca7ce; color: white; font-size: 22px; } .codeTable figure.highlight { border: 0px; } 
+Introduction
+Offline forms have different needs than online forms. Because the forms need to work while the user is offline, they need to avoid functionality that requires a connection to the server.
+Furthermore, the data that will be used to load the form will only be collected when the user is online and their actions or tasks are refreshed. When this happens, we load the form in the background to query the data that the user will need when they are offline.
+
+appian-style-note
+Keep in mind that offline-enabled forms accessed on mobile always act as if they aren't connected to the server, even when online. Fully test offline forms on a mobile device.
+
+This document outlines the design considerations to be aware of when designing offline forms.
+Checklist
+To use the newest offline mobile capabilities, make sure that your mobile app is on the same version as or newer than your server version.
+To help make sure your forms will work offline, make sure that they adhere to the following design guidelines:
+
+Load the data you need at the top of the interface.
+If you're using child interfaces or rules, load their data at the top of the parent interface.
+Only load the data that you need; only write the data that you need.
+Build your forms with CDTs.
+Don't use smart service functions and components that won't work offline.
+Be careful when using functions that aren't supported for offline reevaluations.
+Get the value for the function at the top of the interface.
+Set the refreshOnReferencedVarChange parameter to false.
+Note: Only Compatible and Partially Compatible functions in the Appian functions table are supported in Offline Forms. If you need to use Partially Compatible functions, you will need to load them at the top of the interface expression.
+Download documents offline using a constant, the todocument function, or a query.
+Be careful when making changes to CDTs and calendars while offline forms are pending.
+If you want users to submit forms automatically when their session has timed out, consider enabling remember me.
+
+
+appian-style-plugindisclaimer
+IMPORTANT: When testing offline actions and tasks, test the entire action or task on mobile and complete all fields. Otherwise, users may run into issues at runtime that will cause them to lose their work.
+
+Pre-loading data to your form {#preloading-data}
+Load the data you need at the top of the interface expression {#load-data}
+All data and external information must be loaded into local variables or rule inputs at the top of the interface expression, so that they evaluate on the first load of the interface.
+This is important because this is the only information that will be available to the user when they are filling out the form. Offline-enabled forms must retrieve any external data when the form is first loaded and downloaded to the device. Attempting to query for data when the user is offline will cause an error since they can no longer connect to the data source. 
+Additionally, if you need to use functions that are Partially Compatible with Offline Mobile, you will need to load them at the top of the interface expression.
+Example: Load data at the top of an interface expression
+Instead of querying for your data inside of the component where it will be displayed, define a local variable at the top of the interface expression. Use this local variable to query and store that data to be used throughout the interface expression.
+For example, in a typical interface, you may want to query data after a certain section is shown based on user input. However, in an offline interface, the form would break because it is trying to query the data after the initial load. But because the user is offline, it can't get the data.
+In this example, rule!getAllCustomers() could be any number of methods used to get data such as a!queryEntity() or an integration.
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+/*All data that is needed is queried when the form is first loaded*/
+!  local!customers: rule!getAllCustomers(),
+  local!selectedCustomer,
+  ...
+  {
+    ...
+    a!dropdownField(
+      label: "Customers",
+/*The offline form knows what to use for choiceLabels and choiceValues because it was queried on the initial load of the interface.*/
+!      choiceLabels: local!customers.name,
+!      choiceValues: local!customers.id,
+      value: local!selectedCustomer,
+      saveInto: local!selectedCustomer
+    ),
+    ...
+  }
+)
+
+{% endhighlight %}
+
+
+{% highlight sail %}
+{
+  ...
+/*The offline form won't know what to use for choiceLabels and choiceValues because it didn't get the data when the form was initially loaded.*/
+  a!dropdownField(
+    label: "Customers",
+!    choiceLabels: rule!getAllCustomers().name,
+!    choiceValues: rule!getAllCustomers().id,
+    value: local!selectedCustomer,
+    saveInto: local!selectedCustomer
+  ),
+
+  ...
+}
+{% endhighlight %}
+
+
+
+If you're using child interfaces or rules, load their data at the top of the parent interface expression {#child-rule}
+When you have a parent interface that is made up of multiple child interfaces or rules, make sure that you are getting all of your data in the parent interface. Then pass this data to the child interface or rule using rule inputs.
+When the application loads the action or task to cache the data for offline use, only the data in the parent form is loaded. If you try to load the data in the child interface or rule, it will cause an error.
+
+appian-style-note
+You can still use local variables in a child interface, you just need to make sure they only use functions that are supported for offline reevaluations.
+
+Example: Pass the data to the child interface using rule inputs
+In the following example, we query the data into a local variable at the top of the parent interface expression. We then use that variable for the data parameter value for the child interface.
+In the child interface, we use a rule input for the data parameter. This ensures that no querying happens in the child interface.
+
+
+Recommended
+Not Recommended
+
+
+
+Parent interface
+{% highlight sail %}
+a!localVariables(
+!  local!dataForGrid: rule!getData(),
+  {
+    /*... other components ...*/
+    rule!childGridInterface(
+/*Pass in external data to child rules using rule inputs.*/
+!      data: local!dataForGrid
+    )
+    /*... other components ...*/
+  }
+)
+{% endhighlight %}
+Child interface: `rule!childGridInterface()`
+{% highlight sail %}
+{
+  a!gridField(
+    label: "Read-Only Grid",
+/*Use a rule input for the data*/
+!    data: ri!data,
+    columns: {}
+  )
+}
+{% endhighlight %}
+
+
+Parent interface
+{% highlight sail %}
+{
+  /*... other components ...*/
+  rule!childGridInterface(),
+  /*... other components ...*/
+}
+{% endhighlight %}
+Child interface: rule!childGridInterface() 
+{% highlight sail %}
+a!localVariables(
+  local!dataForGrid: rule!getData(),
+  {
+    a!gridField(
+      label: "Read-Only Grid",
+/*Querying for the data in the child rule will result in an error*/
+      data: local!dataForGrid,
+      columns: {}
+    )
+  }
+)
+{% endhighlight %}
+
+
+
+Querying and writing data
+Use CDTs to access your data {#use-cdts}
+When building an offline form, use CDTs to access and work with your data. There are two ways to query your data for offline forms using CDTs; you can use a!queryEntity() or a!queryRecordType().
+If your data is easily accessible in a data store entity, you can use a!queryEntity() in a local variable at the top of the form. While you can use the dictionary returned by the query, we recommend that you cast the results to a CDT so that the data is easier to work with.
+To cast a dictionary to a CDT in an offline form:
+
+Use a!queryEntity() in a local variable at the top of your form to query your data.
+Cast the dictionary to a corresponding CDT in a separate local variable.  
+
+For an example of casting the dictionary to a CDT, see the Only query the data you need section. That example highlights both casting and limiting your query results to improve performance.
+If your data is stored in a record type, you can access it using a!queryRecordType() as long as you cast it to a CDT. You cannot use a!queryRecordType() in an offline form without casting it to a CDT.
+To use record data in an offline form:
+
+Create a local variable to Cast queried record data to a CDT at the top of the form.
+Use a!queryRecordType() to query your data within the cast.
+
+Example: Casting from a record type to a CDT
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!cdtData: 
+    cast(
+      a!listType(type!Employee),
+      a!queryRecordType(
+        recordType: recordType!Employee,
+        fields: {
+          recordType!Employee.fields.firstName,
+          recordType!Employee.fields.lastName.
+          recordType!Employee.fields.age,
+          recordType!Employee.fields.phoneNumber
+        },
+        pagingInfo: (startIndex: 1, batchSize 5000)
+      ).data
+    ),
+{
+ a!gridField(
+  data: local!cdtData,
+  ...
+ )
+}
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+a!localVariables(
+  local!recordData:
+  a!queryRecordType(
+    recordType: recordType!Employee,
+    fields: {
+      recordType!Employee.fields.firstName,
+      recordType!Employee.fields.lastName.
+      recordType!Employee.fields.age,
+      recordType!Employee.fields.phoneNumber
+    },
+    pagingInfo: (startIndex: 1, batchSize 5000)
+  ).data,
+{
+ a!gridField(
+  data: local!recordData,
+  ...
+ )
+}
+)
+{% endhighlight %}
+
+
+
+For more information about record types in Appian, see the Appian Records documentation.
+Load only the data you need
+Only load the data that you need in the interface. For example, instead of querying all of the records in a record type, only query the record that you need and the specific record fields that you are going to use.
+This is important to improve the performance of downloading and refreshing offline-enabled actions and tasks before the user goes offline. If you are querying too much data, it may slow down refresh times for users.
+Example: Only query the data you need {#query-what-you-need}
+Instead of querying an entire record, filter the query so it only returns the fields and records that you need.
+Before you create your interface, map out the data that you think you are going to need.
+For example, if you are designing a home inspection form, you may need the following type of information:
+
+Homeowner information
+Name
+Address
+Phone number
+For each room, a list of possible inspection points.
+List of possible issues pulled from a database table.
+
+At the top of your interface expression, define your local variables so that they only query the information to be displayed. For example, if you only needed the customer's name, address, and phone number, you wouldn't query the entire customer record. Instead, you would only query the name, address, and phone number fields.
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!customer: cast(
+    type!Customer,
+    a!queryEntity(
+      entity: cons!CUSTOMER_ENTITY,
+      query: a!query(
+        selection: a!querySelection(
+          /*We're querying for only 4 columns*/
+          columns: {
+            a!queryColumn(field: "id"),
+            a!queryColumn(field: "name"),
+            a!queryColumn(field: "email"),
+            a!queryColumn(field: "billingAddress")
+          }
+        ),
+        /*We're using a filter to only return the record that we need.*/
+        filter: a!queryFilter(
+          field: "id",
+          operator: "=",
+          value: ri!customerId
+        ),
+        /*We're limiting the pagingInfo to just one item.*/
+        pagingInfo: a!pagingInfo(1, 1)
+      )
+    ).data
+  ),
+  {
+    a!textField(
+      label: "Name",
+      value: local!customer.name,
+      readOnly: true
+    ),
+    a!textField(
+      label: "Email",
+      value: local!customer.email,
+      readOnly: true
+    ),
+    a!textField(
+      label: "Billing address",
+      value: local!customer.billingAddress,
+      readOnly: true
+    )
+  }
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+a!localVariables(
+  local!customer: cast(
+    type!Customer,
+    a!queryEntity(
+      entity: cons!CUSTOMER_ENTITY,
+      query: a!query(
+        /*Even though we are filtering this to just one customer, we are returning all of the fields for this record, instead of just the fields we need.*/
+        filter: a!queryFilter(
+          field: "id",
+          operator: "=",
+          value: ri!customerId
+        ),
+        pagingInfo: a!pagingInfo(1, 1)
+      )
+    ).data
+  ),
+  {
+    a!textField(
+      label: "Name",
+      value: local!customer.name,
+      readOnly: true
+    ),
+    a!textField(
+      label: "Email",
+      value: local!customer.email,
+      readOnly: true
+    ),
+    a!textField(
+      label: "Billing address",
+      value: local!customer.billingAddress,
+      readOnly: true
+    )
+  }
+)
+{% endhighlight %}
+
+
+
+Use query entity in charts and read-only grids to access the data in your CDT {#charts-and-grids}
+You can use charts and read-only grids in offline forms, simply use a query and a data store entity to access the data in your CDT. At the top of your interface expression, use a!queryEntity() and cast the query result to a CDT inside of local variables or use rule inputs. Make sure to follow our querying data guidelines and only query the relevant data.
+For more information on how to configure a read-only grid using a query, check out our read-only grid tutorial.
+For more information on how to use charts without record types as a source, check out our chart examples:
+
+Bar chart
+Column chart
+Line chart
+Pie chart
+
+Offline functionality for charts and read-only grids {#offline-functionality}
+Aside from using a!queryRecordType() and casting the results to a CDT at the top of the page, offline forms can't access record types. This means that any function, parameter, or functionality that relies on access to record types won't work. The lists below specify the parameters for charts and read-only grids that you should avoid.
+Read-only grids
+The following read-only grid parameters won't work offline:
+
+actionsDisplay
+openActionsIn
+recordActions
+showExportButton
+showRefreshButton
+showSearchBox
+userFilters
+refreshOnVarChange
+refreshOnReferencedVarChange
+refreshInterval
+refreshAfter
+refreshAlways
+openActions
+
+The a!recordData() function, any record reference in data parameter, refresh functionality, and record actions are also not available for use in offline read-only grids.
+Charts
+The following chart parameters won't work offline:
+
+refreshOnVarChange
+refreshOnReferencedVarChange
+refreshInterval
+refreshAfter
+refreshAlways
+
+The a!recordData() function, any record reference in data parameter, refresh functionality, and record actions are also not available for use in offline charts.
+If you're writing data, create CDTs that include only the fields you are writing {#create-cdts}
+We have already talked about only loading the data you need. Likewise, if you are allowing the user to update information, you should only write the fields that are being updated.
+When you write a CDT to a database, all of the fields in the database get updated, whether you entered a value or not. This means that if you're trying to only update the first name in a database using a Customer CDT, if you don't set the values for all of the other fields, you could overwrite all of the other fields with null.  
+To prevent this, create a CDT that only includes the fields that you are updating. Use this CDT to write only the updated fields to the data store.
+
+appian-style-note
+Keep in mind that when we need to deal with conflicting database entries in Offline Mobile, we choose the most recent database entry as the source of truth.
+
+Example: Writing only the data that you need
+For example, you have an offline interface that queries for the following fields at the top of the form.
+
+Customer id
+Customer name
+Customer address
+
+In the form, you allow the user to update the customer's address, but no other fields. To write this information to the data store, you need to create a CDT with only the id and the address fields. If you were to write to the data store using the original CDT, when you write the new address, you would update all of the other fields to null.
+{:.screenshot}
+Functions and components considerations
+Don't use function, component, or smart service plug-ins
+Plug-ins are not supported in offline interfaces. This includes function, smart service, and component plug-ins.
+Don't use smart service functions and components that won't work offline {#offline-smart-services}
+While many functions and components work offline, there are some that won't due to their nature. Certain smart service functions and interface components only work if they are connected to the server. Therefore, they cannot be used for offline forms.
+For more information on components and functions that are incompatible with offline forms, see the Appian functions table. To search for functions and components that aren't compatible with Offline Mobile, be sure to change the compatibility to Incompatible or Partially Compatible with Offline Mobile.
+
+appian-style-note
+If you need to use functions that are Partially Compatible with Offline Mobile, you will need to load them at the top of the interface expression.
+
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!user,
+/*Make sure to get all of your possible users using a local variable on the initial form load.*/
+!  local!allUsers: getdistinctusers(cons!ALL_USERS_GROUP),
+  {
+/*Instead of a picker, use a dropdown field to select the users from.*/
+!    a!dropdownField(
+      label: "Users",
+      placeholder: "--- Select a user ---",
+      choiceLabels: local!allUsers,
+      choiceValues: local!allUsers,
+      value: local!user,
+      saveInto: local!user
+    )
+  }
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+a!localVariables(
+  local!user,
+  {
+/*A picker field won't work in an offline interface because it requires a connection to the server in order to get the list of users.*/
+!    a!pickerFieldUsers(
+      label: "User Picker",
+      labelPosition: "ABOVE",
+      value: local!user,
+      saveInto: local!user
+    )
+  }
+)
+{% endhighlight %}
+
+
+
+Be careful when using functions that aren't supported for offline reevaluations
+
+Functions Partially Compatible with Offline Mobile need a live connection to the server in order to work correctly. However, when the user is offline, they won't have access to the information from the server in order to work properly. In the Appian functions table, functions and components that aren't supported for offline reevaluation are listed as Partially Compatible.
+If you need to use one of these functions, keep the following best practices in mind.
+Get the value for the function at the top of the interface expression {#get-value}
+Functions such as isUserMemberofGroup(), loggedInUser(), and supervisor() can be used in offline forms. However, these functions require a connection to the server in order to get their value. In order to use these in an offline form, load the data at the top of the interface expression into a local variable. 
+Only data that is queried on the initial load of the form can be used in offline forms. If you were to try to use these functions later on in an interface expression, it would cause an error since there is no connection to the server.
+Example: Function not supported for offline evaluation {#offline-evaluation}
+For example, even though loggedInUser() isn't supported for offline reevaluations, you can still use this function by saving the resulting value into a local variable at the top of the interface expression.
+When the user is online and refreshes their action or task list, the form will automatically load in the background and get the value for loggedInUser(). When the user goes offline, it will use the value that was updated when they last refreshed.
+If you tried to use loggedInUser() in the saveInto parameter, it would return an error when the user is offline since it cannot connect to the server to get the value.
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+/*In order to get the logged in user, we save it into a local variable at the top of the form.*/
+!  local!user: loggedInUser(),
+  a!formLayout(
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Submit",
+          style: "PRIMARY",
+/*Then we save the local variable into the rule input.*/
+!          saveInto: a!save(ri!user, local!user)
+        )
+      }
+    )
+  )
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+a!formLayout(
+  buttons: a!buttonLayout(
+    primaryButtons: {
+      a!buttonWidget(
+        label: "Submit",
+        style: "PRIMARY",
+/*If we try to ask for the logged in user here, we can't connect to the server to get the value.*/
+!        saveInto: a!save(ri!user, loggedInUser())
+      )
+    }
+  )
+)
+{% endhighlight %}
+
+
+
+Set the refreshOnReferencedVarChange parameter to false {#refresh-reference-parameter}
+For functions that aren't supported for offline evaluations, when you use them in a local variable you should use a!refreshVariable() to set the value of refreshOnReferencedVarChange to false.
+By default, all local variables created with a!localVariable() will automatically refresh whenever a variable they reference is updated. If that refresh were to happen while the user was offline, it would result in an error. In order to prevent this from happening, use a!refreshVariable() and set the value of refreshOnReferencedVarChange to false.
+Example: Setting refreshOnReferencedVarChange to false {#refresh-false}
+For example, imagine you have a list of users that you want to query. However, the username is in the format "firstname.lastname" and you would like to display it as "Firstname Lastname." 
+If you are designing the form for offline use, you would want to store the list of users in a local variable at the top of the form. 
+You can then store the prettified version of the names into another local variable. If you use a!refreshVariable() and set the value of refreshOnReferencedVarChange to false, you can ensure this variable is only evaluated when the interface is first loaded. If refreshOnReferencedVarChange is not set to false and local!users is updated in a saveInto somewhere else in the interface, local!usersForDisplay would automatically update and attempt to use the user() function offline, which would result in an error.
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!selectedUser,
+  local!users: getdistinctusers(cons!ALL_USERS_GROUP),
+  local!usersForDisplay: a!refreshVariable(
+    value: a!forEach(
+      items: local!users,
+      expression: user(fv!item, "firstName") & " " & user(fv!item, "lastName")
+    ),
+/*If this is not set to false and 'local!users' is updated somewhere else in the interface, 'local!usersForDisplay' would attempt to use the user() function offline to update, resulting in an error.*/
+    refreshOnReferencedVarChange: false
+  ),
+  a!dropdownField(
+    label: "User",
+    placeholder: "--- Choose User ---",
+    choiceLabels: local!usersForDisplay,
+    choiceValues: local!users,
+    value: local!selectedUser,
+    saveInto: local!selectedUser
+  )
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+a!localVariables(
+  local!selectedUser,
+  local!users: getdistinctusers(cons!ALL_USERS_GROUP),
+/*'a!refreshVariable' isn't used here which means an error will result if 'local!users' is updated somewhere else in the interface.*/
+  local!usersForDisplay: a!forEach(
+    items: local!users,
+    expression: user(fv!item, "firstName") & " " & user(fv!item, "lastName")
+  ),
+  a!dropdownField(
+    label: "User",
+    placeholder: "--- Choose User ---",
+    choiceLabels: local!usersForDisplay,
+    choiceValues: local!users,
+    value: local!selectedUser,
+    saveInto: local!selectedUser
+  )
+)
+{% endhighlight %}
+
+
+
+Downloading documents offline
+You can now download documents for offline use in forms. Whether you want to include an image for a stylized billboard or bring in reference documents specific to user tasks, you're able to include any document in offline forms for your users to download.
+To download documents offline, simply save your document as a document data type or as a document or folder data type and use a document download link to call the document using one of the three following methods:
+
+Use a constant.
+Cast document IDs using a query.
+Cast document IDs using a local variable.
+
+For all three methods, you'll need to do all your calling, querying, and casting at the top of the form. For more information on querying and casting query results to a CDT, see our sections on pre-loading data and querying and writing data.
+Downloading documents using constants or functions {#constants-or-functions}
+In some of your offline forms, you may want to include a document that won't regularly change. These could be an image to show in a billboard, a document with additional details and instructions, or any document that won't change from user to user.
+There are two methods that you can use to download these kinds of documents; a constant or the todocument() function.
+Download documents using a constant {#constants}
+When building offline forms, using a constant is the easiest and recommended method for calling in a document that won't regularly change. Simply create a constant that calls your document and use it in a local variable at the top of your form.
+Example: Downloading documents offline using a constant
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!document: cons!myDocument,
+  {
+    a!imageField(
+      images: {
+        a!documentImage(
+          document: local!document
+        )
+      }
+    )
+  }
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+{
+  a!imageField(
+    images: {
+      a!documentImage(
+        document: cons!myDocument
+      )
+    }
+  )
+}
+{% endhighlight %}
+
+
+
+Downloading documents offline using the todocument function {#todocument}
+If the document that you want to include in your offline form is saved as a document ID of type integer, you need to cast it to a document type.
+To cast the integer to a document within the interface, use the todocument() function within a local variable at the top of the form. If you use it farther down in the expression, the interface will attempt to return the document while offline and will not be able to retrieve it.
+Example: Casting document id to document type using todocument()
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+a!localVariables(
+  local!document: todocument(150),
+  {
+    a!imageField(
+      images: {
+        a!documentImage(
+          document: local!document
+        )
+      }
+    )
+  }
+)
+{% endhighlight %}
+
+
+{% highlight sail %}
+{
+  a!imageField(
+    images: {
+      a!documentImage(
+        document: 150
+      )
+    }
+  )
+}
+{% endhighlight %}
+
+
+
+Downloading documents offline using a query {#query-document}
+In some of your offline forms, you may need to include documents that will change based on the user's needs. These could be reference images or guides specific to an inspection or previously submitted photos for equipment comparison.
+These documents are typically stored in database and you can access them using a!queryEntity(). For more information and examples of using query entities, see our guidance on querying data store entities and casting the results.
+Make sure that the document you want to include is stored as a document data type or as a document or folder data type. If your document is saved as any other data type, you must cast it to a document data type or a document or folder data type in a CDT so that you can download it. You can do this within local variables at the top of your form.
+Example: Saving documents as a document type in a CDT
+The following is an example of saving data as a document data type in a CDT.
+
+
+Recommended
+Not Recommended
+
+
+
+{% highlight sail %}
+CDT - Inspection Item
+ - id (Number(Integer))
+ - name (Text)
+ - image (Document)
+{% endhighlight %}
+
+
+{% highlight sail %}
+CDT - Inspection Item
+ - id (Number(Integer))
+ - name (Text)
+ - image (Integer)
+{% endhighlight %}
+
+
+
+Example: Casting document ID to a document type using a query
+The following example queries a data store entity and casts the document ID that it receives to a document data type using the Inspection Item CDT shown above.
+sail
+a!localVariables(
+  local!inspectionItems: cast(
+    a!listType('type!{urn:com:appian:types}InspectionItem'),
+    a!queryEntity(...).data
+  ),
+  {
+    /*Expression to display data*/
+  }
+)
+Avoiding pending offline forms submission failures {#submission-failures}
+Some changes and configurations may prevent pending offline forms from being submitted. Below are some best practices so that you can avoid changes and configurations that may cause pending forms submission failures.
+Making changes to CDTs used in type constructors
+If your offline form is using a type constructor to reference or save values to a CDT, be careful about making changes to the CDT.
+Certain changes to the CDT, such as adding a new field, are fine. However, deleting a field or changing a field's name or type aren't backwards compatible with older versions of your CDT. This means that if you make a change to a CDT that is used by an interface with a type constructor and that interface has any pending forms, the change will prevent the form from being submitted and the user may need to fill out the form again.
+To avoid potential submission failures:
+
+Only add fields to CDTs.
+If you need to make backwards incompatible changes to a CDT, create a new CDT instead.
+Avoid using a type constructor in your interface. If you require a similar configuration in your interface, use a map and save it to a rule input of the CDT type.
+
+Making changes to process calendar
+If you are using a custom process calendar and it changes while users are offline, the change will prevent any pending forms from being submitted and the user may need to fill out the form again.
+To avoid potential submission failures, only make changes to your process calendar at times when there are no users offline.
+Uploading files to folders in offline forms
+If offline users attempt to upload a file in an offline form to a folder that they don't have permission to access, it will prevent the pending form from being submitted. Because the offline form cannot check that the user has permission to access the folder until the user is back online, the user won't see an error when they complete the form.
+To avoid potential submission failures, make sure that any user of the offline form has permission to upload documents to the target folder.
+To allow users to submit forms automatically when their session has timed out, enable remember me
+Remember me authentication enables users to sign in once and stay signed in for a specified number of days. It can be configured in the Admin Console for Appian authentication and SAML authentication.
+If a user is offline for longer than the session timeout period and remember me is not enabled, pending forms will not be submitted until after the user signs in again. To allow pending forms to be submitted automatically when the user is back online, enable remember me for the users that require this capability.

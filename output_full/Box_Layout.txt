@@ -1,0 +1,384 @@
+
+layout: function
+title: Box Layout
+category: function_page
+compatibility: -crf
+excerpt: Displays any arrangement of layouts and components within a box on an interface.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!boxLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: |
+      Text to display as the box's title.
+  - keyword: contents
+    name: Contents
+    types: Any Type
+    description: Components and layouts to display within the box.
+  - keyword: style
+    name: Style
+    types: Text
+    description: |
+      Determines the color of the label and box outline. Valid values: Any valid hex color or "STANDARD" (default), "ACCENT", "SUCCESS", "INFO", "WARN", "ERROR".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: isCollapsible
+    name: Collapsible
+    types: Boolean
+    description: |
+      Determines if an expand/collapse control appears in the box header. Default: false.
+  - keyword: isInitiallyCollapsed
+    name: Initially Collapsed
+    types: Boolean
+    description: |
+      Determines if the box is collapsed when the interface first loads. Default: false.
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: padding
+    name: Padding
+    types: Text
+    description: |
+      Determines the space between the box edges and its contents. Valid values: "NONE", "EVEN_LESS", "LESS" (default), "STANDARD", "MORE", "EVEN_MORE".
+  - keyword: shape
+    name: Shape
+    types: Text
+    description: |
+      Determines the box shape. Valid values: "SQUARED" (default), "SEMI_ROUNDED", "ROUNDED".
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: showBorder
+    name: Show border
+    types: Boolean
+    description: |
+      Determines whether the layout has an outer border. Default: true.
+  - keyword: showShadow
+    name: Show shadow
+    types: Boolean
+    description: |
+      Determines whether the layout has an outer shadow. Default: false.
+  - keyword: labelSize
+    name: Label Size
+    types: Text
+    description: |
+      Determines the label size. Valid values: "LARGE_PLUS", "LARGE", "MEDIUM_PLUS", "MEDIUM", "SMALL", "EXTRA_SMALL" (default).
+  - keyword: labelHeadingTag
+    name: Accessibility Heading Tag
+    types: Text
+    description: |
+      Determines the heading tag associated with the label for use by screen readers; produces no visible change. Valid values: "H1", "H2", "H3", "H4", "H5", "H6". The default is dependent on the chosen label size. See accessibility design guidance for more details to associate the proper heading tag with the box label to follow accessibility standards.
+reftype: sailcomponent
+scdisplayname: Box Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Box layout design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Box layout with success style
+This example uses a box layout with the "SUCCESS" style. It displays the following interface.
+{:.screenshot}
+sail
+a!boxLayout(
+  label: "Success! Your order was successfully processed",
+  style: "SUCCESS",
+  marginBelow: "STANDARD",
+  contents: {
+    a!textField(
+      labelPosition: "COLLAPSED",
+      value: "Your credit card has been charged.",
+      readOnly: true
+    )
+  }
+)
+Collapsible box layout with custom style
+This example uses a collapsible box layout with a custom style for the header color. It displays the following interface.
+{:.screenshot}
+sail
+a!boxLayout(
+    label: "Enrolled Students",
+    style: "#98002E",
+    marginBelow: "STANDARD",
+    isCollapsible: true,
+    contents: {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: a!richTextBulletedList(
+          items: {
+            "Elizabeth Ward",
+            "Fatima Cooper",
+            "Jaylen Smith",
+            "Michael Johnson",
+            "Jade Rao",
+          }
+        )
+      )
+    }
+  )
+Box layout with label size and shadow
+This example uses a box layout with a "MEDIUM" label size. It displays the following interface.
+{:.screenshot style="width:60%"}
+Because the header content layout uses a transparent background, we are using a shadow instead of a border. See the box layout design guidance for more information on using borders and shadows.
+sail
+a!localVariables(
+  local!currentClasses: {
+    a!map(courseNum: "JPN 202", title: "Intermediate Japanese II", students: 14),
+    a!map(courseNum: "JPN 270", title: "Intro to Japanese Culture", students: 8),
+    a!map(courseNum: "JPN 360", title: "Japanese Modern Women Writers", students: 5)
+  },
+  a!headerContentLayout(
+    contents: a!boxLayout(
+      label: "Current Classes",
+      labelSize: "MEDIUM",
+      contents: {
+        a!forEach(
+          items: local!currentClasses,
+          expression: a!sideBySideLayout(
+            items: {
+              a!sideBySideItem(
+                item: a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    fv!item.courseNum,
+                    "   ",
+                    a!richTextItem(
+                      text: {fv!item.title},
+                      link: a!dynamicLink(),
+                      linkStyle: "STANDALONE",
+                      color: "#1a73e7"
+                    )
+                  }
+                ),
+                width: "AUTO"
+              ),
+              a!sideBySideItem(
+                item: a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    fv!item.students,
+                    " ",
+                    a!richTextIcon(icon: "users")
+                  }
+                ),
+                width: "MINIMIZE"
+              )
+            }
+          )
+        )
+      },
+      style: "#1a73e7",
+      marginBelow: "STANDARD",
+      showBorder: false,
+      showShadow: true
+    ),
+    backgroundColor: "TRANSPARENT"
+  )
+)
+Rounded box layouts
+This example uses a box layout with a rounded shape. It displays the following interface.
+{:.screenshot}
+sail
+a!columnsLayout(
+  columns: {
+    a!columnLayout(
+      contents: {
+        a!boxLayout(
+          label: "Current Courses",
+          contents: {
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "CRW470"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "Advanced Fiction Workshop"
+                    }
+                  )
+                )
+              }
+            ),
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "ENG463"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "Literature on the Move: Stories of Migration"
+                    }
+                  )
+                )
+              }
+            ),
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "ENG327"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "The Next Great American Graphic Novel"
+                    }
+                  )
+                )
+              }
+            ) 
+          },
+          style: "#363535",
+          shape: "ROUNDED",
+          marginBelow: "STANDARD"
+        )
+      }
+    ), 
+    a!columnLayout(
+      contents: {
+        a!boxLayout(
+          label: "Past Courses",
+          contents: {
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "CRW370"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "Intermediate Fiction Workshop"
+                    }
+                  )
+                )
+              }
+            ),
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "ENG222"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "Literature of Regency England: Jane Austen "
+                    }
+                  )
+                )
+              }
+            ),
+            a!sideBySideLayout(
+              items: {
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "ENG301"
+                        },
+                        size: "STANDARD"
+                      )
+                    }
+                  ),
+                  width: "MINIMIZE"
+                ),
+                a!sideBySideItem(
+                  item: a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      "How to Study Literature"
+                    }
+                  )
+                )
+              }
+            )
+          },
+          style: "#363535",
+          shape: "ROUNDED",
+          marginBelow: "STANDARD"
+        )
+      }
+    )
+  }
+)

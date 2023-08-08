@@ -1,0 +1,32 @@
+
+layout: function
+title: cosh() Function
+space: function_page
+excerpt: "Returns the hyperbolic cosine(s) of the specified number(s)."
+category: function_page
+fncname: cosh
+fncexample: "cosh(1)"
+fncresult: "1.543081"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      An angle measure or array of angle measures in radians, the hyperbolic cosine(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can be used with any value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+cosh(1) returns 1.5430806348152437

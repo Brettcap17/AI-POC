@@ -1,0 +1,41 @@
+
+layout: function
+title: a!queryEntity_18r3() Function
+space: function_page
+excerpt: "Executes a query on a given data store entity and returns the result."
+category: function_page
+fncname: a!queryEntity_18r3
+fncexample: "Click on the function name for examples."
+fnccat: System
+evolved_fncname: a!queryEntity
+evolved_reason: "Added the fetchTotalCount parameter, which, by default, avoids running the query that retrieves the total number of rows in the totalCount parameter of the resulting datasubset."
+compatibility: -crf, ~portal
+reftype: function
+parameters:
+  - keyword: entity
+    types: Data Store Entity
+    description: |
+       The Data Store Entity to query.
+  - keyword: query
+    types: Query
+    description: |
+        The query definition of the report including grouping, aggregation, filtering, paging, and sorting configurations, created with a!query().
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DataSubset
+Usage considerations
+The DataSubset returned by this function is used to generate report grids or graphs based on record data.
+The entity value should be given as a constant of type Data Store Entity. The query value must be entered using the a!query() system function.
+The logicalExpression|filter|search field of the query object can only be set to a LogicalExpression or a QueryFilter type. Search types are not supported.
+The expression will fail to evaluate and an error will occur if the entity reference is not provided, invalid, or null, the user does not have permission to view the entity, the query value is not provided, invalid, incomplete, or an inconsistent query object.
+This function allows a Query object with an array of SortInfo data type.
+If called multiple times in the same expression with the same parameters, only one query is made to the data store when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+See Also
+Data Store Entity: data store entities are named, typed storage units within a data store.
+query: the query data type defines the grouping, aggregation, filtering, paging, and sorting configuration to be applied when querying data.
+a!query(): A System Function that returns a Query object.

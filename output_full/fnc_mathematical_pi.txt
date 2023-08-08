@@ -1,0 +1,26 @@
+
+layout: function
+title: pi() Function
+space: function_page
+excerpt: "Returns the value of pi."
+category: function_page
+fncname: pi
+fncexample: "pi()"
+fncresult: "3.141593"
+fnccat: Mathematical
+parameters: none
+reftype: function
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+pi() returns 3.141593 

@@ -1,0 +1,91 @@
+
+layout: function
+title: Safe Link Component
+category: function_page
+compatibility: -crf, -om
+excerpt: Defines a link to an external web page.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!safeLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: uri
+    name: URI
+    types: SafeURI
+    description: 'URI target of the hyperlink. See SafeURI.'
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.'
+  - keyword: openLinkIn
+    name: Open Link In
+    types: Text
+    description: '(Browser-Only) Determines where the linked content should open. Valid values: "SAME_TAB", "NEW_TAB" (default).'
+reftype: sailcomponent
+scdisplayname: Safe Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Link
+Read-Only Grid
+Images
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Displaying links
+
+To display a single link or array of links, put safe links inside of the link component.
+To display a link in a grid, put the safe link inside of a grid text column.
+To add a link to an image, put the safe link inside a document image or web image.
+To add a link to a chart series, put the safe link inside a chart series component.
+
+Specifying URI protocols and using telephone links
+
+It's recommended that the URI use a specific protocol. When no protocol is specified, the component will generate a hyperlink using the system's protocol and domain.
+The telephone link URI ("tel:") is supported on the Appian Mobile application. If a user clicks this link in the application, the link will open a mobile device's default phone dialer. 
+Telephone links may work in a web browser, but behavior can differ based on operating system and whether any telephone supported applications or extensions are installed.
+
+Opening links in new tabs & windows
+
+A link created by a!safeLink() opens in a new tab by default. Opening a link in the same tab can be configured using the openLinkIn parameter.
+Note that a user's browser may still be configured so that new tabs are instead opened as new windows.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+To an external website
+sail 
+a!safeLink(
+  label: "Company web site",
+  uri: "http://www.appian.com"
+)
+Returns a hyperlink to http://www.appian.com
+To a telephone number in the Appian Mobile Application
+```sail 
+a!richTextDisplayField(
+  value: if( 
+    a!isNativeMobile(),
+  a!richTextItem(
+    text: (
+      "(555)-555-5555"
+    ),
+    link: a!safeLink(
+      label: "(555)-555-5555",
+      uri: "tel: (555)-555-5555"
+    ),
+),
+  "(555)-555-5555"
+ )
+)
+```
+Returns a telephone link which can be used on mobile devices via the Appian Mobile application. Use isNativeMobile() to only show this link in the Appian Mobile application.

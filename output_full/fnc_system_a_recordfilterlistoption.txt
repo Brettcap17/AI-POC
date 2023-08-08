@@ -1,0 +1,50 @@
+
+layout: function
+title: a!recordFilterListOption() Function
+category: function_page
+excerpt: Creates a filter option for the a!recordFilterList() function.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!recordFilterListOption
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: id
+    types: Integer
+    description: |
+      The unique identifier for the filter option. This must be unique across other filter options within the same user filter.
+  - keyword: name
+    types: Text
+    description: |
+      The name of the filter option that is displayed to users.
+  - keyword: filter
+    types: QueryFilter
+    description: |
+      The QueryFilter value that will be sent by the framework when this filter option is selected.
+  - keyword: dataCount
+    types: Integer
+    description: |
+      An optional value that defines how many items in the data set will be selected if this filter option is selected.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+FacetOption
+Usage considerations
+This function, when used within the options parameter in the a!recordFilterList() function, creates a user filter option. 
+Example
+sail 
+=a!recordFilterListOption(
+  id: 1,
+  name: "Active",
+  filter: a!queryFilter(
+    field: "status",
+    operator: "=",
+    value: "active"
+  )
+)
+See Expression-Based User Filters for common uses.

@@ -1,0 +1,30 @@
+
+layout: function
+title: len() Function
+space: function_page
+excerpt: "Returns the length in characters of the text."
+category: function_page
+fncname: len
+fncexample: "len(\"Boston\")"
+fncresult: "6"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text, the length of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+len("boston") returns 6

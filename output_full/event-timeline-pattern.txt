@@ -1,0 +1,528 @@
+
+layout: pattern
+title: Event Timelines
+excerpt: 'Use the event timeline pattern to display a dated list of events and actions in chronological order. This pattern uses a combination of cards, rich text, and user images to show an easy to navigate list of dated events.'
+reftype: pattern
+sr-tags:
+  - Timeline
+  - Events
+
+Design structure
+This page will break down the event timeline and event timeline (detailed) pattern expressions so you can better understand how to adapt these patterns to your own data so that it works to best suit your needs.
+Event timeline
+{:.screenshot}
+The main components in this pattern are columns layouts, card layouts, side by side layouts, user images, and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the event timeline pattern onto your interface, 109 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!eventTimeline: {
+      a!map(
+        date: today(),
+        events:  {
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:40 PM"),
+          a!map(user: "Anthony Wu",  event: "edited the customer record for Acme Corporation", time: "11:03 AM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "10:25 AM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "08:19 AM")
+        }
+      ),
+      a!map(
+        date: today() - 1,
+        events:  {
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "05:49 PM"),
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:44 AM"),
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:10 PM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "12:52 AM"),
+          a!map(user: "Anthony Wu",  event: "edited the customer record for Acme Corporation", time: "09:33 AM")
+        }
+      )
+    },
+    {
+      a!forEach(
+        items: local!eventTimeline,
+        expression: a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: day(fv!item.date),
+                      size: "LARGE"
+                    ),
+                    char(10),
+                    upper(text(fv!item.date, "MMM"))
+                  },
+                  align: "CENTER"
+                )
+              },
+              width: "EXTRA_NARROW"
+            ),
+            a!columnLayout(
+              contents: {
+                a!forEach(
+                  items: fv!item.events,
+                  expression: a!cardLayout(
+                    contents: {
+                      a!sideBySideLayout(
+                        items: {
+                          a!sideBySideItem(
+                            item: a!imageField(
+                              labelPosition: "COLLAPSED",
+                              images: a!userImage(),
+                              size: "SMALL",
+                              style: "AVATAR"
+                            ),
+                            width: "MINIMIZE"
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.user,
+                                  link: a!userRecordLink(),
+                                  linkStyle: "STANDALONE",
+                                  size: "MEDIUM",
+                                  style: "STRONG"
+                                ),
+                                a!richTextItem(
+                                  text: " " & fv!item.event,
+                                  size: "MEDIUM"
+                                )
+                              }
+                            )
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.time,
+                                  color: "SECONDARY",
+                                  size: "MEDIUM"
+                                )
+                              }
+                            ),
+                            width: "MINIMIZE"
+                          )
+                        },
+                        alignvertical: "MIDDLE"
+                      )
+                    },
+                    marginBelow: "STANDARD"
+                  )
+                )
+              }
+            )
+          },
+          marginbelow: "NONE"
+        )
+      )
+    }
+  )
+}
+[Line 1-23] Define local variables and mappings
+The local variables at the top of the expression are used to define the data that will be displayed for each event in the timeline, as well as map together the user information, time of the event, and description of the event. 
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!eventTimeline: {
+      a!map(
+        date: today(),
+        events:  {
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:40 PM"),
+          a!map(user: "Anthony Wu",  event: "edited the customer record for Acme Corporation", time: "11:03 AM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "10:25 AM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "08:19 AM")
+        }
+      ),
+      a!map(
+        date: today() - 1,
+        events:  {
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "05:49 PM"),
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:44 AM"),
+          a!map(user: "Bree Mercer", event: "edited the customer record for Acme Corporation", time: "02:10 PM"),
+          a!map(user: "John Smith",  event: "edited the customer record for Acme Corporation", time: "12:52 AM"),
+          a!map(user: "Anthony Wu",  event: "edited the customer record for Acme Corporation", time: "09:33 AM")
+        }
+      )
+    },
+{% endhighlight %}
+[Line 24-45] Format the month and day display
+This section opens up the a!forEach() expression and columns layout which define the timeline's structure. Using a!forEach(), we can define the expression for an event one time and have the function iterate through that same expression for each event instance.
+This section also contains the expression which displays the day and month that each event takes place. The dates are made up of rich text in a column layout with a few functions to configure how the dates are displayed. 
+On line 35,  the day() function is used to convert the date and time value defined  in the local variable into a single number(integer) value.  
+On line 39,  the text() function is used to convert the date and time value defined in the local variable into a text value. The MMM format in this expression formats the month into a three letter abbreviation:dec. The text() function is wrapped in the upper() function, which converts text values to uppercase: DEC.  
+{% highlight sail linenos start_line=24 %}
+    {
+      a!forEach(
+        items: local!eventTimeline,
+        expression: a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: day(fv!item.date),
+                      size: "LARGE"
+                    ),
+                    char(10),
+                    upper(text(fv!item.date, "MMM"))
+                  },
+                  align: "CENTER"
+                )
+              },
+              width: "EXTRA_NARROW"
+            ),
+{% endhighlight %}   
+[Line 46-109] Configure the event display
+This section defines the expression that will be iterated through for each event in the timeline. The events are made up of a user image in the "AVATAR" style, the user's name and a link to their user record, a description of the event, and the time of the event. 
+The user name, event description, and the time of the event are all displayed in rich text. The rich text and user image are all in a side by side layout contained within a card.  
+{% highlight sail linenos start_line=46 %}
+          a!columnLayout(
+              contents: {
+                a!forEach(
+                  items: fv!item.events,
+                  expression: a!cardLayout(
+                    contents: {
+                      a!sideBySideLayout(
+                        items: {
+                          a!sideBySideItem(
+                            item: a!imageField(
+                              labelPosition: "COLLAPSED",
+                              images: a!userImage(),
+                              size: "SMALL",
+                              style: "AVATAR"
+                            ),
+                            width: "MINIMIZE"
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.user,
+                                  link: a!userRecordLink(),
+                                  linkStyle: "STANDALONE",
+                                  size: "MEDIUM",
+                                  style: "STRONG"
+                                ),
+                                a!richTextItem(
+                                  text: " " & fv!item.event,
+                                  size: "MEDIUM"
+                                )
+                              }
+                            )
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.time,
+                                  color: "SECONDARY",
+                                  size: "MEDIUM"
+                                )
+                              }
+                            ),
+                            width: "MINIMIZE"
+                          )
+                        },
+                        alignvertical: "MIDDLE"
+                      )
+                    },
+                    marginBelow: "STANDARD"
+                  )
+                )
+              }
+            )
+          },
+          marginbelow: "NONE"
+        )
+      )
+    }
+  )
+}
+{% endhighlight %}
+Event timeline (detailed)
+This pattern is a more detailed version of the Event timeline pattern.
+{:.screenshot}
+Pattern expression
+When you drag and drop the Event timeline (detailed) pattern onto your interface, 270 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!historyDetails: {
+      a!map(
+        updatedBy: "Karen Anderson", 
+        updatedDate: today()-1, 
+        updatedTime: time(15, 38), 
+        caseId: 12345,
+        fields: {
+          a!map(name: "Status",    oldValue: "Active", newValue: "Closed"),
+          a!map(name: "Closed On", oldValue: null,     newValue: today()-1)
+        }
+      ),
+      a!map(
+        updatedBy: "Joel Guzman",
+        updatedDate: today()-1,
+        updatedTime: time(14, 4),
+        caseId: 12344,
+        fields: {
+          a!map(name: "Description", oldValue: "Issue with joint savings account", newValue: "Unable to create joint savings account"),
+          a!map(name: "Account",     oldValue: "Checking",                         newValue: "Savings")
+        }
+      ),
+      a!map(
+        updatedBy: "Karen Anderson",
+        updatedDate: today()-1,
+        updatedTime: time(11, 19),
+        caseId: 12343,
+        fields: {
+          a!map(name: "Title",  oldValue: "Set up individual checking account", newValue: "Set up new joint savings account"),
+          a!map(name: "Status", oldValue: "Pending",                            newValue: "Active"),
+        }
+      ),
+      a!map(
+        updatedBy: "Joel Guzman",
+        updatedDate: today()-2, 
+        updatedTime: time(15, 38), 
+        caseId: 12345,
+        fields: {
+          a!map(name: "Description", oldValue: "Issue with checking account", newValue: "Issue with joint savings account"),
+          a!map(name: "Contact",     oldValue: "Priti Jagodara",              newValue: "Joel Guzman")
+        }
+      ),
+      a!map(
+        updatedBy: "Tracy Zimmerman",
+        updatedDate: today()-2,
+        updatedTime: time(14, 4),
+        caseId: 12344,
+        fields: {
+          a!map(name: "Assignee", oldValue: null,  newValue: "Karen Anderson"),
+          a!map(name: "Status",   oldValue: "New", newValue: "Pending"),
+        }
+      ),
+      a!map(
+        updatedBy: "Tracy Zimmerman",
+        updatedDate: today()-2,
+        updatedTime: time(11, 19),
+        caseId: 12343,
+        fields: {
+          a!map(name: "Title",   oldValue: "Checking account", newValue: "Set up individual checking account"),
+          a!map(name: "Contact", oldValue: null,               newValue: "Priti Jagodara")
+        }
+      )
+    },
+    /* Get unique event date values */
+    local!eventDates: union(local!historyDetails.updatedDate, local!historyDetails.updatedDate),
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!forEach(
+              items: local!eventDates,
+              expression: a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!cardLayout(
+                            contents: {
+                              a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: text(month(fv!item), "MMM"),
+                                align: "CENTER"
+                              )
+                            },
+                            style: "ACCENT",
+                            padding: "EVEN_LESS",
+                            showBorder: false
+                          ),
+                          a!cardLayout(
+                            contents: {
+                              a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: day(fv!item),
+                                    size: "MEDIUM_PLUS",
+                                    style: "STRONG"
+                                  )
+                                },
+                                align: "CENTER"
+                              )
+                            },
+                            padding: "EVEN_LESS",
+                            showBorder: false
+                          )
+                        },
+                        padding: "NONE",
+                        marginBelow: "STANDARD"
+                      )
+                    },
+                    width: "EXTRA_NARROW"
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!forEach(
+                        items: index(
+                          local!historyDetails,
+                          wherecontains(
+                            fv!item,
+                            local!historyDetails.updatedDate
+                          )
+                        ),
+                        expression: a!columnsLayout(
+                          columns: {
+                            a!columnLayout(
+                              contents: {
+                                a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: fv!item.updatedTime,
+                                  align: "RIGHT"
+                                ),
+                                a!richTextDisplayField(labelPosition: "COLLAPSED")
+                              }
+                            ),
+                            a!columnLayout(
+                              contents: {
+                                a!richTextDisplayField(
+                                  labelPosition: "COLLAPSED",
+                                  value: {
+                                    a!richTextItem(
+                                      text: fv!item.updatedBy,
+                                      color: "ACCENT",
+                                      style: "STRONG" 
+                                    ),
+                                    " ",
+                                    "edited record",
+                                    " ",
+                                    a!richTextItem(
+                                      text: "Case" & " " & fv!item.caseId,
+                                      color: "ACCENT"
+                                    )
+                                  }
+                                ),
+                                a!sideBySideLayout(
+                                  items: {
+                                    a!sideBySideItem(
+                                      item: a!richTextDisplayField(
+                                        labelPosition: "COLLAPSED",
+                                        value: {
+                                          a!richTextItem(
+                                            text: upper("Field"),
+                                            color: "SECONDARY"
+                                          )
+                                        }
+                                      )
+                                    ),
+                                    a!sideBySideItem(
+                                      item: a!richTextDisplayField(
+                                        labelPosition: "COLLAPSED",
+                                        value: {
+                                          a!richTextItem(
+                                            text: upper("Old Value"),
+                                            color: "SECONDARY"
+                                          )
+                                        }
+                                      ),
+                                      width: "2X"
+                                    ),
+                                    a!sideBySideItem(
+                                      item: a!richTextDisplayField(
+                                        labelPosition: "COLLAPSED",
+                                        value: {
+                                          a!richTextItem(
+                                            text: upper("New Value"),
+                                            color: "SECONDARY"
+                                          )
+                                        }
+                                      ),
+                                      width: "2X"
+                                    )
+                                  },
+                                  marginBelow: "NONE"
+                                ),
+                                a!forEach(
+                                  items: index(fv!item, "fields", {}),
+                                  expression: a!sideBySideLayout(
+                                    items: {
+                                      a!sideBySideItem(
+                                        item: a!richTextDisplayField(
+                                          labelPosition: "COLLAPSED",
+                                          value: {
+                                            a!richTextItem(
+                                              text: fv!item.name,
+                                              style: "STRONG"
+                                            )
+                                          },
+                                          preventWrapping: true
+                                        )
+                                      ),
+                                      a!sideBySideItem(
+                                        item: a!richTextDisplayField(
+                                          labelPosition: "COLLAPSED",
+                                          value: {
+                                            a!richTextItem(
+                                              text: if(
+                                                a!isNullOrEmpty(fv!item.oldValue),
+                                                char(8211),
+                                                fv!item.oldValue
+                                              )
+                                            )
+                                          },
+                                          preventWrapping: true
+                                        ),
+                                        width: "2X"
+                                      ),
+                                      a!sideBySideItem(
+                                        item: a!richTextDisplayField(
+                                          labelPosition: "COLLAPSED",
+                                          value: {
+                                            a!richTextItem(
+                                              text: if(
+                                                a!isNullOrEmpty(fv!item.newValue),
+                                                char(8211),
+                                                fv!item.newValue
+                                              )
+                                            )
+                                          },
+                                          preventWrapping: true
+                                        ),
+                                        width: "2X"
+                                      )
+                                    },
+                                    marginBelow: "EVEN_LESS"
+                                  )
+                                ),
+                                a!richTextDisplayField(marginAbove: "EVEN_LESS", marginBelow: "STANDARD")
+                              },
+                              width: "MEDIUM_PLUS"
+                            )
+                          },
+                          marginBelow: "NONE",
+                          spacing: "SPARSE",
+                          showDividers: true
+                        )
+                      )
+                    }
+                  )
+                },
+                marginBelow: "NONE"
+              )
+            )
+          },
+          width: "WIDE"
+        )
+      }
+    )
+  )
+}

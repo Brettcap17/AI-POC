@@ -1,0 +1,33 @@
+
+layout: function
+title: hour() Function
+space: function_page
+excerpt: "Returns the hour from the time specified."
+category: function_page
+fncname: hour
+fncexample: "hour(time(14, 20, 23))"
+fncresult: "14"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: time
+    types: Time
+    description: |
+      A time or date & time value from which the hour is extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+The hour is expressed in 24-hour time (0 for midnight, 13 for 1 PM).
+No time shift occurs.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+hour(time(14,20,23))  returns 14

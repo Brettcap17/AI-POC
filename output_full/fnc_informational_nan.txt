@@ -1,0 +1,24 @@
+
+layout: function
+title: nan() Function
+category: function_page
+excerpt: 'Constant number representing Not A Number, generally used for comparison to the result of mathematical operations with invalid inputs.  This is equivalent to a decimal (floating point) null, but nan() is provided for more explicit usage in mathematical expressions.'
+fnccat: Informational
+fncexample: nan()
+fncname: nan
+fncresult: 'null'
+reftype: function
+space: function_page
+parameters: none
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+nan(100) returns null

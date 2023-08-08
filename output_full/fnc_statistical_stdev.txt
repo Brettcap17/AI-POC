@@ -1,0 +1,30 @@
+
+layout: function
+title: stdev() Function
+space: function_page
+excerpt: "Returns the standard deviation of the specified number(s)."
+category: function_page
+fncname: stdev
+fncexample: "stdev(1, 2, 3, 4)"
+fncresult: "1.290994"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A member or array of members of the set from which the standard deviation will be calculated.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+stdev(1,2,3,4) returns 1.290994

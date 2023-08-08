@@ -1,0 +1,49 @@
+
+layout: function
+title: Editable Grid Header Component
+category: function_page
+compatibility: -crf
+excerpt: Defines a column header for use in an editable grid (a!gridLayout).
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridLayoutHeaderCell
+fncsubcat: Grids
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the column header.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines the header label's alignment. Valid values: "LEFT", "CENTER", "RIGHT".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the header cell is displayed in the grid. When set to false, the header cell is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Editable Grid Header
+scsubcat: Editable_Grid_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Defines a column header for use in an Editable Grid.
+See also: Grids design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Grid header with a label
+This example needs to be used with the a!gridLayout() function for it to display anything. Examples that you can see in action are available in the Grid Layout component section.
+sail 
+a!gridLayoutHeaderCell(
+  label: "Total",
+  align: "RIGHT"
+)

@@ -1,0 +1,52 @@
+
+layout: function
+title: and() Function
+category: function_page
+excerpt: Returns true if all inputs are true; returns false if at least one input is false.
+fnccat: Logical
+fncexample: 'and(true(), false())'
+fncname: and
+fncresult: 'false'
+parameters:
+  - keyword: value
+    types: Boolean
+    description: A value or array of values that must be true for the function to return true.
+space: function_page
+reftype: function
+compatibility: +pr, +pe
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean 
+Usage considerations
+Casting and returning boolean values
+
+Arguments are cast to Boolean before and() evaluates.
+As soon as the returned value of a value evaluation returns false, the function returns false. 
+
+Evaluation order and performance
+
+Multiple arguments are evaluated left-to-right.
+By keeping common conditions on the left and complex edge cases on the right, you can improve function performance. That way, if an earlier, simple function returns false, evaluation of the later edge cases never occurs.
+
+Null and empty arrays
+
+Null values that are part of input arrays are filtered out before evaluation.
+Empty arrays evaluate to true.
+Empty text strings in a text array evaluate to false, but empty text strings in an array with multiple data types are considered null values and are filtered out before evaluation.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Use functions to Pass Multiple Logical Values:
+and(isleapyear(1996),isleapyear(1997)) returns false
+Pass an Empty Array:
+and({}) returns true
+Pass an Array of Numbers:
+and(1,2,"",3) returns true
+and(0,1,2,"",3) returns false because 0 casts to false

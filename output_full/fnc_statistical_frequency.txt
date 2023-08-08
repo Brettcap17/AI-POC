@@ -1,0 +1,46 @@
+
+layout: function
+title: frequency() Function
+space: function_page
+excerpt: "Uses the bin array to create groups bounded by the elements of the array."
+category: function_page
+fncname: frequency
+fncexample: "frequency({64, 74, 75, 84, 85, 86, 95}, {70, 79, 89})"
+fncresult: "{1, 2, 3, 1}"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: data_array
+    types: Decimal Array
+    description: |
+      The set of numbers that will be divided into groups according to bins_array and then counted
+  - keyword: bins_array
+    types: Decimal Array
+    description: |
+      The upper (and inclusive) boundaries of the groups into which the elements from the data array will be dispersed.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer Array
+Usage considerations
+Using the bins_array parameter
+The bins_array argument also defines one additional group capturing all numbers greater than the maximum number in bins_array.
+Understanding results
+The return value represents how many elements from the data array fall into each of these groups.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+For example, a bin array equal to {70, 79, 89} defines four groups:
+
+numbers where number <= 70
+numbers where 70 < number <= 79
+numbers where 79 < number <=89
+numbers > 89
+
+frequency({64,74,75,84,85,86,95},{70,79,89}) returns 1*2*3*1

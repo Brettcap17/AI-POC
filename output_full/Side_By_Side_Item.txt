@@ -1,0 +1,113 @@
+
+layout: function
+title: Side By Side Item
+category: function_page
+compatibility: -crf
+excerpt: Displays one item within a side by side layout.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!sideBySideItem
+fncsubcat: Layouts
+parameters:
+  - keyword: item
+    name: Item
+    types: Any Type
+    description: |
+      The component to display inside the layout.
+  - keyword: width
+    name: Width
+    types: Text
+    description: |
+      Determines the amount of space allocated to each of the items in the row. Valid values: "AUTO" (default), "MINIMIZE", "1X", "2X", "3X", "4X", "5X", "6X", "7X", "8X", "9X", and "10X".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component or layout is displayed on the interface. When set to false, the component or layout is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Side By Side Item
+scsubcat: Layout_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Side By Side Layout
+Side By Side and Columns design guidance
+Side By Side design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Accepted widths and fields
+
+Most fields are allowed for Item, except for grids, hierarchy browsers, the org chart, and layouts.
+The "MINIMIZE" width is appropriate for items with a fixed width, such as images or buttons. Use relative widths for items whose width is determined by the containing layout or user interaction, such as text inputs or dropdowns. For further explanation and examples, see UX Side by Side Guidance.
+
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Input fields with relative widths
+sail 
+a!sideBySideLayout(
+  items: {
+    a!sideBySideItem(
+      width: "4X",
+      item: a!textField(
+        label: "First Name"
+      )
+    ),
+    a!sideBySideItem(
+      item: a!textField(
+        label: "M.I."
+      )
+    ),
+    a!sideBySideItem(
+      width: "4X",
+      item: a!textField(
+        label: "Last Name"
+      )
+    )
+  }
+)
+Displays the following:
+{screenshot}
+Minimized width for icon and button
+sail 
+a!sideBySideLayout(
+  alignVertical: "MIDDLE",
+  spacing: "DENSE",
+  items: {
+    a!sideBySideItem(
+      width: "MINIMIZE",
+      item: a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: a!richTextIcon(
+          icon: "user",
+          size: "LARGE"
+        )
+      )
+    ),
+    a!sideBySideItem(
+      item: a!textField(
+        labelPosition: "COLLAPSED"
+      )
+    ),
+    a!sideBySideItem(
+      width: "MINIMIZE",
+      item: a!buttonArrayLayout(
+        marginBelow: "NONE",
+        buttons: {
+          a!buttonWidget(
+            label: "Check Availability",
+            size: "SMALL",
+            style: "SECONDARY"
+          )
+        }
+      )
+    )
+  }
+)
+Displays the following:
+{screenshot}

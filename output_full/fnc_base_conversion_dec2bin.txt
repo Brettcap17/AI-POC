@@ -1,0 +1,39 @@
+
+layout: function
+title: dec2bin() Function
+space: function_page
+excerpt: "Converts a Decimal number to a Binary number as text."
+category: function_page
+fncname: dec2bin
+compatibility: ~portal, ~om, +pe, +pr
+fncexample: "dec2bin(16)"
+fncresult: "10000"
+fnccat: Base_Conversion
+reftype: function
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+      Decimal value to convert, such as 123.
+  - keyword: place
+    types: Number
+    description: |
+      The number of places to return.  
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the value parameter
+Negative number values for value are handled using the 2's complement method.
+Using the place parameter
+The default value for place is however many places are necessary to represent the number.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+dec2bin(16) returns 10000

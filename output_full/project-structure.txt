@@ -1,0 +1,46 @@
+
+layout: "basic"
+title: "Project Structure"
+topic-group: "D"
+weight: 2
+
+Overview
+This page shows you how to structure your connected system plug-in project to ensure that your plug-in JAR contains the right files in the right places.
+
+appian-style-tip
+This version of Appian supports component plug-ins that use SDK version 1.0.0. Refer to the Integration SDK compatibility table for version details.
+
+Plug-in project structure
+
+ MyPlugin - packaged as a JAR
+ src
+ main
+ java
+ com
+ mycorp
+ MyConnectedSystemTemplate.java - stores credentials and authentication configuration details
+ MyIntegrationTemplate.java - a single operation available to designers
+
+
+
+
+
+
+ resources
+ com
+ mycorp
+ MyConnectedSystemTemplate_40px.png - See How To Add Logos
+ MyConnectedSystemTemplate_50px.png
+ MyConnectedSystemTemplate_80px.png
+
+
+ appian-plugin.xml - Connected System Plug-in Manifest
+ resources_en_US.properties, see Internationalization Bundles
+
+
+
+
+
+
+
+

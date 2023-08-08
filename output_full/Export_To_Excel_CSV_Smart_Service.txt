@@ -1,0 +1,10 @@
+
+layout: basic
+title: Export to Excel/CSV Smart Service [Deprecated]
+space: no_toc
+depver: 18.2
+reftype: smart_service
+ssicon: Deprecated.gif
+ssparentcat: "一Deprecated一"
+
+The Export to Excel/CSV Smart Service has been deprecated. There are two new smart services in its place: (1) Export to Excel Smart Service and (2) Export to CSV Smart Service - which are easy to configure.  The previous version of the Export to Excel/CSV Smart Service page can be found here.

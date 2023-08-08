@@ -1,0 +1,48 @@
+
+layout: "basic"
+title: "Developer Setup"
+topic-group: "A"
+weight: 1
+
+Overview
+In this page, we walk you through everything you need to setup your local machine to develop and connected system plug-in.
+
+appian-style-note
+To build and test a connected system plug-in, you will need the ability to deploy a plug-in and change custom properties on that server. This means a running local installation.
+
+Set up your local machine
+
+appian-style-note 
+You can create plug-ins using any IDE or code editor, but this document and examples are geared towards IntelliJ users with many IntelliJ-specific instructions.
+
+Set up IntelliJ
+To set up IntelliJ:
+
+Download and Install IntelliJ.
+Download and Install Java 8 SDK.
+To update IntelliJ to add the Java 8 SDK, do one of the following: 
+From the Welcome to IntelliJ IDEA dialog:
+Choose Configure > Project Defaults > Project Structure > JDK
+Select the appropriate Java JDK folder.
+PC: C:\Program Files\Java\jdk1.8.x
+Mac:/Library/Java/JavaVirtualMachines/jdk1.8.x
+Click Apply.
+From within the editor:
+Click File > Project Structure.
+Click the Project tab.
+If 1.8 is an option, choose 1.8.
+Otherwise:
+Click New > JDK.
+Select the appropriate Java JDK folder.
+PC: C:\Program Files\Java\jdk1.8.x
+Mac:/Library/Java/JavaVirtualMachines/jdk1.8.x
+
+
+Click Open
+
+
+
+Download and unzip the examples
+
+Download the Hello World example here.
+Unzip the downloaded file into the directory you want the project to live in.

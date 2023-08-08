@@ -1,0 +1,36 @@
+
+layout: basic
+title: Update Constant Smart Service
+reftype: smart_service
+sscat: Business_Rules
+ssicon: Update_Constant.png
+ssparentcat: Automation_Services
+
+Overview
+The Update Constant Smart Service allows you to change the value of a constant in a process to a specified value of any type. The smart service uses the context specified in the Assignment tab of the process model and creates a new version of the constant with the new value. Since a new version is created, there is no actual output. You can only run this smart service on one constant at a time.
+If you want to automatically increase or decrease constants that are used as global counters, we recommend using the Increment Constant Smart Service instead.
+
+appian-style-caution
+Only users who have permissions to update the constant specified can execute the smart service on that constant. Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process.
+
+You must specify values for the node inputs listed in the table below. You can either manually enter data into the text-field or generate a value using the Expression Editor. When using the Expression Editor, you can reference and modify process variables, rules, constants, and other data. The expressions then populate your node input values.
+Properties
+
+Category: Business Rules
+Icon:  
+Assignment Options: Unattended
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+The Data Tab displays the node inputs and outputs for the activity. You can add additional inputs and custom outputs, if needed. 
+Node inputs
+The default inputs include the following:
+| Input | Data Type | Description | Required | Multiple |
+| - | - | - | - |
+| Constant | Constant| The constant to be updated. Typically, you should use the picker or autocomplete to select the constant. You can also use a custom expression function plug-in that returns the desired constant. | Yes | No |
+| New Value | Any | The new value for the constant. | Yes | No |
+| Create New Version | Boolean | If false (default), then updating the constant via this smart service will not create a new version of the constant. For constants that are frequently updated via the smart service, not creating a version minimizes noise in the version history and conserves memory for better performance. If true, a new version of the constant will be created. | No | No |
+
+appian-style-note
+Do not select the constant from the Rules and Constants tab in the Expression Editor.**

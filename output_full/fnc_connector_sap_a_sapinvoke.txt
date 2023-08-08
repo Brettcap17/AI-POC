@@ -1,0 +1,88 @@
+
+layout: function
+title: a!sapInvoke() Function
+space: function_page
+excerpt: "Invokes the given BAPI, returning the result."
+category: function_page
+fncname: a!sapInvoke
+fncsubcat: "SAP"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: hostname
+    types: Text
+    description: |
+      The application server host of the SAP server (ASHOST). The value can be an IP address, a fully-qualified domain name, or SAP's router string format. For example, "/H/sap_router/W/password/H/app_host/S/service_port".
+  - keyword: clientNumber
+    types: Text
+    description: |
+      The SAP client. For example, "500".
+  - keyword: systemNumber
+    types: Text
+    description: |
+      The SAP system number. For example, "10".  
+  - keyword: connectionProperties
+    types: Any Type
+    description: |
+      The connection properties to use when creating the connection to the SAP instance, given as a dictionary. The dictionary fields are the camel-cased names of the properties with '.'s removed, and the values are the properties values to use.
+  - keyword: bapi
+    types: Text
+    description: |
+      The name of the SAP BAPI to invoke.
+  - keyword: importParameters
+    types: Any Type
+    description: |
+      The import parameters to send to the BAPI function, given as a dictionary. The dictionary fields are the import parameter names, and the values are the parameter values to send.        
+  - keyword: tableParameters
+    types: Any Type
+    description: |
+      The table parameters to send to the BAPI function, given as a dictionary. The dictionary values can also be given as dictionaries, allowing for the requisite table structure to be defined.           
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} This function is intended for reads only. To write to SAP, use a!sapInvokeWriter.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+The function returns the standard connector result dictionary described in the main Connectors page. 
+If successful, the function returns a dictionary representation of the return value of the invoked BAPI.
+Usage considerations
+If called multiple times in the same expression with the same parameters, only one query is made to SAP when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Invoke a BAPI to read material details
+sail 
+=a!localVariables(
+  local!material: a!sapInvoke(
+    scsExternalSystemKey: cons!SAP_SCS_KEY,
+    usePerUserCredentials: true,
+    hostname: cons!SAP_HOSTNAME,
+    clientNumber: cons!SAP_CLIENT_NUMBER,
+    systemNumber: cons!SAP_SYSTEM_NUMBER,
+    bapi: "BAPI_MATERIAL_GET_DETAIL",
+    importParameters: {MATERIAL: "MATERIAL NAME"}
+  ),
+  {
+    a!textField(
+      label: "Material Type",
+      readOnly: true
+      value: local!material.result[2].MATERIAL_GENERAL_DATA.MATERIAL_GENERAL_DATA.MATL_TYPE
+    ),
+    a!textField(
+      label: "Material Description",
+      readOnly: true
+      value: local!material.result[2].MATERIAL_GENERAL_DATA.MATERIAL_GENERAL_DATA.MATL_DESC
+    )
+  }
+)
+INCLUDE PAGE: sap_connection_properties.md

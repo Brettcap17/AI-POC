@@ -1,0 +1,30 @@
+
+layout: function
+title: dayofyear() Function
+space: function_page
+excerpt: "Returns the day number within the year."
+category: function_page
+fncname: dayofyear
+fncexample: "dayofyear(date(1957, 03, 14))"
+fncresult: "73"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: date
+    types: Date and Time
+    description: |
+      The date or datetime timestamp from which the day number will be extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+dayofyear(date(1957, 03, 14)) returns 73

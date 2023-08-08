@@ -1,0 +1,60 @@
+
+layout: basic
+title: Security in Appian Records
+topic-group: F
+weight: 100
+
+This page explains how different security configurations impact an end user's ability to view and interact with your record data. 
+
+appian-style-note
+To view and edit the record type and associated objects in Appian Designer, you must have a designer role and the appropriate object security.
+
+Overview
+When it comes to securing your enterprise data, Appian provides a layered approach to security so you can ensure that your data is only available to the right users at the right time. This means that each element of your record type needs to be secured: the record type, the records themselves, and the individual record views and actions.
+{% include zoompic.html url="images/layers-security-records.jpg" border="-nb" style="width:75%;" %}
+Each layer of security will impact the next. Whether a user has access to the record type will determine if they can see any records, and whether a user can see a record determines if they can see the individual record views and actions.
+For example, let’s say you have a Case record type containing all submitted support cases. Support engineers need to be able to view and update their assigned cases, and create new cases. 
+To allow support engineers to accomplish their tasks, they would need the following security configurations:
+|Object|Security configuration|
+|-|-|
+|Record type object|Viewer permission.|
+|Records|Record-level security that allows support engineers to see cases they're assigned to.|
+|Record views|Record view security must allow support engineers to see the view.|
+|Record actions|The Security Expression on the record action must evaluate to true. The user also needs Initiator permission on the process model used in the record action.|
+Let’s break down how each of these security configurations work together.
+Record type object security
+When you create a new record type, you’ll be prompted to configure the record type object’s security. Like any other object, a record type's security is made up of groups and role maps to determine who can see and modify the record type and its properties.
+{% include zoompic.html url="images/record-type-object-role-map.png" style="width:65%;" %}
+If you want users to be able to see the records in the record list and their record views, users must have at least Viewer permissions for the record type.
+See Record Type Object Security to see which actions can be performed by each permission level in a record type’s security role map.
+Record-level security
+By default, any user with Viewer permissions for the record type can see all records in the record type. To limit who can see which records, you can apply record-level security.
+
+appian-style-note
+Record-level security is only available on record types with data sync enabled. If your record type does not have data sync enabled, consider using default filters instead.
+
+Record-level security is applied on top of your object security, so users need to have access to the record type and be included in at least one security rule (or in the security expression) to see a record.
+For example, if a user has Viewer permission to the record type, but is not included in any of the security rules configured in the record type, then they cannot see any records. Alternatively, if a user belongs to multiple security rules, then they can see the total set of records defined by those rules.
+But records are more than just a row of data---they're a combination of your data, record views, and actions. This means you need to secure all elements of your record, including the record views and the record actions.
+Record view security
+Once a user has Viewer permissions to the record type and they can see the records themselves, then you can determine which record views they can see.
+
+appian-style-note
+If a user does not have access to a record because of record type object security or record-level security, then the user cannot access any record views, even if given a direct URL.
+
+By default, any user who can see a record can see the Summary view and any default record views (the News view and Related Actions view). The Summary view will always be visible to users who can see the record; it cannot be hidden. Developers can choose to hide the News view or the Related Actions view, but you cannot conditionally show or hide these default views to specific users.
+For each additional record view, you can configure record view security to determine who can see the record view, and when. If a user is included in a security rule, or if the security expression evaluates to true for the given user, then they can see the record view.
+For example, in a Case record type, you may only want account managers to see the Customer Satisfaction record view. You can add a security rule Customer Satisfaction view to specify that a user can only see the view if that user can see the record and is found in the accountManager field. Otherwise, the user will only see the Summary view and any default views.
+{% include zoompic.html url="images/view-visibility.png" border="-nb" %}
+
+appian-style-note
+Security rules can only be configured on a record view when your record type has data sync enabled. If your record type does not have data sync enabled, you can instead configure a security expression to limit who can see which views.
+
+Record action security
+For your record action security, users must have permission to view and start a record action. 
+This means that a user must have:
+- At least Initiator permission on the underlying process model.
+- A Security Expression on the record action that evaluates to true for the user.
+- (For related actions only) Access to the record through record-level security or a default filter.
+For example, let's say you have a support engineer that has access to a case record and the Security Expression evaluates to true; however, this user does not have access to the process model. 
+In this case, the support engineer could not see or start the record action from the Record Action view, on any record views, or in any interfaces (when used with the Record Action component).

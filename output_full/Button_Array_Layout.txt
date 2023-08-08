@@ -1,0 +1,103 @@
+
+layout: function
+title: Button Array Layout
+category: function_page
+compatibility: -crf
+excerpt: Displays a list of buttons in the order they are specified. Use this layout for buttons within interfaces rather than for submission buttons at the bottom of forms
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!buttonArrayLayout
+fncsubcat: Action
+parameters:
+  - keyword: buttons
+    name: Buttons
+    types: List of ButtonWidget
+    description: Array of buttons created with a!buttonWidget().
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of the button(s). Valid values: "START", "CENTER", "END".
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the buttons. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+reftype: sailcomponent
+scdisplayname: Button Array Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} This layout cannot be selected from the interface component picker in the design view.
+See also: Button design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Buttons formatting
+
+If you pass one button to Buttons, it renders right-justified. If you pass more than one button, they render left-justified.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Buttons in a toolbar
+sail 
+a!buttonArrayLayout(
+  align: "START",
+  buttons: {
+    a!buttonWidget(
+      label: "Refresh",
+      size: "SMALL",
+      style: "SECONDARY"
+    ),
+    a!buttonWidget(
+      label: "Edit",
+      size: "SMALL",
+      style: "SECONDARY"
+    ),
+    a!buttonWidget(
+      label: "Add Item",
+      size: "SMALL",
+      style: "SECONDARY"
+    )
+  }
+)
+Displays the following:
+{:.screenshot}
+Button with no margin below
+sail
+{
+  a!sideBySideLayout(
+    items: {
+      a!sideBySideItem(
+        item: a!textField(
+          labelPosition: "COLLAPSED"
+        )
+      ),
+      a!sideBySideItem(
+        width: "MINIMIZE",
+        item: a!buttonArrayLayout(
+          marginBelow: "NONE",
+          buttons: {
+            a!buttonWidget(
+              label: "Test",
+              size: "SMALL",
+              style: "SECONDARY"
+            )
+          }
+        )
+      )
+    }
+  )
+}
+Displays the following:
+{:.screenshot}

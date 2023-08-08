@@ -1,0 +1,12 @@
+
+layout: basic
+title: 'Create New Version Smart Service [Deprecated]'
+depver: 16.3
+reftype: smart_service
+space: no_toc
+ssicon: Deprecated.gif
+ssparentcat: 一Deprecated一
+
+This feature has been deprecated and will be removed in a future release of Appian. 
+Files can be uploaded with the file upload component and managed with Appian's Folder and Document Management system. 
+For information about the {{ page.title }}, see the Appian 16.2 documentation.

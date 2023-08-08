@@ -1,0 +1,48 @@
+
+layout: function
+title: bind() Function
+space: function_page
+excerpt: "Use in conjunction with the load function to bind getter and setter functions to a variable.  When the variable is read, the getter function or rule will be called.  When the variable is saved into, the writer returned by the setter function or rule will be called.  The setter function must return a writer."
+category: function_page
+fncname: bind
+fncexample: "Click on the function name for examples."
+fncresult:
+fnccat: Evaluation
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: get
+    types: Any Type
+    description: A rule or function that returns any type. The rule or function given as the get parameter will not be evaluated until the bound variable is referenced in the expression.
+  - keyword: set
+    types: Writer
+    description: A rule or function that returns a writer. The writer will execute when the bound variable is written to in a saveInto in an interface.
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+The bind() function lets you bind a getter and setter rule or function to a variable such that when that variable is read, the getter method is called and when it is saved into, the writer returned by the setter method is called.
+See also: Writer Functions
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Using bind() with other functions
+The bind() function can only be used when defining variables using the load() function in interfaces. Local variables created using a!localVariables() do not support the bind() function.
+Using the get parameter
+The rule or function given as the get parameter will not be evaluated until the bound variable is evaluated in the expression. If the bound variable is never referenced in the expression, but only used in a saveInto, the get will be called prior to saving into the variable. If the bound variable is referenced many times in the expression and the get function is always passed the same parameters, it will only evaluate the get on the first reference and retrieve the result from cache for subsequent references.
+Bound variables cannot be used as the get parameter of a subsequent bind() function.
+Using the set parameter
+The rule or function given as the set parameter must be a partial function with underscores indicating arguments that will be supplied when saving into the variable. The first blank argument will be filled with the value being saved into the variable. The second blank argument will be filled with one or more indices that are being saved into.
+When saving into the variable, the rule or function given as the set parameter must return a writer. If a rule is given as the set parameter, that rule must not use the load() function in its definition.
+During the save evaluation when a saveInto is triggered in the interface, the writer associated with the bound variable being saved into will execute its write method.
+Understanding errors
+Any errors that occur during evaluation of the get will be handled as an expression evaluation error and cause the remainder of the expression to fail evaluation. Any errors that occur during evaluation of the set will occur after any non-bind saves are evaluated and will be displayed as an error to the user, but will not cause the evaluation of the expression to fail.
+Examples
+
+When storing into a variable such as local!variable.field1, the index argument supplied will be field1
+When storing into a variable such as local!variable[18], the index argument supplied will be 18
+When storing into a variable such as local!employee.address.city, the index argument supplied will be the array of indices {address, city}
+
+See the Edit Data in an External System recipe for an example of how to use the bind() function.

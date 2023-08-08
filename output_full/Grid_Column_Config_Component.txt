@@ -1,0 +1,50 @@
+
+layout: function
+title: Editable Grid Column Configuration Component
+category: function_page
+compatibility: -crf
+excerpt: Defines a column configuration for use in an editable grid (a!gridLayout).
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridLayoutColumnConfig
+fncsubcat: Grids
+parameters:
+  - keyword: width
+    name: Width
+    types: Text
+    description: |
+      Determines the column width. Valid values: "DISTRIBUTE" (default), "NARROW", "ICON".
+  - keyword: weight
+    name: Weight
+    types: Number (Integer)
+    description: |
+      Determines how wide distributed columns are in relation to each other. Valid values: integers from 1 (default) to 10.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the column configuration is displayed in the grid. When set to false, the column configuration is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Editable Grid Column Configuration
+scsubcat: Editable_Grid_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Defines a column configuration for use in an Editable Grid.
+See also: Grids design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the editable grid's columnConfigurations parameter
+
+The number of column configurations need not match the number of columns in the grid. They are matched with the columns by their position in the columnConfigurations array.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Narrow grid column
+This example needs to be used with the a!gridLayout() function for it to display anything. Examples that you can see in action are available in the Grid Layout component section.
+sail 
+a!gridLayoutColumnConfig(
+  width: "ICON"
+)

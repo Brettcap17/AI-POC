@@ -1,0 +1,72 @@
+
+layout: basic
+title: Search in Designer
+topic: Designer
+topic-group: Designer Tools
+type: How To
+weight: 500
+
+Overview
+Developers need to be able to quickly find objects within Appian Designer. There are a variety of options to enable fast and flexible searching. This page explains how to use the search options across the various views.
+Search for an application
+Go to the Applications view.
+Quick search
+Quick search lets you search your environment for any design object except documents and groups. This search is available anywhere in Appian Designer where the header bar is visible.
+{% include zoompic.html url="images/header-global-search-box.png" alt="Header containing quick search box" border="-nb" %}
+To quickly search for an object in your environment:
+
+Click the quick search box  in the header bar, or use the keyboard shortcut Ctrl+Space.
+In the box, enter the name of an object. A dropdown list displays objects that match your search.
+Select an object from the list. The selected object opens in a new tab.
+
+To search for documents and groups in your environment, or to search on properties other than object name, search the objects grid in the Objects view instead.
+Search for an object
+In an objects grid, you can search for objects within specific scopes, as follows:
+| Scope | Grid Location |
+| - | - |
+| Objects in the environment | Go to the ALL OBJECTS tab in the Objects view. |
+| Objects in an individual application | Go to the ALL OBJECTS or UNREFERENCED OBJECTS tab in the Build view. |
+| Objects in a folder | Go to the folder object. |
+| Objects in a group | Go to the group object. |
+To search an objects grid:
+
+Go to the objects grid appropriate to your search scope, as defined in the table above.
+In the filter pane, click the down arrow next to the search box, then select what part of the object the search runs against:
+Name or Description
+UUID or ID
+Expression
+In the search box, enter your search term(s).
+(Optional) Further refine the objects list by applying filters in the filter pane.
+
+Name or Description
+The system searches the Name and Description properties of the objects currently listed in the grid.
+This search is selected by default.
+UUID or ID
+The system searches the UUID and ID properties of the objects currently listed in the grid. 
+The UUID of an object remains stable across different environments, whereas the object's local ID may change. The local ID is the Appian object identifier that gets stored in process and external database tables.
+Searching on UUID is helpful when you're troubleshooting missing dependency problems on inspect or import. 
+Searching on the local ID is useful for finding objects like documents, folders, and groups, particularly when debugging.
+Expression
+This search option is not available when searching in a group or knowledge center.
+The system searches the expression content of the objects currently listed in the grid.
+Expression content may be anything from a gateway expression in a process model, the definition of an expression rule, or the visibility expression of a record view. It's a powerful way to find plug-in functions, look for specific components, or easily hunt down legacy functions so you can take advantage of their improved, modern versions.
+In this search mode, the Description column is replaced with an Expression column that displays a snippet of the matching expression (or the first matching expression, if more than one is found in the same object). For example, a search for formLayout_17r1 would return all rules with a!formLayout_17r1( in the Expression column.
+
+Notes about searching expressions
+
+The search across expressions is case-insensitive, and treats all special characters as a space character. For example, the search terms apply( and apply will return identical results, as will the search terms CRM_getCustomerNames and crm getcustomernames.
+Given this behavior for special characters, we automatically strip out Appian domains from the beginning of search terms to prevent confusion. Since the search a!applyComponents would be treated as a applyComponents, and therefore return more results than intended, we strip the domain and simply search for applyComponents. You can see the adjusted search term in the blue bar above your results. 
+When a search term is part of a longer word, it will only match if it matches the beginning of that word. For example, the search customer or customerFeedback will find uses of the customerFeedbackForm interface, but the searches feedback or feedbackForm will not, since the name of the rule does not start with those terms.
+
+Search for a plug-in
+In a plug-ins grid, you can search by the name of the plug-in or the plug-in's modules.
+You can search for plug-ins within specific scopes, as follows:
+| Scope | Grid Location |
+| - | - |
+| Plug-ins in the environment | In Appian Designer, go to the PLUG-INS tab of the Objects view. In the Admin Console, click Plug-ins in the navigation pane. |
+| Plug-ins referenced in an application | Go to the PLUG-INS tab of the Build view. |
+| Plug-ins added to a package | Go to the packages view of the application, or go to the Prepare Deployment step of a direct deployment. |
+Search for a deployment
+Go to the Deploy view.
+Search for a user
+Go to the Users view.

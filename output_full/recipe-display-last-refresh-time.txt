@@ -1,0 +1,94 @@
+
+layout: basic
+title: Display Last Refresh Time
+excerpt: 'Display the last time the interface was updated, either based on a user interaction or a timer.'
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Auto-Refresh
+  - Grids
+  - Records
+
+{:.screenshot}
+This scenario demonstrates how to enable, track, and display the last updated time when the data in the grid refreshed on an interval, and due to a user interaction. Use this pattern when you want to let users know how fresh the data is and when it was last refreshed.
+Expression
+This pattern works by putting the recordData() function into a local variable, instead of directly into the grid, allowing the refresh variable in local!lastUpdatedAt to watch it. We use recordData() in order to take advantage of using record data in a grid which enables a refresh button. The fundamental pattern of watching another variable works just as well using a!queryEntity().
+sail
+=a!localVariables(
+  /* This refresh variable refreshes every 30 seconds to return the data from
+     the Employee record type. */
+  local!employees: a!refreshVariable(
+    value: a!recordData(recordType!Employee),
+    refreshInterval: 0.5
+  ),
+  /* This refresh variable returns the current time using the now() function.
+     It is set to refresh whenever local!employees changes. It's also set to 
+     refresh every 30 seconds, because if local!employees refreshes, but the 
+     data hasn't changed, then this refresh variable wouldn't know to 
+     refresh. */
+  local!lastUpdatedAt: a!refreshVariable(
+    value: now(),
+    refreshOnVarChange: local!employees,
+    refreshInterval: 0.5
+  ),
+  a!sectionLayout(
+    contents:{
+      a!richTextDisplayField(
+        labelposition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: {
+              "Last updated at ",
+              text(local!lastUpdatedAt, "h:mm a")
+            },
+            color: "SECONDARY",
+            style: "EMPHASIS"
+          )
+        },
+        align: "RIGHT"
+      ),
+      a!gridField(
+        label: "Employees",
+        /* The recordData() function is external to the grid so it can be 
+           referenced by the refresh variable in local!lastUpdatedAt. */
+        data:  local!employees,
+        columns: {
+          a!gridColumn(
+            label: "First Name",
+            sortField: recordType!Employee.fields.firstName,
+            value: fv!row[recordType!Employee.fields.firstName]
+          ),
+          a!gridColumn(
+            label: "Last Name",
+            sortField: recordType!Employee.fields.lastName,
+            value: fv!row[recordType!Employee.fields.lastName]
+          ),
+          a!gridColumn(
+            label: "Department",
+            sortField: "department",
+            value: fv!row[recordType!Employee.fields.department]
+          ),
+          a!gridColumn(
+            label: "Title",
+            sortField: recordType!Employee.fields.title,
+            value: fv!row[recordType!Employee.fields.title]
+          ),
+          a!gridColumn(
+            label: "Phone Number",
+            value: fv!row[recordType!Employee.fields.phoneNumber]
+          ),
+          a!gridColumn(
+            label: "Start Date",
+            sortField: recordType!Employee.fields.startDate,
+            value: fv!row[recordType!Employee.fields.startDate]
+          )
+        },
+        rowHeader: 1
+      )
+    }
+  )
+)
+Test it out
+
+Wait for a minute or so to see the timestamp update automatically due to the timer, even if the data hasn't changed.
+To see the data refresh on change, make a change to the underlying data source then click the refresh button.

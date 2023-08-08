@@ -1,0 +1,103 @@
+
+layout: function
+title: a!cmiCopyDocumentFromAppian() Function
+space: function_page
+excerpt: "Copies an Appian document to a location in the CMIS target system, specified by the value of the objectId parameter."
+category: function_page
+fncname: a!cmiCopyDocumentFromAppian
+fncsubcat: "CMIS"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: atomPubUrl
+    types: Text
+    description: |
+      The Atom Pub URL of the CMIS target system.
+  - keyword: repositoryId
+    types: Text
+    description: |
+      The repository id on the CMIS target system.
+  - keyword: objectId
+    types: Text
+    description: |
+      The object id of the CMIS folder to which the Appian document will be copied.
+  - keyword: properties
+    types: Any Type
+    description: |
+      The CMIS document properties, given as a dictionary. The string "cmis:" will automatically be included in the key name if no colon is present in key name.  Example: {name:"test name", description:"test description"}
+  - keyword: appianDocument
+    types: Document
+    description: |
+      The Appian document to which the document to copy to the target CMIS system. 
+  - keyword: appianDocumentVersion
+    types: Number (Integer)
+    description: |
+      The version number of the Appian document to copy to the target CMIS system. If no value is provided for this parameter, the current version of the document will be copied.
+  - keyword: appianDocumentAllowExpired
+    types: Boolean
+    description: |
+      Determines if expired Appian documents can be copied. Default: true.      
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Writer, bind().
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+This function returns a writer and must be used with the bind() function.
+Example
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Pick a document in Appian and copy to the specified CMIS folder ID
+sail 
+=load(
+  local!appianDocument,
+  local!cmisFolderId,
+  local!cmiCopyDocumentFromAppianWriter: bind(
+    null,
+    a!cmiCopyDocumentFromAppian(
+      scsExternalSystemKey: cons!CMIS_SCS_KEY,
+      usePerUserCredentials: true,
+      atomPubUrl: cons!CMIS_URL,
+      repositoryId: cons!CMIS_REPO_ID,
+      objectId: local!cmisFolderId,
+      properties: {name: "Example Document"},
+      appianDocument: _
+    )
+  ),
+  {
+      a!textField(
+        label: "Folder Id",
+        instructions: "The object id of the CMIS folder into which the Appian document will be copied",
+        value: local!cmisFolderId,
+        saveInto: local!cmisFolderId
+      ),
+      a!pickerFieldDocuments(
+        label: "Select an Appian Document",
+        instructions: "The selected document will be copied to the target CMIS site",
+        maxSelections: 1,
+        value: local!appianDocument,
+        saveInto: local!appianDocument
+      ),
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Copy Document to CMIS",
+            value: local!appianDocument,
+            saveInto: local!cmiCopyDocumentFromAppianWriter
+          )
+        }
+      )
+  }
+)

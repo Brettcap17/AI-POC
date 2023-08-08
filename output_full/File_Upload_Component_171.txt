@@ -1,0 +1,151 @@
+
+layout: function
+title: a!fileUploadField_17r1 Component 
+space: sail_component 
+reftype: sailcomponent 
+excerpt: Allows users to upload a file. 
+category: function_page 
+compatibility: -crf, -om
+fncname: a!fileUploadField_17r1 
+fncsubcat: Inputs 
+fncexample: Click on the function name for examples. 
+fncsyntax: 'a!fileUploadField_17r1( [label], [labelPosition], [instructions], [helpTooltip], [target], [documentName], [documentDescription],[value], [saveInto], [required], [requiredMessage], [disabled], [validations], [validationGroup] )'
+fnccat: Interface_Component 
+scdisplayname: File Upload 17.1 
+evolved_fncname: a!fileUploadField 
+evolved_reason: 'Multiple file upload is now supported directly within the component. This removes the need to generate many individual file upload fields.' 
+
+File Upload 17.1
+Function: a!fileUploadField_17r1()
+Allows users to upload a file. File upload is only enabled on start and task forms.
+See Also: Document, Document or Folder
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Label 
+ label 
+ Text 
+ Optional text to display as the field label. 
+
+
+ Label Position 
+ labelPosition 
+ Text 
+ Optional text to determine where the label appears. Valid values include
+      
+"ABOVE" (default) Displays the label above the component.
+"ADJACENT" Displays the label to the left of the component.
+"COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+
+
+
+
+ Instructions 
+ instructions 
+ Text 
+ Optional text displayed below the field's value. 
+
+
+ Help Tooltip 
+ helpTooltip 
+ Text 
+ Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED". 
+
+
+ Target 
+ target 
+ Document or Folder 
+ Determines the eventual location of the uploaded file. When a Folder, the uploaded file is created as a document in that folder. When a Document, the uploaded file is created as a new version of that document. 
+
+
+ Document Name 
+ documentName 
+ Text 
+ Optionally determines the name for the document. When not provided, the uploaded filename is used. 
+
+
+ Document Description 
+ documentDescription 
+ Text 
+ Determines the description for the document. When not provided, the description of the new file or version is empty. 
+
+
+ Selected Document 
+ value 
+ Document 
+ The document associated with this field. 
+
+
+ Save Document To 
+ saveInto 
+ Save Array 
+ One or more variables that are updated with the document when the user uploads a file. Removing an uploaded file saves a null document. Use a!save() to save a modified or alternative value to a variable. 
+
+
+ Required 
+ required 
+ Boolean 
+ Determines if a value is required to submit the form. Default is false. 
+
+
+ Required Message 
+ requiredMessage 
+ Text 
+ Custom message to be displayed when the field's value is required and not provided. 
+
+
+ Disabled 
+ disabled 
+ Boolean 
+ Determines if the user is prevented from changing the value and determines if the field should be grayed out. Default is false. 
+
+
+ Validations 
+ validations 
+ Text Array 
+ Validation errors to be displayed below the field when the value is not null. 
+
+
+ Validation Group 
+ validationGroup 
+ Text 
+ When present, this field is only validated when a button in the same validation group is clicked. 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true. 
+
+
+Notes
+
+When a file is uploaded, the component updates with a temporary Document representing the uploaded file. Between the upload and the form submission, the file on the server is an inactive temporary document and not accessible.
+When implementing form cancel behavior via a submission, remember that the uploaded file is moved to its target on submission. If this is undesirable in a cancel scenario, it should be deleted (if target is a folder) or reverted via a new version (if the target is a document) by the process after submission.
+If a file is uploaded to a form that is never submitted, the temporary file is automatically deleted after thirty days.
+If any of the following characters appear in a document's name, they are replaced by underscores: \ / " ; : | ? ' < > *
+The user submitting the form must have at least author access to the target folder or document. Any error creating the new document or version causes submission to be canceled and an error to be displayed to the user.
+The file upload component only functions on start and task forms. When placed on a record view or report, the field appears but is automatically disabled.
+Task forms with one or more file upload fields can only be saved if either no file has been uploaded or every uploaded file has been removed.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Single File Upload
+sail 
+=a!fileUploadField_17r1(
+  label: "Upload resume",
+  instructions: "Accepted Formats: docsx, xlsx, png, etc",
+  target: cons!RESUME_FOLDER,
+  value: ri!file,
+  saveInto: ri!file,
+  required: true
+)
+Displays the following:
+
+Using the field to upload a file called "Resume.pdf" displays the following:

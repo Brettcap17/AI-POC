@@ -1,0 +1,251 @@
+
+layout: pattern
+title: Leaderboard
+excerpt: Use the leaderboard pattern to show a selection of your data in an easy to read ranked display.
+reftype: pattern
+sr-tags:
+  - Looping
+
+
+Design structure
+The main components in this pattern are card layouts, side by side layouts, rich text, and user images. This pattern shows the information, sales revenue, and rate of revenue increase or decrease for each sales leader. 
+The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the leaderboard pattern onto your interface, 132 lines of expressions will be added to the section where you dragged it.
+sail 
+{
+  a!localvariables(
+    local!salesLeaders: {
+      a!map(rank: "1st", name: "Cindy Pratt", revenue: "$3.72MM", percentChange: 12),
+      a!map(rank: "2nd", name: "Kyong-Ok Yi", revenue: "$2.94MM", percentChange: -10),
+      a!map(rank: "3rd", name: "Linda Smith", revenue: "$2.51MM", percentChange: -8)
+    },
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!cardLayout(
+                contents: {
+                  a!sectionLayout(
+                    contents: {
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: upper("Sales Revenue Leaderboard"),
+                            color: "#6f6f6f",
+                            size: "MEDIUM",
+                            style: "STRONG"
+                          )
+                        }
+                      ),
+                      /* Displays a row for each sales leader */
+                      a!forEach(
+                        items: local!salesLeaders, 
+                        expression: a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.rank,
+                                    color: "#6f6f6f",
+                                    size: "MEDIUM"
+                                  )
+                                }
+                              ),
+                              width: "2X"
+                            ),
+                            a!sideBySideItem(
+                              item: a!imageField(
+                                labelPosition: "COLLAPSED",
+                                images: a!userImage(),
+                                size: if(
+                                  a!isPageWidth("PHONE"),
+                                  "TINY",
+                                  "SMALL"
+                                ),
+                                isThumbnail: false,
+                                style: "AVATAR"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.name,
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                }
+                              ),
+                              width: if(
+                                a!isPageWidth("PHONE"),
+                                "5X",
+                                "8X"
+                              )
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  /* Displays an icon depending on if    *
+                                   * the change was positive or negative */
+                                  a!richTextIcon(
+                                    icon: if(fv!item.percentChange > 0, "caret-up", "caret-down"),
+                                    caption: "Percent change in sales revenue",
+                                    color: if(fv!item.percentChange > 0, "POSITIVE", "NEGATIVE"),
+                                    size: "MEDIUM"
+                                  ),
+                                  a!richTextItem(
+                                    text: fv!item.percentChange & "%",
+                                    color: if(fv!item.percentChange > 0, "POSITIVE", "NEGATIVE")
+                                  )
+                                },
+                                align: "LEFT"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.revenue,
+                                    color: "ACCENT",
+                                    size: "MEDIUM_PLUS"
+                                  )
+                                },
+                                align: "RIGHT"
+                              ),
+                              width: "MINIMIZE"
+                            )
+                          },
+                          alignvertical: "MIDDLE"
+                        )
+                      )
+                    },
+                    marginBelow: "NONE"
+                  )
+                },
+                height: "AUTO",
+                style: "NONE",
+                padding: "STANDARD",
+                marginBelow: "STANDARD"
+              )
+            },
+            width: "MEDIUM_PLUS"
+          )
+        }
+      )
+    }
+  )
+}
+[Line 1-7] Define local variables
+These local variables provide the name, ranking, and sales revenue information for each sales leader.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localvariables(
+    local!salesLeaders: {
+      a!map(rank: "1st", name: "Cindy Pratt", revenue: "$3.72MM", percentChange: 12),
+      a!map(rank: "2nd", name: "Kyong-Ok Yi", revenue: "$2.94MM", percentChange: -10),
+      a!map(rank: "3rd", name: "Linda Smith", revenue: "$2.51MM", percentChange: -8)
+    },
+{% endhighlight %}
+[Line 29-115] Define a row for each sales leader
+This section brings together all of the components that make up each row of the leaderboard and uses a!forEach() to loop over the same row definition to display the information for each leader. Each row is made up of rich text icons, styled text, and user image components. 
+Lines 77-97 show how to create styling that can change based on the information for each leader. Depending on whether the leader's sales revenue is up or down, the if() statements conditionally apply positive or negative styling to the rich text icons and styled text. 
+{% highlight sail linenos start_line=29 %}
+                   a!forEach(
+                        items: local!salesLeaders, 
+                        expression: a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.rank,
+                                    color: "#6f6f6f",
+                                    size: "MEDIUM"
+                                  )
+                                }
+                              ),
+                              width: "2X"
+                            ),
+                            a!sideBySideItem(
+                              item: a!imageField(
+                                labelPosition: "COLLAPSED",
+                                images: a!userImage(),
+                                size: if(
+                                  a!isPageWidth("PHONE"),
+                                  "TINY",
+                                  "SMALL"
+                                ),
+                                isThumbnail: false,
+                                style: "AVATAR"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.name,
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                }
+                              ),
+                              width: if(
+                                a!isPageWidth("PHONE"),
+                                "5X",
+                                "8X"
+                              )
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  / Displays an icon depending on if    *
+                                   * the change was positive or negative /
+                                  a!richTextIcon(
+                                    icon: if(fv!item.percentChange > 0, "caret-up", "caret-down"),
+                                    caption: "Percent change in sales revenue",
+                                    color: if(fv!item.percentChange > 0, "POSITIVE", "NEGATIVE"),
+                                    size: "MEDIUM"
+                                  ),
+                                  a!richTextItem(
+                                    text: fv!item.percentChange & "%",
+                                    color: if(fv!item.percentChange > 0, "POSITIVE", "NEGATIVE")
+                                  )
+                                },
+                                align: "LEFT"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.revenue,
+                                    color: "ACCENT",
+                                    size: "MEDIUM_PLUS"
+                                  )
+                                },
+                                align: "RIGHT"
+                              ),
+                              width: "MINIMIZE"
+                            )
+                          },
+                          alignvertical: "MIDDLE"
+                        )
+                      )
+{% endhighlight %}

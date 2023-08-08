@@ -1,0 +1,31 @@
+
+layout: function
+title: a!scsField() Function
+space: function_page
+excerpt: "Creates an object which contains the information required to access data in the Secure Credentials Store."
+category: function_page
+fncname: a!scsField
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: externalSystemKey
+    types: Text
+    description: |
+      The key of the corresponding external system in the Third Party Credentials admin console page.
+  - keyword: fieldKey
+    types: Text
+    description: |
+      The key for the field which stores the requested data.
+  - keyword: usePerUser
+    types: Boolean
+    description: |
+      If true, the current user's credentials for the third party system will be used. If false, the system-wide credentials for the third party system will be used. Default: false.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

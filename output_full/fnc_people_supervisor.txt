@@ -1,0 +1,30 @@
+
+layout: function
+title: supervisor() Function
+space: function_page
+excerpt: "Returns the supervisor of the user if they have one."
+category: function_page
+fncname: supervisor
+fncexample: "supervisor(\"john.doe\")"
+fncresult: "jane.smith"
+fnccat: People
+compatibility: -crf, ~portal, ~om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: userinfo
+    types: Text
+    description: |
+      The user info of the user, which can be either the username or the user itself.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+User
+Usage considerations
+supervisor() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+supervisor("john.doe") returns mike.smith

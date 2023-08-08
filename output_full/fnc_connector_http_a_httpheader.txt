@@ -1,0 +1,28 @@
+
+layout: function
+title: a!httpHeader() Function
+space: function_page
+excerpt: "Creates an HTTP header object which can be passed to an HTTP function."
+category: function_page
+fncname: a!httpHeader
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: name
+    types: Text
+    description: |
+      The header name.
+  - keyword: value
+    types: Any Type
+    description: |
+      The header value. Either Text or a!scsField().
+
+Note: this function is used only for the HTTP Upload and HTTP Download smart services. Headers for general HTTP requests are managed using integrations.
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

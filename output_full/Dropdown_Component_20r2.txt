@@ -1,0 +1,178 @@
+
+layout: function
+title: a!dropdownField_20r2 Component
+space: sail_component
+reftype: sailcomponent
+excerpt: Displays a limited set of choices from which the user must select one item and saves a value based on the selected choice.
+category: function_page
+compatibility: -crf
+fncname: a!dropdownField_20r2
+fncsubcat: Selection
+fncexample: Click on the function name for examples.
+fnccat: Interface_Component
+scdisplayname: Dropdown
+evolved_fncname: a!dropdownField
+evolved_reason: Added an optional search box and renamed the placeholderLabel parameter to placeholder.'
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: 'Text to display as the field label.'
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values:
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: 'Supplemental text about this field.'
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: 'Determines if a value is required to submit the form. Default: false.'
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: 'Determines if the field should display as potentially editable but grayed out. Default: false.'
+  - keyword: choiceLabels
+    name: Choice Labels
+    types: List of Text String
+    description: 'Array of options for the user to select.'
+  - keyword: choiceValues
+    name: Choice Values
+    types: List of Variant
+    description: 'Array of values associated with the available choices.'
+  - keyword: placeholderLabel
+    name: Placeholder Label
+    types: Text
+    description: 'Text to display when nothing is selected and the value is null.'
+  - keyword: value
+    name: Display Value
+    types: Any Type
+    description: 'Value of the choice to display as selected.'
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: 'Validation errors to display below the field when the value is not null.'
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: 'One or more variables that are updated with the choice value when the user changes the selection. Use a!save() to save a modified or alternative value to a variable.'
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: 'When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.'
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: 'Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".'
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: 'Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.'
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.'
+
+Dropdown
+Function: a!dropdownField_20r2()
+Displays a limited set of exclusive choices from which the user must select one item and saves a value based on the selected choice.  To save the index of the choice instead of a value, use dropdown by index.
+If the user may select none, one, or many of the choices, then consider using checkboxes or a multiple dropdown.
+If there aren't many choices and users would benefit from easily seeing them all at once, consider using radio buttons.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Notes
+
+If you set Label Position to "ADJACENT" or "ABOVE", but do not give a value for Label, a space still displays to the left-side or above, respectively, of the component as if there was a label displayed. To ensure the component appears to the far left when Label has no value, use "COLLAPSED" for Label Position.
+Choices display in the same order as defined in the Choice Labels parameter. The Choice Labels argument cannot be null.
+Passing a null value to the dropdown's Selected Value parameter causes the placeholder text to appear selected. The Placeholder Label and Selected Value arguments cannot both be null. If the placeholder is selected and Required is true when a validating button is clicked, the field prompts the user to select a value.
+Choice Labels and Choice Values must be the same length.
+Choice Values cannot contain nulls or duplicate values.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Disabled Dropdown with Label Displayed Above
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!dropdownField_20r2(
+  label: "Language",
+  labelPosition: "ABOVE",
+  instructions: "In which language are you most proficient?",
+  choiceLabels: {
+    "English",
+    "Spanish",
+    "French",
+    "German"
+  },
+  choiceValues: {
+    "en_US",
+    "es_ES",
+    "fr_FR",
+    "de_DE"
+  },
+  value: "en_US",
+  disabled: true
+)
+{% endsailbox %}
+Editable Dropdown with the First Choice Selected by Default
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!localVariables(
+  local!language: "en_US",
+  a!dropdownField_20r2(
+    label: "Language",
+    instructions: "In which language are you most proficient?",
+    choiceLabels: {
+      "English",
+      "Spanish",
+      "French",
+      "German"
+    },
+    choiceValues: {
+      "en_US",
+      "es_ES",
+      "fr_FR",
+      "de_DE"
+    },
+    value: local!language,
+    saveInto: local!language
+  )
+)
+{% endsailbox %}
+Dropdown with a Blank Choice Selected by Default
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!localVariables(
+  local!language: null,
+  a!dropdownField_20r2(
+    label: "Language",
+    instructions: "In which language are you most proficient?",
+    choiceLabels: {
+      "English",
+      "Spanish",
+      "French",
+      "German"
+    },
+    placeholderLabel: "Select a language...",
+    choiceValues: {
+      "en_US",
+      "es_ES",
+      "fr_FR",
+      "de_DE"
+    },
+    value: local!language,
+    saveInto: local!language
+  )
+)
+{% endsailbox %}

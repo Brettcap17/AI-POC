@@ -1,0 +1,30 @@
+
+layout: function
+title: average() Function
+space: function_page
+excerpt: "Returns the average of the specified number(s)."
+category: function_page
+fncname: average
+fncexample: "average(1, 2, 3, 4)"
+fncresult: "2.5"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A number or array of numbers to include in the set that will be averaged.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+average(1,2,3,4) returns 2.5

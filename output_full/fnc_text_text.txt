@@ -1,0 +1,148 @@
+
+layout: function
+title: text() Function
+category: function_page
+excerpt: 'The text() function allows you to format Number, Date, Time, or Date and time values as you convert them into text strings.'
+fnccat: Text
+fncexample: 'text(10.25, "$00.0000")'
+fncname: text
+fncresult: $10.2500
+space: function_page
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Number/Date/Time/Datetime
+    description: |
+      The value to convert to a text string.
+  - keyword: format
+    types: Text
+    description: |
+      The output format string, supporting "date/time" format, "positive" format, "positive;negative" format or "positive;negative;zero" format.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the format parameter
+The format "date/time" can only be for the positive.
+When you specify a numeric text format for a decimal number, such as "$000.00" or "$###.##", any values that go beyond the number of decimal places in your format pattern are dropped, without rounding.
+See Examples for a comprehensive list of the available formats.
+Using the value parameter
+Beans are not supported in the value parameter.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+text(10.25, "$00.0000") returns the $10.2500
+Possible text() function date/time formats
+The text(value,"format") function allows you to format the text output in various ways. You can also combine values, formats, and characters to structure your text, such as mmmm/dd/yyyy.
+The following table describes available date, time, and datetime formats you can specify.
+| Format | Output | Example (12:15 PM on February 27, 2020 ) | Returns |
+| - | - | - | - |
+| mmmmm  | J F M A M J J A S O N D | text(date(2020, 2, 27),"mmmmm") | F |
+| mmmm   | January February March April May June July August September October November December | text(date(2020, 2, 27),"mmmm") | February |
+| mmm    | Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec | text(date(2020, 2, 27),"mmm") | Feb |
+| mm     | 01 .. 12 | text(date(2020, 2, 27),"mm") | 02 |
+| m      | 1 .. 12  | text(date(2020, 2, 27),"m") | 2 |
+| yyyy   | 1972 | text(date(2020, 2, 27),"yyyy") | 2020|
+| yy     | 72  | text(date(2020, 2, 27),"yy") | 20 |
+| ddd    | 1st 2nd 3rd 4th 5th 6th 7th 8th 9th 10th 11th 12th 13th 14th 15th 16th 17th 18th 19th 20th 21st 22nd 23rd 24th 25th 26th 27th 28th 29th 30th 31st | text(date(2020, 5, 27),"ddd") | 27th |
+| dd     | 01 .. 31 | text(date(2020, 2, 27),"dd") | 27 |
+| d      | 1 .. 31 | text(date(2020, 2, 27),"d") | 27 |
+| hh     | 01..12 (if AM/PM) or 00..23 (if no AM/PM) | text(datetime(2020, 2, 27,12,15,05),"hh") | 12 |
+| h      | 1..12 (if AM/PM) or 0..23 (if no AM/PM) | text(datetime(2020, 2, 27,12,15,05)),"h") | 12 |
+| kk     | hour 01..24 | text(datetime(2020, 2, 27,12,15,05),"kk") | 12 |
+| k      | hour 1..24 | text(datetime(2020, 2, 27,12,15,05),"k") | 12 |
+| mm     | minute 00..59 (If hour already processed, i.e., h to left anywhere in format) | text(datetime(2020, 2, 27, 12, 15, 05),"h:mm")  | 12:15 |
+| ss     | second 00..59 | text(datetime(2020, 2, 27, 12, 15, 05),"ss") | 05 |
+| AM/PM  | AM/PM in uppercase | text(datetime(2020, 2, 27, 12, 15),"AM/PM") | PM |
+| am/am  | am/pm in lowercase | text(datetime(2020, 2, 27, 12, 15),"am/pm") | pm |
+| A/P    | A/P in upperercase | text(datetime(2020, 2, 27, 12, 15),"A/P") | P |
+| a/p    | a/p in lowercase | text(datetime(2020, 2, 27, 12, 15),"a/p") | p |
+| a      | AM or PM in uppercase | text(datetime(2020, 2, 27, 12, 15),"a") | PM |
+| aa     | AM or PM in uppercase | text(datetime(2020, 2, 27, 12, 15),"aa") | PM |
+| [h]    | the number of hours in the era | text(datetime(2020, 2, 27, 12, 15, 05),"[h]") | -130116 |
+| @      | 26310.5426 (the serial date value) | text(datetime(2020, 2, 27, 12, 15, 05),"@") | -5421.49 |
+| dddd   | Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday. | text(date(2020, 2, 27),"dddd") | Thursday |
+| EEEE   | Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday. | text(date(2020, 2, 27),"EEEE") | Thursday |
+| EEE    | Sat, Sun, Mon, Tue, Wed, Thu, Fri. | text(date(2020, 2, 27),"EEE") | Thu |
+| z      | Timezone Name short form (EST) | text(datetime(2020, 2, 27, 12, 15, 05),"z") | GMT+00:00 |
+| zzzz   | Timezone Name long form (Eastern Standard Time)| text(datetime(2020, 2, 27, 12, 15, 05),"zzzz") | GMT+00:00 |
+
+appian-style-note
+The formats that return the name, number, or first letter of a month are not case sensitive. The formats that return AM or PM are case sensitive and will return AM, PM, A, or P in the case that you specify.
+
+Possible number formats for text() function output
+If the format you use contains the number sign (#) zero (0) or a question mark (?), then the output takes a number format. The output is then treated as a number rather than as a date/time.
+You can split the number format into positive;negative;zero;text formats (where each optional format is separated by a semi-colon [;]).
+Normally, positive numbers do not show a sign symbol. To use plus (+) or minus (-) symbols, specify the positive and negative number-formats separately (as in the following examples).
+
+
+text(-3.434,"+0000.###;-0000.###")returns -0003.434
+
+
+text(3.434,"+0000.###;-0000.###") returns +0003.434
+
+
+The following table lists the characters that can be used to the left of any decimal for defining a number format.
+| Format | Meaning | Example | Returns |
+|-|-|-|-|
+| 0  | Numeric digit or leading 0 | text(1234.5, "00000.00") | 01234.50 |
+| #  | Numeric digit or leading space | text(1234.5, "#####.##") | 1234.50 |
+| , | Grouping seperator | text(1234.5, "##,###.##") | 1,234.50 |
+| . | Decimal point. Switches to right of decimal formatting | text(1234.5, "#####.##") | 1234.50 |
+| -  | Always "-" | text(1234.5, "-#####.##") | -1234.50 |
+| +  | "+" if positive, "-" if negative | text(1234.5, "+#####.##") | +1234.50 |
+| c  | The character c | text(15, "#c") | 15c |
+| $  | The currency character | text(1234.5, "$####.##") | $1234.50 |
+| %  | Any % multiplies the number by 100 | text(0.50, "#%") | 50% |
+| Any other character | Represented as itself | text(1234, "## & ##") | 12 & 34 |
+The following table lists the characters that can be used to the right of any decimal for defining a number format.
+| Format | Meaning |
+|-|-|
+| 0 | Numeric digit or leading 0 |
+| # | Numeric digit or leading space |
+| , | Grouping seperator |
+| c | The character c |
+| $ | The currency character |
+| Any other character | Represented as itself |
+Criteria formatting for numbers
+In these two examples, a positive and a negative number format (with red) are defined for the expression. The negative format and red color are only applied when the value is less than 0.
+
+
+text("-100000", "###,###.##;[<0][red] - ###,###.##") returns <font color="#FF0000"> - 100,000.00</font>
+
+
+text("100000", "###,###.##;[<0][red] - ###,###.##") returns 100,000.00
+
+
+
+appian-style-note
+These examples return colored text in an HTML format. These should only be used to format text in HTML, such as in the body or header of an email created by a send email smart service.
+
+Different formats can be applied using the criteria listed in the following table.
+| Format  | Description | Example | Returns |
+|-|-|-|-|
+| positive_format;negative_format;zero_format | All specified | text(0, "$00.00;#00.00;*00.0") | *00.0 |
+| positive_format;negative_format             | Zero is same as positive | text(-10.25, "$00.00;(00.00)") | (10.25) |
+| positive_format | Negative is "-positive", Zero is positive | text(10.25, "$00.00") | $10.25 |
+Formats for less than, greater than, or equal to:
+| Format  | Description   |
+|-|-|
+| [>number]format;... | Use when value > number |
+| [>=number]format;...| Use when value >= number |
+| [<number]format;...   | Use when value < number |
+| [<=number]format;... | Use when value <= number |
+| [=number]format;... | Use when value = number |
+| [<>number]format;... | Use when value <> number |
+Other sample criteria
+| Format | Meaning |
+|-|-|
+| [<=9999999]000-0000;(000) 000-0000 | US phone number |
+| 000-00-0000 | US Social Security Number |
+| [<=99999]00000;00000-0000  | US Zip or Zip+4 Code |

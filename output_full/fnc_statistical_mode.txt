@@ -1,0 +1,30 @@
+
+layout: function
+title: mode() Function
+space: function_page
+excerpt: "Returns the mode of the specified number(s), which is the most commonly repeated element."
+category: function_page
+fncname: mode
+fncexample: "mode(1, 2, 2, 3, 3, 3, 4)"
+fncresult: "3"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A number or array of numbers that will be used to calculate the mode of the set.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+mode(1,2,2,3,3,3,4) returns 3

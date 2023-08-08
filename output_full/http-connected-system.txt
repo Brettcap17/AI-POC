@@ -1,0 +1,56 @@
+
+layout: basic
+title: HTTP Connected System
+topic-group: A
+weight: 50
+
+Overview
+HTTP connected systems allow you to connected to various third-party systems easily by sharing base URL and authentication details across multiple integrations. You can also upload a logo image to visually identify the system.
+This page provides details about HTTP connected system properties. For information that pertains to all connected systems, see Connected System Object.
+If the system you are connecting to uses OpenAPI, you can use an OpenAPI Connected System instead.
+If you unable to connect to a connected system using an HTTP connected system, you have several options:
+
+Check out the pre-built connected systems that connect to popular third-party systems.
+Some of these are included with Appian. See the options available under CONNECTED SYSTEM TYPES in the topics to the left.
+You can also download pre-built connected system plug-ins from the App Market.
+Java developers can build custom connected system plug-ins using the SDK.
+
+Properties
+Each HTTP connected system has the following properties.
+
+
+Field
+Description
+
+
+Name
+The name of the connected system. Use a name that will uniquely identify this connection to the external system.
+
+
+Description
+Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object.
+
+
+System Logo
+An image document used to visually represent the external system or service being connected to. The logo is displayed in the integration designer and in the Process Modeler on integrations that connect to this system (using the Call Integration Smart Service). If no document is selected a default logo will be used instead.
+
+
+Base URL
+A consistent prefix for the URLs of this connected system's integrations.  This value is included in import customization files so that you can specify a different value for each environment.
+
+
+Authentication
+The type of authentication to use for integrations that use this connected system.
+      
+None
+API Key
+AWS Signature Version 4
+Basic Authentication
+Google Service Account
+OAuth 2.0 Authorization Code Grant
+OAuth 2.0 Client Credentials Grant
+
+
+
+
+{:.screenshot style="width:75%"}

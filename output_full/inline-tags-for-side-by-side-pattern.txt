@@ -1,0 +1,182 @@
+
+layout: pattern
+title: Inline Tags for Side-by-Side Layout Pattern
+excerpt: 'This pattern shows the best practice for combining tags with standard-sized rich text, or plain text, using a side by side layout.'
+reftype: pattern
+sr-tags:
+  - Formatting
+
+Tags are useful for calling out important attributes on an interface.
+{:.screenshot}
+Design structure
+This pattern is made up of read-only text, rich text icons and tags in a side by side layout.
+Pattern expression
+sail
+{
+  a!localVariables(
+    local!shops: {
+      a!map(name: "Anne's Coffee",         rating: 4, tags: {"Local Favorite"} ),
+      a!map(name: "Lake Wally Brew House", rating: 5, tags: {"Local Favorite"} ),
+      a!map(name: "Cafe Michelle",         rating: 4, tags: {} ),
+      a!map(name: "Cup O' Joe",            rating: 3, tags: {"Vegetarian Friendly"} )
+    },
+    {
+      a!forEach(
+        items: local!shops,
+        expression:{
+          a!localVariables(
+            /* Save fv!item to a local variable for use in the inner forEach */
+            local!currentShop: fv!item,
+            {
+              a!sideBySideLayout(
+                items: {
+                  /* Display the name */
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: local!currentShop.name
+                        )
+                      }
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  /* Display the rating */
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: a!forEach(
+                        items: enumerate(5) + 1,
+                        expression: a!richTextIcon(
+                          icon: if(
+                            fv!index <= tointeger(local!currentShop.rating),
+                            "star",
+                            "star-o"
+                          ),
+                          color: "#fc9901"
+                        )
+                      )
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  /* Display the tags */
+                  a!sideBySideItem(
+                    item: a!tagField(
+                      labelPosition: "COLLAPSED",
+                      tags: a!forEach(
+                        items: local!currentShop.tags,
+                        expression: a!tagItem(
+                          text: upper(fv!item),
+                          backgroundColor: "SECONDARY"
+                        )
+                      ),
+                      size: "SMALL"
+                    )
+                  )
+                },
+                marginBelow: "NONE"
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}
+[Line 1-8] Set local variables
+One local variable is set up at the beginning of the expression. This variable stores a list of shops and their name, rating, and tags we are going to display.
+{% highlight sail linenos start_line=1 %}
+  a!localVariables(
+    local!shops: {
+      a!map(name: "Anne's Coffee",         rating: 4, tags: {"Local Favorite"} ),
+      a!map(name: "Lake Wally Brew House", rating: 5, tags: {"Local Favorite"} ),
+      a!map(name: "Cafe Michelle",         rating: 4, tags: {} ),
+      a!map(name: "Cup O' Joe",            rating: 3, tags: {"Vegetarian Friendly"} )
+    },
+{% endhighlight %}
+[Line 9-15] First loop and store fv!item
+In this section, we setup the first loop with a!forEach(). On line 14, we store the  current value of fv!item into its own local variable for use within a nested a!forEach().
+{% highlight sail linenos start_line=8 %}
+    {
+      a!forEach(
+        items: local!shops,
+        expression:{
+          a!localVariables(
+            / Save fv!item to a local variable for use in the inner forEach /
+            local!currentShop: fv!item,
+{% endhighlight %}
+[Line 15-30] Display the shop name
+Here, we create a side by side layout and set the first side by side item to be a rich text display field.
+Note that we set the labelPosition to "COLLAPSED" in order to remove unnecessary spacing above the text item. We will do this on all three display items in this interface.
+Also note that we set the width of the side by side item to "MINIMIZE". This allows the text to only take up as much space as necessary, moving the star icons closer to the text.
+{% highlight sail linenos start_line=15 %}
+            {
+              a!sideBySideLayout(
+                items: {
+                  / Display the name /
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: local!currentShop.name
+                        )
+                      }
+                    ),
+                    width: "MINIMIZE"
+                  ),
+{% endhighlight %}
+[Line 31-48] Display the shop rating
+Here, we follow the pattern to Show a Numeric Rating as Rich Text Icons.
+Similar to above, we also set the labelPosition of the rich text display field as "COLLAPSED" and the width of the side by side item to "MINIMIZE".
+{% highlight sail linenos start_line=31 %}
+                  / Display the rating /
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: a!forEach(
+                        items: enumerate(5) + 1,
+                        expression: a!richTextIcon(
+                          icon: if(
+                            fv!index <= tointeger(local!currentShop.rating),
+                            "star",
+                            "star-o"
+                          ),
+                          color: "#fc9901"
+                        )
+                      )
+                    ),
+                    width: "MINIMIZE"
+                  ),
+{% endhighlight %}
+[Line 49-71] Display the shop tags
+This side by side item displays our tags. Since we are interested in showing the tags inline next to standard-sized text, we set the tag size to "SMALL". This size is exactly the same height as standard-sized text. Again, setting the labelPosition on the tag field to "COLLAPSED" and the marginBelow to "MINIMIZE" removes unnecessary vertical space.
+We did not set the side by side item width to "MINIMIZE" in this case. If we had more tags, keeping the width as "AUTO" (default) would allow the tags to wrap if needed.
+In this example, each shop only shows one or zero tags.  Notice that we do not need to add special handling for the shop with no tags-- a tag item with null text does not render anything or reserve space. If you would like to show more than one tag, simply iterate over each tag in a list with a!forEach() as we did for the rich text items.
+{% highlight sail linenos start_line=49 %}
+                  / Display the tags /
+                  a!sideBySideItem(
+                    item: a!tagField(
+                      labelPosition: "COLLAPSED",
+                      tags: a!forEach(
+                        items: local!currentShop.tags,
+                        expression: a!tagItem(
+                          text: upper(fv!item),
+                          backgroundColor: "SECONDARY"
+                        )
+                      ),
+                      size: "SMALL"
+                    )
+                  )
+                },
+                marginBelow: "NONE"
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}
+{% endhighlight %}

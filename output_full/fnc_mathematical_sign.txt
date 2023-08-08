@@ -1,0 +1,32 @@
+
+layout: function
+title: sign() Function
+space: function_page
+excerpt: "Returns the number divided by its absolute value, which is 1 if the number is positive and -1 if the number is negative."
+category: function_page
+fncname: sign
+fncexample: "sign(-10)"
+fncresult: "-1"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number that will be divided by its absolute value.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+If the number value is equal to zero, the function returns 1. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+sign(-3) returns -1 

@@ -1,0 +1,38 @@
+
+layout: function
+title: lookup() Function
+space: function_page
+excerpt: "Returns location of data within multiple values, or valueIfNotPresent."
+category: function_page
+fncname: lookup
+fncexample: "lookup({\"a\", \"b\", \"c\", \"d\"}, \"c\", -1)"
+fncresult: "3"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: multipleValues
+    types: Any Type
+    description: |
+      Values to lookup within.
+  - keyword: dataToLookup
+    types: Any Type
+    description: |
+      Value to lookup within multipleValues.
+  - keyword: valueIfNotPresent
+    types: Any Type
+    description: |
+      Value to return if dataToLookup is not present.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+lookup({"a", "b", "c", "d"}, "c", -1) returns 3

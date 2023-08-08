@@ -1,0 +1,69 @@
+
+layout: pattern
+title: Configure Cascading Dropdowns
+excerpt: Show different dropdown options depending on the user selection.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Conditional Display
+  - Choice Components
+
+{:.screenshot}
+This scenario demonstrates:
+
+How to setup a dropdown field's choice labels and values based of another dropdown's selection.
+How to clear a child dropdown selection when the parent dropdown value changes.
+
+Expression
+sail 
+a!localVariables(
+  local!selectedDepartment,
+  local!selectedTitle,
+  /*
+    * Hardcoded values are stored here through the choose function. Typically    
+    * this data would live with the department in a lookup value. In that case
+    * local!selectedDepartment would act as a filter on that query to bring
+    * back titles by department.
+    */
+  local!availableTitles:choose(
+    if(isnull(local!selectedDepartment), 1, local!selectedDepartment),
+    {"CEO","CFO","COO","Executive Assistant"},
+    {"Director","Quality Engineer","Manager","Software Engineer"},
+    {"Accountant","Manager","Director"},
+    {"Coordinator","Director","Manager"},
+    {"Consultant","Principal Consultant","Senior Consultant"},
+    {"Account Executive","Director","Manager"}
+  ),
+  a!sectionLayout(
+    label: "Example: Cascading Dropdowns",
+    contents: {
+      a!dropdownField(
+        label: "Department",
+        choiceLabels: { "Corporate", "Engineering", "Finance", "Human Resources", "Professional Services", "Sales" },
+        choiceValues: { 1, 2, 3, 4, 5, 6 },
+        placeholder: "-- Select a Department -- ",
+        value: local!selectedDepartment,
+        saveInto: {
+          local!selectedDepartment,
+          a!save(local!selectedTitle, null)
+        }
+      ),     
+      a!dropdownField(
+        label: "Title",
+        choiceLabels: local!availableTitles,
+        choiceValues: local!availableTitles,
+        placeholder: "--- Select a Title ---",
+        value: local!selectedTitle,
+        saveInto: local!selectedTitle,
+        disabled: isnull(local!selectedDepartment)
+      )
+    }
+  )
+)
+Test it out
+
+Select "Corporate" in the first dropdown. Notice that the second dropdown is now enabled and shows the Corporate Titles. Select a title.
+Next, change the first dropdown to "Human Resources" and notice that the second dropdown now shows the placeholder text so that the user can select an applicable title.
+
+Notable implementation details
+The value of the second dropdown is reset to null when the first dropdown's value changes to ensure that the value of the selected model always matches what the user sees in the UI.

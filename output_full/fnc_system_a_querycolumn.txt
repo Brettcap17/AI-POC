@@ -1,0 +1,44 @@
+
+layout: function
+title: a!queryColumn() Function
+category: function_page
+excerpt: Creates a Column object for use inside a Selection object.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryColumn
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: field
+    types: Text
+    description: |
+      The field of the data type you want to retrieve. The fields available depend on the source of the data and the data type of that source. 
+  - keyword: alias
+    types: Text
+    description: |
+      The short name by which the result of the Column value can be referenced in other areas of the Query value. Values are case-sensitive.
+  - keyword: visible
+    types: Boolean
+    description: |
+      Determines whether the column should be visible to end users. If false, the data for the column will not be retrieved, but it can be used for sorting. Default value is true.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Column, Selection,
+Query
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Selection
+Usage considerations
+Using the fields parameter
+
+The field parameter is required.
+Fields that are children of a multiple cannot be selected.
+
+Using the alias parameter
+
+If no alias is given, the alias for the column will be inferred as the field value.
+If the alias is not provided and the field name collides with another existing alias, the field name will be suffixed with an incremented digit appended to the end when returned in the result.

@@ -1,0 +1,64 @@
+
+layout: function
+title: Add Group Admins Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Add Group Admins node allows you to give users the right to be the administrator of a group.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!addAdminsToGroup
+fncsubcat: Identity_Management
+parameters:
+  - keyword: group
+    types: Group
+    description: The group to which the new administrators will be added.
+  - keyword: newAdministrators
+    types: List of Username
+    description: The users that will be added as administrators.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Add_Group_Members.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} It can be run by the System Administrator (but not the Portal Administrator). It is found under Appian Smart Services > Identity Management in the Process Modeler Palette.
+
+appian-style-caution
+The Add Group Admins Service Node can only be executed by a user with the proper user rights. If not, a runtime exception sends an error message to the Process Administrator and pauses the process.
+
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+This tab displays the node inputs and node outputs for the service node. You can add additional inputs and outputs, if needed. 
+Node inputs
+The default inputs are:
+| Input | Data Type | Required | Multiple|
+| - | - | - | - |
+| New Administrators (Users) | User | Yes | Yes |
+| Group | Group | Yes | No |
+If the node is run without being assigned to a user (or a group) you must specify values for each of the Node Inputs listed in the table above. You can either manually enter data into the text-field, or a value can be generated using the Expression Editor. When using the Expression Editor, you can reference and modify Process Variables, rules, constants, and other data. The expressions then populate your Node Input values.
+If the node is assigned, the Node Input values are typed by your assigned user(s) into a form.
+a!addAdminsToGroup()
+The Add Group Admins smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

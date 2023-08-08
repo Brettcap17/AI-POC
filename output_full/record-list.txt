@@ -1,0 +1,161 @@
+
+layout: basic
+title: Configure the Record List
+topic-group: C
+weight: 100
+
+This page describes how to configure a record list with a record list action and an Export to Excel button.
+Overview
+Once you've configured the source of your record type, you want to consider how users will view and navigate a set of records. We make this step easy by providing you with a record list.
+The record list displays your records in a single, drillable list that users can search and filter to find the records they need.
+Before you configure the record list, you'll want to consider:
+- How will users want to view the list of records?
+- What fields will they need to see?
+- What filters will users want to apply to the record list?
+- What will users want to do from the context of the record list?
+Let's say you have a Customer Support record type, where each record contains information about a customer's submitted support case. The first thing to consider is how will users want to view the record list: as a grid-style, or feed-style list?
+Since there may be hundreds of submitted cases a day, users will need to view a large number of records in an easy-to-scan layout. The feed-style list can only display 100 records at a time, so for this use case, a grid-style list would be the best option.
+Once you know the type of record list to create, you need to understand what fields a user will need to see when navigating or searching for a specific record. 
+Since each record displays detailed information about a submitted case, we can simplify our list to address common questions. In terms of support cases, some common questions may be: how many submitted cases are open? How many are critical? Which customers are associated with those cases?
+To allow users to quickly find this information, you can configure the record list to only display the case number, customer, priority, and status and then allow users to drill into each record to learn more.
+{% include zoompic.html url="images/customer-support-list.png" %}
+Once you configure the record list, you can create user filters so users can filter the records by a record field. You can also add record list actions so users can start processes from the context of the record list.
+When your record list is fully configured, you have the flexibility to reuse the record list as a display element throughout your application. See Where to Use Records to learn where you can display the record list.
+
+appian-style-tip
+If you are working with an existing record type created in 20.2 or earlier, update the record type to use new record type object components, features, and functions.
+
+Format the record list
+The record list can be displayed as a feed or a grid. When the list is a feed, each record is displayed in a vertical list like a news feed. When the list is a grid, the records display in rows like a spreadsheet. By default, all new record types have grid-style as the record list format.
+In the Orders list shown below, you can see the same set of records displayed in both a feed (left) and a grid (right).
+{% include zoompic.html url="images/Create_Record_Type/image_2.png" %}
+Grid-style record list
+A grid-style record list organizes and displays your record data in tabular view. This list style is configured with an interface that is similar to the interface object. It allows you to easily navigate and configure the components of the grid.
+To configure your grid-style list:
+1. In your record type, go to List.
+1. Click Edit List to open the Edit Record List dialog.
+If this is a new record type, you'll notice that there's already a grid configured. A column is automatically generated for the first 50 fields in your source table. You can add, remove, or modify columns as necessary to display the record data you want to appear in the grid. You can always return to the default record list configuration by clicking Reset List.
+There are three main levels to the grid that allow you to easily navigate between the record list configurations in the left pane: (1) Grid level, (2) Column level, and (3) Component level.
+{% include zoompic.html url="images/Create_Record_Type/create_record_grid_style_list.png" style="width:30%;" %}
+Click Test at any time to refresh the grid preview. This resets sorting so you can preview how the grid will look when it's first loaded.
+Grid-level settings
+The following properties can be configured for the grid-style record list:
+| Field         | Description                                     |
+|---------------|-------------------------------------------------|
+| Columns       | The data columns to show in the grid. Click Add Column to add a new column to the list. |
+| Empty Grid Message    | The value that displays when there are no records due to security, search, or applied filters. |
+| Rows to Display per Page        | The maximum number of records visible to users at a given time. Users can use the paging controls to see more data. |
+| Initial Sort Field | The record field on which to sort when the record list first loads. Configure multiple initial sorts to create a list of sorts to apply to the record list when it first loads. |
+| Secondary Sort Field | The record field on which to sort after a user manually sorts a column. |
+| Spacing | Determines the spacing within grid cells. Valid values: "STANDARD" (web default), "DENSE" (mobile default). |
+| Border Style | Determines the style of the grid border. Valid values: STANDARD (default), LIGHT. |
+| Shade Alternate Rows | Determines whether alternate rows are shaded. Valid values: true (default), false. |
+| Row Header | Index of the column to be used as the row header. Screen readers will announce the value in each row header when navigating to other cells within that row. Used only for accessibility; produces no visible change. |
+| Accessibility Text | Additional text to be announced by screen readers. Used only for accessibility; produces no visible change. |
+Column-level settings
+The following properties can be configured for each column in the grid-style record list:
+| Field         | Description                                     |
+|---------------|-------------------------------------------------|
+| Label      | The label that appears as the column header. |
+| Sort Field | The record field on which to sort when a user sorts this column. If no value is selected, the column is not sortable. |
+| Help Tooltip   | The tooltip that appears in the column header. |
+| Display Value | The value to display in the column cell. This is configured at the component-level. |
+| Visibility | Determines whether the column is displayed on the interface. |
+| Alignment | Alignment of the column heading. Valid values are Start (default), Center, and End. |
+| Width   | Column width. Valid values are Auto (default), Icon, Icon plus, Narrow, Narrow plus, Medium, Medium plus, Wide and a range of 1X - 10X. |
+There are two ways to edit a column's settings. You can edit a column by clicking on any column name in the navigation pane or the Columns section of the Grid settings.
+Component-level settings
+Each grid column can take an expression that evaluates to a component in Display Value and apply it across all column rows.
+
+appian-style-note
+If you don't configure a component for your column, the column fields will display as plain text.
+
+You can use the following components as display values:
+- Text
+- Images
+- Links
+- Rich text
+- a!tagField()
+- a!buttonArrayLayout()
+- a!recordActionField()
+- a!progressBarField()
+DISPLAY OPTIONS provides a list of formatting templates for the most common component types and allows you to select the one you want to set up. To edit an existing component, simply click on the component's name.
+
+At the component level, record variables must be called with the record type field reference, using fv!row[recordType!recordName.fields.fieldName]. Every field in your data source is available as a record field. If you have related record types, you can also access fields from those record types using fv!row[recordType!recordName.relationships.relatedRecordName.fieldName].
+The image below shows a text component configured for the Contact column. It has a Display Value of fv!row[recordType!Purchase Order.fields.purchaserName].
+{:.screenshot}
+Feed-style record list
+The feed-style record list is a vertical list of records that resembles a news feed. This is an alternative to the grid-style list.
+Only the first 100 records display in a feed-style record list. If you have more than 100 records, consider a grid-style record list. You may also consider creating user filters so that users can filter the records to return only those that match the selected filter.
+To create a feed-style record list:
+1. In your record type, go to List.
+1. Select Feed.
+1. Click Edit Record List to open the Edit List dialog.
+1. In List View, use the listViewItem function to create your list view.
+1. In Sort Field, select a field to sort on and the sort order.
+  ![/create a record list edit record list feed](images/create_a_record_list_edit_record_list_feed.png){:.screenshot}
+
+
+Click OK.
+
+Record variables are referenced with the record variable domain (rv!). Every field in your data source can be referenced using rv!record with a record type field reference. 
+For example, rv!record[recordType!Employee.fields.firstName] refers to the firstName field of the Employee record. Like the grid-style, you can also use fields from related records to display data in the feed. To learn more about rv!record, see Reference Records
+The listViewItem expression in the previous image results in a list that looks like this:
+{% include zoompic.html url="images/create_a_record_list_code_rv.png" border="-nb" %}
+
+appian-style-tip
+Many users find it helpful to create the list view in a separate expression rule and call that rule here.
+
+In this example, the record image itself (in the image parameter) is called from a rule that returns an image for each record based on the record's status. Below is the rule we used to choose the appropriate image.
+fetchOrderIcon
+sail
+a!localVariables(
+  local!status: choose(wherecontains(ri!status,cons!CASE_APP_OrderStatus),
+    "EYE",
+    "CLOCK",
+    "WARNING",
+    "PAPER_AIRPLANE",
+    "TASK"
+     ),
+  local!color: choose(wherecontains(ri!status,cons!CASE_APP_OrderStatus),
+    "BLUE",
+    "GREY",
+    "ORANGE",
+    "GREEN",
+    "GREEN"
+  ),
+  a!iconNewsEvent(local!status,local!color)
+)
+Add an export to Excel button
+You can allow users to export the record list by enabling the Export to Excel button. This button allows end users to export up to 100,000 records from the list, including rich text, images, and links, to Excel.
+To add an export button to your record list:
+1. In your record type, go to List.
+1. Select the Show Export to Excel Button checkbox. This will display an Export to Excel button on a record list.
+Record types that use a web service require additional logic necessary to handle paging, sorting, searching, and filtering. Since record lists are exported using batches to minimize memory usage, Appian requires designers to support a page size of 1,000 records. Make sure to test your web API or integration with this page size to determine whether the export operation will succeed.
+
+appian-style-tip
+See Export Records to Excel FAQ to learn how data is exported and how to optimize your record list for export. 
+
+Formatting restrictions for export
+When you export the record list, the way the Appian components appear in Excel may differ. Since Excel has its own formatting and styling restrictions, consider how the following components will display in Excel when designing your record list:
+|Component|Restrictions|
+|-|-|
+|Rich text|Excel only supports one text style per cell. Cells with multiple styled text will export as unstyled text. Additionally, icons will only be exported when the altText parameter is configured.|
+|Images|Only image captions will be exported. If a caption is not available, either the document parameter on the document image or the source parameter on the web image will be exported. |
+|Links|Excel only supports one link per cell. If there are multiple links, the link label will be followed by each link URL as text in parenthesis. Link types Dynamic Link, Start Process Link, and Authorization Link will export as text. All other link types will export as expected.|
+Refresh the record list
+To keep the list up-to-date, you can define a Refresh Interval to seamlessly refresh the record list with the latest record data every few minutes.
+With a time-based refresh, your list of records will be automatically refreshed even when the user doesn't interact with the list. If the Refresh Interval is set to None, users will need to click the refresh button on the list or manually refresh the page on the browser to view the latest records in the list.
+
+appian-style-note
+Defining a Refresh Interval will not trigger a sync on record type with data sync enabled. Instead, refreshing the record list will only re-query the cached version of your data.
+
+To automatically refresh the record list:
+
+In your record type, go to List.
+
+Under Refresh Interval, use the dropdown to select how often the list should be refreshed in minutes.
+{:.screenshot style="width:50%"}
+
+
+Note that refresh intervals may impact performance. See Performance considerations for more information.

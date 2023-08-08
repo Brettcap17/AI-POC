@@ -1,0 +1,12 @@
+
+layout: basic
+title: SAP Smart Service [Deprecated]
+space: no_toc
+depver: 17.1
+reftype: smart_service
+ssicon: Deprecated.gif
+ssparentcat: "一Deprecated一"
+
+This smart service has been deprecated, and will be removed in a future release of Appian. 
+Use Invoke SAP BAPI Smart Service to invoke BAPIs with side effects in process.
+For information about {{ page.title }}, see the Appian 16.3 documentation.

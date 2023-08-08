@@ -1,0 +1,838 @@
+
+layout: pattern
+title: Milestone Patterns
+excerpt: There are three options for milestone patterns which all display some form of a progress indicator to guide users through a series of steps.
+reftype: pattern
+sr-tags:
+  - Looping
+
+In each of the patterns, the indicators change color to show that the user has completed those steps in the task. These patterns can be used to break up longer forms into more manageable sections and combine smaller forms into a more streamlined process. All five patterns have similar functionality and design, but provide different levels of detail and context for the steps. They all are located under the PATTERNS tab under PALETTE in your interface. Test out all three to see which option works best for you.
+Milestone (Bar)
+{:.screenshot}
+The main interface components in this pattern are columns layouts, card layouts, side by side layouts, and styled texts and icons.
+This pattern also relies on a few functions to create the interactive milestones; including a forEach function, an if function, a dynamic link, and a choose function.
+You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components and functions.
+{% include zoompic.html url="images/patterns/milestoneBar-details.png" %}
+Pattern expression
+The milestone bar pattern introduces a 254-line expression to the interface.
+{% sailbox 600 %}
+{
+  a!localVariables(
+    / List of steps in the milestone bar /
+    local!milestoneBarSteps: {"Review Cart", "Provide Shipping", "Provide Billing", "Confirm Order"},
+    local!currentMilestoneBarStep: 2,
+    {
+      a!columnsLayout(
+        columns: {
+          a!forEach(
+            items: local!milestoneBarSteps,
+            expression: if(
+              / Completed step /
+              fv!index < local!currentMilestoneBarStep,
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    contents: {
+                      a!sideBySideLayout(
+                        items: {
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: {
+                                    a!richTextIcon(
+                                      icon: "check",
+                                      altText: "Completed step"
+                                    )
+                                  },
+                                  size: "MEDIUM",
+                                  style: "STRONG"
+                                )
+                              },
+                              align: "CENTER"
+                            ),
+                            width: "MINIMIZE"
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: upper(fv!item),
+                                  size: "MEDIUM"
+                                )
+                              },
+                              align: "LEFT"
+                            )
+                          )
+                        }
+                      )
+                    },
+                    / Link to go to selected step /
+                    link: a!dynamicLink(
+                      value: fv!index,
+                      saveInto: local!currentMilestoneBarStep
+                    ),
+                    style: "ACCENT",
+                    showBorder: false,
+                    accessibilityText: "Completed step. Press space to view step."
+                  )
+                }
+              ),
+              if(
+                / Future step /
+                fv!index > local!currentMilestoneBarStep,
+                a!columnLayout(
+                  contents: {
+                    a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!index,
+                                    size: "MEDIUM",
+                                    style:"STRONG"
+                                  )
+                                },
+                                align: "CENTER"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: upper(fv!item),
+                                    size: "MEDIUM"
+                                  )
+                                },
+                                align: "LEFT"
+                              )
+                            )
+                          }
+                        )
+                      },
+                      style: "#efefef",
+                      height: "AUTO",
+                      marginBelow: "NONE",
+                      showBorder: false,
+                      accessibilityText: "Future step"
+                    )
+                  }
+                ),
+                / Current step /
+                a!columnLayout(
+                  contents: {
+                    a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: {
+                                      a!richTextIcon(
+                                        icon: "hand-o-right",
+                                        altText: "Current step",
+                                        size: "MEDIUM"
+                                      )
+                                    },
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                },
+                                align: "CENTER"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: upper(fv!item),
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                },
+                                align: "LEFT"
+                              )
+                            )
+                          }
+                        )
+                      },
+                      style: "ACCENT",
+                      showBorder: false,
+                      accessibilityText: "Current step"
+                    )
+                  }
+                )
+              )
+            )
+          )
+        },
+        spacing: "DENSE",
+        stackWhen: {"PHONE","TABLET_PORTRAIT"}
+      ),
+      choose(
+        local!currentMilestoneBarStep,
+        {
+          / Replace this rich text with the component or rule that should populate this step /
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the first step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          / Replace this rich text with the component or rule that should populate this step /
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the second step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          / Replace this rich text with the component or rule that should populate this step /
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the third step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          / Replace this rich text with the component or rule that should populate this step /
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the fourth step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        }
+      ),
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!buttonArrayLayout(
+                buttons: {
+                  a!buttonWidget(
+                    label: "Back",
+                    value: local!currentMilestoneBarStep - 1,
+                    saveInto: local!currentMilestoneBarStep,
+                    style: "NORMAL",
+                    showWhen: local!currentMilestoneBarStep > 1
+                  ),
+                  a!buttonWidget(
+                    label: "Cancel",
+                    style: if(
+                      local!currentMilestoneBarStep = 1,
+                      "NORMAL",
+                      "LINK"
+                    )
+                  )
+                },
+                align: "START"
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!buttonArrayLayout(
+                buttons: a!buttonWidget(
+                  label: if(
+                    local!currentMilestoneBarStep = length(local!milestoneBarSteps),
+                    "Submit",
+                    "Next"
+                  ),
+                  saveInto: if(
+                    local!currentMilestoneBarStep = length(local!milestoneBarSteps),
+                    {},
+                    a!save(
+                      local!currentMilestoneBarStep,
+                      local!currentMilestoneBarStep + 1
+                    )
+                  ),
+                  style: "PRIMARY"
+                )
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}
+{% endsailbox %}
+[Line 1-5] Set local variables
+At the beginning of the expression, two local variables are set up: local!milestoneBarSteps, which provides the titles for the four steps in the milestone and local!currentMilestoneBarStep, which stores the current step that the user is on. This pattern has the user starting on the second step in the milestone bar. This is done to show that the user can return to a previous step using the Back button.
+sail 
+{
+  a!localVariables(
+    /* List of steps in the milestone bar */
+    local!milestoneBarSteps: {"Review Cart", "Provide Shipping", "Provide Billing", "Confirm Order"},
+    local!currentMilestoneBarStep: 2,
+[Line 6-166] Define milestone steps
+This section creates each step in the milestone bar using a!forEach(), if(), styled texts and styled icons, and a dynamic link. Each step in the milestone bar is constructed with a column layout that contains a card with the title and icon for the step within a side by side layout. The expression that constructs each step is iterated through using a!forEach() [lines 9-162]. 
+The style of the card layout, the boldness of the text, and the icon change as you move through the steps: 
+
+Current step [lines 111-159]: the text is bold or "STRONG", the card style is "ACCENT", and the icon is a pointing hand. 
+Previous steps [lines 12-64]: the text is normal, the card style is "ACCENT", and the icon is a check mark. 
+Future steps [lines 66-110]: the text is normal, the card style is light gray, and there is a number in place of an icon.
+
+Two nested if() functions are used in conjunction with local!currentMilestoneBarStep to determine whether each step is a previous, future, or current step and display the behavior accordingly. This is done by using a dynamic link within the card layout of the Current step to save the step's number into local!currentMilestoneBarStep. 
+sail 
+    {
+      a!columnsLayout(
+        columns: {
+          a!forEach(
+            items: local!milestoneBarSteps,
+            expression: if(
+              /* Completed step */
+              fv!index < local!currentMilestoneBarStep,
+              a!columnLayout(
+                contents: {
+                  a!cardLayout(
+                    contents: {
+                      a!sideBySideLayout(
+                        items: {
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: {
+                                    a!richTextIcon(
+                                      icon: "check",
+                                      altText: "Completed step"
+                                    )
+                                  },
+                                  size: "MEDIUM",
+                                  style: "STRONG"
+                                )
+                              },
+                              align: "CENTER"
+                            ),
+                            width: "MINIMIZE"
+                          ),
+                          a!sideBySideItem(
+                            item: a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: upper(fv!item),
+                                  size: "MEDIUM"
+                                )
+                              },
+                              align: "LEFT"
+                            )
+                          )
+                        }
+                      )
+                    },
+                    /* Link to go to selected step */
+                    link: a!dynamicLink(
+                      value: fv!index,
+                      saveInto: local!currentMilestoneBarStep
+                    ),
+                    style: "ACCENT",
+                    showBorder: false,
+                    accessibilityText: "Completed step. Press space to view step."
+                  )
+                }
+              ),
+              if(
+                /* Future step */
+                fv!index > local!currentMilestoneBarStep,
+                a!columnLayout(
+                  contents: {
+                    a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!index,
+                                    size: "MEDIUM",
+                                    style:"STRONG"
+                                  )
+                                },
+                                align: "CENTER"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: upper(fv!item),
+                                    size: "MEDIUM"
+                                  )
+                                },
+                                align: "LEFT"
+                              )
+                            )
+                          }
+                        )
+                      },
+                      style: "#efefef",
+                      height: "AUTO",
+                      marginBelow: "NONE",
+                      showBorder: false,
+                      accessibilityText: "Future step"
+                    )
+                  }
+                ),
+                /* Current step */
+                a!columnLayout(
+                  contents: {
+                    a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: {
+                                      a!richTextIcon(
+                                        icon: "hand-o-right",
+                                        altText: "Current step",
+                                        size: "MEDIUM"
+                                      )
+                                    },
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                },
+                                align: "CENTER"
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: upper(fv!item),
+                                    size: "MEDIUM",
+                                    style: "STRONG"
+                                  )
+                                },
+                                align: "LEFT"
+                              )
+                            )
+                          }
+                        )
+                      },
+                      style: "ACCENT",
+                      showBorder: false,
+                      accessibilityText: "Current step"
+                    )
+                  }
+                )
+              )
+            )
+          )
+        },
+        spacing: "DENSE",
+        stackWhen: {"PHONE","TABLET_PORTRAIT"}
+      ), 
+[Line 167-201] Define current step behavior
+This section uses choose() and  rich text to configure what will display for each step when it is the current step. The choose function works with  local!currentMilestoneBarStep to determine which step's message to show. Currently there is a placeholder message in styled text, however you can replace this with the component that you want to display for each milestone.
+sail 
+choose(
+        local!currentMilestoneBarStep,
+        {
+          /* Replace this rich text with the component or rule that should populate this step */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the first step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          /* Replace this rich text with the component or rule that should populate this step */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the second step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          /* Replace this rich text with the component or rule that should populate this step */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the third step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        },
+        {
+          /* Replace this rich text with the component or rule that should populate this step */
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {a!richTextItem(text: "The contents of the fourth step belong here", style: "EMPHASIS")},
+            align: "CENTER"
+          )
+        }
+      ),
+[Line 202-254] Define navigation buttons
+The last section contains columns with buttons that allow users to go back to the previous step, to cancel their progress, or move to the next step. Once the user has made it to the final milestone, the label on the Next button changes to Submit and acts as a submit button.
+sail 
+a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!buttonArrayLayout(
+                buttons: {
+                  a!buttonWidget(
+                    label: "Back",
+                    value: local!currentMilestoneBarStep - 1,
+                    saveInto: local!currentMilestoneBarStep,
+                    style: "NORMAL",
+                    showWhen: local!currentMilestoneBarStep > 1
+                  ),
+                  a!buttonWidget(
+                    label: "Cancel",
+                    style: if(
+                      local!currentMilestoneBarStep = 1,
+                      "NORMAL",
+                      "LINK"
+                    )
+                  )
+                },
+                align: "START"
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!buttonArrayLayout(
+                buttons: a!buttonWidget(
+                  label: if(
+                    local!currentMilestoneBarStep = length(local!milestoneBarSteps),
+                    "Submit",
+                    "Next"
+                  ),
+                  saveInto: if(
+                    local!currentMilestoneBarStep = length(local!milestoneBarSteps),
+                    {},
+                    a!save(
+                      local!currentMilestoneBarStep,
+                      local!currentMilestoneBarStep + 1
+                    )
+                  ),
+                  style: "PRIMARY"
+                )
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}
+Additional milestone patterns
+In addition to the Milestone (Bar) pattern described above, the Milestone (Stamp), and Navigation (Vertical) patterns are also available in your interface. They're located in PALETTE, under the PATTERNS tab.
+Milestone (Stamp)
+The Milestone (Stamp) pattern displays a simple progress indicator to guide users through steps in a task.
+The main components of this pattern are stamps, rich text display fields, and side by side layouts. They're configured to display the progress of a given task. The image below shows the pattern with callouts for the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the Milestone (Stamp) pattern onto your interface, 147 lines of expression will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  a!localVariables(
+    / List of icons in milestone (stamp) /
+    local!milestoneStampIcons: {"plane", "ticket", "shopping-cart", "check"},
+    local!currentMilestoneStampStep: 2,
+    {
+      / Display stamps /
+      a!sideBySideLayout(
+        items: {
+          a!sideBySideItem(),
+          a!forEach(
+            items: local!milestoneStampIcons,
+            expression: if(
+              / If final step is completed /
+              and(
+                fv!index = local!currentMilestoneStampStep,
+                fv!index = length(local!milestoneStampIcons)
+              ),
+              a!sideBySideItem(
+                item: a!stampField(
+                  icon: fv!item,
+                  backgroundColor: "ACCENT",
+                  size: "TINY"
+                ),
+                width: "MINIMIZE"
+              ),
+              if(
+                / Completed step so far /
+                fv!index < local!currentMilestoneStampStep,
+                {
+                  a!sideBySideItem(
+                    item: a!stampField(
+                      icon: fv!item,
+                      backgroundColor: "ACCENT",
+                      size: "TINY"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: a!richTextItem(
+                        text: if(
+                          a!isPageWidth("PHONE"),
+                          repeat(2, char(9473)),
+                          if(
+                            a!isPageWidth("TABLET_PORTRAIT"),
+                            repeat(3, char(9473)),
+                            repeat(6, char(9473))
+                          )
+                        ),
+                        color: "ACCENT",
+                        size: "LARGE"
+                      )
+                    ),
+                    width: "MINIMIZE"
+                  )
+                },
+                if(
+                  / Current completed step /
+                  fv!index = local!currentMilestoneStampStep,
+                  {
+                    a!sideBySideItem(
+                      item: a!stampField(
+                        icon: fv!item,
+                        backgroundColor: "ACCENT",
+                        size: "TINY"
+                      ),
+                      width: "MINIMIZE"
+                    ),
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: a!richTextItem(
+                          text: if(
+                            a!isPageWidth("PHONE"),
+                            repeat(2, char(9473)),
+                            if(
+                              a!isPageWidth("TABLET_PORTRAIT"),
+                              repeat(3, char(9473)),
+                              repeat(6, char(9473))
+                            )
+                          ),
+                          color: "#d4d4d4",
+                          size: "LARGE"
+                        )
+                      ),
+                      width: "MINIMIZE"
+                    )
+                  },
+                  / Future steps to complete /
+                  if(
+                    fv!index < length(local!milestoneStampIcons),
+                    {
+                      a!sideBySideItem(
+                        item: a!stampField(
+                          icon: fv!item,
+                          backgroundColor: "#d4d4d4",
+                          contentColor: "STANDARD",
+                          size: "TINY"
+                        ),
+                        width: "MINIMIZE"
+                      ),
+                      a!sideBySideItem(
+                        item: a!richTextDisplayField(
+                          labelPosition: "COLLAPSED",
+                          value: a!richTextItem(
+                            text: if(
+                              a!isPageWidth("PHONE"),
+                              repeat(2, char(9473)),
+                              if(
+                                a!isPageWidth("TABLET_PORTRAIT"),
+                                repeat(3, char(9473)),
+                                repeat(6, char(9473))
+                              )
+                            ),
+                            color: "#d4d4d4",
+                            size: "LARGE"
+                          )
+                        ),
+                        width: "MINIMIZE"
+                      )
+                    },
+                    / If final step is incomplete /
+                    a!sideBySideItem(
+                      item: a!stampField(
+                        icon: fv!item,
+                        backgroundColor: "#d4d4d4",
+                        contentColor: "STANDARD",
+                        size: "TINY"
+                      ),
+                      width: "MINIMIZE"
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          a!sideBySideItem()
+        },
+        alignVertical: "MIDDLE",
+        spacing: "NONE",
+        marginBelow: "NONE"
+      )
+    }
+  )
+}
+{% endsailbox %}
+Milestone (Vertical)
+The Milestone (Vertical) pattern displays a detailed progress indicator to guide users through steps in a task.
+The main components of this pattern are stamps, rich text display fields, and column layouts. They're configured to display the progress of a given task. The image below shows the pattern with callouts for the main components.
+{:.screenshot style="width:50%"}
+Main components:
+
+Stamp with icon and "POSITIVE" background color showing a completed step.
+Rich text showing the bolded name of the step and the date completed.
+Stamp with icon and grey background color showing a future step.
+Rich text showing the name of the step.
+
+Pattern expression
+When you drag and drop the Milestone (Vertical) pattern onto your interface, 121 lines of expression will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!verticalSteps: {
+      a!map(name: "Claim Filed",       icon: "archive",     date: today() - 5, isCompleted: true),
+      a!map(name: "Vehicle Inspected", icon: "search",      date: today() - 4, isCompleted: true),
+      a!map(name: "Estimate Issued",   icon: "file-text-o", date: null,        isCompleted: false),
+      a!map(name: "Payment Sent",      icon: "money",       date: null,        isCompleted: false),
+      a!map(name: "Claim Closed",      icon: "stamp",       date: null,        isCompleted: false)
+    },
+    a!sectionLayout(
+      label: "Claim Progress",
+      labelSize: "MEDIUM",
+      labelColor: "STANDARD",
+      contents: {
+        a!forEach(
+          items: local!verticalSteps,
+          expression: {
+            a!columnsLayout(
+              columns: {
+                a!columnLayout(
+                  contents: {
+                    if(
+                      fv!item.isCompleted,
+                      a!stampField(
+                        labelPosition: "COLLAPSED",
+                        icon: "check",
+                        backgroundColor: "POSITIVE",
+                        contentColor: "STANDARD",
+                        size: "TINY",
+                        align: "CENTER",
+                        marginBelow: "NONE",
+                        accessibilityText: "Completed Step"
+                      ),
+                      a!stampField(
+                        labelPosition: "COLLAPSED",
+                        icon: fv!item.icon,
+                        backgroundColor: "#d9d9d9",
+                        contentColor: "#666666",
+                        size: "TINY",
+                        align: "CENTER",
+                        marginBelow: "NONE",
+                        accessibilityText: "Future Step"
+                      )
+                    )
+                  },
+                  width: "EXTRA_NARROW"
+                ),
+                a!columnLayout(
+                  contents: {
+                    a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: fv!item.name,
+                          size: "STANDARD",
+                          style: if(
+                            fv!item.isCompleted,
+                            "STRONG",
+                            "PLAIN"
+                          )
+                        )
+                      },
+                      preventWrapping: true,
+                      marginBelow: "NONE"
+                    ),
+                    a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: text(fv!item.date, "MMMM D"),
+                          size: "SMALL"
+                        )
+                      },
+                      preventWrapping: true,
+                      showWhen: fv!item.isCompleted,
+                      marginBelow: "NONE"
+                    )
+                  }
+                )
+              },
+              alignVertical: "MIDDLE",
+              marginAbove: if(
+                fv!isFirst,
+                "STANDARD",
+                "NONE"
+              ),
+              marginBelow: "NONE",
+              spacing: "NONE",
+              stackWhen: "NEVER"
+            ),
+            a!columnsLayout(
+              columns: {
+                a!columnLayout(
+                  contents: {
+                    a!imageField(
+                      labelPosition: "COLLAPSED",
+                      images: {
+                        a!documentImage(
+                          document: a!EXAMPLE_VERTICAL_CONNECTOR_IMAGE()
+                        )
+                      },
+                      size: "TINY",
+                      align: "CENTER"
+                    )
+                  },
+                  width: "EXTRA_NARROW"
+                ),
+                a!columnLayout()
+              },
+              alignVertical: "MIDDLE",
+              showWhen: not(fv!isLast),
+              marginBelow: "NONE",
+              spacing: "NONE",
+              stackWhen: "NEVER"
+            )
+          }
+        )
+      }
+    )
+  )
+}

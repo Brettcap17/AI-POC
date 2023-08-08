@@ -1,0 +1,30 @@
+
+layout: function
+title: count() Function
+space: function_page
+excerpt: "Returns the number items in all arrays passed to the function."
+category: function_page
+fncname: count
+fncexample: "count({1, 2, 3, 4})"
+fncresult: "4"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: value
+    types: Any Type Array
+    description: |
+      An element or set of elements to be counted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}  Null parameters are also counted.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+count(1,2,3,4) returns 4

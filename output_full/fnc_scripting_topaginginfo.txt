@@ -1,0 +1,33 @@
+
+layout: function
+title: topaginginfo() Function
+space: function_page
+excerpt: "Returns a PagingInfo value for use with the todatasubset() function."
+category: function_page
+fncname: topaginginfo
+fncexample: "topaginginfo(1, 25)"
+fncresult: "[startIndex=1, batchSize=25]"
+fnccat: Scripting
+compatibility: -crf
+reftype: function
+parameters:
+  - keyword: startIndex
+    types: Integer
+    description: |
+      The value for the startIndex field.
+  - keyword: batchSize
+    types: Integer
+    description: |
+      The value for the batchSize field.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: todatasubset()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+PagingInfo
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+topaginginfo(1, 25) returns [startIndex=1, batchSize=25]

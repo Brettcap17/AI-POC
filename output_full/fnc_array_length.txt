@@ -1,0 +1,38 @@
+
+layout: function
+title: length() Function
+space: function_page
+excerpt: "This function returns the number of elements in an array."
+category: function_page
+fncname: length
+fncexample: "length({10, 20, 30})"
+fncresult: "3"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: The array in which to calculate the number of elements.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+isnull(): Use this function to determine if the process variable or array contains null values.
+count(): Use this function to include null elements in the number of elements in a process variable or array.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+Null elements
+This function does not count null elements.
+For example, if used on a null result of a query from the Query Database Smart Service, the expression fails to evaluate and causes an error. To avoid an error, first check the result set for a null value using the isnull() function before attempting to count the result set using the length() function.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+length({10, 20, 30}) returns 3

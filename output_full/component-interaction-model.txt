@@ -1,0 +1,58 @@
+
+layout: "basic"
+title: "Interaction Model"
+topic-group: "Core Concepts"
+weight: 200
+
+This page explains how component plug-ins work with interface variables and the interface evaluation lifecycle. You should have a good understanding of how to work with components and variables. For more advanced background you can read about the details of the interface evaluation lifecycle.
+Overview
+The key events in a component's lifecycle are:
+
+The component is loaded
+The component receives an updated value from the interface
+The component saves a value back to the interface
+
+Loading the component
+Your component can be loaded in two ways:
+
+When the interface is first loaded
+When the component is shown as a result of a re-evaluation (For example: showWhen becomes true)
+
+When your component is loaded:
+
+Each parameter expression is evaluated (for example, from a literal value, a local variable, a rule, etc.)
+The interface loads your component's html-entry-point file, which then loads resources and runs scripts defined in the HTML.
+The function registered using Appian.Component.onNewValue is called with the evaluated input parameter values.
+Your component validates the parameter values and (if all necessary values are provided) initializes any internal state and renders the appropriate view for the user.
+
+Your component will continue to execute as long as it's visible on the interface. If your component is hidden and then shown again or if the entire interface is reloaded, then a new instance of the component is loaded by the interface.
+Receiving an updated value
+Parameter values can change as the user interacts with the rest of the interface (for example, the user updates another field that saves its value into a local variable used by your component).
+The entire process looks like this:
+
+A parameter value changes as a result of an interface re-evaluation 
+The function registered using Appian.Component.onNewValue is called with the newly evaluated input parameter values
+Your component determines what changes are needed (if any) and renders the updated view for the user
+
+
+appian-style-tip
+All parameter values are passed in, not just the updated values. If you need to identify the values that changed you'll need to track current parameter values in your code for comparison.
+
+Saving a value
+Users can interact with your component in many ways. Depending the design of your component, users might be able to:
+
+Enter a value in an input field.
+Click a button.
+Drag and drop a file.
+
+When users interact with your component you can save updated values back to the interface so that those values can be used by other components or can be passed to a smart service function.
+The process of saving a value looks like this:
+
+The user interacts with your component
+Your component determines if this represents a new value that should be saved back to the interface
+Your component calls Appian.Component.saveValue, passing in the new value for a specific input-output or event parameter.
+The interface re-evaluates, using the new value to update the local variable, a!save() expressions, or smart service function specified for that parameter.
+
+
+appian-style-note
+Warning: Avoid creating loops when saving values.

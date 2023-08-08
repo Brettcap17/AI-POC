@@ -1,0 +1,36 @@
+
+layout: function
+title: quotient() Function
+space: function_page
+excerpt: "Returns the quotient when numerator is divided by the denominator, and drops the remainder."
+category: function_page
+fncname: quotient
+fncexample: "quotient(20, 10)"
+fncresult: "2"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: numerator
+    types: Decimal
+    description: |
+      The numerator of the quotient, or the number that is divided.
+  - keyword: denominator
+    types: Decimal
+    description: |
+      The denominator of the quotient, or the number to divide by.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+The denominator value cannot be 0.
+Examples
+quotient(8.0,3.0) returns 2 

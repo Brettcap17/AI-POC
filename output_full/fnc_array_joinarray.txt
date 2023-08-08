@@ -1,0 +1,40 @@
+
+layout: function
+title: joinarray() Function
+space: function_page
+excerpt: "Concatenates the elements of an array together into one string and inserts a string separator between each element."
+category: function_page
+fncname: joinarray
+fncexample: "joinarray({1, 2, 3, 4}, \"|\")"
+fncresult: "1|2|3|4"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: An array of elements to be concatenated.
+  - keyword: separator
+    types: Text
+    description: A string that will be inserted between each element of the given array.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Acceptable array types
+This function works with any array type, performing a string conversion on each element if necessary.
+Null elements
+Null elements cannot be concatenated. For example, joinarray({"", "", "", ""}, "|") returns null.
+Understanding results
+If no separator value is defined, then a default empty text is used.
+If an array with only one element is entered as the array argument, the function will return only the element without the separator value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+joinarray(pv!processVar3, "|") returns 1|2|3|4 where pv!processVar3 is a process variable which holds the number array {1, 2, 3, 4}

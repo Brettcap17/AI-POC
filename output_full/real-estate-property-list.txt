@@ -1,0 +1,4 @@
+
+title: Real Estate Property List
+weight: 90
+image: ds-images/uxds_images/real_estate_property_list.png

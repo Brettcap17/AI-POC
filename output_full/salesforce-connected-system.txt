@@ -1,0 +1,71 @@
+
+layout: basic
+title: Salesforce
+topic-group: A
+weight: 900
+
+Overview
+Manage your customer information and interactions. Find, update, create, or delete records within your Salesforce instance.
+Two forms of authentication are available for Salesforce: Web Server OAuth (per user) and Username-Password OAuth (single system login).
+For information that pertains to all connected systems, see Connected System Object.
+Web Server OAuth authentication
+Each Appian user will be required to sign in to their Salesforce account to authenticate.  You must provide users a way to authenticate using OAuth 2.0. See Salesforce Web Server OAuth documentation for more details.
+Properties
+The Salesforce Web Server OAuth authentication has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Instance URL     | Required. Instance URL will be used for authorization. This URL is used to configure your integration object and when executing your operations.  For example: https://na59.salesforce.com |
+| Client Id | Required. In the Salesforce Setup portal, navigate to App Manager, and then find your App and select View. The Client Id will be listed on this page as "Consumer Key".  See Salesforce set up documentation for more details. |
+| Client Secret | Required/Sensitive. In the Salesforce Setup portal, navigate to App Manager, and then find your App and select View. The Client Secret will be listed on this page as "Consumer Secret". See Salesforce set up documentation for more details. |
+| Scopes | Required. In the Salesforce Setup portal, navigate to App Manager, and then find your App and select View*. The scopes will be listed on this page as "Selected OAuth Scopes". This connected system requires API and refresh token access. You must provide API access using either the api or full scope.  See Salesforce scope documentation for more details. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+Click AUTHORIZE to use the provided configuration information to authorize the designer in a new window.  See OAuth 2.0: Authorization Code Grant for more details.
+{:.screenshot}
+Username-Password OAuth authentication
+Provide a single Salesforce user's credentials to authenticate.  All integrations will use a shared Salesforce username and password. Individual Appian users do not need their own Salesforce accounts. See Salesforce Username-Password OAuth documentation for more details.
+If you are using a record type to sync your Salesforce data in Appian, you should use the Username-Password OAuth Authentication in the Salesforce Connected System. Test your connection before syncing your data to identify and resolve any authentication issues beforehand.
+The Salesforce Username-Password OAuth authentication has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Instance URL     | Required. Instance URL will be used for authorization. This URL is used to configure your integration object and when executing your operations. e.g. https://na59.salesforce.com |
+| Client Id | Required. In the Salesforce Setup portal, navigate to App Manager, and then find your App and select View. The Client Id will be listed on this page as "Consumer Key". See Salesforce set up documentation for more details. |
+| Client Secret | Required/Sensitive. In the Salesforce Setup portal, navigate to App Manager, and then find your App and select View. The Client Secret will be listed on this page as "Consumer Secret".  See Salesforce set up documentation for more details. |
+| Username | Required. The username used to sign into the provided Salesforce instance |
+| Password | Required/Sensitive. The password used to sign into the provided Salesforce instance |
+| Security Token | Required/Sensitive. This is an automatically-generated user security token from Salesforce. In the Salesforce personal settings for the user, select Reset My Security Token to generate a new security token. When authorizing, this security token will be appended to the password.  See Salesforce security token documentation for more details. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+| Create SObject | Adds a new business object to Salesforce| WRITE |
+| Update SObject | Updates data for an existing business object in Salesforce | WRITE |
+| Delete SObject | Removes a business object from Salesforce | WRITE |
+| SOQL Query | Allows querying a Salesforce instance using the Salesforce Object Query Language (SOQL) | READ |
+| SOSL Search | Allows searching a Salesforce instance using the Salesforce Object Search Language (SOSL) | READ |
+| Describe SObject | Provides introspection into the metadata of the given Salesforce objects | READ |
+| Describe All SObjects | Provides introspection into the objects available in the target Salesforce instance | READ |
+Create SObject
+Adds a new business object to Salesforce
+Create SObject is a WRITE type Integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Update SObject
+Updates data for an existing business object in Salesforce
+Update SObject is a WRITE type Integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Delete SObject
+Removes a business object from Salesforce
+Delete SObject is a WRITE type Integration.  To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+SOQL Query
+Allows querying a Salesforce instance using the Salesforce Object Query Language (SOQL)
+{:.screenshot}
+SOSL Search
+Allows searching a Salesforce instance using the Salesforce Object Search Language (SOSL)
+{:.screenshot}
+Describe SObject
+Provides introspection into the metadata of the given Salesforce objects
+{:.screenshot}
+Describe All SObjects
+Provides introspection into the objects available in the target Salesforce instance
+{:.screenshot}

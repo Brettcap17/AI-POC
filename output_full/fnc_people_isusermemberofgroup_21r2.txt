@@ -1,0 +1,44 @@
+
+layout: function
+title: isusermemberofgroup_21r2 Function
+category: function_page
+evolved_fncname: a!isUserMemberOfGroup
+evolved_reason: Now accepts multiple groups and can check whether the user is a member of any or all groups. Also moved to the a! domain.
+excerpt: Identifies whether or not a user belongs to a group.
+fnccat: People
+fncexample: 'isusermemberofgroup_21r2("john.doe", 2)'
+fncname: isusermemberofgroup_21r2
+fncresult: 'false'
+compatibility: -crf
+space: function_page
+reftype: function
+parameters:
+  - keyword: username
+    types: Text
+    description: |
+       The username to check for group membership.
+  - keyword: groupId
+    types: Group
+    description: |
+       The Id of the group.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Returns true when the user belongs to the specified group, except when security rules prohibit users from knowing this information.
+For example, this function returns false to keep membership awareness secure in the following instance:
+
+A high privacy group is passed in AND 
+A user other than the logged in user is passed in AND 
+The function is executed within the context of a basic user who is not an administrator of the high privacy group
+
+A basic user is not allowed to know whether another user is a member of such groups.
+isusermemberofgroup_21r2() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+isusermemberofgroup_21r2("john.doe",2) returns false

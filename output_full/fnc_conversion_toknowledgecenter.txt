@@ -1,0 +1,36 @@
+
+layout: function
+title: toknowledgecenter() Function
+space: function_page
+excerpt: "Converts a value to Knowledge Center."
+category: function_page
+fncname: toknowledgecenter
+fncexample: "toknowledgecenter(\"2\")"
+fncresult: "[Knowledge Center:2]"
+fnccat: Conversion
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Knowledge Center
+Usage considerations
+Using the value parameter
+The value parameter accepts Integer, Decimal, and Array data types.
+Using toknowledgecenter() with arrays
+When operating on arrays, it is not necessary to use apply with toknowledgecenter. If multiple parameters are passed, or one parameter is an Array, toknowledgecenter will return a Knowledge Center Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+toknowledgecenter("2") returns [Knowledge Center:2]
+toknowledgecenter("2","3") and toknowledgecenter({"2","3"}) both return {[Knowledge Center:2],[Knowledge Center:3]}

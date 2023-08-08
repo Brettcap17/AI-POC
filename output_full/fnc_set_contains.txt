@@ -1,0 +1,57 @@
+
+layout: function
+title: contains() Function
+space: function_page
+excerpt: "Checks whether an array contains the value."
+category: function_page
+fncname: contains
+fncsubcat: Set
+fncexample: "contains({10, 20, 30}, 20)"
+fncresult: "true"
+fnccat: Array
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: |
+      Array to check.
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to look for.      
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+contains({1, 2, 3}, 2) returns true
+Check whether a text value is in an array
+Values are matched case sensitively:
+contains({"A", "b", "c"}, "A") returns true
+contains({"A", "b", "c"}, "a") returns false
+Check whether an integer value is in a decimal array
+contains({1, 2.2, 3.3}, todecimal(1)) returns true
+Cast the integer value to a decimal using the todecimal() function so that the two inputs are of the same type. Not doing so results in the error message Invalid types, can only act on data of the same type.
+Check whether a null value is in an array
+contains({1, null, 3}, tointeger(null)) returns true
+When the value is an empty list of the same type, true is returned:
+contains({1, 2, 3}, tointeger({})) returns true
+contains(tointeger({}), tointeger({}) returns true
+Check whether an array of values are all contained in the array
+contains({1, 2, 3}, {1, 2}) returns true
+contains({1, 2, 3}, {1, 4}) returns false
+To return the indices where the values match, use wherecontains():
+wherecontains(2, {1, 2, 3}) returns an array with 2
+Check whether a dictionary or CDT value is in an array
+All fields of the dictionary must match the fields of one of the values in the array:
+contains({{a: 1, b: 2}, {a:3, b: 4}}, {a:1, b: 2}) returns true
+contains({{a: 1, b: 2}, {a:3, b: 4}}, {a:1}) returns false
+contains({{a: 1, b: 2}, {a:3, b: 4}}, {a: "1", b: 2}) returns false

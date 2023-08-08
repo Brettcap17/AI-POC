@@ -1,0 +1,32 @@
+
+layout: function
+title: cos() Function
+space: function_page
+excerpt: "Returns the cosine(s) of the specified number(s)."
+category: function_page
+fncname: cos
+fncexample: "cos(pi())"
+fncresult: "-1"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      An angle measure or array of angle measures in radians, the cosine(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can only be used for values between 0 and 2π (~6.286).
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+cos(1) returns 0.5403023058681398

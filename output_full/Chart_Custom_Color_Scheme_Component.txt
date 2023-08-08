@@ -1,0 +1,60 @@
+
+layout: function
+title: Chart Custom Color Scheme Component
+category: function_page
+compatibility: -crf
+excerpt: A custom list of colors to apply to any chart.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!colorSchemeCustom
+fncsubcat: Charts
+parameters:
+  - keyword: Colors
+    name: Colors
+    types: Text
+    description: |
+      List of colors to use in the custom color scheme. Valid values: any valid hex colors. Maximum colors allowed: 12.
+reftype: sailcomponent
+scdisplayname: Chart Custom Color Scheme
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- Chart Color Schemes
+- Charts design guidance
+- Area Chart
+- Bar Chart
+- Column Chart
+- Line Chart
+- Pie Chart
+- Scatter Chart
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Series colors
+
+If there are more series than colors provided, the colors enumerate through the list again from the beginning.
+Users can still configure the colors of individual chart series while using a custom color scheme. Any series configurations will take precedence over automatically assigned color scheme colors.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %}
+a!pieChartField(
+  label: "Opportunity Sources",
+  labelPosition: "ABOVE",
+  series: {
+    a!chartSeries(label: "Other", data: 10),
+    a!chartSeries(label: "Website", data: 20),
+    a!chartSeries(label: "Client Referrals", data: 30)
+  },
+  colorScheme: a!colorSchemeCustom(
+    colors: {"#05286B", "#379683", "#5CDB95"}
+  ),
+  showDataLabels: true,
+  showAsPercentage: true
+)
+{% endsailbox %}

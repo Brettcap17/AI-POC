@@ -1,0 +1,90 @@
+
+layout: function
+title: Grouping Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: 'Determines the fields to group by in a query or chart that uses a record type as the source. The grouping should incorporate a record field or a related record field, an alias, and an optional interval to group by a date.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!grouping
+fncsubcat: Charts
+parameters:
+  - keyword: field
+    name: Field
+    types: Any Type
+    description: |
+      The record field or related record field to group by. Use the recordType! domain to reference the field. For example, recordType!Case.fields.status.
+  - keyword: interval
+    name: Interval
+    types: Text
+    description: |
+      The date or time interval to group by. This parameter can only be used when the field is of type Date, Date and Time, or Time. Valid values: "AUTO" (default), "YEAR", "MONTH_OF_YEAR", "MONTH_OF_YEAR_SHORT_TEXT", "MONTH_OF_YEAR_TEXT", "MONTH_TEXT", "MONTH_SHORT_TEXT", "MONTH_DATE", "DATE", "DATE_SHORT_TEXT", "DATE_TEXT", "DAY_OF_MONTH", "HOUR_OF_DAY", "HOUR", "MINUTE_OF_HOUR", "MINUTE".
+  - keyword: alias
+    name: Alias
+    types: Text
+    description: |
+      The short name by which the result of the grouping field can be referenced in other places in the chart configuration or a!queryRecordType().
+  - keyword: formatValue
+    name: Format Value
+    types: Any Type
+    description: |
+      Display value for the given grouping value. Only applies when the grouping is used in a chart. This parameter is evaluated once for each value returned. You can reference the unformatted result from the data source using fv!value. This display value does not affect the values used in calculations for the chart; it is only used for display.
+reftype: sailcomponent
+scdisplayname: Grouping
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{{ page.fncsyntax }}
+{{ page.excerpt }}
+This configuration is used when a record type is defined as the data source for a chart or when using a!queryRecordType(). This function can be used as a primary grouping or secondary grouping in a bar, column, line, or pie chart or to define the fields in a query using a!aggregationFields().
+See also:
+
+Chart Configuration Using Records
+Column Chart Config
+Bar Chart Config
+Line Chart Config
+Pie Chart Config
+Measure Component
+a!aggregationFields function
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Interval
+The interval determines how to group data for fields of type Date, Date and Time, or Time. Each interval can combine data from multiple dates for easy reporting. For example, suppose you have three records with the following values for the startDate field: March 17, 2021; March 28, 2021, and April 3, 2021. If you use the MONTH_TEXT interval, it will group the data together and return the values as March 2021 and April 2021. 
+In addition to grouping the data, the interval can also provide localized date formats in some cases. For example, the MONTH_OF_YEAR interval returns the month number, a value 1-12. The MONTH_OF_YEAR_TEXT interval also groups the data by month, but it returns the text value of the month, such as January. The value returned for the interval will vary based on the locale of the user who runs the query. If you need to ensure the value is the same across all locales (for example, to use the result in a filter), use one of the intervals that does not contain the word TEXT.
+By default, the AUTO interval is selected. This interval does not perform any additional grouping, so the original value will be returned.
+See the table below for the results using each interval:
+| Grouping Interval | Valid Data Types | Return Type| Localized? | Sample Value | Sample Result |
+| - | - | - | - | - | - |
+| AUTO      | Any Type | Any Type | No | 10/17/2021 3:45:12 PM | 10/17/2021 3:45:12 PM |
+| YEAR      | Date and Time; Date | Integer | No | 10/17/2021 | 2021 |
+| MONTH_OF_YEAR      | Date and Time; Date | Integer | No | 10/17/2021 | 10 |
+| MONTH_OF_YEAR_SHORT_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 | Oct |
+| MONTH_OF_YEAR_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 | October |
+| MONTH_DATE      | Date and Time; Date | Integer | No | 10/17/2021 | 10/1/2021 |
+| MONTH_SHORT_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 | Oct 2021 |
+| MONTH_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 | October 2021 |
+| DATE      | Date and Time; Date | Date | No | 10/17/2021 3:45 PM| 10/17/2021 |
+| DATE_SHORT_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 3:45 PM| Oct 17, 2021 |
+| DATE_TEXT      | Date and Time; Date | Text | Yes | 10/17/2021 3:45 PM| October 17, 2021 |
+| DAY_OF_MONTH      | Date and Time; Date | Integer | No | 10/17/2021 3:45 PM| 17 |
+| HOUR_OF_DAY      | Date and Time; Time | Integer | No | 10/17/2021 3:45 PM| 15 |
+| HOUR      | Date and Time | Date and Time | No | 10/17/2021 3:45 PM| 10/17/2021 3:00 PM |
+| MINUTE_OF_HOUR      | Date and Time; Time | Integer | No | 10/17/2021 3:45:12 PM| 45 |
+| MINUTE      | Date and Time | Date and Time | No | 10/17/2021 3:45:12 PM| 10/17/2021 3:45:00 PM |
+Using the field and alias parameters
+
+The field is a required parameter. It must reference a record field or a related record field from the record type specified in the query or chart.
+When using a!grouping in a query, an alias is required.
+If an alias is provided, it must be used as the field in the sort parameter within the parent configuration function. 
+
+Formatting values
+
+When using formatValue, the expression provided will execute for each unique value returned for the grouping. See Chart Configuration Using Records for more information on how to set up the format value.
+
+Grouping in charts
+
+If you use a bar, column, or line chart, you can display a Primary and Secondary Grouping if there is only one Measure provided. See Chart Configuration Using Records for more information on how to add groupings to charts.
+When the interval parameter is set to any value other than "AUTO", you can show time intervals with no data on the axis of your bar, column, and line charts using the showIntervalsWithNoData parameter.

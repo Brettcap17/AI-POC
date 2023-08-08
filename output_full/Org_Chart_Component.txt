@@ -1,0 +1,96 @@
+
+layout: function
+title: Org Chart Component
+category: function_page
+compatibility: '-crf, -om, -portal'
+excerpt: Displays the organizational structure of users within Appian based on the users’ Supervisor field values.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!orgChartField
+fncsubcat: Browsers
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: value
+    name: Display Value
+    types: User
+    description: The user who is the focus of the org chart.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: One or more variables that are updated with the user value. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: showAllAncestors
+    name: Show All Ancestors
+    types: Boolean
+    description: |
+      Determines if all ancestors above the user are displayed. Default is false, which displays only the user's supervisor.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: showTotalCounts
+    name: Show Total Counts
+    types: Boolean
+    description: |
+      Determines who is included in the report count. When set to true, the count includes both direct and indirect reports. When set to false, the count only includes direct reports. Default: false.
+reftype: sailcomponent
+scdisplayname: Org Chart
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Permissions and offline use
+
+In the org chart, the user can only see active users that they have permission to view. If the current user does not have permission to view the selected user in the value parameter or the selected user is deactivated, an error will occur.
+Avoid using this component for offline mobile forms since tapping on a user will not update the focus of the org chart to the user.
+
+Structure
+
+The org chart structure is based on users' Supervisor field values.
+If supervisor or location information is not populated in user profiles, you can request users to update their own profiles in Tempo or use the Update User Profile Smart Service to update user profiles via process.
+
+Displaying location and user cards
+
+Hovering over a user's profile photo or name displays the corresponding user card, which includes additional information about the user and allows the viewer to quickly follow or unfollow the user.
+Location (city, state, country) is displayed on the org chart if the user has a value set in their profile.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+sail 
+a!localVariables(
+  local!user: loggedInUser(),
+  a!orgChartField(
+    value: local!user,
+    saveInto: local!user
+  )
+)
+An org chart similar to the one pictured below displays. Note that your org chart may differ from the example:
+{:.screenshot}

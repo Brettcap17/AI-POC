@@ -1,0 +1,48 @@
+
+title: How Offline Mobile Works
+layout: basic
+weight: 300
+
+Introduction
+Offline mobile forms in Appian are powerful, allowing you to design forms with cascading dropdown lists, wizards, validations, conditional content, and more. In order to make this possible, we created a new offline evaluator that can reevaluate forms without being connected to the server.
+This page contains:
+
+How the offline evaluator handles data.
+How end users will work with offline forms.
+A diagram of the process.
+
+How offline mobile works with data {#offline-data}
+Generally, when the user accesses a form, it just pulls the data needed from the server in order to display the interface. However, when a user is offline, forms can't communicate with the server to get this information. 
+When you enable a form for offline use, you are changing the way that the form communicates with the server. Instead of being able to talk to the server whenever it wants, it only talks to the server when a form is first loaded and caches the data on the device. After that, it assumes the server isn't there, even if the user is online. If the user submits the form while they are offline, it goes into a pending state and waits for the user to go back online. After the user is online, the form submits automatically.
+Offline flow for users
+In order to create a consistent user experience, offline-enabled forms will work the same whether the user is offline or online. 
+In order to ensure they are getting the most up-to-date data, users should be coached about how to use offline forms.
+The most important steps that users should be aware of are:
+
+When online, open any site page with an offline action and pull to refresh. Go to the task list and do the same.
+
+When the user does this, the most recent data is cached on the device so the form can be loaded when they are offline.
+{:.screenshot style="width:75%"}
+
+
+Complete and submit the form as normal, whether offline or online.
+
+
+If the user is offline when they submit the form, it will queue the form for submission. The user can access the form in the navigation menu under Pending Forms. After they go back online, the form is submitted automatically.
+{:.screenshot style="width:75%"}
+
+
+If they are online when they submit the form, the form submits right away.
+{:.screenshot style="width:35%"}
+
+
+Offline mobile diagram
+The following diagram shows how offline mobile forms are evaluated.
+{% include zoompic.html url="images/dynamic_offline_flow.png" border="-nb" alt="diagram of the dynamic offline data flow as offline mobile forms are evaluated" %}
+| Step | Description |
+| - | - | 
+| Initial evaluation on the server | When the user pulls down to refresh the interface, the data that is loaded at the beginning of the interface expression is downloaded and cached onto the mobile device. | 
+| User input | Whether the user is offline or online, they enter information into the form using the mobile device. | 
+| Offline reevaluation | The data on the form reevaluates based on the user input. The user does not need to be online for this reevaluation to occur. Only Compatible and Partially Compatible functions in the Appian functions table are supported in Offline Forms. If you need to use Partially Compatible functions, you will need to load them at the top of the interface expression. |
+| User input stored | The user input is stored on the device. If the user is offline, their form goes into a pending state. | 
+| Form submitted | When the user has an online connection, the form is submitted. The server replays all user interactions to ensure consistency, then moves to the next node in the process model, such as write to data store entity. |

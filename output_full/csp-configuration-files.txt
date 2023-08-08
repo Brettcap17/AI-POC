@@ -1,0 +1,88 @@
+
+layout: basic
+title: Configuration Files
+topic-group: D
+weight: 1
+
+Overview
+This page provides details on two configuration files that every connected system plug-in requires: 
+- The plug-in manifest (appian-plugin.xml).
+- The default internationalization bundle (resources_en_US.properties).
+
+appian-style-tip
+This version of Appian supports connected system plug-ins that use SDK version 1.0.0. Refer to the Integration SDK compatibility table for version details.
+
+Plug-in manifest
+The plug-in manifest file (appian-plugin.xml) defines your plug-in. In it, you specify the connected system and integration templates your plug-in provides along with metadata about the plug-in itself, like the plug-in version and description.
+
+appian-style-plugindisclaimer
+Important: Every plug-in must have a manifest file at the root of the plug-in ZIP. If this file is not present, the plug-in will not be deployed.
+
+xml
+<appian-plugin name="My Corp Connected System - Hello World" key="com.mycorp.helloworld">
+    <plugin-info>
+        <description>My Corp Connected System - Hello World</description>
+        <vendor name="My Corporation" url="http://www.mycorp.com"/>
+        <version>1.0.0.0</version>
+        <application-version min="18.4.0.0"/>
+    </plugin-info>
+    <connected-system-template key="HelloWorldConnectedSystem"
+            name="HelloWorldConnectedSystem" 
+            class="com.mycorp.helloworld.templates.HelloWorldConnectedSystemTemplate">
+        <integration-template key="HelloWorldIntegrationTemplate"
+                name="HelloWorldIntegrationTemplate" 
+                class="com.mycorp.helloworld.templates.HelloWorldIntegrationTemplate" />        
+        <client-api key="HelloWorldClientApi"
+                name="HelloWorldClientApi" 
+                class="com.mycorp.helloworld.templates.HelloWorldClientApi" />    
+    </connected-system-template>
+</appian-plugin>
+appian-plugin
+This tag is the main parent element. This element defines the plugin properties and references.
+Attributes:
+
+name: Used for documentation purposes only
+key: Must be unique among all Appian plugins. It represents a unique namespace for your plugin template. We recommend using the same convention established for Java package names.
+
+plugin-info
+This element contains plugin metadata, including the following subelements:
+
+description: A description of the plugin itself
+vendor: Your organization's name and URL
+version: The version of the plugin. Remember that installing newer versions overrides older versions
+application-version: The minimum version of Appian that the plugin requires to run. This number cannot be earlier than 18.4.0.0
+
+connected-system-template
+This element defines a new type of connected system that will be available to designers. Each connected-system-template tag can have zero or more integration-template tags.
+Attributes:
+
+name: Used for documentation purposes only.
+key: A unique key for this connected system. It must be unique within the parent appian-plugin.
+class: Connected system template java class. Must be a subclass of SimpleConnectedSystemTemplate.
+
+integration-template
+This element defines a new type of Integration for its associated connected system Template. The element is optional and only required if you intend to add an Integration to the parent connected system template.
+Attributes:
+
+name: Used for documentation purposes only.
+key: A unique key for this Integration. It must be unique within the parent connected-system-template.
+class: Integration Template java class. Must be a subclass of SimpleIntegrationTemplate.
+
+client-api
+This element defines a new type of Client API for its associated connected system template. The element is optional and only required if you intend to add a Client API to the parent connected system.  
+Attributes:
+
+name: Used for documentation purposes only.
+key: A unique key for this Client API. It must be unique within the parent connected-system-template.
+class: Client API java class. Must be a subclass of ClientApi.
+
+Internationalization bundles
+Your plug-in package resource_xx_YY.properties should have at least one resource file corresponding to the primary language of the designer audience where xx and YY are the respective language and country codes of your resource file. For example, an English resource file name for US should be resources_en_US.properties. Refer to the Java 8 Supported Locales for your language tags. Your package can contain more than one resource file to support more than one language.
+Each supported language must have resource properties defined for the names and descriptions of all templates. Class names are case sensitive. The properties must follow the pattern:
+- Name: [MyTemplateClass].name=Name of My Template
+- Description: [MyTemplateClass].description=Name of My Template
+For example, if your plug-in has a connected system template class called MyConnectedSystemTemplate and an Integration Template class called MyIntegrationTemplate, your resource file would look something like this:
+MyConnectedSystemTemplate.name=My Connected System
+MyConnectedSystemTemplate.description=A connected system template
+MyIntegrationTemplate.name=My Integration
+MyIntegrationTemplate.description=An integration template

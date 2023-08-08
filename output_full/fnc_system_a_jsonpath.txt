@@ -1,0 +1,80 @@
+
+layout: function
+title: a!jsonPath() Function
+category: function_page
+excerpt: Finds information in a JSON string. JSONPath is used to navigate through elements and attributes in a JSON string.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!jsonPath
+compatibility: -crf, ~portal, -om
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+      The JSON text representing the value to be queried.
+  - keyword: expression
+    types: Text
+    description: |
+      The JSONPath query to be run against the JSON object.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the expression parameter
+The below table defines the syntax for the expression parameter of a!jsonPath().
+
+
+Expression
+Description
+
+
+$
+the root object/element
+
+
+@
+the current object/element
+
+
+. or []
+child operator
+
+
+..
+recursive descent
+
+
+*
+wildcard. All objects/elements regardless their names.
+
+
+[]
+subscript operator
+
+
+[,]
+alternate names or array indices as a set.
+
+
+[start:end:step]
+array slice operator
+
+
+?()
+applies a filter (script) expression
+
+
+()
+script expression, using the underlying script engine.
+
+
+
+appian-style-note
+Array indices in JSONPath start with zero, not one.

@@ -1,0 +1,71 @@
+
+layout: basic
+title: Export Records to Excel FAQ
+permalink: Optimizing_Record_Lists_for_Export_to_Excel.html
+topic-group: E
+weight: 300
+
+Overview
+This page provides information for the most commonly asked questions around exporting records to Excel. 
+Where is the Export to Excel button available?
+When enabled, the Export to Excel button is available on the record list and any read-only grids that use the record type as the source. 
+
+appian-style-note
+This button is not available when viewing the record list or a read-only grid on a mobile device. 
+
+To configure the Export to Excel option for your record lists, see Configure a record list. To configure the Export to Excel option for your read-only grids, see Configuring the Read-Only Grid.
+How much data can be exported?
+Users can export up to 100,000 records, including any rich text, images, and links. 
+What are the export limits?
+The amount of record data you can export from your record list or read-only grid depends on the record type's data source:
+
+
+If your record type uses a database table or a web service as the data source, users can export up to 100,000 records and up to 50 columns. 
+
+
+If the data source for your record type is a process, users can export a maximum of 10,000 consecutive records only. 
+
+
+The Export to Excel button will be disabled if the list or grid exceeds the maxiumum amount. As such, Appian recommends adding a user filter to record lists or grids that exceed these limits. This will allow users interacting with the record list or grid to filter the records below the limit and export them to Excel. 
+How do you avoid query timeouts when exporting data?
+Exporting data store entities from either record lists or smart services relies on sorting the entity by its primary key. This sorting ensures that data is exported consistently - that is, all rows are exported and no row is exported more than once.
+Appian export operations use small batches to control the amount of memory consumed. The last row of a batch is tracked and used to determine where the next batch starts. By managing load this way, we avoid high memory consumption when exporting entities with a very large number of rows.
+Designers should adhere to Database Performance Best Practices when creating their schema relationships. Because database views do not have a primary key, or the ability to have indexes, Appian recommends exporting data only from tables or materialized views in order to avoid query timeouts with large data sets.
+How is data exported?
+When you export the record list, the way the Appian components appear in Excel may differ. Since Excel has its own formatting and styling restrictions, consider how the following components will display in Excel when designing your record list.
+Exporting rich text
+Excel only supports one text style per cell. Therefore, styled text will only be exported accordingly if there is one styled text per cell. Cells with multiple styled text will export as unstyled text. The same rules apply for styled links. 
+Additionally, icons will only be exported to Excel when they have alternative text. Whe you use styled icons, ensure you configure the altText parameter in the a!richTextIcon() function so the icons export accordingly.
+Exporting images
+Images cannot be exported to Excel, only the image captions. As such, ensure you add captions to the images in your record list or grid. 
+Within your captions, note that you can also add links to allow users to learn more. Depending on how you configure the caption and the link, the export results may vary. 
+For example:
+
+An image with a caption and a nested link will export the image's caption and the corresponding hyperlink.
+An image with no caption and a supported nested link will export the nested link as text and as a hyperlink.
+An image with no caption and an unsupported nested link will export the nested link label as text.  
+
+If your record list or grid displays an image without captions, then the document parameter on the document image or the source parameter on the web image will be exported.
+Exporting links
+Excel only supports one link per cell. If multiple links are provided, Appian will export the link label followed by each link URL as text in parenthesis. 
+All link types will export as expected except for these three:
+
+Dynamic Link
+Start Process Link
+Authorization Link
+
+These link types will export as text.
+Why is export for service-backed records disabled by default?
+Record types that use a web service as the source require additional logic necessary to handle paging, sorting, searching, and filtering. Export to Excel is disabled by default to ensure developers test this logic prior to enabling it. 
+To test the expression's paging, sorting, searching, and filtering functionality:
+1. In the record type, go to List.
+2. Under URL, click the link. The record list displays where you can try paging, sorting, searching, and filtering the list.
+Once you test your expression's configuration, you'll need to review the record list or grid's supported page size. 
+When record lists are displayed on a web or mobile device, it is typical to have a small page size, like 25 or 50 records. Since record lists and grids are exported using batches to minimize memory usage, developers must support a page size of 1,000 records, which is the page size used when exporting service-backed records. Make sure to test your Web API or integration with this page size to determine whether the export operation will succeed.
+Finally, Appian recommends testing the export to Excel functionality before deploying. 
+To test the export to Excel functionality:
+1. In the record type, go to List.
+2. Select the Show Export to Excel Button checkbox.
+3. Click SAVE CHANGES.
+4. Under URL, click the link. The record list appears.
+5. Click Export to Excel a few times to test for any errors. Any error raised by the source expression will be logged to the Excel file. Use the error message for further troubleshooting.

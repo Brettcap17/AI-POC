@@ -1,0 +1,80 @@
+
+layout: function
+title: a!groupsForUser() Function
+space: function_page
+excerpt: "Returns the groups where the user is a member or has Administrator permissions."
+category: function_page
+fncname: a!groupsForUser
+fnccat: People
+fncexample: "Click on the function name for examples."
+fncresult:
+compatibility: -crf
+reftype: function
+parameters:
+  - keyword: username
+    types: User
+    description: |
+       The user whose group membership information should be retrieved.
+  - keyword: isGroupAdministrator
+    types: Boolean
+    description: |
+       Determines whether to return groups where the user is an administrator, rather than a member. When set to true, returns the groups where the user has Administrator permissions. When set to false, returns the groups where the user is a member. Default: false.
+  - keyword: groupTypes
+    types: List of Group Type
+    description: |
+        Limits the returned groups to those of the specified type(s). If this property specifies multiple groups types, the function returns groups that match any of the specified group types.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+List of Group
+Usage considerations
+By default, the function returns the groups where the specified user is a member. Only one user can be specified in the function.
+Users with Administrator permissions for a group are not always members of the group.
+Invalid users will result in an error.
+Examples
+Get groups where the user is a member
+Given a User, "jane.doe", is a member of Groups: {[Group:7],[Group:8]}.
+a!groupsForUser(
+  username: "jane.doe"
+)
+returns
+List of Group
+  7 - Group A (Group)
+  8 - Group B (Group)
+The list includes returned groups where the User is a member.
+As long as the User is a member of the group, the list will include that user, even if the following are true:
+- The User has Administrator permissions for the group.
+- The isGroupAdministrator property for the function is set to 'false'.
+Get groups where the user is an administrator
+Given a User, "jane.doe", is a member of Groups: {[Group:7],[Group:8],[Group:9],[Group:10],[Group:11]} and has Administrator permissions for Groups: {[Group:9],[Group:10]}.
+a!groupsForUser(
+  username: "jane.doe",
+  isGroupAdministrator: fn!true()
+)
+returns
+List of Group
+  9 - Group C (Group)
+  10 - Group D (Group)
+Though the User is a member of many groups, they are only assigned Administrator permissions for two groups.
+Limit the groups by group type
+Given a rule input ri!groupType of type Group Type with the following groups of this type: {[Group:7],[Group:8],[Group:9],[Group:10],[Group:11]} and a User Jane Doe is a member of groups: {[Group: 7], [Group: 8]} and an administrator of [Group: 9].
+a!groupsForUser(
+  username: "jane.doe",
+  groupTypes: ri!groupType
+)
+returns
+List of Group
+  7 - Group A (Group)
+  8 - Group B (Group)
+In this example, the returned list excludes Group 9, even though Group 9 has the correct Group Type. The list excludes Group 9 because the User has Administrator permissions for that group but is not a member.
+Invalid user
+Given User "john.doe" does not exist in the system.
+a!groupsForUser(
+  username: "john.doe"
+)
+returns
+Expression evaluation error at function a!groupsForUser: The username Invalid user: john.doe is not a valid user.

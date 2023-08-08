@@ -1,0 +1,51 @@
+
+layout: pattern
+title: Set the Default Value of an Input on a Task Form
+reftype: sailrecipe
+sr-tags: ["Default Value"]
+excerpt: Display a default value in some form inputs on a task form, and save the value to process when submitting.
+
+Steps
+
+Create an interface with one rule input called title (Text).
+Enter the following definition for the interface, and save it as sailRecipe.
+In your process model, drag a User Input Task on the canvas.
+On the forms tab of that activity, enter the name of your interface in the search box and select it
+Click Yes when the Process Modeler asks, "Do you want to import the rule inputs?"
+This will create node inputs
+On the Data tab, set caseTitle value parameter to ="My default text". Save the node input into a process variable.
+Save and publish the process model.
+Start a new process.
+
+Expression
+sail
+=a!formLayout(
+  label: "Example: Default Value",
+  contents: {
+    a!textField(
+      label: "Case Title",
+      value: ri!title,
+      saveInto: ri!title,
+      required: true
+    )
+  },
+  buttons: a!buttonLayout(
+    primaryButtons: a!buttonWidget(
+      label: "Submit",
+      submit: true
+    )
+  )
+)
+Test it out
+
+On the task form, don't modify the value of the text field, and click the Submit button. Check the value of the process variable, and notice that it has the default value.
+Now modify the value of the text field, and click the Submit button. Check the value of the process variable, and notice that it has the value you entered.
+To see what happens when the default value is incorrectly configured, remove the default value from the node input. Then update the interface definition and set the value parameter of the textField component to ="Default text from the component". View the form and submit without modifying the text field. Notice that the corresponding process variable does not have the default value.
+
+Watch out! A common mistake is to use load() and to configure a local variable called ri!title as follows:
+sail
+=load(
+  ri!title: "Default text",
+  ...
+)
+The expression doesn't result in the intended behavior because load() only creates local variables. In the above example, a local variable called ri!title is created, with this default value, but its value is not saved in process. Load variables must only be used for data that are not saved back into the process.

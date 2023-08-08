@@ -1,0 +1,169 @@
+
+layout: pattern
+title: Update an Entity-Backed Record from its Summary View
+reftype: sailrecipe
+sr-tags: ["Records","Smart Services"]
+excerpt: Enable users to make quick changes to a record by updating it right from a record view.
+
+
+This scenario demonstrates:
+
+How to use the Write to Data Store smart service to update an entity-backed record in response to a user interaction
+
+Expression
+sail 
+a!localVariables(
+  /* In a real app, these values should be held in the database or in a constant */
+  local!departments: { "Corporate", "Engineering", "Finance", "HR", "Professional Services", "Sales" },
+  /* 
+  * Employee data is being passed in via a query and converted 
+  * back to CDT. 
+  * 
+  * To use your date, replace the employee local variable with the
+  * appropriate data and update the component fields to fit your 
+  * CDT data points. 
+  */
+  local!employee: cast(
+  'type!{urn:com:appian:types:Employee}Employee',
+    a!queryEntity(
+      entity: cons!EMPLOYEE_ENTITY,
+      query: a!query(
+        selection: a!querySelection(columns: {
+          a!queryColumn( field: "id"),
+          a!queryColumn( field: "firstName"),
+          a!queryColumn( field: "lastName"),
+          a!queryColumn( field: "department"),
+          a!queryColumn( field: "title"),
+          a!queryColumn( field: "phoneNumber"),
+          a!queryColumn( field: "startDate")
+        }),
+        /*
+        * Replace the hard-coded value of 1 with your primary key 
+        * via a rule input to bring back a single row of data
+        */  
+        filter: a!queryFilter( field: "id", operator:"=", value:1 ),
+        pagingInfo: a!pagingInfo(1,1)
+      )
+    ).data
+  ),
+  local!isTransfer: false,
+  /* Used to keep changes in a sandbox. */
+  local!updatedEmployeeData,
+  a!columnsLayout(
+    columns:{
+      a!columnLayout(
+        contents:{
+          a!textField(
+            label: "First Name",
+            labelPosition: "ADJACENT",
+            value: local!employee.firstName,
+            readOnly: true
+          ),
+          a!textField(
+            label: "Last Name",
+            labelPosition: "ADJACENT",
+            value: local!employee.lastName,
+            readOnly: true
+          ),
+          a!textField(
+            label: "Phone Number",
+            labelPosition: "ADJACENT",
+            value: local!employee.phoneNumber,
+            readOnly: true
+          )
+        }
+      ),
+      a!columnLayout(
+        contents:{
+          if(
+            local!isTransfer,
+            {
+              a!dropdownField(
+                label: "New Department",
+                labelPosition: "ADJACENT",
+                choiceLabels: local!departments,
+                choiceValues: local!departments,
+                value: local!updatedEmployeeData.department,
+                saveInto: local!updatedEmployeeData.department
+              ),
+              a!textField(
+                label: "New Title",
+                labelPosition: "ADJACENT",
+                required: true,
+                value: local!updatedEmployeeData.title,
+                saveInto: local!updatedEmployeeData.title
+              )
+            },
+            {
+              a!textField(
+                label: "Department",
+                labelPosition: "ADJACENT",
+                value: local!employee.department,
+                readOnly: true
+              ),
+              a!textField(
+                label: "Title",
+                labelPosition: "ADJACENT",
+                value: local!employee.title,
+                readOnly: true
+              )
+            }
+          ),
+          a!textField(
+            label: "Start Date",
+            labelPosition: "ADJACENT",
+            value: text( local!employee.startDate, "mmm dd, yyyy"),
+            readOnly: true
+          ),
+          a!linkField(
+            labelPosition: "ADJACENT",
+            links: a!dynamicLink(
+              label: "Transfer employee",
+              value: true,
+              saveInto: {
+                local!isTransfer,
+                a!save( local!updatedEmployeeData, local!employee)
+              }
+            ),
+            showWhen: not( local!isTransfer)
+          ),
+          a!buttonLayout(
+            primaryButtons:{
+              a!buttonWidget(
+                label: "Transfer",
+                validate: true,
+                saveInto:{
+                  a!writeToDataStoreEntity(
+                     dataStoreEntity: cons!EMPLOYEE_ENTITY,
+                     valueToStore: local!employee,
+                     onSuccess: a!save(local!employee, local!updatedEmployeeData)
+                  ),
+                  a!save( local!isTransfer, false)
+                }
+              )
+            },
+            secondaryButtons:{
+              a!buttonWidget(
+                label: "Go Back",
+                value: false,
+                saveInto: local!isTransfer
+              )
+            },
+            showWhen: local!isTransfer
+          )
+        }
+      )
+    }
+  )
+)
+Test it Out
+
+Click on the link Transfer Employee. Notice that department and title have now been turned into editable fields.
+Change the value of New Department and New Title and click Transfer. Notice the entered values remain. 
+Click on the link Transfer Employee. Change the value of New Department and New Title and click Go Back. Notice the previous values are shown.
+
+Notable implementation details
+
+The ability to persist data directly to the database from the summary view should be considered when the desired outcome it to simply spot update data. If other things need to happen as a result of the change, it's best to move this to a related action to allow a process to manage the update.
+This recipe provides only the interface example and assumes that this dashboard would go in an employee entity-backed record. However, this expression could be used in any user interface that makes sense.
+If an error occurs updating the status, you can see the specific error encountered while testing the interface, but the end user will see the configured error message in the dropdown field's validation message. When saving multiple fields at once, consider using a section validation error or a rich text field with an error icon to display the message.

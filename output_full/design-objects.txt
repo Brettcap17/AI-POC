@@ -1,0 +1,115 @@
+
+layout: basic
+title: Design Objects
+topic: Designer
+topic-group: Design Objects
+type: Reference
+weight: 100
+
+
+.doicons {
+   padding-right:8px;
+}
+
+Overview
+Applications contain a set of objects that function together to meet one or several business use cases. Applications allow these objects to be deployed from one environment to another.
+When an object is created, it is assigned a universally unique identifier (UUID). This internal (hidden) property is not editable or configurable.
+Each design object provides a specific piece of functionality, and each application contains many objects grouped by common purpose. Technically, applications do not contain these objects, but simply have a list of objects that are associated with them. The Objects view shows a list of objects ignoring the application association. The following sections describe each Appian object.
+Data objects
+Record types, data stores and custom data types (CDTs) are all data-centric objects. Their icons will appear orange in grids and other displays in Appian Designer.
+{:.doicons}Data Store
+A data store is a reference to an external relational database that is used to store application data. Each data store contains one or more data entities that correspond to a table in the database. When saving data from Appian to an external database, the data store defines the connection to the database, while data types define the structure of the data entity being stored.
+{:.doicons}Data Type
+As opposed to a primitive or system data type, a custom data type (CDT) is a developer-defined data structure. Data Types allow designers to create a logical grouping of related data that can then be used by other objects to share data. Data can be shared internally, for instance between an interface and process model, or a web service that uses a CDT.
+Because a data type will always be used in context of another object, it does not have individual security settings.
+{:.doicons}Record Type
+A record type brings together all the data on a single topic and displays it in a series of record views. Records provide a centralized view of a given business function, along with all of its connections to related records.
+Attaching process models to record views as related actions allows users to immediately take action on the information shown in the record view.
+Process objects
+Process models and process reports can be considered process-centric. Process models define how a process will function while process reports allow users access to data from the process. Process object icons will appear dark blue in grids and other displays in Appian Designer.
+{:.doicons}Process Model
+A process model is the primary tool in Appian for describing a workflow. Developers graphically lay out the workflow, which may assign user tasks, manipulate data, post system events, or update other design objects. Process models are frequently used with record types to provide users with tools to act on the information shown by the record.
+{:.doicons}Process Report
+A process report displays data from active and recently completed processes and tasks. Developers can choose to create process reports from scratch or pick from one of several dozen of out-of-the-box report templates.
+{:.doicons}Robotic Process
+A robotic process interacts with other applications through their front-end interfaces. Use them to automate manual, repetitive tasks on systems that don't have the right APIs. Developers can integrate robotic processes into their Appian applications to achieve complete automation.
+Learn more about Appian RPA.
+User objects
+Objects that are primarily involved with interactive user displays fall into this category. Interfaces, reports, and sites are all objects are created in order for users to interact with the application. Although record types provide user interaction functionality, the object also is a query-able source of data.
+User object icons will appear Appian blue in grids and other displays in Appian Designer.
+{:.doicons}Interface
+An interface is an object that returns one or more components to display on a record view, Tempo report, or process form. This is the primary object that designers use to show user interfaces to application users.
+{:.doicons}Report
+A report displays data from tasks, records, and other data sources in a single interface for end users to view. Through the use of charts, grids, pictures, and the dynamic behavior that SAIL offers, a report offers a high-level overview of aggregated data.
+{:.doicons}Site
+A site is a customizable user interface where a developer can create focused work environments for their user. When working in a site, users can view and submit tasks, view reports, records, and start actions.
+Rule objects
+Rule-based objects are used in expressions to reference specific values and perform complex operations or queries. Expression rules, decisions, and constants are all considered rule-based objects. Rule object icons will appear purple in grids and other displays in Appian Designer.
+{:.doicons}Constant
+A constant holds a single literal value or list of values. A constant allows you to define a value once and then use it in many places in an application. If the value needs to be updated in the future, it only needs to be updated in one location. Constants are also used to reference other design objects in expressions. The most common uses for constants include:
+
+single primitive value
+a list of text values
+a reference to an Appian object
+
+{:.doicons}Decision
+A decision is a grouping of business rules that answers a specific question based on inputs. Unlike expression rules, which primarily calculate or manipulate data, Decisions are best used to encapsulate complex, business-specific logic.
+Decisions can be called from any expression, so they can be reused across multiple objects throughout the system.
+{:.doicons}Expression Rule
+An expression rule is a statement that evaluates to return a value, much like a spreadsheet function.
+They are a stored expression that works like an Appian function, except that users can create their own rule inputs (to use as parameters) and definition.
+{:.doicons}AI Skill
+Use the AI skill to create, train, and use machine learning models in your applications. The AI skill interface offers a low-code way to customize a model to your use case and specifications.
+For example, train an AI skill to classify documents that are passed to your process. Use the smart service output to route the process properly.
+Integration objects
+Whenever an application needs to interact with a third-party system or vice versa, developers can use as many as three different type of objects: an integration, a connected system, and/or a web API. Integration object icons will appear bright green in grids and other displays in Appian Designer.
+{:.doicons}Connected System
+A connected system makes it easy to connect to databases and external web services. They provide a central location to store authentication details and connection information. In fact, a number of authentication types can only be leveraged by using a connected system.
+You can deploy connected systems across environments alongside an import customization file, allowing you to use different authentication information for each environment.
+{:.doicons}Integration
+An integration can be used to call external systems and web services from Appian. Integrations can be called in expressions, interfaces, web APIs, and process models to query or modify data in external systems. They can inherit connection details from a connected system.
+{:.doicons}Web API
+A web API provides a way to expose an Appian endpoint to an external system. When a client makes an HTTP request to the given URL, the associated expression is executed and the result is returned to the client. Web APIs can be used to push data to Appian, to pull data from Appian, and even to initiate Appian processes.
+Group objects
+Appian manages object permissions through group membership and system roles. Groups and group types are the objects that support security and permissions throughout the application. Group object icons will appear red in grids and other displays in Appian Designer.
+{:.doicons}Group
+A group allows developers to organize users, usually for the purpose of determining what permissions they have to design or use application objects and data. In addition, tasks and News entries can be targeted to one or more groups, as well as to individual users. A group can either be a custom group or use an existing group type (defined below), as well as a list of users and member groups that belong to it.
+{:.doicons}Group Type
+A group type is used to organize groups, and can only be created by users of type System Administrator. For example, the Region group type allows a developer to organize their sales teams by creating a different Region group for each sales team, for instance, Commercial West, Commercial East, Midwest.
+Group types also define attributes that are shared across groups. For example, the group type Region might have a "regional VP" attribute. Then, each group of that group type would have a different value for the attribute, based on who that region's vice president is.
+Content-management objects
+Appian has a robust content management framework that allows developers to store and organize application content. For document management, there are three specific objects involved: knowledge centers, document folders, and documents. Icons for content-management objects will appear dark green in grids and other displays in Appian Designer.
+Additionally, process model and rule folders exist to assist in the organization of those objects. Icons for these types of folders will appear the same color as the objects they organize.
+{:.doicons}Document
+A document is a file stored in Appian. Appian provides a management system for documents.
+While process reports are stored as documents, they have a unique icon and are sorted and filtered as reports.
+{:.doicons}Folder
+Folders allow you to organize your application content and centralize security settings. Design objects and documents can only belong to one folder at a time.
+You can create folders within folders for multiple levels of organization. Items in a folder (including subfolders) are listed in both the folder view and the objects grid in either the Objects view or Build view.
+Security settings for the folder apply to all items within it (with the exception of Process Model Folders). Folders created within other folders by default inherit security from their parent folder. Edit the security of the child folder to change this option: Inherit security from parent.
+There are four types of folders to choose from (Rule, Process Model, Document, and Knowledge Center).
+{:.doicons}Document Folder
+Document folders can contain documents or other document folders.
+Document folders can only be created within a knowledge center or within another document folder.
+{:.doicons}Knowledge Center
+A knowledge center stores documents and document folders.
+{:.doicons}Rule Folder
+Rule folders can store the following design object types:
+
+Constant
+Expression Rule
+Interface
+Decision
+Integration
+Rule Folder
+
+{:.doicons}Process Model Folder
+Process model folders can only store process models or other process model folders.
+
+appian-style-note
+Security set for a process model folder is not applied to its contents.
+
+Notification objects
+A feed object is created to support notifications on News in sites or Tempo. The feed icon will appear dark yellow in grids and other displays in Appian Designer.
+{:.doicons}Feed
+A feed is a channel for delivering content to the News Feed in Tempo or Sites. Every post or event in the News Feed that isn't directly created by a user has a feed associated with it. Generally, developers use a separate feed for each topic for which their application creates events or comments.

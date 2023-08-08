@@ -1,0 +1,44 @@
+
+layout: function
+title: time() Function
+space: function_page
+excerpt: "Converts the given time into an equivalent time value."
+category: function_page
+fncname: time
+fncexample: "time(14, 20, 23)"
+fncresult: "2:20 PM"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: hour
+    types: Integer
+    description: |
+      The number of hours to add to the total.
+  - keyword: minute
+    types: Integer
+    description: |
+      The number of minutes to add to the total.
+  - keyword: second
+    types: Integer
+    description: |
+      The number of seconds to add to the total.
+  - keyword: millisecond
+    types: Integer
+    description: |
+      The number of milliseconds to add to the total.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Time
+Usage considerations
+The time can be treated both as duration (for example, Joe ran the marathon in 3 hours and 23 minutes) and as a point in time (for example, we have a meeting at 3:23PM every day).
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+time(14,20,23) returns 2:20 PM

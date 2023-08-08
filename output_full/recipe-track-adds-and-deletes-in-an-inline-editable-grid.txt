@@ -1,0 +1,219 @@
+
+layout: pattern
+title: Track Adds and Deletes in Inline Editable Grid
+excerpt: 'In an inline editable grid, track the employees that are added for further processing in the next process steps.'
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Grids
+
+Also track the ids of items that are deleted for use in the Delete from Data Store Entities smart service after the user submits the form.
+
+This scenario demonstrates:
+
+How to store data into multiple variables when the user interacts with the components in a grid layout.
+
+Expression
+sail 
+a!localVariables(
+  /* In a real app, these values should be held in the database or in a constant */
+  local!departments: { "Corporate", "Engineering", "Finance", "HR", "Professional Services", "Sales" },
+  /*  
+  * local!employees is provided in this recipe as a way to start with hard-coded
+  * data. However, this data is identical to the data created from the entity-backed
+  * tutorial. Replace the hard-coded data with a query to the employee data store
+  * entity and all of the employee records from the tutorial will appear.
+  *
+  * To replace this data with your own, replace (ctrl+H or cmd+H) all references to
+  * local!employees with your data source, either via rule input or local variable.
+  */
+  local!employees: {
+    a!map( id: 1, firstName: "John" , lastName: "Smith" , department: "Engineering" , title: "Director" , phoneNumber: "555-123-4567" , startDate: today()-360 ),
+    a!map( id: 2, firstName: "Michael" , lastName: "Johnson" , department: "Finance" , title: "Analyst" , phoneNumber: "555-987-6543" , startDate: today()-360 ),
+    a!map( id: 3, firstName: "Mary", lastName: "Reed" , department: "Engineering" , title: "Software Engineer" , phoneNumber: "555-456-0123" , startDate: today()-240 )
+  },
+  local!deletedEmployeeIds,
+  a!formLayout(
+    label: "Example: Inline Editable Grid Tracking Adds and Deletes",
+    contents: {
+      a!gridLayout(
+        totalCount: count(local!employees),
+        headerCells: {
+          a!gridLayoutHeaderCell(label: "First Name" ),
+          a!gridLayoutHeaderCell(label: "Last Name" ),
+          a!gridLayoutHeaderCell(label: "Department" ),
+          a!gridLayoutHeaderCell(label: "Title" ),
+          a!gridLayoutHeaderCell(label: "Phone Number" ),
+          a!gridLayoutHeaderCell(label: "Start Date", align: "RIGHT" ),
+          /* For the "Remove" column */
+          a!gridLayoutHeaderCell(label: "" )
+        },
+        /* Only needed when some columns need to be narrow */
+        columnConfigs: {
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:3 ),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:3 ),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:3 ),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:3 ),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:3 ),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight:2 ),
+          a!gridLayoutColumnConfig(width: "ICON")
+        },
+        /*
+        * a!forEach() will take local!employee data and used that data to loop through an
+        * expression that creates each row.
+        *
+        * When modifying the recipe to work with your data, you only need to change:
+        * 1.) the number of fields in each row
+        * 2.) the types of fields for each column (i.e. a!textField() for text data elements)
+        * 3.) the fv!item elements. For example fv!item.firstName would change to fv!item.yourdata
+        */
+        rows: a!forEach(
+          items: local!employees,
+          expression: a!gridRowLayout(
+            contents: {
+              /* For the First Name Column*/
+              a!textField(
+                /* Labels are not visible in grid cells but are necessary to meet accessibility requirements */
+                label: "first name " & fv!index,
+                value: fv!item.firstName,
+                saveInto: fv!item.firstName,
+                required: true
+              ),
+              /* For the Last Name Column*/
+              a!textField(
+                label: "last name " & fv!index,
+                value: fv!item.lastName,
+                saveInto: fv!item.lastName,
+                required: true
+              ),
+              /* For the Department Column*/
+              a!dropdownField(
+                label: "department " & fv!index,
+                placeholder: "-- Please Select-- ",
+                choiceLabels: local!departments,
+                choiceValues: local!departments,
+                value: fv!item.department,
+                saveInto: fv!item.department,
+                required: true
+              ),
+              /* For the Title Column*/
+              a!textField(
+                label: "title " & fv!index,
+                value: fv!item.title,
+                saveInto: fv!item.title,
+                required: true
+              ),
+              /* For the Phone Number Column*/
+              a!textField(
+                label: "phone number " & fv!index,
+                placeholder:"555-456-7890",
+                value: fv!item.phoneNumber,
+                saveInto: fv!item.phoneNumber,
+                validations: if( len(fv!item.phoneNumber) > 12, "Contains more than 12 characters. Please reenter phone number, and include only numbers and dashes", null )
+              ),
+              /* For the Start Date Column*/
+              a!dateField(
+                label: "start date " & fv!index,
+                value: fv!item.startDate,
+                saveInto: fv!item.startDate,
+                required: true,
+                align: "RIGHT"
+              ),
+              /* For the Removal Column*/
+              a!imageField(
+                label: "delete " & fv!index,
+                images: a!documentImage(
+                  document: a!iconIndicator( "REMOVE"),
+                  altText: "Remove Employee",
+                  caption: "Remove " & fv!item.firstName & " " & fv!item.lastName,
+                  link: a!dynamicLink(
+                    value: fv!index,
+                    saveInto: {
+                      if(
+                        isnull( fv!item.id),
+                        {},
+                        a!save( local!deletedEmployeeIds, append(local!deletedEmployeeIds, fv!item.id))
+                      ),
+                      a!save( local!employees, remove(local!employees, save!value))
+                    }
+                  )
+                ),
+                size: "ICON"
+              )
+            },
+            id: fv!index
+          )
+        ),
+        addRowlink: a!dynamicLink(
+          label: "Add Employee",
+          /*
+           * For your use case, set the value to a blank instance of your CDT using
+           * the type constructor, e.g. type!Employee(). Only specify the field
+           * if you want to give it a default value e.g. startDate: today()+1.
+           */
+          value: {
+            firstName: "",
+            lastName: "",
+            department: "",
+            title: "",
+            phoneNumber: "",
+            startDate: today() + 1
+          },
+          saveInto: {
+            a!save( local!employees, append(local!employees, save!value))
+          }
+        ),
+        /* This validation prevents existing employee start date from changing to a date in the future*/
+        validations: if(
+          a!forEach(
+            items:local!employees,
+            expression: and( not( isnull( fv!item.id)), todate( fv!item.startDate) > today() )
+          ),
+          "Existing Employees cannot have an effective start date beyond today",
+          null
+        ),
+        rowHeader: 1
+      ),
+      a!textField(
+        label: "New Employees",
+        labelPosition: "ADJACENT",
+        value: joinarray(
+          index(
+            local!employees,
+            where(
+              a!forEach(
+                local!employees,
+                isnull( fv!item.id)
+              )
+            ),
+            {}
+          ),
+          char(10)
+        ),
+        readOnly: true
+      ),
+      a!textField(
+        label: "Deleted Employees",
+        labelPosition: "ADJACENT",
+        value: local!deletedEmployeeIds,
+        readOnly: true
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    )
+  )
+)
+Test it out
+
+Remove a row from the pre-loaded data set by clicking the "X" link. Notice that the item id is added to the array of deleted item ids.
+Add a row, enter values into the blank fields. Notice that the new employee is added to the array of added employees in the New Employees field.
+
+Notable implementation details
+
+New employee values are seen immediately after updating in the New Employees field. This field is simply showing any values in local!employees without an value for id.
+If you intend to immediately write the new and edited items using the Write to Data Store Entities smart service, you don't need to capture the array of added items separately from your items array. This is because the Write to Data Store Entity smart service can do updates and inserts at the same time. See also: Write to Data Store Entity Smart Service
+The array of deleted item ids may contain null values corresponding to newly added items. You don't have to remove the nulls if you are planning on passing the ids to the Delete from Data Store Entities smart service. This is because the smart service ignores the null values. See also: Delete from Data Store Entities Smart Service

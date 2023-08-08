@@ -1,0 +1,38 @@
+
+layout: function
+title: rank() Function
+space: function_page
+excerpt: "Returns an integer representing the rank of the number in the specified array."
+category: function_page
+fncname: rank
+fncexample: "rank(2, {1, 2, 3, 4}, false)"
+fncresult: "3"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number to be ranked
+  - keyword: array
+    types: Decimal Array
+    description: |
+      An array of numbers containing the number to be ranked
+  - keyword: order
+    types: Number
+    description: |
+      Use 0 to rank the array elements from high to low and 1 to rank the array in ascending order.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+rank(2,{1,2,3,4},0) returns 3

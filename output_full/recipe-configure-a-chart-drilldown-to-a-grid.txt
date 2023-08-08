@@ -1,0 +1,162 @@
+
+layout: pattern
+title: Configure a Chart Drilldown to a Grid
+excerpt: Displays a column chart with aggregate data from a record type and conditionally shows a grid with filtered records when a user selects a column on the chart.
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Charts
+  - Grids
+  - Query Data
+  - Records
+
+This scenario demonstrates:
+
+How to create a grid and chart using a record type as the source.
+How to save a selection from the chart and filter the grid.
+
+You can click on the chart to drill down and view more details in a grid. This pattern is related to the grid with detail pattern.
+{:.screenshot}
+When a column in the chart is selected, a grid displays with the results for the selected column:
+{:.screenshot}
+Create this pattern
+The main components in this pattern is a chart and read-only grid that are alternately visible. In the pattern below, the chart and grid use a record type as the data source.
+This recipe uses references to record types and record fields. To use this recipe, you will need to update the references to record types and record fields in your application.
+```sail
+a!localVariables(
+  local!selection,
+  a!sectionLayout(
+    contents: {
+      a!columnChartField(
+        label: "All Cases",
+        data: a!recordData(
+          recordType: recordType!Case,
+          filters: a!queryLogicalExpression(
+            operator: "AND",
+            filters: {
+              a!queryFilter(
+                field: recordType!Case.fields.type,
+                operator: "not in",
+                value: {"Other"}
+              )
+            },
+            ignoreFiltersWithEmptyValues: true
+          )
+        ),
+        config: a!columnChartConfig(
+          primaryGrouping: a!grouping(
+            field: recordType!Case.fields.status,
+            alias: "status"
+          ),
+          secondaryGrouping: a!grouping(
+            field: recordType!Case.fields.type,
+            alias: "type"
+          ),
+          measures: {
+            a!measure(
+              function: "COUNT",
+              field: recordType!Case.fields.id,
+              alias: "id_count"
+            )
+          },
+          dataLimit: 100,
+          link: a!dynamicLink(
+            value: fv!selection,
+            saveInto: local!selection
+          )
+        ),
+        stacking: "NONE",
+        colorScheme: "PARACHUTE",
+        showWhen: isnull(local!selection)
+      ),
+      a!linkField(
+        labelPosition: "COLLAPSED",
+        links: a!dynamicLink(
+          label: "Back",
+          saveInto: a!save(
+            target: local!selection,
+            value: null
+          )
+        ),
+        showWhen: not(isnull(local!selection))
+      ),
+      a!gridField(
+        label: local!selection.status & " " &local!selection.type & " Cases",
+        labelPosition: "ABOVE",
+        data: a!recordData(
+          recordType:recordType!Case,
+          filters: a!queryLogicalExpression(
+            operator: "AND",
+            filters: {
+              a!queryFilter(
+                field: recordType!Case.fields.type,
+                operator: "=",
+                value: local!selection.type
+              ),
+              a!queryFilter(
+                field: recordType!Case.fields.status,
+                operator: "=",
+                value: local!selection.status
+              )
+            },
+            ignorefilterswithemptyvalues: true
+          )
+        ),
+        columns: {
+          a!gridColumn(
+            label: "Id",
+            sortField: recordType!Case.fields.id,
+            value: fv!row[recordType!Case.fields.id],
+            align: "END"
+          ),
+          a!gridColumn(
+            label: "Assignee",
+            sortField: recordType!Case.fields.assignee,
+            value: a!linkField(
+              links: {
+                a!recordLink(
+                  label: fv!row[recordType!Case.fields.assignee],
+                  recordType: recordType!Case,
+                  identifier: fv!identifier
+                )
+              }
+            )
+          ),
+          a!gridColumn(
+            label: "Title",
+            sortField: recordType!Case.fields.title,
+            value: fv!row[recordType!Case.fields.title]
+          ),
+          a!gridColumn(
+            label: "Priority",
+            sortField: recordType!Case.fields.priority,
+            value: fv!row[recordType!Case.fields.priority]
+          ),
+          a!gridColumn(
+            label: "Status",
+            sortField: recordType!Case.fields.status,
+            value: fv!row[recordType!Case.fields.status]
+          ),
+          a!gridColumn(
+            label: "Type",
+            sortField: recordType!Case.fields.type,
+            value: fv!row[recordType!Case.fields.type]
+          ),
+          a!gridColumn(
+            label: "Date Created",
+            sortField: recordType!Case.fields.dateCreated,
+            value: fv!row[recordType!Case.fields.dateCreated],
+            align: "END"
+          ),
+        },
+        showWhen: not(isnull(local!selection))
+      )
+}
+
+)
+)
+```
+Test it out
+
+Click a bar on the chart. The chart will be replaced with a grid that displays all cases for that type and status.
+Click the "Back to Chart" link. The grid will be replaced with the original chart.

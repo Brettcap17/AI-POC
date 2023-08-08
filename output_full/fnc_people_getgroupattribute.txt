@@ -1,0 +1,37 @@
+
+layout: function
+title: getgroupattribute() Function
+space: function_page
+excerpt: "Retrieves the value of the specified group attribute for the given group."
+category: function_page
+fncname: getgroupattribute
+fncexample: "getgroupattribute(cons!MY_GROUP, \"created\")"
+fncresult: "12/16/05 6:37 PM GMT"
+fnccat: People
+compatibility: -crf, ~portal, ~om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: group
+    types: group
+    description: |
+      The group for which the value of the attribute is to be retrieved.
+  - keyword: attribute
+    types: Text
+    description: |
+      The name of the desired attribute.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Use this only to retrieve group attributes for groups of a specific group type. This function will not work with custom groups without a specific group type. To retrieve attributes common to all groups, such as id, use the group() function.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+When you create a custom group type, you can add attributes for the group type.
+When you later create a group of this type (which must be public or restricted), you can also specify values for the defined attributes.
+getgroupattribute() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Returning the creation date of a custom group:
+getgroupattribute(pv!myGroup,"dateCreated") where pv!myGroup is a process variable holding a Group data type, which is a custom public group of type "personalgroups", and the group type has an attribute called dateCreated returns 5/9/06

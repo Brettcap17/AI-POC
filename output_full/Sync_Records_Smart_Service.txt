@@ -1,0 +1,154 @@
+
+layout: basic
+title: Sync Records Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Sync Records smart service allows you to sync a record or set of records in the specified record type.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!syncRecords
+fncsubcat: Data_Services
+node: Sync Records
+parameters:
+  - keyword: recordType
+    types: Record Type
+    description: 'A reference to a record type with data sync enabled. You must reference the record type directly from the recordType! domain (for example, recordType!Case).'
+  - keyword: identifiers
+    types: List of Any Type
+    description: 'The primary key values of the records to sync. You can include up to 1,000 identifiers in each sync request.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'An HTTP response or a list of a!save to return after the integration executes successfully. Created with a!httpResponse() or a!save(). Use fv!recordsUpdated to reference the updated records in the success response, and fv!queryError to reference any error in querying the set of synced records.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Data_Services
+ssicon: Sync_Records_from_Source.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} This smart service is supported for all record types with data sync enabled. If you want to sync data in a service-backed record type, you must first configure a sync expression.
+Permissions needed
+The user executing this activity must have Viewer permission on the selected record type in order to trigger a sync.
+Properties
+
+Category: Data Services
+Icon: 
+Assignment Options: Unattended
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations, see the Process Node Properties page.
+Data tab
+Node inputs
+| Name        | Data Type        | Description                                                                                                        | Required | Multiple |
+|-------------|------------------|--------------------------------------------------------------------------------------------------------------------|----------|----------|
+| Record Type | Record Type      | The record type you want to sync.                                                                                  | Yes      | No       |
+| Identifiers | List of Any Type | A list of primary key values for the records to sync. You can include up to 1,000 identifiers in each sync request. | Yes      | No       |
+See also: Record Type
+Node outputs
+| Name            | Data Type   | Description                                                                                                           |
+|-----------------|-------------|-----------------------------------------------------------------------------------------------------------------------|
+| Records Updated | List of IDs | A list of records updated or inserted upon successful execution. The operation performed is not included in the list. Records that were deleted because their identifiers were no longer present in the source system are excluded from the list. |
+| Query Error     | Text        | The error message returned when the query to get the list of new or updated records fails                             |
+ 
+| Error Occurred | Boolean | Returns `true` if any write to the source system or Appian fails; returns `false` if all writes succeed. |
+| Errors | List of Any Type | The error that occurred when writing the records and the list of records that failed to write. This is only returned when the Pause On Error input is `false`.| 
+Usage considerations
+Syncing data in a service-backed record type
+To use this smart service with a service-backed record type, you must first configure a Sync Expression on your record type.
+A Sync Expression is similar to a Record Data Source expression; the only difference is that you pass individual record identifiers to your Sync Expression to fetch and return a row or set of rows from the web service. This enables Appian to sync specific rows of data from the web service when you use the Sync Records smart service.
+Learn how to generate a Sync Expression on your record type.
+Syncing more than one record type in a single process
+This smart service can only sync data for a single record type.
+To sync data for more than one record type, consider creating a process model that uses multiple instances of the node (one for each record type).
+{% include zoompic.html url="images/multiple_sync_records.png" style="width:75%;" %}
+Syncing more than 1,000 records
+For large datasets, the 1,000-records-per-request limit means you may need to run multiple instances of the Sync Records smart service when that data changes. One way to do this is to add a loop to your process model to repeat the Sync Records operation.
+Each iteration of the loop can sync up to 1,000 unique records. To get the next batch of unique records, you can use a script task to increment a counter to get the next set of records to sync.
+{% include zoompic.html url="images/sync_records_loop.png" style="width:60%;" %}
+Let's look at an example of this process. Imagine you have a record type with 1,890 records, and the record field id uses sequential integers for the primary key.
+To page through sets of 1,000 records, you could create an expression rule that contains the following calculation:
+ri!pageNumber * 1000 - 999
+This calculation determines the starting row for each set of records to sync. You can reference this expression in a script task so you can supply the rule input value using a process variable. The process variable will track the number of times the process has looped, and it will increment on each loop to get the next batch of records.
+In this example, the first page of data will return 1 (1 × 1000 − 999). For the second page, the result would be 1001 (2 × 1000 − 999).
+Once the script task node calls the expression rule to retrieve the first set of 1,000 record identifiers, the output of the script task node stores that set in a process variable. An XOR gateway checks the output to see if it's not null or empty. If it is, the process ends. If it is not empty, the Sync Records node is run using the list of identifiers provided byt the output.
+After the first set of records is synced, a second script task increments the counter variable by 1 and the process repeats.
+After the first 1,000 records are synced, there are only 890 left to sync. During the second iteration of the loop, the expression rule will return the remaining identifiers and they will be synced using the Sync Records smart service. The second script task will increment the counter process variable to 3.  
+During the third loop, the expression rule will not return any new identifiers so the process will end.
+Syncing data deletions
+In addition to syncing new or changed data, the Sync Records smart service can also sync data deletions from the source system.
+If you pass a primary key value into the smart service, and that value is not in the source system, then that data will also be deleted in Appian. Any deleted records will be removed from the List of IDs returned in the smart service output.
+Using the onSuccess parameter
+When setting the onSuccess parameter, you can use fv!recordsUpdated to reference the updated records in the response. The record type's fields are accessed using the record type domain (recordType!).
+For example, to return the names for a Customer record type backed by a web service, write an expression similar to this example:
+sail
+a!syncRecords(
+  recordType: recordType!Customer,
+  identifiers: ri!identifiers,
+  onSuccess: a!httpResponse(
+    statusCode: 200,
+    headers: {
+      a!httpHeader(name: "Content-Type", value: "application/json")
+    },
+    body: "Customers updated: " & `fv!recordsUpdated[recordType!Customer.fields.fullName]`
+  )
+)
+If you are displaying this Customer record type in an interface, you can use a!save() in the onSuccess parameter to update a local variable with the latest data available in fv!recordsUpdated.
+sail
+a!syncRecords(
+  recordType: recordType!Customer,
+  identifiers: ri!identifiers,
+  onSuccess: a!save(
+    local!records, fv!recordsUpdated    
+  )
+)
+Automatic refresh on record views
+When you use this smart service on a record view, the view will automatically refresh with the latest record data. 
+This means that when your record view interface has a Record Action component that triggers the Sync Records smart service, or a button component that triggers the a!syncRecords() function, the record view data will automatically refresh after the sync occurs. 
+This refresh behavior only applies to data supplied by rv!record. If your record view definition uses rv!identifier or a local variable to supply the record data, the data will not automatically refresh; instead, you will need to configure additional refresh behavior. 
+a!syncRecords()
+The Sync Records smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Possible errors
+Appian will return an error when there is a problem syncing data for a record type. This section explains some of the common reasons that errors occur, and which errors will trigger an automatic retry of your sync.
+Security and permissions
+By default, the smart service is run as whoever starts the process. If that user does not have Viewer permission for the record type being synced, the sync is not triggered. The node will fail and pause the process with an exception.
+Data type mismatch
+The data type of the items listed in the identifiers parameter must match the type of the source's primary key field. If a mismatch occurs, the node will fail and pause the process with an exception.
+Missing sync expression
+If you use this smart service to sync data in a service-backed record type, you must configure a Sync Expression.
+Without this expression, Appian cannot request the correct data from the web service. If the expression is missing, the record type will not be able to sync the specified records and the node will fail. The record type will continue to be available after this error is returned.
+Integration errors
+The Sync Expression uses an integration to communicate with the source system. 
+If a sync fails due to an issue with the integration, the error will be reported through the expression and appear on the interface where the expression is called. The record data may be unavailable until the issue is corrected and a successful sync occurs.
+Automatic retries
+In the following cases, Appian will automatically retry the sync operation when the smart service fails: 
+|Issue|Record type source|
+|-|-|
+|Source integration error.|Web service|
+|Problem with the Sync Expression.|Web service|
+|Problem connecting to the source.|Database or Salesforce|
+Appian will retry the sync operation up to three times (with two seconds between each retry). After three attempts, the sync will fail and the record data will be unavailable. 
+See Troubleshooting Data Sync for more information on the different sync errors.
+Examples
+You can use this smart service in a variety of ways to keep your data fresh.
+Trigger a sync from a web API
+Let’s say you have a Case record type that uses Salesforce as the source. When cases are logged in Salesforce, you need to immediately sync those changes in Appian.
+To sync the new or changed cases, you can generate a web API in Appian that includes the a!syncRecords() function so you can specify the record type to sync when a change occurs in the source. Then, you can add the web API URL in Salesforce so it can notify Appian of any changes and trigger the sync.
+{% include zoompic.html url="images/generate-web-api-records.png" border="-nb" style="width:80%;" %}
+Learn how to generate a web API to sync records.
+Trigger a sync from an interface
+But perhaps you want to re-sync specific records on demand. For example, if you have a report that shows all critical cases and their status, you may want to refresh this report every so often to ensure you see the latest information about those critical cases. 
+To refresh (or re-sync) specific cases, you can add a button component to your report and configure the a!syncRecords() function as the saveInto value. This way, anytime a user clicks the button, the specified list of records is re-synced from the source.
+{% include zoompic.html url="images/buttonTrigger.png" border="-nb" style="width:80%;" %}
+Trigger a sync from a process model
+Alternatively, you may have an existing process model that executes a stored procedure in order to update your source data. 
+To sync changes created by your stored procedure, you can add the Sync Records smart service to your process model. This way, any data changed by the stored procedure is fetched from the source and synced in Appian.
+{% include zoompic.html url="images/processModelTrigger.png" border="-nb" style="width:80%;" %}
+
+appian-style-tip
+See the Sync Records from a Record Action pattern to learn how to create a record action to sync specific records.

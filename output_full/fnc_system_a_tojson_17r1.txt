@@ -1,0 +1,25 @@
+
+layout: function
+title: a!toJson_17r1 Function
+space: function_page
+excerpt: "Converts a value into a JSON string."
+category: function_page
+fncname: a!toJson_17r1
+fncexample: "a!toJson_17r1(a!pagingInfo(startIndex: 1, batchSize: 10))"
+fncresult: "{\"startIndex\":1,\"batchSize\":10}"
+fnccat: System
+evolved_fncname: a!toJson
+evolved_reason: "Improved support for datetime values. This removes the need to create a supporting conversion rule."
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: value
+    types: Any
+    description: |
+       The value to convert into a JSON string.
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

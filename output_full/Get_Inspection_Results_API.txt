@@ -1,0 +1,74 @@
+
+layout: basic
+title: Deployment API - Get Inspection Results
+title_short: Get Inspection Results API
+topic: deploymentapis
+weight: 1000
+
+Overview
+This endpoint retrieves the results of an inspection, given the UUID of the inspection.
+
+HTTP Request Method: GET
+Endpoint: /inspections/<uuid>
+
+Request
+When performing a GET request, you don’t need a request body. However, you do need to specify the UUID of the inspection you’re querying for. This is done by adding a path parameter to the end of the URL, such as: https://<domain>/suite/deployment-management/v1/inspections/<UUID>
+Request example
+Request
+GET /inspections/<uuid>
+cURL example
+If you’re calling the API from a command line interface, you can use cURL to make a request. The cURL command with the deployment UUID looks like:
+curl --location --request
+GET 'https://mysite.appiancloud.com/suite/deployment-management/v1/inspections/378271a6-ca0d-4466-bac9-385e4fcb951a/' \
+--header 'Appian-API-Key: <API key>'
+Response
+Successful response
+| Attribute | Value |
+| - | - |
+| summary | Overview of inspection results. |
+| summary.objectsExpected | Overview of inspection results for the objects included in the package (.zip). |
+| summary.objectsExpected.total | The total number of objects in the package. |
+| summary.objectsExpected.imported | The number of objects in the package that are expected to successfully deploy. |
+| summary.objectsExpected.failed | The number of objects in the package that are expected to fail to deploy. |
+| summary.objectsExpected.skipped | The number of objects in the package that are expected to be skipped during deployment, because there were no changes. |
+| summary.problems | Overview of errors and warnings from inspection. |
+| summary.problems.totalErrors | Total number of errors from inspection. |
+| summary.problems.totalWarnings | Total number of warnings from inspection. |
+| summary.problems.errors | Array of errors with the package and import customization file. For each error, this array will include the name and UUID of the object that resulted in the inspection error, and the detailed error message. |
+| summary.problems.errors.errorMessage | The detailed error message. |
+| summary.problems.errors.objectName | The name of the object that resulted in the inspection error. |
+| summary.problems.errors.objectUuid | The UUID of the object that resulted in the inspection error. |
+| summary.problems.warnings | Array of warnings with the package and import customization file. For each warning, this array will include the name and UUID of the object that resulted in the inspection warning, and the detailed warning message. |
+| summary.problems.warnings.warningMessage | The detailed warning message. |
+| summary.problems.warnings.objectName | The name of the object that resulted in the inspection warning. |
+| summary.problems.warnings.objectUuid | The UUID of the object that resulted in the inspection warning. |
+| status | Status of the inspection operation itself. Possible statuses: IN_PROGRESS, COMPLETED, or FAILED. An inspection can only result in FAILED due to a system error, and does not reflect the expected success or failure of deploying the package. |
+Response example
+json
+{
+   "summary": {
+       "objectsExpected": {
+           "total": 22,
+           "imported": 20,
+           "failed": 2,
+           "skipped": 0
+       },
+       "problems": {
+           "totalErrors": 2,
+           "totalWarnings": 0,
+           "errors": [
+               {
+                   "errorMessage": "The dataStore [id= uuid=_a-0000d6a7-d30b-8000-ee2a-010000010000_2357] was not imported because a required precedent is missing: datatype [uuid={urn:com:appian:types:APN}APN_Account location=Data Store Entity > Data Type] cannot be found. (APNX-1-4070-001) (APNX-1-4071-006)",
+                   "objectName": "APN Account",
+                   "objectUuid": "_a-0000d6a7-d30b-8000-ee2a-010000010000_2357"
+               },
+               {
+                   "errorMessage": "The content [id= uuid=_a-0000d6a7-d30b-8000-ee2a-010000010000_2347] was not imported because a required precedent is missing: content [uuid=_a-0000d73e-944a-8000-9ba2-011c48011c48_13381 location=Parent] cannot be found. (APNX-1-4070-001) (APNX-1-4071-006)",
+                   "objectName": "Customer Information",
+                   "objectUuid": "_a-0000d6a7-d30b-8000-ee2a-010000010000_2347"
+               }
+           ]
+       }
+   },
+   "status": "COMPLETED"
+}

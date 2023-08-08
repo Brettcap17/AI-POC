@@ -1,0 +1,36 @@
+
+layout: pattern
+title: Define a Simple Currency Component
+excerpt: 'Show a text field that allows the user to enter dollar amounts including the dollar symbol and thousand separators, but save the value as a decimal rather than text. Additionally, always show the dollar amount with the dollar symbol.'
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Formatting
+
+
+This scenario demonstrates:
+
+How to configure an interface component to format a user's input
+
+Expression
+sail 
+a!localVariables(
+  local!amount,
+  a!textField(
+    label:"Amount in Text",
+    /* Instructions  show the saved datatype*/
+    instructions: "Type of local!amount: " & typename(typeof(local!amount)),
+    value: if(isnull(local!amount), "", dollar(local!amount)),
+    /* Instead of saving the value as text, a!save() is used to store to the desired datatype*/
+    saveInto: a!save(local!amount, todecimal(save!value))
+  )
+)
+Test it out
+
+Enter $12345 and click away from the field. Notice that the text box shows $12,345.00 and that the saved value is a decimal.
+Enter $12,345.23 and click away from the field.
+Enter a1b2c3 and click away. Notice that the text box removes the non-numeric characters and treats the remaining as a decimal value. A true currency component would catch this as an error case, hence why this is called a simple currency example.
+
+Notable Implementation Details
+
+Because dollar() will not accept a null value, we set the value conditionally until local!amount has a value

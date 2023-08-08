@@ -1,0 +1,70 @@
+
+layout: function
+title: a!sentimentScore() Function
+category: function_page
+excerpt: 'Returns a list of scores representing the emotional or subjective sentiment expressed in each of the provided text values, ranging from 1.0 (positive) to -1.0 (negative).'
+fnccat: System
+fncexample: 'a!sentimentScore({"Hi, I hope you''re having a great day"})'
+fncname: a!sentimentScore
+fncresult: '{0.79}'
+compatibility: -crf
+notice: cloud_only
+parameters:
+  - keyword: text
+    types: List of Text String
+    description: |
+      The text values from which to extract sentiment scores. For best results, use values that are about the length of a sentence.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+List of Decimal
+Usage considerations
+Considerations for Appian Cloud users
+
+appian-style-note
+Attention Appian Cloud FedRAMP, HIPAA, or PCI-DSS customers:
+Use of the Sentiment Score function results in sending data outside of Appian Cloud's FedRAMP, HIPAA, or PCI-DSS in-scope service boundaries. Customers should use caution when using a!sentimentScore() with regulated data, and review for their own compliance requirements.
+
+This function is available only on Appian Cloud and will be enabled on Cloud sites on a rolling basis. You will receive the following error until your site is enabled: This function is currently unavailable. Please contact your system administrator if this problem persists.
+Supported text values
+
+
+Supports US English text only.
+
+
+Single large text values will typically not provide useful sentiment scores. For best results, split large values into a list of smaller values that are each about the length of a sentence.
+
+
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Positive sentiment score
+sail 
+=a!sentimentScore({"Hi, I hope you're having a great day"})
+returns
+
+  {0.79}
+
+Negative sentiment score
+sail 
+=a!sentimentScore({"I got the wrong shipment!"})
+returns
+
+    {-0.53}
+
+Returning sentiment scores for multiple statements at once
+sail 
+=a!sentimentScore(
+  {
+    "I lost my wallet and was having a horrible day!",
+    "Then someone returned it to me and I was so happy!"
+  }
+)
+returns
+
+  {-0.73, 0.72}

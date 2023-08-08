@@ -1,0 +1,27 @@
+
+layout: function
+title: a!wsHttpHeaderField() Function
+space: function_page
+excerpt: "Constructs a WsHttpHeaderField object for use with a!wsConfig."
+category: function_page
+fncname: a!wsHttpHeaderField
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: name
+    types: Text
+    description: |
+      The name of the header to add.
+  - keyword: name
+    types: Text
+    description: |
+      The value of the header.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

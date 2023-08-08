@@ -1,0 +1,35 @@
+
+layout: basic
+title: Google Cloud Translation
+topic-group: A
+weight: 601
+
+Overview
+Appian supports the integration of Google AI services in your Appian application. As part of the offering, the Google Cloud Translation connected system enables you to quickly and easily detect the language of a piece of text, and then translate it into the desired language. Once you're connected, you can call an integration in your process model or interface so you can dynamically detect and translate text, allowing you to communicate information quickly and effectively.
+To use this connected system, you must have a Google Service Account. Ensure you have set up the required Google Cloud service credentials
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Google Cloud Vision connected system has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Project ID      | Required. Found in your Google Service Account file.             |
+| Private Key ID  | Required. Found in your Google Service Account file.             |
+| Private Key     | Required/Sensitive. Found in your Google Service Account file.             |
+| Client Email   | Required. Found in your Google Service Account file.             |
+| Client ID       | Required*. Found in your Google Service Account file.             |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+| Detect Language      | Discovers languages from provided text | READ |
+| Translate Text       | Translates provided text | READ |
+Detect Language
+Detect and obtain the language of a piece of text. The detected language will return as a language code. See a list of supported languages to see which language matches the language code.
+{:.screenshot}
+Translate Text
+Detect the source language of a piece of plain or HTML text and translate it into the language of your choosing. To dynamically translate content, consider adding a rule input in your integration to pass different values to translate.
+By default, text is translated using the Neural Machine Translation (NMT) model. If the NMT model is not supported for the requested language translation pair, then the Phrase-Based Machine Translation (PBMT) model is used. The runtime model will be returned in the result.
+{:.screenshot}

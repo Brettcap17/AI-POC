@@ -1,0 +1,12 @@
+
+layout: function
+title: linktoprocessmodeldashboard() Function [Deprecated]
+space: no_toc
+depver: 7.3
+category: function_page
+fncname: linktoprocessmodeldashboard
+fnccat: "一Deprecated一"
+reftype: function
+
+INCLUDE PAGE: portal_dep_notice.md
+For information about the {{ page.title }}, see the Appian 16.2 documentation.

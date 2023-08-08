@@ -1,0 +1,38 @@
+
+layout: function
+title: days360() Function
+space: function_page
+excerpt: "Returns the number of days between two dates, based on a 360-day calendar."
+category: function_page
+fncname: days360
+fncexample: "days360(today(), today() + 365, 0)"
+fncresult: "360"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: start_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: end_date
+    types: Date
+    description: |
+      The ending date.
+  - keyword: method
+    types: Integer
+    description: |
+      1 for European, 0 for US/NASD.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+days360(today(), today() + 365, 0) returns 360

@@ -1,0 +1,11 @@
+
+layout: basic
+title: Edit Department Properties Smart Service [Deprecated]
+depver: 17.1
+reftype: smart_service
+ssicon: Deprecated.gif
+ssparentcat: "一Deprecated一"
+
+This feature has been deprecated and will be removed in a future release of Appian. 
+Use Edit Group Smart Service instead. 
+For information about the {{ page.title }}, see the Appian 16.3 documentation.

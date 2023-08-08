@@ -1,0 +1,30 @@
+
+layout: basic
+title: Amazon Machine Learning
+topic-group: A
+weight: 200
+
+
+appian-style-note
+Amazon ML is no longer available to new Amazon customers.
+
+Overview
+Easily connect to Amazon Web Services Machine Learning models to make predictions based on your data. Pick from available models and quickly map your data to build smarter applications for fraud detection, demand forecasting, targeted marketing, and more.
+See Amazon documentation on requesting real time predictions.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Amazon Machine Learning connected system has the following properties:
+| Field             | Description                  |
+|-------------------|-----------------------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Access Key Id     | Required. Amazon uses a custom authentication schema that requires a special signing of the request using an access key, secret access key, and region. The access key id, along with an associated secret access key and region, are used to access Amazon services. Your access key id is the first piece of a set of programmatic credentials that can be generated for Amazon Identity and Access Management (IAM) user accounts. |
+| Secret Access Key | Required/Sensitive. Your secret access key is the second piece of a set of programmatic credentials that can be generated for Amazon IAM user accounts.  |
+| Region | Required*. Your region is the third piece of a set of programmatic credentials that can be generated for Amazon IAM user accounts. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|  Run a Prediction       | Run a prediction on an existing Amazon Machine Learning model | READ |
+{:.screenshot}

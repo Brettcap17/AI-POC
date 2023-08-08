@@ -1,0 +1,50 @@
+
+layout: pattern
+title: Add Multiple Text Components Dynamically
+excerpt: Show a dynamic number of text components to simulate a multi-text input box. A new text box is shown as soon as the user starts typing into the last input box.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Looping
+
+
+This scenario demonstrates:
+
+How to configure interface components to dynamically appear using a a!forEach() loop
+
+Expression
+```sail 
+a!localVariables(
+  local!guests: {""},
+  a!formLayout(
+    label: "Example: Add Text Components Dynamically",
+    contents: {
+      a!forEach(
+        items: local!guests,
+        expression: a!textField(
+          label: if(fv!isFirst, "Guest Names", ""),
+          value: fv!item,
+          saveInto: {
+            fv!item,
+            if(
+              fv!isLast,
+              a!save(local!guests, append(local!guests, "")),
+              {}
+            )
+          },
+          refreshAfter: "KEYPRESS"
+        )
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    )
+  )
+)
+```
+Test it out
+
+Type into the text field and notice that an empty one is appended

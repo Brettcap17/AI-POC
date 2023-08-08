@@ -1,0 +1,391 @@
+
+layout: basic
+title: Create Record Actions
+permalink: record-actions.html
+topic-group: C
+weight: 400
+
+This page describes how to create record actions. 
+Overview
+With Appian Records, you can use record views and a record list to provide a more comprehensive view of your data. Using these display elements, multiple users can benefit from a single record and use the record list to navigate and view the larger enterprise data.
+In addition to these display elements, you can enable users to take action directly from the record data. Using different types of record actions, you can integrate enterprise processes so users can take informed action from the record list or when viewing the data from a record.
+From the record list, you can add a record list action to start a process to add new records to the record list. For example, in a Case record type, support engineers may need to add new support cases.
+{% include zoompic.html url="images/record-list-action-support-list.png" %}
+From the records themselves, you can add related actions so users can use the information directly from a single record to update, add, or modify its information. 
+For example, in a Customer Support record type, you may have support engineers who need to update and resolve submitted support cases. Since each case's resolution will be different, you can add a related action to your records so support engineers can use the record's information to start a process to update and resolve the case.
+{% include zoompic.html url="images/support-view-related-actions.png" %}
+Once you configure record actions in the record type, you can reference these actions in interfaces when you use a record type to power a read-only grid or use the record action component.
+
+appian-style-tip
+If you are working with an existing record type created in 20.2 or earlier, update the record type to use new record type object components, features, and functions.
+
+Record list actions
+Record list actions are links to process models the user can start directly from the record list.
+Record list actions can be configured to open in a dialog, the same tab, or a new tab. After completing a record list action, users return to the record list. When actions are configured to open in a dialog, any user filter values are remembered when returning to the record list.
+A common use case is to add an action to create a new record. This allows users to leverage the record list search to ensure the record in question does not already exist. It also allows developers to use their five site pages more efficiently by combining record and action functionality.
+By default, record list actions display on the record list. Optionally, you can also configure record list actions to display in interfaces.
+Related actions
+Related actions are links to process models the user can start directly from a record using information from that record. We call that information the context for the related action. For example, within a customer record, there might be a related action to enter a new order for that customer or to update the customer information.
+Related action process models are the same as any other process model, except for a start-form restriction; if the process model has a start form, that form must be a SAIL form. Since record types that use a process model as their source derive related actions from the process model's quick tasks, this restriction doesn't apply to quick tasks.
+By default, related actions display in the Related Actions view. Optionally, you can configure related actions to display in other record views.
+Record action properties
+You can configure the following properties for record actions:
+
+
+
+Property
+Description
+
+
+
+
+Display Name
+
+Specify a display name using one of the following options:
+
+Select Enter name, and enter a display name.
+Select Use expression, and enter an expression for a dynamic display name.
+(Related actions only) Select Use process model name. The display name will correspond to the name of the process model you select for this action.
+
+This name is displayed on the button or link that initiates the action. Follow the recommended naming standard when creating a display name for the action.
+
+
+
+Key
+
+Verify the value. Appian auto-generates this value from the Display Name. This key is used to reference record actions within SAIL components.
+
+
+
+Description
+
+Enter a description of the record action. 
+
+For record list actions, this text displays in a tooltip when hovering on the record list action button.
+For related actions, this text displays with the Display Name in the Related Actions view. If the display name is using the process model name, the description will automatically use the process model description.
+
+
+
+
+Icon
+
+Select the icon you want to display with the action in either the record list or the Related Actions view. The default "plus" is a good choice when adding a new record.
+
+
+
+Dialog Box Size
+Choose which size dialog to open your action in. For manually configured actions, Large is selected by default. For generated actions, Large is selected for Create and Update actions, and Small is selected for Delete actions.
+This setting is only applied if you configure the action to open in a Dialog Box. Configure how record list actions are opened in the Open Actions In property. Configure how related actions are opened in each record view or in a record action component.
+
+
+
+Process Model
+Select the process model you want to use as a record action. The security for the process model determines who can perform the action.
+
+
+Context
+(Related actions only) Configure the parameters. The process parameters from your selected process model are pre-populated with their values set to null. Replace null with the value you want to pass to the process model's parameter.
+You do not need to include all parameters from the process model; only include the parameters you need for the related action, and remove the rest. If you make changes to the process parameters later, you'll need to manually update this field. 
+
+
+
+Security
+To further control when the record action displays to users, configure a Security Expression. The action will only be visible when the expression evaluates to true for the user. Learn more about record action security.
+
+
+
+
+Required supporting objects
+Regardless of record type configuration, record actions require the creation and configuration of at least the following design objects:
+
+A process model that represents the workflow of the action.
+An interface that users will use to change the record data.
+An expression rule that returns individual records based on record ID.
+
+If data sync is enabled and the data source is a database, you can use the Write Records Smart Service in your process model to create and update records. You can do this when manually creating a record action or when generating a record action.
+If data sync is not enabled or the data source is not a database, you must create the following additional objects:
+
+A custom data type (CDT) that stores the changed record data.
+A data store that communicates the changed record data from the CDT to the data source.
+A constant to reference the data store in expression rules.
+
+In addition, design best practices recommend using the following supporting objects:
+
+A group for application administrators, which will be used to configure permissions for the administrators of the required objects.
+A group for application users, which will be used to configure permissions for users of the process model.
+Application-specific folders to store the required objects.
+An expression rule that customizes the name of running instances of the process model.
+
+Add a record action
+If you have a database table with data sync enabled as the source of your record type, Appian can generate common record actions for that record type using basic information you provide. 
+Common record actions include creating a record, updating a record, and deleting a record. The generated action uses existing objects or creates new objects to meet the object requirements and follow best design practices for the action.
+You'll need to create the required objects, then configure the action manually in the record type if any of the following is true:
+- Your record type uses a source other than a database table.
+- You do not have data sync enabled for your database table.
+- You want to add more than the common actions listed above.
+Generate a new record action {#generate-record-action}
+Only database-backed record types with data sync enabled can use this feature.
+To generate a record action:
+
+In your record type, go to Record Actions.
+Click GENERATE A RECORD ACTION.
+Click the tile representing the action you want to add:
+CREATE: Allows users to create a record as a record list action.
+UPDATE: Allows users to update a record as a related action.
+DELETE: Allows users to update a record as a related action.
+Click NEXT.
+Review the suggested values for the following properties, and change as needed:
+
+| Property | Description |
+   | - | - |
+   | Display Name | Specifies a name for the action. This name is displayed on the button or link that initiates the action. Follow the recommended naming standard when creating this name. |
+   | Icon | Specifies the icon you want to display with the button or link that initiates the action. |
+   | Description | Specifies a brief description of the action. For record list actions, this text displays in a tooltip when hovering on the record list action button. For related actions, this text displays with the Display Name in the Related Actions view. |
+   | Application | Specifies the application where you want Appian to search for existing objects or create new objects to support this action. If the record type is associated with a single application, this property is read-only. If the record type is associated with more than one application in your Appian environment, the value defaults to the current application, but you can select a different application from the dropdown list. If the record type isn't associated with any application, select an application from the dropdown list. |
+
+Click NEXT.
+Review the objects that Appian will use for your new action, and make any necessary changes:
+
+{% include zoompic.html url="images/generate-record-action-review-objects.png" alt="generate-record-action-review-objects" %}
+
+
+
+Object
+CanRename?
+CanReplace?
+
+
+Workflow
+
+
+Process model
+Yes
+No
+
+
+Interface
+Yes
+No
+
+
+Expression rule (custom name of process instances)
+Yes
+No
+
+
+Expression rule (individual records by record ID)
+Yes
+Yes
+
+
+Security and Organization
+
+
+Group (application administrators)
+Yes
+Yes
+
+
+Group (application users)
+Yes
+Yes
+
+
+Folders
+Yes
+Yes
+
+
+
+
+
+
+appian-style-note
+Existing objects are marked with the  icon.
+
+To change an object:
+   - Click  next to the object.
+   - Continue as appropriate:
+ <table class="appianTable">
+ <thead>
+ <th>Change</th>
+ <th>Action</th>
+ </thead>
+ <tbody>
+ <tr>
+ <td><p>Rename a generated object.</p>
+ </td>
+ <td>
+ <ul>
+ <li>Click <strong>Rename</strong> from the dropdown menu. The object name becomes an editable text box. </li>
+ <li>Enter a new name in the text box.</li>
+ </ul>
+ </td>
+ </tr>
+ <tr>
+ <td><p>Replace a generated object with an existing object.</p></td>
+ <td>
+ <ul>
+ <li>Click <strong>Replace with existing object</strong>. The object name becomes a dropdown list.</li>
+ <li>In the object dropdown list, select an existing object.</li>
+ </ul>
+ </td>
+ </tr>
+ <tr>
+ <td><p>Replace an existing object with a generated object.</p></td>
+ <td>
+ <ul>
+ <li>Click <strong>Replace with generated object</strong>. The object name becomes an editable text box.</li>
+ <li>Enter a name for the generated object.</li>
+ </ul>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+
+
+Click GENERATE ACTION. Appian generates the action, creating and/or configuring the objects you reviewed. For details about these objects, see Generated process models and Generated interfaces.
+Click CLOSE. Your new action displays in the Record List Actions or Related Actions section as appropriate.
+(Record list actions only) Under Open Actions In, specify how the record list action should open. By default, Dialog Box is selected.
+appian-style-note
+The related Dialog Box Size property is set based on the type of generated action. Large is selected for Create and Update actions, and Small is selected for Delete actions.
+
+
+Click SAVE CHANGES.
+
+Generated process models
+When you generate a record action, Appian creates a new process model for the action.
+The generated process model is automatically configured in the following ways:
+
+The Process Display Name is set to the relevant generated expression rule.
+The Process Priority is set to Normal.
+The following process variables are configured:
+
+| Process Variable | Type | Parameter? |
+   | - | - | - |
+   | cancel | Boolean| Yes |
+   | record | Record type that the action is generated from | Yes |
+
+The generated interface is configured as the process start form.
+The following nodes are present in the process model:
+
+| Node | Description |
+  | - | - |
+  | Start Node | Initiates the process, using the interface selected during action generation. |
+  | XOR Gateway | Handles the use case where the user chooses to cancel out of the start form. This node evaluates the incoming cancel process variable to determine whether to proceed to the next node (false) or the End Event (true). |
+  | Write Records Smart Service | (Create and Update actions only) Allows you to easily insert or update data data in a database table and automatically sync those change in Appian. |
+  | Delete Records Smart Service | (Delete actions only) Allows you to easily delete data in a database table and automatically sync those changes in Appian. |
+  | End Node | Terminates the process. |
+
+The Alert Recipients property for the process model is set to the application administrators group selected during action generation.
+The Automatic Process Clean-Up property is set to delete processes seven days after completion or cancellation.
+
+Appian assigns security for the generated process model as follows:
+| Group | Permission Level |
+| - | - |
+| Application administrators group you selected | Process Administrator |
+| Application users group you selected | Viewer |
+Generated interfaces
+The generated Create and Update interfaces include the following components:
+
+A Form Layout component with the Label property set to a combination of an appropriate verb ("Create" or "Update") and the record type (for example, "Customer".)
+The following rule inputs:
+
+| Rule Input | Type |
+  | - | - |
+  | cancel | Boolean |
+  | record | Record type that the action is generated from |
+
+An editable component for each field in the record type, with the Display Value and Save Input To properties set to the record rule input fields.
+A Cancel button with the Save Value To property set to the cancel rule input.
+A Submit button with the properties set to the default values.
+
+The generated Delete interface includes the following components:
+
+A Form Layout component wth the Label property set to the default text, "Delete record?"
+A Paragraph component containing the default text, "Submitting this form will delete your record. The data will no longer exist."
+A Boolean cancel rule input.
+A Cancel button with the Save Value To property set to the cancel rule input.
+A Delete button with the properties set to the default values.
+
+The generated interfaces inherit security from the folders where they're stored. If your interfaces are stored in a folder Appian generated for you, the inherited security is as follows:
+| Group | Permission Level |
+| - | - |
+| Application administrators group you selected | Administrator |
+| Application users group you selected | Viewer |
+Configure a new record action manually {#configure-record-action-manually}
+To configure a record action manually:
+
+In your record type, go to Record Actions.
+Under Record List Actions or Related Actions, click Configure a Record Action Manually.
+Configure the record action properties.
+
+For example, the following is the manual configuration of a record list action:
+{% include zoompic.html url="images/Create_Record_Type/record_list_action_final.png"  %}
+The following is the manual configuration of a related action:
+{% include zoompic.html url="images/Create_Record_Type/related_action_dialog_final.png"  %}
+
+Click OK. Your new action displays in the Record List Actions or Related Actions section as appropriate.
+(Record list actions only) Under Open Actions In, specify how the action should open. By default, DIALOG BOX is selected, and the Dialog Box Size property configured for the action will be applied.
+Click SAVE CHANGES.
+
+Display a record action {#display-record-action}
+After you create an action in the record type, you can determine where the action appears as described in the following table:
+| Location | Description | Record List Action | Related Action |
+| - | - | - | - |
+| Record list | By default, record list actions display as buttons on the record list. When viewing your application on mobile, only the first record list action will be available on the record list. | Yes | No |
+| Related Actions view | By default, all related actions configured for a record type are available in a record's Related Actions view. This record view is configured out-of-the-box in the record type, so you cannot modify it; however, you can hide the Related Actions view, if needed. | No | Yes |
+| Record views | Related actions can display to end users as buttons on any record view, using related action shortcuts. | No | Yes |
+| Interfaces | Record actions can display anywhere in your interfaces, using the record action component or the recordActions parameter of records-powered grids. | Yes | Yes |
+
+appian-style-note
+When viewing your application on mobile, if you're using a record type as the source of a read-only grid in an interface, you can see and use all actions configured in the recordActions parameter of your grid.
+
+Display a related action on a record view {#display-related-action-on-record-view}
+To display related actions on a record view, you will use related action shortcuts, which are configured on the record view.
+To display a related action as a button on a record view:
+1. In your record type, go to Views and Header.
+1. Open the desired record view. 
+1. Under Related Action Shortcuts, a list of available related actions appear.
+1. Select the checkbox next to the related actions you want to display on the view.
+
+appian-style-note
+Related actions from Quick Tasks won't show up in this list.
+
+
+Under Open Shortcuts In, choose how the related action should open. By default, Dialog Box is selected and the Dialog Box Size configured on the related action will be applied.
+
+{% include zoompic.html url="images/create_record_type_edit_view.png" %}
+
+Click OK.
+Click SAVE CHANGES.
+
+Users will see the selected related actions as buttons when they are on that particular record view.
+Update a record action
+To update a record action:
+
+In your record type, go to Record Actions.
+Under Record List Actions or Related Actions, click  next to the action you want to update.
+In the Edit Action window, configure the record action properties.
+Click OK.
+Click SAVE CHANGES.
+
+Delete a record action
+Deleting a record action does not delete the objects supporting the record action.
+To delete a record action:
+
+In your record type, go to Record Actions.
+Under Record List Actions or Related Actions, click  next to the action you want to delete.
+Click Delete to confirm the deletion.
+Click SAVE CHANGES.
+
+Record action security {#prodlink-record-action-security}
+To view and start a record action:
+- The action's Security Expression must evaluate to true for the user. 
+  - If your record type has data sync enabled, you can configure this expression on the Views and Actions page of the record type, under the Actions tab.
+  - If your record type does not have data sync enabled, you can configure this expression on the Record Actions page of the record type.
+- Users must have Initiator permissions to the underlying process model. 
+- For related actions, users must also have access to the record in order to start the action. 
+  - If your record type has data sync enabled, record access is determined by the record-level security. 
+  - If your record type does not have data sync enabled, record access is determined by default filters. 
+The same applies for quick tasks that appear as related actions for record types that use a process model as their source. If the user does not have the permissions to complete the quick task, the link to the related action will not display under Related Actions.

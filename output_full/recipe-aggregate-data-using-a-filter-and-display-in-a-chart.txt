@@ -1,0 +1,87 @@
+
+layout: pattern
+title: Aggregate Data using a Filter and Display in a Chart
+excerpt: 'Aggregate data, specifically the total number of employees for each title in the Engineering department, to display in a bar chart.'
+reftype: sailrecipe
+sr-tags:
+  - Reports
+  - Charts
+  - Query Data
+  - Filtering
+  - Records
+
+{:.screenshot}
+This scenario demonstrates:
+
+How to aggregated data and display it in a bar chart
+How to filter the bar chart
+
+Create this pattern
+You can easily create this pattern in Design Mode when you use a record type as the source of your chart. 
+
+appian-style-tip
+If your record type has data sync enabled, you can also add filters directly on your measures. This allows you to determine which values are included in the measure's calculation. Learn more about using filters in a measure.
+
+To create this pattern in Design Mode:
+1. Open a new or empty interface object.
+2. From the PALETTE, drag a Bar Chart component into the interface.
+3. From Data Source, select RECORD TYPE and search for the Employee record type.
+4. Under Primary Grouping, select the title field.
+5. Under Measure, use the dropdown to select Count of, then select the id field.
+6. Click the edit icon  next to the measure.
+7. Under Label, enter Total.
+8. Return to the Bar Chart configuration and click  FILTER RECORDS.
+9. Under Field, use the dropdown to select the department field. 
+10. Under Condition, use the dropdown to select equal to.
+11. Under Value, enter Engineering.
+12. Click OK. 
+{% include zoompic.html url="images/bar-chart-config-pattern.gif" %}
+Your resulting expression will look something like this:
+sail
+{
+  a!barChartField(
+    data: a!recordData(
+      recordType: recordType!Employee,
+      filters: a!queryLogicalExpression(
+        operator: "AND",
+        filters: {
+          a!queryFilter(
+            field: recordType!Employee.fields.department,
+            operator: "=",
+            value: "Engineering"
+          )
+        },
+        ignoreFiltersWithEmptyValues: true
+      )
+    ),
+    config: a!barChartConfig(
+      primaryGrouping: a!grouping(
+        field: recordType!Employee.fields.title,
+        alias: "title_primaryGrouping"
+      ),
+      measures: {
+        a!measure(
+          label: "Total",
+          function: "COUNT",
+          field: recordType!Employee.fields.id,
+          alias: "id_count_measure1"
+        )
+      },
+      dataLimit: 100
+    ),
+    label: "Bar Chart",
+    labelPosition: "ABOVE",
+    stacking: "NONE",
+    showLegend: true,
+    showTooltips: true,
+    colorScheme: "OCEAN",
+    height: "MEDIUM",
+    xAxisStyle: "STANDARD",
+    yAxisStyle: "STANDARD",
+    refreshAfter: "RECORD_ACTION"
+  )
+}
+Notable implementation details
+
+The expression for the filter is being passed into the filters parameter of a!recordData(). Learn more about this function.
+In the final expression, the chart color scheme "OCEAN" has been added. You can change the color scheme or create your own custom color scheme.

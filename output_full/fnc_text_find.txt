@@ -1,0 +1,39 @@
+
+layout: function
+title: find() Function
+space: function_page
+excerpt: "Returns index location of case-sensitive substring with given string."
+category: function_page
+fncname: find
+fncexample: "find( \"to\", \"Boston\", 1 )"
+fncresult: "4"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: search_text
+    types: Text
+    description: |
+      The text that will be searched for.
+  - keyword: within_text
+    types: Text
+    description: |
+      The text that will be searched in.
+  - keyword: start_num
+    types: Number
+    description: |
+      The index of the first character within the within_text value from which to start searching. 0 by default.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Returns the one-based location index of the first character of the first match.
+See also: search()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+find("to","boston",1) returns 4

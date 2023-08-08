@@ -1,0 +1,142 @@
+
+layout: basic
+title: Write Records Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Write Records smart service is a powerful tool that allows you to easily insert or update data in the source system and then automatically sync the changes in Appian.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!writeRecords
+fncsubcat: Data_Services
+node: Write Records
+parameters:
+  - keyword: records
+    types: Any Type
+    description: 'This parameter uses a list of map of all the records to update (up to a maximum of 50,000 records). Use the recordType! domain to reference your record type. If any related data is included in this parameter, that related data is ignored.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute when the smart service writes data successfully. Created with a!save() or a!httpResponse(). Use fv!recordsUpdated to reference the updated records in the success response. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not write data successfully. Created with a!save() or a!httpResponse(). Use fv!errors to reference any errors from the source.
+reftype: smart_service
+sscat: Data_Services
+ssicon: Write_Records.png
+ssparentcat: Integration_Services
+
+Overview
+{{ page.excerpt }} The service lets you add or update one or more records at a time per node.
+To use this smart service, the record type you want to update must meet the following conditions:
+
+The record type uses a database as its source.
+The record type has data sync enabled.
+
+Records can only be updated for one record type at a time. To update a record and its related records, you must first update the base record and then update your related record with another {{ page.node }} node.
+Permissions needed
+The user executing this activity must have Viewer permissions to the selected record type in order to update or insert information. If the user does not, the node will fail and pause the process with an exception.
+
+appian-style-note
+Since the {{ page.node }} Smart Service works directly with your record type's source, read the recommendations in Data Modeling with Appian Records before implementing this smart service.
+
+Properties
+
+Category: Data Services
+
+Icon: 
+
+
+Assignment Options: Automated activity
+
+
+Configuration options
+This section contains configuration details specific to this smart service. For more information about common configurations, see the Process Node Properties page.
+Data tab
+Node inputs
+| Name    | Data Type        | Description    | Required | Multiple |
+|---------|------------------|----------------|----------|----------|
+| Records | List of Any Type | A list of records in one record type and the data to be updated for each. Up to 50,000 records can be updated per node. Any related record data is ignored. | Yes | Yes |
+| Pause On Error | Boolean | Determines whether the node should pause by exception if an error occurs writing to the source. Default: true. | No | No |
+See also: Record Type
+Node outputs
+| Name    | Data Type        | Description    |
+|---------|------------------|----------------|
+| Records Updated | List of Any Type | A list of records updated by the smart service |
+| Error Occurred | Boolean | Returns true if any write to the source system or Appian fails; returns false if all writes succeed |
+| Errors | List of Any Type | The error that occurred when writing the records and the list of records that failed to write. This is only returned when the Pause On Error input is false.|
+Usage considerations
+Update existing data
+When passing data to the {{ page.node }} smart service from an interface, use the record type constructor syntax. To update existing data, the record must include a primary key value.
+A new record will be created when one of the following is true:
+
+The data source table is set to AUTO_INCREMENT the primary key column.
+The record type's primary key field is configured to use a sequence to generate key values.
+The source table is not configured to AUTO_INCREMENT or use a sequence, and your app provides the primary key value.
+
+For example, if you want to update an employee record, you must pass the employee's Id to the {{ page.node }} smart service.
+When you update an existing record, only include the data you want to change. Imagine your Employee record type has fields for firstName and lastName, but you only need to update an employee's last name from Anderson to Kwan. You can pass just the record's identifier and the new lastName. Any fields not included in the update are ignored. In this example, the firstName field is not included, so the employee's first name remains unchanged.
+sail
+recordType!Employee(
+  recordType!Employee.fields.id: 233,
+  recordType!Employee.fields.lastName: "Kwan"
+)
+Create and update related records
+If you have a record type with relationships, you cannot use relationship references in a {{ page.node }} node. Any related record fields are ignored by the smart service.
+Instead, your process model must include a separate node for each record type and related record type you want to update. See an example below.
+Unsupported fields in the records input
+Because the smart service updates the database source of your record type, you cannot include custom record fields in the records input. These fields are defined by and exist only in Appian, so attempting to write values for them will have no effect.
+a!writeRecords()
+The {{ page.node }} smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API. When creating a web API, select the {{ page.node }} template to generate the object with this function automatically configured.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Automatic refresh on record views
+When you use this smart service on a record view, the view will automatically refresh with the latest record data.
+This means that when your record view interface has a Record Action component that triggers the Write Records smart service, or a button component that triggers the a!writeRecords() function, the record view data will automatically refresh after the write occurs.
+This refresh behavior only applies to data supplied by rv!record. If your record view definition uses rv!identifier or a local variable to supply the record data, the data will not automatically refresh; instead, you will need to configure additional refresh behavior.
+Possible errors
+INCLUDE PAGE: 
+Examples
+The following examples show the different ways you can use the {{ page.node }} smart service to create or update your record data.
+INCLUDE PAGE: 
+Create a new record using a process model
+Imagine you need to add a new person in the Appian Retail app. You can let users submit record data using a interface connected to a process model. Set a process variable using the record type as the data type to pass user data to the {{ page.node }} node.
+{% include zoompic.html url="images/write-records-pv-workflow.png" border="-nb"  %}
+The process node returns any record fields not passed to the process after it writes the data to the source. In the following example, the Write Customer records node returns the primary key and its value (id=101), as well as an optional record field (emailPromotion=).
+{:.screenshot}
+Appian can automatically generate a Create or Update record action. The generated design objects use the {{ page.node }} smart service in the workflow powering the new action.
+Create a new record using an expression
+To add a new Person record using the a!writeRecords() function, you'll use a record type constructor in the records parameter with the new field values you want to include. In this case, you create a new Person record by providing data for the firstName, lastName, and modifiedDate record fields.
+sail
+a!writeRecords(
+  records: {
+    recordType!Person(
+      recordType!Person.fields.firstName: "Karen",
+      recordType!Person.fields.lastName: "Anderson",
+      recordType!Person.fields.modifiedDate: now(),
+    )
+  }
+)
+Create records and related records
+If you have a record type with relationships, you cannot use relationship references in a {{ page.node }} node. Instead, your process model must include a separate node for each record type and related record type you want to update.
+Imagine you are building an interface that will allow users to enter information about new salespeople joining the company. To represent people, your application's data model includes three record types:
+
+Person, the base record type with fields like firstName and lastName.
+Employee, a related record type for data like hireDate and dateOfBirth.
+Sales Person, a related record type with fields for salesQuota, commissionRate.
+
+{% include zoompic.html url="images/write-records-related-record-relationships.png" alt="Relationships between Person, Employee, and Sales Person record types" border="-nb" style="width:50%;" %}
+In this example, our interface collects the complete set of information about a new salesperson; however, we'll need three different {{ page.node }} smart services to update the different record types since you cannot use relationship references in the smart service.
+The process model to create a new Sales Person will look something like this:
+{% include zoompic.html url="images/write-records-related-records-model.png" alt="Process model for writing base and related records" border="-nb" %}
+This process model uses the interface as a start form so new user data is passed to the process model and set as the initial values for three process variables (person, employee, and salesperson).
+The first Write Records node uses the person variable as the Records input to create the new Person record.
+Since we'll need to reference the new person ID in order to create the related records in the Employee and Sales Person record types, we'll store the person ID in the output. To do this, we'll go to the Output tab and set the Records Updated result to pv!person.
+{% include zoompic.html url="images/write-records-related-records-update-person.png" alt="Records Updated output saved as person process variable" border="-nb" style="width:80%;" %}
+Now the process variable includes the id generated for the person (in this example, the value is 20778).
+{% include zoompic.html url="images/write-records-create-person.png" alt="Variable updated with new record data" border="-nb" style="width:80%;" %}
+Next, a script task automatically sets the personId of the employee and salesperson variables to 20778 (the id of the Person record).
+{% include zoompic.html url="images/write-records-related-records-id-fields.png" alt="Configuration details of Set ID fields script task" border="-nb" style="width:80%;" %}
+{% include zoompic.html url="images/write-records-update-ids.png" alt="Script task updating ID values" border="-nb" style="width:80%;" %}
+The process will then write the related Employee and Sales Person records in their own nodes, and they will be correctly associated with the Person.
+{% include zoompic.html url="images/write-records-related-records-nodes.png" alt="Related data nodes" border="-nb" style="width:80%;" %}

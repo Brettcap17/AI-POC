@@ -1,0 +1,36 @@
+
+layout: function
+title: soundex() Function
+space: function_page
+excerpt: "Returns the soundex code, used to render similar sounding names via phonetic similarities into identical four (4) character codes."
+category: function_page
+fncname: soundex
+fncexample: "soundex(\"John Smith\")"
+fncresult: "J525"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be converted.
+
+INCLUDE PAGE: US English Only Text Function
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Understanding results
+The soundex code is all uppercase. The first character is retained. From the remainder, vowels are dropped.
+Repeated letters are made into single letters.
+"BFPV" are coded as "1", "CGJKQSXZ"] as "2","DT" as "3", "L" as "4", "MN" as "5", and "R" as "6" and unfilled characters are "0". For example, "Sullivan" and "Suliban" are both "S415". "Smith" and "Smythe" are both "S530".
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+soundex("John Smith") returns J525

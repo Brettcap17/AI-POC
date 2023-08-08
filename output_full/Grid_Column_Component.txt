@@ -1,0 +1,71 @@
+
+layout: function
+title: Read-Only Grid Column Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays a column of data as read-only text, links, images, or rich text within the read-only grid.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridColumn
+fncsubcat: Grids
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the column header.
+  - keyword: sortField
+    name: Sort Field
+    types: Any Type
+    description: |
+      The field used to sort the grid when selecting this column header. Grids that use record data must use the recordType! domain to reference a record field or related record field. For example, recordType!Case.fields.caseName.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon in the column header with the specified text as a tooltip.
+  - keyword: value
+    name: Display Value
+    types: Any Type
+    description: |
+      The value to display in each cell within the column. The value can be text, a!imageField(), a!linkField(), a!richTextDisplayField(), a!tagField(), a!buttonArrayLayout(), a!recordActionField(), or a!progressBarField(). It is evaluated once for each row. Reference fields from the source using dot notation, such as fv!row.status, or the identifier using fv!identifier.  Grids that use record data must use the recordType! domain to reference a record field or related record field. For example, fv!row[recordType!Case.fields.caseName].
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the column is displayed in the grid. When set to false, the column is hidden and is not evaluated. Default: true.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines the alignment for the header label and all values within the column. Valid values: "START" (default), "CENTER", "END".
+  - keyword: width
+    name: Width
+    types: Text
+    description: |
+      Determines the column width. Valid values: "AUTO", "ICON", "ICON_PLUS", "NARROW", "NARROW_PLUS", "MEDIUM", "MEDIUM_PLUS", "WIDE", "1X", "2X", "3X", "4X", "5X", "6X", "7X", "8X", "9X", and "10X".
+reftype: sailcomponent
+scdisplayname: Read-Only Grid Column
+scsubcat: Read-Only_Grid_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a column of data as read-only text, links, images, rich text, buttons, tags, record actions, or progress bars within the Read-Only Grid Component.
+When configuring the component, click Display Options after choosing a value.
+{:.screenshot style="width:50%;"}
+See also: Grids design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the value parameter
+
+If the value parameter for a column is empty or null, the grid still renders the column with just the label.
+If the value parameter contains a data query, each row of the column may be evaluated in parallel to reduce the overall evaluation time of the grid.
+
+Using the width parameter
+
+For columns using the "AUTO" width, the width is determined by the length of the longest unbroken value in that column.
+For example, this could be the length of the longest word in a paragraph or the width of the widest image.
+Avoid using "AUTO" and weighted column widths (such as "1X", "2X", "3X", etc) together.
+If you use a fixed width (such as "NARROW", "MEDIUM", etc) for a column that doesn't take up the width of the page, the width will auto distribute depending on the content inside the column.
+If you use "ICON" & "AUTO" widths together, the column using "ICON" will always be the same width and the column using "AUTO" will fill up the remaining space.
+For complete guidance on when and how to use column widths, see Column Widths.

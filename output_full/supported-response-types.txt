@@ -1,0 +1,25 @@
+
+layout: "basic"
+title: "Integration Response Types"
+topic-group: "D"
+weight: 4
+
+This page provides the supported response types for your connected system plug-in.
+When returning an IntegrationResponse to the designer, you need to provide a Map<String,Object>. The table below details what Java types are supported as values in the Map and the associated Appian types to which they're converted.
+| Java Type | Appian Type |
+| int| Number (Integer) |
+| double | Number (Decimal) |
+| boolean | Boolean |
+| java.lang.Number | Number (Decimal) |
+| java.lang.String | Text |
+| java.sql.Date | Date |
+| java.sql.Time| Time |
+| java.util.Date | Date and Time |
+| java.util.Map<String,Object> where the values' types are in this table | Dictionary |
+| java.util.Collection where the values' types are in this table | Array |
+| Array where the values' types are in this table | Array |
+
+appian-style-note 
+Boxed primitives are also supported.
+
+If an integration template returns a value not in the table above, an IllegalArgumentException will be thrown.

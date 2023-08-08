@@ -1,0 +1,14 @@
+
+layout: function
+title: a!gridImageColumn_17r3 [Deprecated]
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+fncname: a!gridImageColumn_17r3
+fnccat: "一Deprecated一"
+depver: 19.2
+fncsyntax: 'a!gridImageColumn_17r3( [label], [field], [data], [size] )'
+evolved_fncname: a!gridImageColumn
+evolved_reason: 'Now supports a style parameter, a separate configuration for thumbnail functionality, and more sizes.'
+
+The grid image column component 17r3 has been deprecated, and will be removed in a future release of Appian. Instead, use a grid column. For information about the grid image column 17r3, see the Appian 19.4 documentation.

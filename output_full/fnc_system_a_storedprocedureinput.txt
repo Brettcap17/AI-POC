@@ -1,0 +1,25 @@
+
+permalink: fnc_system_a_storedprocedureinput.html
+layout: function
+title: a!storedProcedureInput() Function
+category: function_page
+excerpt: "Creates an input to be passed to the a!executeStoredProcedureOnSave or a!executeStoredProcedureForQuery functions."
+fnccat: System
+fncexample: "a!storedProcedureInput(name: \"integer_input\", value: 2)"
+fncname: a!storedProcedureInput
+parameters:
+  - keyword: name
+    types: Text
+    description: Name of the input to the stored procedure.
+  - keyword: value
+    types: Any Type
+    description: Value of the input to be passed to the stored procedure.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: a!executeStoredProcedureOnSave(), a!executeStoredProcedureForQuery()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

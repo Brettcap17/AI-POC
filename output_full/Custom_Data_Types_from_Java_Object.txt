@@ -1,0 +1,216 @@
+
+layout: basic
+title: Data Type Plug-ins
+permalink: Custom_Data_Types_from_Java_Object.html
+topic-group: C
+weight: 400
+
+Create
+One of the methods of creating a custom data type in Appian is to define the data type as a Java object in a custom data type plug-in.
+To deploy a CDT defined using a Java class, a datatype plug-in module must be defined in appian-plugin.xml.
+
+Within appian-plugin.xml, each datatype module must be declared before the smart service or function that uses it.
+When a class defined in the class or package elements of the datatype module descriptor element contains members whose data types are defined in other classes, those data types are automatically included when the plug-in deploys (as long as they contain the minimum required JAXB Annotations). Such data types do not need to be independently listed in class elements.
+Classes that define types in plug-ins can be used as parameter types and return types of custom smart services and functions within the same plug-in.
+
+As a best practice, we recommend only grouping data types that are closely related (logically) into a single datatype module.
+JAXB annotations
+The exact JAXB version is determined by the JDK version you have in use.
+You can define a Java class or a package using JAXB 2.x annotations to define a data type.
+
+The classes or packages must be included in the plug-in's src directory.
+The only required annotation is the class annotation @XmlType.
+
+The only required attribute of the class annotation is the namespace attribute, which defines the target namespace.
+
+The value of the namespace must be a valid URI format, as with any XSD that you would import via the XSD Import mechanism. The appian namespace is disallowed.
+
+When using a package to define a set of custom data types, the @XmlSchema package annotation is required. This annotation must include a valid namespace attribute. List the annotation in package-info.java.
+Multiple class subelements can be defined in a datatype module or by listing the packages that contain your CDT classes as package subelements. You can define either class or package subelements, but both types of subelements cannot appear in the same module.
+
+Either a jaxb.index file or an ObjectFactory class must be defined within your package when a package subelement is used to define custom data type using a package that contains JAXB-annotated classes.
+
+Any XSD generated using JAXB annotations is validated to ensure the definition conforms to Appian XSD restrictions. Valid JAXB XSD definitions can fail to deploy if they do not conform to Appian XSD requirements.
+JPA annotations
+JPA annotations can be used within the Java class, in addition to the JAXB annotations, to add persistence configurations when the data type is used as a Data Store)Entity.  
+
+In order for the classes to compile, an additional library containing the JPA annotation API must be added to your Eclipse project when creating a data type plug-in.  You can add deployment/web.war/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar to achieve this. 
+The supported JPA annotations are the same set allowed in XSDs used to define data types.  
+Use of any JPA annotation not in that list will cause the plug-in to fail to deploy.  
+Any attribute of the supported JPA annotations that takes a class as a value will be ignored, and the annotation will be used as if that attribute had not been specified.
+Attributes which are not part of the standard JPA annotations, such as the indexed attribute available on the @OneToMany and @ManyToMany annotations, can only be used when using JPA annotations in the XSD definition and cannot be used with JPA annotations in Java.  If the use of these is required, you can still create your initial data type as a Java plug-in, then download the XSD from the Data Type Designer interface, add the attribute as desired, and import the XSD with the added attribute.
+In some cases, the plug-in loader may be unable to determine if a JPA annotation is present on a member that maps to an anonymous type in the XSD.  Should this occur, a warning will be logged, but the plug-in will continue to load.  
+The recommended action is to verify that all expected JPA annotations are present in the XSD by downloading it from the data type designer.
+
+Edit
+To update a data type, deploy a new version of the plug-in with a version number greater than the currently-deployed plug-in. All dependent design objects will use the new version of the plug-in data type. If you use the data type in a data store, and data store auto-update is enabled, deploying an update to the data type will trigger automatic schema updates. Results of the update will be recorded in the application server logs.
+
+If the system detects that the data types in the plug-in have a different structure than the corresponding data types already present in the system, but is unable to determine the previous version number of the plug-in, it will not update the data types and will log an error instead. In order to replace the data types in this case, you can delete the conflicting data types from the system and redploy the plug-in.
+
+Examples
+Simplified example class
+To bind the following XSD: 
+<xs:complexType name="jeep_type"> 
+  <xs:sequence>
+    <xs:element name="has_four_wheel_drive" type="xs:boolean"/>
+  </xs:sequence>
+</xs:complexType>
+
+Use the following Java representation:
+import java.util.HashSet;
+import javax.xml.bind.annotation.XmlID;
+@XmlType(name="jeep_type", namespace="http://www.example.org/documentation"})
+public class JeepType {
+
+  @XmlElement
+  boolean isHasFourWheelDrive() {...}
+  void setHasFourWheelDrive(boolean value) {...}
+}
+
+JAXB annotations example
+The following code snippet lists a Java class that uses JAXB annotations to define a data type:
+@XmlRootElement(name="sample-bean-el", namespace="http://www.example.org/test")
+    @XmlType(name="sample-bean", namespace="http://www.example.org/test", propOrder={"first", "second"})
+private static class SampleBean {
+    private int first;
+    private String second;
+
+    @XmlElement
+    public int getFirst() {
+        return first;
+    }
+    public void setFirst(int first) {
+        this.first = first;
+    }
+
+     @XmlElement
+     public String getSecond() {
+        return second;
+    }
+    public void setSecond(String second) {
+        this.second = second;
+    }
+}
+
+JAXB and JPA annotations example
+The following example uses two Java classes with JAXB and JPA annotations to define two related data types.  A project has a status, which is managed as a lookup.
+The Project data type:
+package com.acme.example;
+
+@XmlRootElement(namespace="urn:my-namespace", name="project")
+@XmlType(namespace="urn:my-namespace", name=Project.LOCAL_PART, propOrder={"id", "status", "users"})
+@XmlSeeAlso({Status.class})
+@Hidden
+@Table(name="project")
+public class Project implements Serializable {
+    private static final long serialVersionUID = 1L;
+    public static final String LOCAL_PART = "Project";
+    public static final QName QNAME = new QName("urn:my-namespace", LOCAL_PART);
+
+    private Long id;
+     private Status status;
+    private Set<String> users = new HashSet<String>();
+
+    public Project(long id, Status status, Set<String> users) {
+         this();
+        setId(id);
+        setStatus(status);
+        setUsers(users); 
+    }
+
+    public Project() {} // for serialization only
+
+    @Id 
+    @GeneratedValue
+    @XmlElement
+    public Long getId() { 
+        return id;
+    }
+    private void setId(Long id) {
+        this.id = id;
+    }
+
+    @XmlElement
+    public Set<String> getUsers() {
+        return users;
+    }
+    private void setUsers(Set<String> users) {
+        this.users = new HashSet<String>(users);
+    }
+
+    @ManyToOne(optional=false, cascade={CascadeType.REFRESH}) 
+    @JoinColumn(name="status_id")
+    @XmlElement
+    public Status getStatus() {
+        return status;
+    }
+    private void setStatus(Status status) {
+        this.status = status;
+    }
+}
+
+The Status data type:
+package com.acme.example;
+
+@XmlRootElement(namespace="urn:my-namespace", name="status")
+@XmlType(namespace="urn:my-namespace", name=Status.LOCAL_PART, propOrder={"id", "name"})
+@Hidden
+@Table(name="status")
+public class Status implements Serializable {
+    private static final long serialVersionUID = 1L;
+    public static final String LOCAL_PART = "Status";
+    public static final QName QNAME = new QName("urn:my-namespace", LOCAL_PART);
+
+    private Long id;
+    private String name;
+
+    public Status(Long id, String name) { 
+        this();
+        setId(id);
+        setName(name);
+    }
+
+        public Status() {} // for serialization only
+
+    @Id
+    @XmlElement
+    public Long getId() {
+        return id;
+    }
+    private void setId(Long id) {
+        this.id = id;
+    }
+
+    @Column(length=255, nullable=false, unique=true)
+    @XmlElement
+    public String getName() {
+        return name;
+    }
+    private void setName(String name) {
+        this.name = name;
+    }
+}
+
+Plug-in XML configuration
+When used in a plugin, CDTs defined as Java objects must be configured in your appian-plugin.xml file in the following manner:
+<appian-plugin>
+    <plugin-info>
+        <description>...</description> 
+        <vendor name="..." url="..." /> 
+        <version>...</version> 
+        <application-version min="..." /> 
+    </plugin-info>
+    <datatype key="ProjectDataType" name="Example Project Data Type">
+        <class>com.acme.example.Project</class>
+        <class>com.acme.example.Status</class>
+    </datatype>
+</appian-plugin>
+
+
+plugin-info: See also: Plugin-info Properties.
+version: In order to update an existing version of the data type provided by the plug-in, the version number must be greater than the currently-deployed plug-in's version.
+datatype: Defines the data types that are included in the plug-in. There can be one or several datatype elements in one plug-in descriptor file.
+key: Identifier of the datatype module. This attribute of datatype must be unique in the system. 
+name: Display name for the set of types defined in this datatype module. The name attribute of datatype appears in log file output. It does not appear in the user interface.
+class: subelement (or define package elements) the class or multiple elements of classes that define the data types
+package: subelement (or define classes) the package or multiple elements of packages that contain the classes that define the data types

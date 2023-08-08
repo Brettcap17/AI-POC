@@ -1,0 +1,109 @@
+
+layout: "basic"
+title: "Support Multiple Languages"
+topic-group: "How To"
+weight: 100
+
+This page provides an example that shows how you can support multiple languages in your component. This example shows how you can support both English and German.
+English (en-US)
+{:.screenshot}
+German (de)
+{:.screenshot}
+You'll have to configure translations for the component and it's parameters, the labels within the component, and the locale-dependent date format.
+You can find the complete code in our example repository.
+See also: Component Plug-in Internationalization
+Translate Designer labels
+This component has one parameter, dateTime, which is used to test different date and time formats. You need to provide translations for this parameter, as well as for the component as a whole. These translations help developers when they're using your component.
+i18nExample_en_US.properties
+name=Internationalization Example
+description=An example of displaying a component according to a user's locale.
+parameter.dateTime.name=Date & Time
+parameter.dateTime.description=Date and time to display. Use ISO 8601 date-time format: 2015-03-25T12:00:00Z.
+i18nExample_de.properties
+```
+name=Beispiel für die Internationalisierung
+name=Beispiel f\u00FCr die Internationalisierung
+description=Ein Beispiel für das Anzeigen einer Komponente gemäß dem Gebietsschema eines Benutzers.
+description=Ein Beispiel f\u00FCr das Anzeigen einer Komponente gem\u00E4\u00DF dem Gebietsschema eines Benutzers.
+parameter.dateTime.name=Datum und Uhrzeit
+parameter.dateTime.description=Das Datum und die Uhrzeit, die angezeigt werden sollen. Verwenden Sie das Datum / Uhrzeit-Format nach ISO 8601: 2015-03-25T12:00:00Z.
+```
+Note the use of Unicode conversion to handle certain German characters.
+Translate component field labels
+In this example you'll use a simple JavaScript method to define the user-facing translations. There are libraries available to help with translation, or if you're building a component with a framework like jQuery or React there are more advanced capabilities that work better for complicated components.
+Define field labels
+Users won't see the component or parameter names you translated earlier. But they will see the Locale and Date & Time field labels shown in the component.
+```html
+
+: 
+: 
+```
+
+### Create a translation table
+
+Use a JavaScript object to hold the translation lookup table. Create a list of supported languages, using [Appian locale codes](Appian_Administration_Console.html#locale-settings). Each entry in the list must contain a key-value pair representing the label translations for that language.
+
+```javascript
+let i18n = {
+  'en-US': {
+    localeLabel: "Locale",
+    dateTimeLabel: "Date & Time"
+  },
+  'de': {
+    localeLabel: "Benutzergebietsschema",
+    dateTimeLabel: "Datum und Uhrzeit"
+  }
+};
+```
+
+### Define a function to update labels
+
+For each label that requires translation, set the text value based on the provided locale. You'd add any new labels requiring translation to this list (and to the table above).
+
+```javascript
+function updateLocale(locale) {
+  document.getElementById('localeLabel').innerHTML = i18n[locale].localeLabel;
+  document.getElementById('dateTimeLabel').innerHTML = i18n[locale].dateTimeLabel;
+}
+```
+
+### Set the initial values based on user locale
+
+When your component initially loads, get the user's locale using [Appian.getLocale](reference-js-api.md#appian.getlocale()) and then call the `updateLocale()` function.
+
+```javascript
+let locale = Appian.getLocale();
+updateLocale(locale);
+```
+
+### Check for user locale changes
+
+The user's locale might change while they're viewing your component on a form. Check for changes and update the translations if needed. 
+
+```javascript
+Appian.Component.onNewValue(function (newValues) {
+  if (Appian.getLocale() !== locale) {
+    locale = Appian.getLocale();
+    updateLocale(locale);
+  }
+```
+
+## Adjust date/time format based on locale
+
+In addition to the display language, the user's locale also defines their preferred date/time format. To make your component fully meet customer's expectations, make sure to show the appropriate format.
+
+Fortunately you can use standard JavaScript functions to format a date (and time) as a string. Refer to [toLocaleString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString), [toLocaleDateString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString), and [toLocaleTimeString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) for details and browser/mobile compatibility.
+
+```javascript
+Appian.Component.onNewValue(function (newValues) {
+  ...
+  let dateTime = newValues.dateTime;
+  let dateTimeField = document.getElementById('dateTimeField');
+  if (dateTime) {
+    let dateTimeObj = new Date(dateTime);
+    dateTimeField.value = dateTimeObj.toLocaleString(locale);
+  } else {
+    dateTimeField.value = '';
+  }
+});
+```

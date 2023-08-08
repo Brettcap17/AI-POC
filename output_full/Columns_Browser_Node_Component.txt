@@ -1,0 +1,89 @@
+
+layout: function
+title: Hierarchy Browser Node (Columns) Component
+category: function_page
+compatibility: -crf, -om
+excerpt: 'Returns a Hierarchy Browser Field Columns Node, used in the Node Configurations parameter of the Columns Browser to determine how items in the hierarchy are displayed.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!hierarchyBrowserFieldColumnsNode
+fncsubcat: Browsers
+parameters:
+  - keyword: id
+    name: Identifier
+    types: Any Type
+    description: Required unique identifier of the node. This value only needs to be unique within the nodes column.
+  - keyword: label
+    name: Label
+    types: Text
+    description: Required text to display in the node.
+  - keyword: image
+    name: Image
+    types: Image
+    description: |
+      Required image to display in the node, created with: 
+        - a!documentImage()
+        - a!userImage() 
+        - a!webImage()
+  - keyword: link
+    name: Link
+    types: Array of Links
+    description: |
+      Optional link to display in the node  s label title. Create links with: 
+        - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink()
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: isSelectable
+    name: Node is selectable
+    types: Boolean
+    description: |
+      If true, clicking the node will save the columns browser's selection value and navigation path. If false, clicking the node will not save the selection value. It may still save the navigation path if the node is drillable. On hover, a selectable node will have a unique display. (default: true) 
+  - keyword: isDrillable
+    name: Node is drillable
+    types: Boolean
+    description: |
+      If true, clicking the node will save the columns browser's navigation path, revealing another column to the user. If false, clicking the node will not reveal another column. It may still save the navigation path if the node is selectable. On hover, a drillable node will have a unique display. (default: true) 
+  - keyword: nextColumnCount
+    name: Next Column Count
+    types: Integer
+    description: The number of nodes that would be displayed if the user drilled into this node. This value is optional and is displayed on mobile only.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Hierarchy Browser Node (Columns)
+scsubcat: Hierarchy_Browser_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Returns a Browser Field Columns Node, used in the Node Configurations parameter of the Columns Browser to determine how items in the hierarchy are displayed.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Drillable and selectable nodes
+You can see some of these terms and parameters (isDrillable and isSelectable) labeled in the following screenshot.
+{:.screenshot}
+Using the nodeConfigs  and identifier parameters
+
+A columns browser node can only be displayed if passed to the nodeConfigs parameter of the columns browser.
+The variable fv!nodeValue is only available when the columns browser node is used in either the nodeConfigs or nextColumnValues parameters of the columns browser.
+The identifier field can be any value, but using long strings or large data types could cause performance problems. We recommended using a data type's primary key, if available.
+
+Using links with the columns browser
+
+The columns browser component does not support dynamic links nor submit links node configurations.
+The columns browser component does not permit links in images in node configurations.
+
+Examples
+For an example of how to configure a columns browser node, see the example in the Columns Browser.

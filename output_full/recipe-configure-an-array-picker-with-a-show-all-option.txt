@@ -1,0 +1,100 @@
+
+layout: pattern
+title: Configure an Array Picker with a Show All Option
+excerpt: 'Allow users to choose from a long text array using an autocompleting picker, but also allow them to see the entire choice set using a dropdown.'
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Pickers
+
+{:.screenshot}
+Dropdowns with many choices can be a little unwieldy, but when there is doubt about even the first letters of an option they can be very useful.
+This scenario demonstrates:
+
+How to create a link that replace one component with another
+How to save a value in one component and be able to see those results in another component
+
+Setup
+The main expression uses a supporting rule, so let's create that first.
+
+ucArrayPickerFilter: Scans labels that match the text entered by the user and returns a DataSubset for use in the picker component.
+
+Create expression rule ucArrayPickerFilter with the following rule inputs:
+
+filter (Text)
+labels (Text Array)
+identifiers (Text Array)
+
+Enter the following definition for the rule:
+sail 
+a!localVariables(
+  local!matches: where(
+    a!forEach(
+      items: ri!labels, 
+      expression: search( ri!filter, fv!item)
+    )
+  ),
+  a!dataSubset(
+    data: index( ri!labels, local!matches), 
+    identifiers: index( ri!identifiers, local!matches)
+  )
+)
+Expression
+sail 
+a!localVariables(
+  local!pickedState,
+  /* 
+  * local!showPicker is used as a field toggle. When set to true, a picker and link
+  * will be visible. The link field with set this to false when clicked, showing a dropdown.
+  */
+  local!showPicker: true,
+  local!stateLabels: { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" },
+  local!stateAbbreviations: { "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY" },
+  a!sectionLayout(
+    contents:{
+      a!linkField(
+        links: a!dynamicLink(
+          label: "Show All",
+          value: false,
+          saveInto: local!showPicker,
+          showWhen: local!showPicker
+        )
+      ),
+      a!pickerFieldCustom(
+        label: "States",
+        instructions: "Enter the employee's state of residence.",
+        maxSelections: 1,
+        /*
+        * To use with your data, replace local!stateLabels with the datapoint  you wish to be displayed and 
+        * local!stateAbbreviations with the datapoint you eventually want to save. 
+        */
+        suggestFunction: rule!ucArrayPickerFilter(filter: _, labels: local!stateLabels, identifiers: local!stateAbbreviations),
+        selectedLabels: a!forEach(
+          items: local!pickedState,
+          expression: index(local!stateLabels, wherecontains(fv!item, local!stateAbbreviations))
+        ),
+        value: local!pickedState,
+        saveInto: local!pickedState,
+        showWhen: local!showPicker
+      ),
+      a!dropdownField(
+        label: "States",
+        instructions: "Enter the employee's state of residence.",
+        choiceLabels: local!stateLabels,
+        placeholder: "Select a US state",
+        choiceValues: local!stateAbbreviations,
+        value: local!pickedState,
+        saveInto: local!pickedState,
+        showWhen: not( local!showPicker )
+      )
+    }
+  )
+)
+Test it out
+
+Click the "Show All" link and see how the picker changes to a dropdown.  In this example there is no link to switch back to a picker, but one could easily be added.
+Now make a selection with the picker.  Then click "Show All".  Notice how, since they use the same variable as a value, the dropdown is set to the value previously selected with the picker.
+
+Notable Implementation Details
+
+A support rule is needed for the suggestFunction because we need to partially evaluate the suggested filter.

@@ -1,0 +1,56 @@
+
+layout: function
+title: union() Function
+space: function_page
+excerpt: "Returns all unique elements from the given arrays."
+category: function_page
+fncname: union
+fncsubcat: Set
+fncexample: "union({10, 20, 30}, {20, 30, 40})"
+fncresult: "{10, 20, 30, 40}"
+fnccat: Array
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: array1
+    types: Any Type Array
+    description: |
+      Array to combine.
+  - keyword: array2
+    types: Any Type Array
+    description: |
+      Array to combine.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array, matching the type of the inputs
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Find the superset of values from two integer arrays
+union({1, 2, 3, 4}, {3, 4, 5, 6}) returns and array with 1, 2, 3, 4, 5, 6
+Remove duplicates from an array
+Remove the duplicates from an array by comparing it with an empty array of the same type:
+union({1, 2, 3, 4, 1, 2}, tointeger({})) returns and array with 1, 2, 3, 4
+Values are matched with case sensitivity
+union({"a", "b"}, {"a", "B"}) returns and array with a, b, B
+Array types must match
+union({"a", "b"}, {1, 2}) returns the following error: Invalid types, can only act on data of the same type.
+NOTE: Use either the conversion functions or the cast() function to convert to the appropriate type.
+union({"a", "b"}, tostring({1, 2})) returns and array with a, b, 1, 2
+Every field of a CDT or dictionary must match to be treated as identical:
+union({a: 1, b: 2}, {a: 1, b: 2, c: 3}) returns {{a: 1, b: 2}, {a: 1, b: 2, c: 3}}
+union({a: 1, b: 2}, {a: 1, b: 2}) returns {{a: 1, b: 2}}
+Null values and empty lists
+Null values are included as long as they are of the correct types (nulls of an incorrect type throw a type mismatch error):
+union({"a", "b"}, {"c", ""}) returns and array with a, b, c, <null>
+Empty lists are ignored as long as they are of the correct types (empty lists of an incorrect type throw a type mismatch error):
+union(tointeger({}), {1, 2}) returns and array with 1, 2
+Scalar values
+Scalar values are cast to arrays with a single entry:
+union(1, {2, 3}) returns and array with 1, 2, 3

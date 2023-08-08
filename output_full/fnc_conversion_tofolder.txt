@@ -1,0 +1,35 @@
+
+layout: function
+title: tofolder() Function
+space: function_page
+excerpt: "Converts a value to Folder."
+category: function_page
+fncname: tofolder
+fncexample: "tofolder({\"1\",\"2\"})"
+fncresult: "[Folder:1], [Folder:2]"
+fnccat: Conversion
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Types
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Folder
+Usage considerations
+Using the value parameter
+The value parameter accepts Text, Integer, Decimal, and Array types.
+Using tofolder() with arrays
+When operating on arrays, it is not necessary to use apply with tofolder. If multiple parameters are passed, or one parameter is an Array, tofolder will return a Folder Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tofolder({"4586","4587"}) returns [Folder:4586], [Folder:4587]

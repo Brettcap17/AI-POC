@@ -1,0 +1,287 @@
+
+layout: function
+title: Export Data Store Entity to Excel Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Export Data Store Entity to Excel Smart Service allows designers to safely export large datasets.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!exportDataStoreEntityToExcel
+fncsubcat: Document_Generation
+parameters:
+  - keyword: entity
+    types: Data Store Entity
+    description: The data store entity to query.
+  - keyword: selection
+    types: Selection
+    description: '(Optional) A list of fields to retrieve, created with a!querySelection(). The selection accepts up to 50 columns.'
+  - keyword: aggregation
+    types: Aggregation
+    description: '(Optional) A list of fields and the operations to perform on them when retrieving the data, created with a!queryAggregation(). The aggregation accepts up to 50 columns.'
+  - keyword: filters
+    types: Any Type
+    description: '(Optional) A set of conditions to apply to the queried data before any grouping or aggregation. Can use either a list of a!queryFilter() or a single a!queryLogicalExpression(). When using a list of a!queryFilter(), all filters are combined using the AND operator.'
+  - keyword: documentName
+    types: Text
+    description: The name of the new document that is to be created by this smart service.
+  - keyword: documentDescription
+    types: Text
+    description: (Optional) A brief description of the document.
+  - keyword: saveInFolder
+    types: Folder
+    description: The folder where the newly created document is to be stored. Applicable and required when creating a new document.
+  - keyword: documentToUpdate
+    types: Document
+    description: 'The existing document to update with the exported data. This can be useful when using the smart service multiple times in the same process model, or if formatting is needed. See Supported Excel Formatting. Appian supports Excel 2007 and above. Note that a new version of this document will be created.'
+  - keyword: includeHeader
+    types: Boolean
+    description: (Optional) Outputs the field's label in the first row of the document if set to true. Default is true.
+  - keyword: sheetName
+    types: Text
+    description: '(Optional) The name of the sheet where data will be added as a result of executing this smart service. Certain characters ([ ] / \ ? *) will be replaced with underscores.'
+  - keyword: sheetNumber
+    types: Number (Integer)
+    description: '(Optional) The sheet number where data will be added as a result of executing this smart service. Default is 1, the first sheet.'
+  - keyword: startingCell
+    types: Text
+    description: (Optional) The cell where the output will begin. Default is A1. Any data in rows above this cell will remain in the sheet; any data in the same row or below will be removed and overwritten.
+  - keyword: customCellPositions
+    types: List of Text String
+    description: (Optional) Array of cell positions where custom cell values should be added.
+  - keyword: customCellValues
+    types: List of Text String
+    description: (Optional) Array of values to be added on the specified custom cell position.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). The document ID of the created/updated document is returned in the fv!newDocument function variable.
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Document_Generation
+ssicon: Export_Data_Store_Entity_to_Excel.png
+ssparentcat: Automation_Services
+
+
+appian-style-note
+This is the new Export to Excel smart service. If you need to export to CSV, use the Export to CSV Smart Service.
+
+Overview
+The Export Data Store Entity to Excel Smart Service allows designers to safely export large datasets.The exported data can then be imported into other third-party applications.
+The Smart Service returns a document in an Excel format. 
+
+appian-style-note
+Appian strongly recommends customers to use the Export Data Store Entity to Excel smart service in place of Export SQL to Excel (part of the Excel Tools Plug-in).  
+
+Properties
+
+Category: Document Generation
+
+Icon: 
+
+
+Assignment Options: This smart service can be either attended or unattended (default).
+
+
+Node inputs
+| Name | Data Type | Description | Required | Multiple |
+| - | - | - | - | - |
+| Data Store Entity | Data Store Entity | The data store entity to query. | Yes | No |
+| Selection | Selection | A list of fields to retrieve, created with a!querySelection(). The selection accepts up to 50 columns. | No | No |
+| Aggregation | Aggregation | A list of fields and the operations to perform on them when retrieving the data, created with a!queryAggregation(). The aggregation accepts up to 50 columns. | No | No |
+| Filters | Any Type | A set of conditions to apply to the queried data before any grouping or aggregation. Can use either a list of a!queryFilter() or a single a!queryLogicalExpression(). When using a list of a!queryFilter(), all filters are combined using the AND operator. | No | Yes |
+| New Document Name | Text | The name of the new document that is to be created by this smart service activity. | No | No |
+| New Document Description | Text | A brief description of the document. | No | No |
+| Save in Folder | Folder | The folder where the newly created document is to be stored. Applicable and required when creating a new document. | No | No |
+| Document to Update | Document | The existing document to update with the exported data. This can be useful when using the smart service multiple times in the same process model, or if formatting is needed. See Supported Excel Formatting. Appian supports Excel 2007 and above. Note that a new version of this document will be created.  | No | No |
+| Include Header | Boolean | Outputs the field name in the first row of the document if set to true. Default is true. | No | No |
+| Sheet Name | Text | The name of the sheet where data will be added. The following characters will be replaced with underscores: [ ] / \ ? * | No | No |
+| Sheet Number | Number (Integer) | The sheet number where data will be added. Default is 1, the first sheet. Setting the number to a non-existing sheet creates a new sheet in the Excel document. | No | No |
+| Starting Cell | Text | The cell within the Excel sheet where the output will begin. Default is "A1". Any data in rows above this cell will remain in the sheet; any data in the same row or below will be removed and overwritten. | No | No |
+| Custom Cell Positions | Text | Array of cell positions where custom cell values should be added. | No | Yes |
+| Custom Cell Values | Text | Array of values to be added on the specified custom cell position. | No | Yes |
+Node outputs
+| Name | Data Type | Description |
+| - | - | - |
+| New Document | Document | The document generated as a result of executing this smart service. |
+a!exportDataStoreEntityToExcel()
+Exports the selected data store entity to Excel. This function will only execute inside a saveInto or a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Document
+Example
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Replace the ENTITY and FOLDER with the appropriate constants for your application.
+sail 
+a!localVariables(
+  local!exportDocId,
+  local!errorMessage,
+  {
+    if(
+      isnull(local!exportDocId),
+      /*This link field contains the link that starts the export*/
+      a!linkField(
+        labelPosition: "COLLAPSED",
+        links: a!dynamicLink(
+          label: "Export to Excel File",
+          saveInto: {
+            a!exportDataStoreEntityToExcel(
+              entity: cons!ENTITY,
+              documentName: "Excel Export " & now(),
+              saveInFolder: cons!FOLDER,
+              onSuccess: a!save(
+                local!exportDocId,
+                fv!newDocument
+              ),
+              /*This displays an error if there is an issue executing the save*/
+              onError: a!save(
+                local!errorMessage,
+                "Error Exporting File to Excel"
+              )
+            )
+          }
+        )
+      ),
+      {}
+    ),
+    if(
+      /*This only displays the download link if a valid document was created*/
+      not(isnull(local!exportDocId)),
+      /*This changes the link to a download link for the newly created document */
+      a!linkField(
+        links: a!documentDownloadLink(
+          label: "Download Excel File",
+          document: local!exportDocId
+        )
+      ),
+      a!textField(
+        value: local!errorMessage,
+        readOnly: true
+      )
+    )
+  }
+) 
+Usage considerations
+The following configurations and expected behavior apply when using the Export Data Store Entity to Excel Smart Service from the Process Modeler:
+
+To export fields in a specific order, make sure to specify the Selection parameter. Otherwise, the order of the exported fields will not be guaranteed.  
+You may specify either the Selection parameter or the Aggregation parameter but not both. If you do not specify either parameter, all fields are returned.
+You may specify either a LogicalExpression or a list of Filters in the Filters parameter but not both. If you wish to specify only one condition, specify a Filter. If you wish to specify more than one condition, use LogicalExpression or use a list of Filters.
+When using fields of type Date or Date and Time in a filter and the filter's value uses either the todate(), now() or today() functions, make sure to cast their value using the appropriate type. For example: cast('type!{http://www.appian.com/ae/types/2009}Date', today()), or cast('type!{http://www.appian.com/ae/types/2009}Datetime', now()).
+To create multiple tabs in the same Excel spreadsheet with data from different data store entities, use multiple nodes of this smart service. You can use the Document to Update and Sheet Number parameters when exporting a second data store entity.
+To export your data to a preformatted spreadsheet, use the Document to Update and Starting Cell parameters. Learn how to export data to a formatted Excel sheet.
+
+Exporting data to a formatted Excel sheet
+It’s common for businesses to use standard, preformatted spreadsheets to display and share data. For instance, a preformatted spreadsheet may have a cover page with different font size and colors; instructions above a table where data will be added; formatted table headers; or a specific column width.
+When you use this smart service, you can determine the cell in an existing spreadsheet where the output should begin. This is called the Starting Cell parameters. Once you specify the Starting Cell, any cells above this point will keep their original formatting, such as alignment, font, border, fill options, column width, and frozen rows and columns. 
+To export your data to a preformatted spreadsheet:
+1. Create a spreadsheet with any necessary information and formatting. This will be the original spreadsheet where the data will be exported to. 
+1. Configure the smart service, and set the following parameters:
+  - Set the Document to Update parameter to the spreadsheet you just created.
+  - Set the Starting Cell parameter to the appropriate cell. Any cells that start at or below the Starting Cell will not maintain any formatting.
+1. Execute the smart service. This will create a new version of your spreadsheet with your exported data and formatting.
+Supported Excel formatting {#prodlink-excel-formatting}
+The following table shows the formatting options supported by this smart service. 
+Generic formatting options apply to all data in a given sheet; whereas cell formatting options only apply to any rows that are not updated by these smart services (i.e. custom cell positions/values, starting cell).
+
+
+Formatting Type
+Details
+
+
+Generic Formatting
+
+
+Column widths
+Frozen rows and columns
+Tab colors
+Sheet visibility
+
+
+
+
+Cell Formatting: Number
+
+
+Number
+Currency
+Accounting
+Date
+time
+Percentage
+Fraction
+Scientific
+Text
+special and custom
+
+
+
+
+Cell Formatting: Alignment
+
+
+Horizontal Alignment
+Vertical Alignment 
+Indentation 
+Orientation 
+Wrap Text 
+Shrink to Fit
+Merge Cell
+
+
+
+
+Cell Formatting: Font
+
+
+Type: Calibri, Arial, etc.
+Style: Bold, Italic, etc.
+Size: 8, 9, 10, etc.
+Underline: Single, double, etc.
+Color
+Effects
+
+
+
+
+Cell Formatting: Border
+
+
+Line Style
+Line Color
+Border options
+
+
+
+
+Cell Formatting: Fill Options
+
+
+Background color
+Pattern color
+Pattern style
+
+
+
+
+Unsupported Excel formatting and elements
+The following list displays Excel options that are not supported by this smart service:
+- Charts
+- Excel formulas
+- Filters on columns
+- Formulas
+- Images
+- Links
+- Macros
+- Any formatting options that are not listed above
+INCLUDE PAGE: Avoiding Query Timeouts when Exporting Data
+Related objects
+Data Types:
+
+Selection
+Aggregation
+Query Filter
+Logical Expression

@@ -1,0 +1,148 @@
+
+layout: function
+title: a!richTextItem_18r1 Component
+space: sail_component
+reftype: sailcomponent
+excerpt: Displays styled text within a rich text component.
+category: function_page
+compatibility: -crf
+fncname: a!richTextItem_18r1
+fncsubcat: Display
+fncexample: Click on the function name for examples.
+fncsyntax: 'a!richTextItem_18r1( [Text], [style], [link], [linkStyle], [showWhen] )'
+fnccat: Interface_Component
+scsubcat: Rich_Text_Types
+scdisplayname: Styled Text 18.1
+evolved_fncname: a!richTextItem
+evolved_reason: 'New version supports multiple values in the style parameter, as well as custom hex colors.'
+
+Styled Text
+Function: a!richTextItem_18r1()
+Displays styled text within a rich text component.
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Text 
+ text 
+ Text or Styled Text 
+ Array of text to display as a rich text item. Text can be further styled by nesting multiple a!richTextItem_18r1() calls. 
+
+
+ Style 
+ style 
+ Text 
+ Determines the style to apply to the text value. Valid values include "NORMAL" (default), "EMPHASIS", "STRONG", "UNDERLINE", "LARGE", "MEDIUM", "SMALL", "HEADER_LARGE", "HEADER_MEDIUM", "HEADER_SMALL", "POSITIVE", "NEGATIVE", "ACCENT", and "SECONDARY". 
+
+
+ Link 
+ link 
+ Link 
+ Link to apply to the text. Create links with
+      
+ a!authorizationLink() 
+ a!documentDownloadLink() 
+ a!dynamicLink() 
+ a!newsEntryLink() 
+ a!processTaskLink() 
+ a!recordLink() 
+ a!reportLink() 
+ a!startProcessLink() 
+  a!submitLink() 
+ a!userRecordLink() 
+ a!safeLink() 
+
+
+
+
+ Link Style 
+ linkStyle 
+ Text 
+ Determines how the link is underlined. Valid values: "INLINE" (default), "STANDALONE". 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true. 
+
+
+Notes
+
+If Text is null or contains an empty array, no text is displayed.
+If Link is null, the Text is not displayed as a link.
+While rich text components can be placed inside a grid layout, header styles are not supported within a grid layout.
+Header styles cannot be combined with other styles, e.g. an underlined header is not supported.
+Header styles cannot be applied to items within a bulleted list or numbered list.
+For nested rich text, if two conflicting styles are found (e.g. both SMALL and LARGE), the innermost style will be displayed.
+
+Example
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!richTextDisplayField(
+  labelPosition: "COLLAPSED",
+  value: {
+    a!richTextItem_18r1(
+      text: "Large Header",
+      style: "HEADER_LARGE"
+    ),
+    a!richTextItem_18r1(
+      text: "Medium Header",
+      style: "HEADER_MEDIUM"
+    ),
+    a!richTextItem_18r1(
+      text: "Small Header",
+      style: "HEADER_SMALL"
+    ),
+    a!richTextItem_18r1(
+      text: "Normal ",
+      style: "NORMAL"
+    ),
+    a!richTextItem_18r1(
+      text: "Emphasis ",
+      style: "EMPHASIS"
+    ),
+    a!richTextItem_18r1(
+      text: "Strong ",
+      style: "STRONG"
+    ),
+    a!richTextItem_18r1(
+      text: "Underline",
+      style: "UNDERLINE"
+    ),
+    a!richTextItem_18r1(
+      text: " Positive ",
+      style: "POSITIVE"
+    ),
+    a!richTextItem_18r1(
+      text: "Negative ",
+      style: "NEGATIVE"
+    ),
+    a!richTextItem_18r1(
+      text: " Accent ",
+      style: "ACCENT"
+    ),
+    a!richTextItem_18r1(
+      text: " Secondary ",
+      style: "SECONDARY"
+    ),
+    a!richTextItem_18r1(
+      text: "Large ",
+      style: "LARGE"
+    ),
+    a!richTextItem_18r1(
+      text: "Medium ",
+      style: "MEDIUM"
+    ),
+    a!richTextItem_18r1(
+      text: " Small ",
+      style: "SMALL"
+    )
+  }
+)
+{% endsailbox %}

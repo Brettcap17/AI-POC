@@ -1,0 +1,44 @@
+
+layout: pattern
+title: Add Multiple Validation Rules to One Component
+reftype: sailrecipe
+sr-tags: ["Validation"]
+excerpt: Enforce that the user enters at least a certain number of characters in their text field, and also enforce that it contains the "@" character.
+
+This scenario demonstrates:
+
+How to configure multiple validations for a single component
+
+Expression
+sail 
+a!localVariables(
+  local!varA,
+  a!formLayout(
+    label: "Example: Multiple Validation Rules on One Component",
+    contents:{
+      a!textField(
+        label: "Text",
+        instructions: "Enter at least 5 characters, and include the @ character",
+        value: local!varA,
+        saveInto: local!varA,
+        validations: {
+          if(len(local!varA)>=5, null, "Enter at least 5 characters"),
+          if(isnull(local!varA), null, if(find("@", local!varA)<>0, null, "You need an @ character!"))
+        }
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    )
+  )
+)
+Test it out
+
+Type fewer than 5 characters and click "Submit".
+When testing offline, the form queues for submission but returns the validation messages when you go back online and the form attempts to submit.
+Type more than 5 characters but no "@" and click "Submit".
+When testing offline, the form queues for submission but returns the validation messages when you go back online and the form attempts to submit.
+Type more than 5 characters and include "@" and click "Submit".

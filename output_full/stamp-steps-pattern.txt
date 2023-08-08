@@ -1,0 +1,311 @@
+
+layout: pattern
+title: Stamp Steps
+excerpt: There are two similar stamp steps patterns. The stamp steps (icon) pattern is primarily icons and titles. It should be used for simple steps that don't require much information or instruction. The stamp steps (numbered) pattern is primarily text and should be used for steps that require context or explanation.
+reftype: pattern
+sr-tags:
+  - Stamps
+
+Stamp steps (icon) pattern 
+ {:.screenshot style="width:50%"}
+Stamp steps (numbered) pattern 
+:.screenshot style="width:50%"}
+Design structure
+In this page we will be looking at the stamp steps (icon) pattern. The main components in the pattern are styled text titles, stamps with icons, and columns layouts. This pattern defines two displays with stamp steps and icons. The different displays show conditionally depending on the width of the user's page. For pages wider than tablet portrait, there are rich text dots in between the horizontal stamp steps. For phone and tablet portrait pages, there are only the vertical stamp steps. 
+The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+Pattern with the fit form factor:
+:.screenshot style="width:50%"}
+Pattern with the phone form factor: 
+{:.screenshot style="width:50%"}
+For a simpler stamps step pattern, checkout the stamp steps (numbered) pattern, which similarly uses stamps, styled text, and columns layouts, but doesn't use a!forEach() or a!isPageWidth() to conditionally show different displays.
+Pattern expression
+When you drag and drop the stamp steps (icon) pattern onto your interface, 137 lines of expressions will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  a!localVariables(
+    local!iconStampSteps: {
+      a!map(icon: "calendar",      name: "Enter Dates"), 
+      a!map(icon: "search",        name: "Search Deals"), 
+      a!map(icon: "shopping-cart", name: "Check Out")
+    },
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(),
+        a!columnLayout(
+          contents: {
+            if(
+              / Display steps vertically for phone and tablet portrait page width /
+              a!isPageWidth({"PHONE", "TABLET_PORTRAIT"}),
+              a!forEach(
+                items: local!iconStampSteps,
+                expression: {
+                  a!stampField(
+                    icon: fv!item.icon,
+                    backgroundColor: "TRANSPARENT",
+                    contentColor: "ACCENT",
+                    size: "MEDIUM",
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: a!richTextItem(
+                      text: {
+                        a!richTextItem(
+                          text: fv!index & ". "
+                        ),
+                        fv!item.name
+                      },
+                      size: "MEDIUM"
+                    ),
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField()
+                }
+              ),
+              / Display steps horizontally for other page widths /
+              {
+                / Display stamp and dots in sideBySideLayout /
+                a!sideBySideLayout(
+                  items: {
+                    a!sideBySideItem(),
+                    / Extra spacing before first stamp /
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        value: a!richTextItem(
+                          text: " "
+                        )
+                      ),
+                      width: "MINIMIZE"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.icon,
+                      expression: {
+                        a!sideBySideItem(
+                          item: a!stampField(
+                            icon: fv!item,
+                            backgroundColor: "TRANSPARENT",
+                            contentColor: "ACCENT",
+                            align: "CENTER"
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            value: a!richTextItem(
+                              text: repeat(13, " " & char(9679)),
+                              color: "SECONDARY",
+                              size: "SMALL"
+                            )
+                          ),
+                          width: "MINIMIZE",
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!sideBySideItem(
+                      width: "MINIMIZE"
+                    ),
+                    a!sideBySideItem()
+                  },
+                  alignVertical: "MIDDLE"
+                ),
+                / Display step names in columnsLayout /
+                a!columnsLayout(
+                  columns: {
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.name,
+                      expression: {
+                        a!columnLayout(
+                          contents: {
+                            a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: a!richTextItem(
+                                text: {
+                                  a!richTextItem(
+                                    text: fv!index & ". "
+                                  ),
+                                  fv!item
+                                },
+                                size: "MEDIUM"
+                              ),
+                              align: "CENTER"
+                            )
+                          },
+                          width: "NARROW"
+                        ),
+                        / Display column for extra space between step names /
+                        a!columnLayout(
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    )
+                  },
+                  spacing: "NONE"
+                )
+              }
+            )
+          },
+          width: "WIDE"
+        ),
+        a!columnLayout()
+      }
+    )
+  )
+}
+{% endsailbox %}
+[Line 1-7] Define local variables
+At the top of the expressions, local variables are used to define the icons and titles for each of the stamp steps.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!iconStampSteps: {
+      a!map(icon: "calendar",      name: "Enter Dates"), 
+      a!map(icon: "search",        name: "Search Deals"), 
+      a!map(icon: "shopping-cart", name: "Check Out")
+    },
+{% endhighlight %}
+[Line 8-41] Display steps for phone and tablet portrait widths
+This section of expressions opens up the columns layouts and the if() statement that set up the conditional display for the pattern. The if() statement defines two separate layouts using a!forEach() and uses a!isPageWidth() to determine which will be shown depending on the page width. 
+This section contains the expression which defines the stamp and styled text display for the phone and tablet portrait widths. 
+{% highlight sail linenos start_line=8 %}
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(),
+        a!columnLayout(
+          contents: {
+            if(
+              / Display steps vertically for phone and tablet portrait page width /
+              a!isPageWidth({"PHONE", "TABLET_PORTRAIT"}),
+              a!forEach(
+                items: local!iconStampSteps,
+                expression: {
+                  a!stampField(
+                    icon: fv!item.icon,
+                    backgroundColor: "TRANSPARENT",
+                    contentColor: "ACCENT",
+                    size: "MEDIUM",
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: a!richTextItem(
+                      text: {
+                        a!richTextItem(
+                          text: fv!index & ". "
+                        ),
+                        fv!item.name
+                      },
+                      size: "MEDIUM"
+                    ),
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField()
+                }
+              ),
+{% endhighlight %}
+[Line 42-137] Display steps for wider windows
+This section of the expression defines the display for all other widths wider than  phone and tablet portrait. It similarly uses columns layouts, a!forEach(), stamps, and styled text to define the display.
+{% highlight sail linenos start_line=42 %}
+          / Display steps horizontally for other page widths /
+              {
+                / Display stamp and dots in sideBySideLayout /
+                a!sideBySideLayout(
+                  items: {
+                    a!sideBySideItem(),
+                    / Extra spacing before first stamp /
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        value: a!richTextItem(
+                          text: " "
+                        )
+                      ),
+                      width: "MINIMIZE"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.icon,
+                      expression: {
+                        a!sideBySideItem(
+                          item: a!stampField(
+                            icon: fv!item,
+                            backgroundColor: "TRANSPARENT",
+                            contentColor: "ACCENT",
+                            align: "CENTER"
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            value: a!richTextItem(
+                              text: repeat(13, " " & char(9679)),
+                              color: "SECONDARY",
+                              size: "SMALL"
+                            )
+                          ),
+                          width: "MINIMIZE",
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!sideBySideItem(
+                      width: "MINIMIZE"
+                    ),
+                    a!sideBySideItem()
+                  },
+                  alignVertical: "MIDDLE"
+                ),
+                / Display step names in columnsLayout /
+                a!columnsLayout(
+                  columns: {
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.name,
+                      expression: {
+                        a!columnLayout(
+                          contents: {
+                            a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: a!richTextItem(
+                                text: {
+                                  a!richTextItem(
+                                    text: fv!index & ". "
+                                  ),
+                                  fv!item
+                                },
+                                size: "MEDIUM"
+                              ),
+                              align: "CENTER"
+                            )
+                          },
+                          width: "NARROW"
+                        ),
+                        / Display column for extra space between step names /
+                        a!columnLayout(
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    )
+                  },
+                  spacing: "NONE"
+                )
+              }
+            )
+          },
+          width: "WIDE"
+        ),
+        a!columnLayout()
+      }
+    )
+  )
+}
+{% endhighlight %}

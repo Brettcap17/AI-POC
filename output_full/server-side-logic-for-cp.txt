@@ -1,0 +1,19 @@
+
+layout: "basic"
+title: "Client APIs"
+topic-group: "B"
+weight: 6
+
+Overview
+This page explains the concept of using a connected system plug-in to provide server-side logic for a component plug-in.
+
+appian-style-tip
+You should only consider creating a Client API if you are creating a Component Plug-in.
+
+What is a Client API
+Connected system plug-ins can expose client APIs that are called by component plug-ins to run logic on the server. Client APIs can access the configuration values stored in the connected system, including credentials. The component's client-side code (running in the user's browser) can pass in request parameters and then use values in the client API response to update what's shown to the user, call out to a third-party system, etc.
+See also:
+- Using Server-Side Logic in Component Plug-ins
+Examples
+
+Text Detection Client API enabled Component Plug-in Example

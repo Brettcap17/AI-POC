@@ -1,0 +1,357 @@
+
+layout: pattern
+title: Sync Records using a Record Action
+reftype: sailrecipe
+sr-tags: 
+  - Records
+  - Grids
+excerpt: Configure a record action with the Sync Records smart service so users can sync a set of records on demand.
+
+This pattern focuses on re-syncing (or refreshing) a set of records that already exist in Appian. It also provides a sample scenario to show why you might use this pattern in your application.
+{:.screenshot}
+Scenario
+The Appian Retail Company uses a record action to create all new orders in the Order record type. Since this action uses a Write to Data Store Entity smart service, all new orders are automatically synced in Appian. Although new orders are created and synced using the Write to Data Store Entity smart service, some orders are updated using a third-party system. As a result, not all order changes are automatically synced in Appian.
+To sync changes made by the third-party system, you will use the Sync Records smart service to re-sync the existing orders so they display the latest order information. 
+In this scenario, you will create a record action that allows end users to re-sync orders placed this month in the Northwest sales region. This way, users viewing a read-only grid with the monthly Northwest sales can ensure they see the latest order information.
+
+appian-style-note
+This pattern will not sync any new records created by a third-party system; it will only re-sync existing records that are already synced in Appian. To sync new and updated records created by a third-party system, consider generating a web API to sync records when notified by your system. 
+
+Setup
+INCLUDE PAGE: Record Reporting Intro
+
+Order record type:  Contains order information like the order number, date, status, and whether it was purchased online or in stores. For example, order number SO43659 was purchased in stores on 5/31/2019 and the order is closed.
+Customer record type: Contains individual customers who purchase products. For example, Terry Duffy.
+
+Create this pattern
+To create this pattern:
+1. Get the record identifiers of orders placed in the Northwest sales region this month.
+2. Create a process model with the Sync Records smart service to use in a record action.
+3. Configure a record action to trigger the process model.
+4. Add the record action to a read-only grid.
+Get order identifiers
+To configure the Sync Records smart service, you need to provide the identifiers of the records you want to sync. 
+In this pattern, you'll create an expression rule that queries the Id field from the Order record type to return all orders placed in the Northwest sales region this month. You'll use this expression rule later in a process model when you configure the Sync Records smart service.
+To get the order Ids:
+1. In the Appian Retail application, go to the Build view.
+2. Click NEW > Expression Rule.
+3. In the Create Expression Rule dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Name**| Enter `AR_getNorthwestOrders`.|
+|**Description**| Enter `Get the order Ids for Northwest orders made this month.`|
+|**Save In**| Select `Rules & Constants`.|
+
+
+Click CREATE.
+
+Copy and paste the following expression. This returns the Ids of orders created this month in the Northwest sales region.
+
+appian-style-note
+These record type references are specific to the Appian Retail application. If you're following along in the Appian Retail application, you can copy and paste this expression without updating the record type references.
+
+sail
+a!queryRecordType(
+  recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+  fields: {
+    'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{262bb249-cf34-4171-a573-54831d0958dd}orderId'
+  },
+  filters: a!queryLogicalExpression(
+    operator: "AND",
+    filters: {
+      a!queryFilter(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{ae938f73-f61f-483d-8ca0-65d3c911abae}salesRegion.fields.{2aadab0c-4cbe-4ed4-ad0a-d6da6e08e2f2}name',
+        operator: "=",
+        value: "Northwest"
+      ),
+      a!queryFilter(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        operator: "between",
+        value: /* Month-to-Date */{
+          toDatetime(eomonth(today(), - 1) + 1),
+          now()
+        }
+      )
+    },
+    ignoreFiltersWithEmptyValues: true
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+).data['recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{262bb249-cf34-4171-a573-54831d0958dd}orderId']
+
+
+Click TEST RULE to verify the query. 
+{:.screenshot}
+
+appian-style-note
+Your query may return different results from the image above since the query is filtered by the current month.
+
+
+
+Click SAVE CHANGES.
+
+Close the expression rule.
+
+Create a process model to sync records
+Now that you have the order identifiers, you can configure a process model that uses the Sync Records smart service. 
+The process model will use a start form so users can confirm that they want to re-sync records. The workflow will include a cancel flow to end the process if the user ends the action. Additionally, you'll add a script task that calls the AR_getNorthwestOrders expression rule so you can pass the returned identifiers in a process variable to the Sync Records smart service.
+When you're finished, the process model will look like this:
+{:.screenshot}
+Create a start form
+Before you build the process model, you'll start by creating a start form that asks users to confirm that they want to re-sync records. 
+To create the start form:
+1. In the Appian Retail application, click NEW > Interface.
+2. In the Create Interface dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Name**|Enter `AR_confirmSync`.|
+|**Description**| Enter `A start form to confirm that users want to sync record data.`|
+|**Save In**| Select `Rules & Constants`.|
+
+
+Click CREATE.
+In the Select a template panel, under FORMS, click One Column Form.
+To rename the form title, click the title Form to select the Form Layout component. 
+In the COMPONENT CONFIGURATION pane, replace the default Label value with Re-sync Records?.
+
+{:.screenshot}
+
+Click the title Section to select the Section Layout.
+
+From the context menu, select Delete to remove this component.
+{:.screenshot}
+
+
+From the PALETTE, drag a Rich Text component into the remaining Section Layout.
+
+
+In the COMPONENT CONFIGURATION pane for the new Rich Text component, enter the following in the Display Value: 
+This will re-sync all existing Northwest orders submitted this month. Do you want to re-sync these records?
+
+
+In the Display Value editor, highlight the text, then click  Size and select Medium Text.
+
+Click Submit to select the Button component. 
+In the COMPONENT CONFIGURATION pane, replace the default Label value with Re-sync.
+
+Click SAVE CHANGES. The interface should look like this:
+{:.screenshot}
+
+
+Close the interface.
+
+
+Create a process model and set a start form
+Now that you have a start form interface, you will create a new process model and configure the start form.
+To create a process model:
+1. In the Appian Retail application, click NEW > Process Model.
+2. In the Create Process Model dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Name**|Enter `AR Sync Northwest Orders`.|
+|**Description**|Enter `Process to sync Northwest orders placed this month.`|
+|**Save In**| Click **Create New Process Model Folder** and name the folder **AR Process Models**.|
+
+
+Click CREATE.
+In the Review Process Model Security dialog, click Add Users or Groups:
+For User or Group, enter your username.
+
+For Permission Level, select Administrator.
+
+
+Click SAVE.
+
+
+Once inside the process modeler, configure the start form: 
+
+Go to File > Properties. The Process Model Properties dialog opens.
+Go to the Process Start Form tab.
+In Interface, enter AR_confirmSync.
+When asked if you want to Create Process Parameters to match your interface's inputs, click YES. This adds the cancel rule input from your interface into the process model.
+
+Add a recordIds process variable
+In addition to the cancel process variable, you'll create another process variable called recordIds to store the record identifiers that you want to re-sync. 
+To create the recordIds process variable:
+1. In the Process Model Properties dialog, go to the Variables tab.
+2. Click + Add Variable.
+3. In the New Process Variable dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Name**|Enter `recordIds`.|
+|**Type**|Select **Number (Integer)**.|
+|**Parameter**|Select the **Allow the value for the variable to be provided when starting a process** checkbox.|
+|**Multiple**|Select the **Variable can store multiple values** checkbox.|
+
+
+
+Click OK. You now have two process variables:
+{:.screenshot}
+
+
+Click OK to close the Process Model Properties.
+
+
+Create a cancel flow
+Next, you'll create a cancel flow to terminate the process if a user clicks CANCEL on the start form.
+To create a cancel flow:
+1. From the palette on the left, drag and drop an XOR gateway onto the connector line between the Start Node and End Node.
+1. From the palette, drag an End Event node to the bottom of the XOR node. A red dot appears indicating that these two nodes will be connected.
+1. Drop the End Event node. The two nodes are now connected.
+2. Click the End Event label and enter Sync Canceled.
+3. Double-click the XOR gateway to open the node.
+1. In the Name field, enter Cancel Sync?
+1. Go to the Decision tab.
+1. Click NEW CONDITION. We're setting a condition so that, if the cancel process variable is true, the process flows to the Sync Canceled node.
+1. In the Condition, click  Expression Editor.
+1. Enter pv!cancel to reference the process variable cancel.
+1. Click SAVE AND CLOSE. The condition is already automatically set to is True.
+1. From the Results dropdown list, select Sync Canceled.
+1. For the Else if no rules are TRUE condition, select End Node.
+![Cancel sync flow config](images/cancel-sync-flow.png){:.screenshot}
+
+
+Click OK. 
+
+Add a Terminate Process event
+When a process has multiple end nodes, the different branches of a process remain active until each active path reaches one of the multiple end nodes. To stop all branches of a process, even those that have not yet reached an end node, you should add a Terminate Process event to each end node.
+To add a terminate process event:
+1. Double-click the End Node to open it.
+1. Go to the Results tab.
+1. Click the Terminate Process link. A Terminate Process row is added to the End Events list.
+![/terminate-process-tutorial](images/terminate-process-tutorial.png){:.screenshot}
+
+
+Click OK.
+Repeat the previous four steps for the Sync Canceled node.
+
+Configure the script task
+To pass the record identifiers to the Sync Records smart service, you need to configure a script task to call the AR_getNorthwestOrders expression rule and save the results in the recordIds process variable.
+To configure the script task:
+1. From the palette on the left, drag and drop a Script Task node onto the connector line between Cancel Sync? and End Node.
+2. Double-click the Script Task to open it.
+3. In the Name field, enter Get Order Ids.
+4. Go to the Data tab.
+5. Go to the Outputs tab.
+6. Click + New Custom Output.
+7. In Expression, click  Expression Editor. 
+8. In the Expression Editor, enter rule!AR_getNorthwestOrders().
+9. Click SAVE AND CLOSE.
+10. For Target, select the recordIds process variable.
+![/script-task-sync-process](images/script-task-sync-process.png){:.screenshot}
+
+
+Click OK. 
+
+Configure the Sync Records smart service
+Now that you have the record identifiers stored in a process variable, you can reference the process variable in a Sync Records node.
+To configure the Sync Records smart service:
+1. From the palette on the left, drag and drop a Sync Records node onto the connector line between Get Order Ids and End Node.
+2. Double-click the Sync Records node to open it.
+3. In the Name field, enter Re-sync Northwest Orders.
+4. Go to the Data tab.
+5. In the Inputs tab, click Record Type.
+6. For Value, click  Expression Editor. 
+7. In the Expression Editor, enter the record type reference recordType!Order.
+8. Click SAVE AND CLOSE.
+9. Click Identifiers.
+10. For Value, select the recordIds process variable.
+11. Click OK.
+Add activity chaining and save the process model
+Now that your process model is nearly complete, you will add activity chaining to allow the process to move more quickly between nodes, and then save the process model.
+To add activity chaining and save the process model:
+
+Right-click the connecting line between the Start Node and the Cancel Sync? node. 
+In the context menu, select Enable Activity Chaining. 
+Right-click the connecting line between the Cancel Sync? and Get Order Ids nodes. 
+In the context menu, select Enable Activity Chaining.
+
+Repeat these steps on the remaining nodes. The final process should look like this:
+{:.screenshot}
+
+
+Go to File > Save & Publish. 
+
+Close the process model. 
+
+Configure a record action
+Next, you'll use the process model in a record action so users can re-sync this month's Northwest orders with the click of a button.
+To configure a record action:
+1. In the Appian Retail application, open the Order record type.
+1. Go to Record Actions.
+2. Click Configure a record action manually.
+3. Under Record List Actions, click CONFIGURE NEW ACTION MANUALLY.
+4. In the Create New Action dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Display Name**|Enter `Re-sync Records`.|
+|**Key**|Leave as the default value.|
+|**Icon**|Search for the `repeat` icon and select the icon.|
+|**Dialog Box Size**| Select **Small**.|
+|**Process Model**|Select the `AR Sync Northwest Records` process model.|
+
+
+Click OK.
+Click SAVE CHANGES.
+Close the record type.
+
+Add the record action to a read-only grid
+Lastly, you'll add the record action to a read-only grid so users can re-sync this month's Northwest orders to see the latest data in the grid. 
+To create a read-only grid with the record action:
+1. In the Appian Retail application, click NEW > Interface.
+2. In the Create Interface dialog, configure the following properties:
+|Property|Value|
+|-|-|
+|**Name**| Enter `AR_NorthwestOrdersGrid`.|
+|**Description**| Enter `Grid display Northwest orders made this month.`|
+|**Save In**| Select `Rules & Constants`.|
+
+
+Click CREATE.
+From the PALETTE, drag a Read-only grid component into the interface.
+For the grid's Data Source, select RECORD TYPE and search for the Order record type. The grid populates with all order data and the RE-SYNC RECORDS action.
+
+Although the record action automatically displays on the grid, you'll want to filter the grid so it only displays orders placed in the correct sales region and during the current month.
+To filter the grid:
+6. Click FILTER RECORDS.
+7. Click Add Filter and configure the following properties:
+|Property|Value|
+|-|-|
+|**Field**|Enter `salesRegion.name`. This selects the **name** field from the **Region** record type.|
+|**Condition**|Leave the default **equal to**.|  
+|**Value**|Enter `Northwest`.|
+
+
+
+Click Add Filter again and configure the following properties:
+|Property|Value|
+|-|-|
+|Field|Enter orderDate.|
+|Condition|Select Date Range.|
+|Value|Select Month-to-Date.|
+
+
+Click OK.
+
+In the COMPONENT CONFIGURATION pane, expand the LAYOUT section.
+For Label, replace the default value with Northwest Orders This Month.
+
+Click SAVE CHANGES. The interface should look like this:
+{:.screenshot}
+
+
+Test it out
+To verify that the pattern works as expected, you can update a row of data directly in the database and then use the RE-SYNC RECORDS action to re-sync the existing records and display the changed data in the grid.
+To update data directly in the database:
+1. In the Appian Retail application, click the  navigation menu and go to Cloud Database.
+2. From the list of Tables, search for SalesOrderHeader.
+3. Click SalesOrderHeader to open the table.
+4. Click the Search tab at the top of the table.
+5. For SalesOrderNumber, enter an Order Number displayed on your grid. For example, SO67265.
+6. Click Go.
+7. In the TotalDue column, replace the existing value with 2000.00.  
+Once you update the row in the database, you can use the RE-SYNC RECORDS button to sync your changes.
+To test the RE-SYNC RECORDS button:
+1. Return to the interface where you created the read-only grid.
+2. Click RE-SYNC RECORDS.
+The table should update to display your data changes. For example, the grid below shows the order SO67265 update to now displays $2,000.00 as the total.
+{% include zoompic.html url="images/resync-pattern-test.gif" %}

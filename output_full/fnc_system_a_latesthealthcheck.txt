@@ -1,0 +1,65 @@
+
+layout: function
+title: a!latestHealthCheck() Function
+category: function_page
+excerpt: 'Returns the start time, run status, zip file, and report for the latest Health Check run.'
+fnccat: System
+fncexample: a!latestHealthCheck()
+fncname: a!latestHealthCheck
+fncresult: '[startDateTime=04/25/2020 16:18:38 GMT+00:00, runStatus=COMPLETED, zip=[Document:1408], report=[Document:1409]]'
+compatibility: -crf
+space: function_page
+parameters: none
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Returns
+HealthCheckOutput
+Usage considerations
+Function requirements
+
+
+To use this function, Health Check must be configured within the Admin Console.
+
+
+To call this function, a user must be either a system administrator or member of the Health Check Viewers group. Only system administrators will be able to see the document ID for the zip file returned as part of the HealthCheckOutput.
+
+
+Examples
+Function Results
+You can copy and paste this example into the Expression Rule Designer to see how it works.
+sail
+=a!latestHealthCheck()
+Returns the following:
+[startDateTime=04/25/2020 16:18:38 GMT+00:00,
+  runStatus=COMPLETED, 
+  zip=[Document:1408], 
+  report=[Document:1409]]
+Displaying Health Check Results in an Interface
+You can copy and paste this example into the Interface Designer in EXPRESSION MODE to see its results displayed.
+sail
+=a!richTextDisplayField(
+  value: {
+    a!richTextItem(
+      text: "Status: ",
+      style: "STRONG"
+    ), 
+    a!richTextItem(
+      text: a!latestHealthCheck().runStatus
+    ),
+    "; ",
+    if(
+      a!latestHealthCheck().runStatus = "COMPLETED",
+      a!richTextItem(
+        text: "Latest Report",
+        linkStyle: "STANDALONE",
+        link: a!documentDownloadLink(document: a!latestHealthCheck().report)
+      ),
+      a!richTextItem(
+        text: "No report available",
+      )
+    )
+  }
+)

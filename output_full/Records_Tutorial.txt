@@ -1,0 +1,402 @@
+
+layout: basic
+title: Database-Backed Record Type Tutorial
+desc: Advanced tutorial that walks you through the process of creating a record type with a database as its source.
+permalink: Records_Tutorial.html
+topic-group: A
+weight: 100
+
+
+appian-style-trainingbox
+If you are new to Appian and unfamiliar with Appian design objects and concepts, check out Appian Academy Online.
+
+Introduction
+Appian Records enable you to do more with your data. Regardless of where your data lives, Appian allows you to organize your data into actionable records that allow users to access and update the information that they need.
+For example, think about an employee record. What information about the employee would you want to see? You'd probably want to have the employee's name, title, department, and start date readily available. What might you want to do? At some point you would likely have to update the employee's information. You might also need to add a new employee. These common actions can be directly added to your record type and can be referenced in other interfaces and processes.
+This tutorial will take about an hour and will walk you through the steps to create an Employee record type with data sync enabled. This tutorial contains three parts: (1) setup and creating your record type, (2) configuring your record list, and (3) creating your record views and actions.
+Objectives
+
+
+In the first part, we will set up our application and supporting objects, as well as bring together our data and record type to begin connecting our users with the data. To do this, we will:
+
+
+Create the Appian Tutorial application. 
+
+Add a managers group.
+Create our record type and data source.
+
+Add data to our record type.
+
+
+In the second part, we will structure the way that our users will initially interact with the set of records through the record list. To do this, we will:
+
+Configure the record list by selecting which columns we want to see in the list.
+
+Create a user filter for users to filter the records in the list.
+
+
+In the third part, we will create a way for users to drill into and act upon each record. To do this, we will:
+
+Generate and configure record views so that users can see specific record data through different perspectives.
+Generate and configure related actions to allow users to update the record that they are viewing.
+
+After successfully completing this tutorial, you will be ready to create your own record types.
+{% include zoompic.html url="images/AT_introRecordWalkThrough.gif" %}
+Requirements
+
+
+This tutorial takes advantage of codeless data modeling, which requires an environment connected to a MariaDB database. For example, an Appian Cloud or an Appian Community Edition environment.
+
+
+Ensure you are familiar with the different design objects that will be referenced throughout this tutorial:
+
+record types
+interfaces
+constants
+expression rules
+process models
+
+Part 1: Setup
+Before we can create our record type, we need to create an application. We'll take advantage of Appian's automatic group and folder generation during application creation, so we'll automatically have our initial application infrastructure. We'll also add a group specific to this tutorial, then add the data for our record type.
+Create the Appian Tutorial application
+INCLUDE PAGE: skip-appian-tutorial-step
+To begin with, we need to create an application to contain our design objects. 
+INCLUDE PAGE: Create the Appian Tutorial Application
+Because we selected the Generate groups and folders to secure and organize objects option while creating the object, Appian generates standard groups and folders for the application, as well as assigns the generated groups as the default security groups for the application. 
+In this tutorial, we'll be using the following generated groups and folders:
+
+AT Administrators group to contain all administrators of the Appian Tutorial application.
+AT Users group to contain all users of the Appian Tutorial application.
+AT Rules & Constants folder to contain all our expression rules, constants, and interfaces in this folder throughout the tutorial.
+AT Models folder to contain all our process models throughout the tutorial.
+
+For each object we now create in this tutorial, Appian will pre-populate the AT Administrators and AT Users groups in the object role maps. Most of the time, we'll be able to keep those pre-populated values. The rest of the time, we'll be assigning permissions to an application-specific managers group, which we'll create now.
+Add a managers group
+Managers will have a specific part to play in our new application, so let's add a new group for AT Managers.
+To add a managers group:
+
+In the application, go to the Build view. 
+Click NEW > Group.
+Configure the following properties:
+
+| Property | Description| 
+   | - | - |
+   | Name | Enter: AT Managers |
+   | Parent Group | Enter AT Users, so that users in this group inherit Viewer permissions for the application. |
+   | Group Members | Enter your user name. |
+
+Click CREATE.
+In the Review Group Security dialog, keep the default settings. AT Administrators group should be assigned Administrator permissions for the group.
+Click SAVE.
+
+Create the employee record type and add data
+In the last part of the setup, you'll need to create the employee record type and add the data that we'll use throughout this tutorial.
+The Use the Write Records Smart Service Function on an Interface recipe will walk you through how to create the Employee record type, set up your data model, and add your employee data.
+Part 2: Configure the record list
+Now that we have our record type and data, let's configure the record list so users can find the records they need. Once we've configured the record list, we're going to add a user filter so users can filter the list by department.
+Configure record list columns
+We'll start by configuring the fields displayed in the record list. We only want to display select fields since this data is meant to be viewed at a glance before users drill into each record.
+When looking at a list of employees, we really only want to see their name, title, and department. To configure the record list to show only these columns, we are going to remove the ID, phone number, and start date columns, and combine the first and last name columns into one.
+To remove unnecessary fields:
+
+In the record type, go to List.
+Click EDIT LIST.
+
+In the Columns section of the Grid configuration, delete the Id column by hovering over  and clicking .
+
+appian-style-note
+We don't need to show the Id column in the record list, because the record field is primarily used by the database to identify records and not used by users.
+
+
+
+Delete the Phonenumber and Startdate columns in the same way.
+
+
+Next, we will combine the first and last name columns into one Name column. We will also add sorting to allow users to easily sort data in a column, and set the display value to let the column know which record field to show.
+To create the Name column:
+
+In the Columns section, delete the Lastname column by hovering over  and clicking .
+In the Columns section, click Firstname.
+In the Label field, change firstname to Name.
+In the Sort Field field, remove firstname and select lastname.
+Under Display Value, click Link.
+Under Links, click List of Links.
+Under Links, click Record Link.
+Hover over Label, then click Edit as Expression .
+
+To concatenate the first and last names to show both values in the same field, copy and paste the following expression:
+fv!row[recordType!ATEmployee.fields.firstname] & " " & fv!row[recordType!ATEmployee.fields.lastname]
+
+
+In the expression, change the record type references to use the record type reference in your environment:
+
+Remove the existing record field reference.
+Enter recordType!, then select your AT Employee record type from the context menu.
+Enter . after recordType!AT Employee, and select fields from the first context menu and lastname from the second context menu.
+
+
+appian-style-note
+Record type field references are specific to each record type and environment. This means that you need to reference the record type fields from your own environment whenever you copy and paste a record type reference from outside the application.
+
+
+
+Click OK to close the expression editor.    
+
+
+Click OK to close the list editor. 
+{% include zoompic.html url="images/AT_Record_list_editList.png" %}
+
+
+Click SAVE CHANGES.
+
+
+To test the record list, open the link under URL. The record list will open in Tempo.
+{% include zoompic.html url="images/record-list-tutorial.png" %}
+
+
+Add a user filter
+Now that we've configured the record list columns, we can add a user filter. Let's enable users to easily filter the record list by department. We'll use a department constant along with the a!forEach() function to make creating and maintaining our user filter easier.
+To add a new user filter:
+
+Return to the AT Employee record type. 
+In the record type, go to Search and User Filters.
+Under User Filters, click  New User Filter.
+Select Expression.
+For Name,  enter Department.
+Under Filter Expression, click Create Constant . 
+In the Create Constant dialog, for Name, enter: AT_DEPARTMENT_LIST.
+For Type, select Text.
+Select the Array checkbox.
+For Value, enter the department options. Separate each department by a line break, but do not include spaces, commas, or quotations:
+
+sail
+   Engineering
+   Finance
+   Sales
+   Human Resources
+   Professional Services
+
+In the Application field, enter Appian Tutorial.
+In the Save In field, enter AT Rules & Constants.
+Click CREATE. The constant is created in your application and appears in the Filter Expression field of the Create New User Filter dialog.
+
+In the Filter Expression field, replace the new constant reference with the following expression:
+sail
+a!recordFilterList(
+    name: "Department",
+    options: a!forEach(
+    items: cons!AT_DEPARTMENT_LIST,
+    expression: a!recordFilterListOption(
+        id: fv!index,
+        name: fv!item,
+        filter: a!queryFilter(
+        field: recordType!ATEmployee.fields.department,
+        operator: "=",
+        value: fv!item
+        )
+    )
+    )
+)
+13. In the expression, change the record type reference recordType!AT Employee.fields.department to use the record type reference in your environment. 
+
+appian-style-note
+Record type field references are specific to each record type and environment. This means that you need to reference the record type fields from your own environment whenever you copy and paste a record type reference from outside the application.
+1. Click OK.
+1. Click SAVE CHANGES.
+1. To test the user filter, go to List in the record type and open the link under URL. The record list will open in Tempo and automatically display the new user filter.
+
+{% include zoompic.html url="images/AT_recordList_userFilter.gif" %}
+
+
+Part 3: Define your record views and actions
+In the final part of this tutorial, we will configure the records in the record type by creating a Summary view and a related action. The Summary view displays information for a single record, and the related action will allow users to update the information about an employee directly from the record.
+Create a Summary view interface
+In this step, we will generate a Summary view. By generating this view, Appian will create the interface and configure the view for us. Then, we will configure the record header background color and the record title with the employee's name.
+Generate an employee summary interface
+Because the Employee record type has data sync enabled, you can quickly generate the Summary view interface, as follows: 
+
+Return to the AT Employee record type.
+In the record type, go to Views and Header.
+Click GENERATE RECORD VIEW.
+
+{:.screenshot}
+
+For Data Included in Your Record View, leave the default selection of the Employee record type. This will display all fields from the Employee record type in your record view.
+Click NEXT.
+
+For Record View Name and Application, leave the default configurations:
+|Property|Value|
+|-|-|
+|View Name|Summary|
+|Application|Appian Tutorial|
+
+
+Click NEXT.
+
+
+Review the objects that Appian will use for your new record view:
+{% include zoompic.html url="images/Create_a_Record_View/generate-record-view-object-list.png"%}
+
+appian-style-note
+If an existing Rules and Constants folder is being used, Groups will be hidden since they have already been configured for the folder.
+
+
+
+Click GENERATE VIEW. Appian generates the new interface.
+
+
+Click CLOSE. Your new Summary view displays in the Record Views table. 
+{% include zoompic.html url="images/Create_a_Record_View/record-views-list.png"%}
+Since we generated the Summary view, Appian automatically added the interface as the Summary view for the record type. All we need to do now is save it.
+
+
+Click SAVE CHANGES.
+
+
+Configure the record header background
+Now that our Summary view is configured, let's configure a record header background. The record header background contains the title, breadcrumbs, and related actions on every record view of your record.
+You can opt for no background or you can set an image or color. We are going to configure a light blue background: 
+
+In the Header section, for Record Header Background, select COLOR.
+For Color, keep the default Static Color.
+In the hex code text editor, enter #F3F9FF to select a light blue color.
+
+Configure the record title
+Now, we'll configure the record title so that it will show the employee's first and last name. We are adding the employee's name as a record title so that a user landing on this page will understand what they are looking at without having to navigate to the record list. 
+Since our record type has data sync enabled, Appian automatically configures the record title to use the first Text field after the primary key field in the record type. In this tutorial, that field is the employee's first name. We want the title to be the employee's first and last name, so we'll configure an expression that concatenates the firstName and lastName record fields.
+
+In the Header section, select Expression.
+
+In the expression editor, copy and paste the following expression:
+sail
+rv!record[recordType!AT Employee.fields.firstName] & " " & rv!record[recordType!AT Employee.fields.lastName]
+
+
+In the expression, change the record type references to use the record type reference in your environment.
+
+appian-style-note
+Record type field references are specific to each record type and environment. This means that you need to reference the record type fields from your own environment whenever you copy and paste a record type reference from outside the application.
+
+
+Click SAVE CHANGES.
+To preview the Summary view, go to List in the record type and open the link under URL. 
+
+From the record list, select an employee to view their Summary view. Notice that the employee's full name appears in the record title.
+{% include zoompic.html url="images/summary-view-tutorial.png"%}
+
+
+
+appian-style-tip
+In your own applications, you may create record types (like Employee) that also represent Appian users. We recommend configuring a relationship between those record types and the User record type so you can easily reference user information.
+For example, you can use the firstAndLastName record field from the User record type instead of combining the separate firstName and lastName fields as shown in this tutorial.
+
+Generate an update employee related action
+With our Summary view configured, let's move on to creating a related action so users can update employee records.
+Because the Employee record type has data sync enabled, you can use the Generate Record Action feature to quickly create a common record action within the record type, such as an action for creating, updating, or deleting records. We'll use this feature to generate an action for managers to update employee information from the Summary view. Then, we'll add some configurations to our process model to follow best practices.
+To generate an update employee record action:
+
+In the record type, go to Record Actions.
+Click GENERATE A RECORD ACTION.
+For Choose Your Action, click UPDATE.
+Click NEXT.
+In the Set Up Your Action dialog, leave the default Display Name of Update Employee.
+For Icon, leave the default selection pencil-square-o.
+For Description, enter Action to update an employee record.
+Click NEXT.
+
+In the Review the objects you need for your new action dialog, review the objects that Appian will use for your new record action. 
+    {% include zoompic.html url="images/records-tutorial-generate-record-action-review-objects.png"%}
+
+
+Click GENERATE ACTION.
+
+Click CLOSE. Your new record action displays in the Related Actions table. Since we generated the record action, Appian automatically added the Process Model and Context to the record action. All we need to do now is save it.
+Click SAVE CHANGES.
+
+Add the related action to the Summary view
+Now that Appian has done all of the heavy lifting to create a fully functioning process model, let's add the action to the Summary view. 
+Right now, the related action will only appear on the Related Actions view on each record, but we'll add a related action shortcut so managers can update user information while viewing the summary. 
+To add the related action to the Summary view:
+
+In the record type, go to Views and Header.
+Click  next to Summary.
+In the Edit View dialog, under Related Action Shortcuts, select the Update Employee checkbox.
+Click OK.
+Click SAVE CHANGES.
+
+Set security on the related action
+Since we don't want everyone to be able to update the employee information, we are going to make sure that only those in the manager group are able to view and use this related action. We'll create a constant to point to that group and use that in a security expression.
+To set security on the related action:
+
+In the record type, go to Views and Actions.
+Go to the Actions tab.
+Click  next to the Update Employee action. 
+
+In the Edit Update Employee Security dialog, enter the following expression:
+a!isUserMemberOfGroup(loggedInUser(), cons!AT_MANAGERS_GROUP)
+The a!isUserMemberOfGroup function checks that a user (in this case, the logged-in user) is a member of the mangers group. If they are, the related action will be visible.
+
+
+Click OK.
+
+Click SAVE CHANGES.
+
+Test your related action
+In this last step, we'll test out our related action.
+To test the related action:
+
+In the record type, go to List.
+Open the link under URL. 
+From the record list, select an employee to view their Summary view. 
+
+Click UPDATE EMPLOYEE.
+{% include zoompic.html url="images/update-employee-shortcut.png"%}
+
+
+Update some information in the Update Employee form.
+
+Click SUBMIT.
+
+The Summary view should update to reflect your changes.
+You have successfully completed all the steps to create a record type! The next step is optional and it walks you through how to add a record list action to your record type. 
+Additional Steps
+Generate a list action
+This optional step will show you how to generate a list action for your record type. Record list actions are used to create new records and are accessible from the record list.
+We will generate and configure a record action to add new employee records, similar to the way that we generated an update employee record action earlier. When you generate a record action to create new records, the action is automatically added to the record list as a record list action.
+To generate a record list action:
+
+In the record type, go to Record Actions.
+Click GENERATE A RECORD ACTION.
+For Choose Your Action, click CREATE.
+Click NEXT.
+In the Set Up Your Action dialog, leave the default Display Name of New Employee.
+For Icon, leave the default plus icon.
+For Description, enter Action to create a new employee record.
+For Application, keep the pre-populated Appian Tutorial application.
+Click NEXT.
+In the Review the objects you need for your new action dialog, review the objects that Appian will use for your new record list action.
+Click GENERATE ACTION.
+Click CLOSE. Your new record action displays in the Record List Actions table.
+Click SAVE CHANGES.
+
+Set security on the record list action
+To set security on the record list action:
+
+In the record type, go to Views and Actions.
+Go to the Actions tab.
+Click  next to your New Employee action.
+
+In the Edit New Employee Security dialog, enter the following:
+a!isUserMemberOfGroup(loggedInUser(), cons!AT_MANAGERS_GROUP)
+
+
+Click OK.
+
+Click SAVE CHANGES.
+
+To test your new record action, go to List and open the link under URL.
+{% include zoompic.html url="images/Record_list_userFilter_listAction.png" %}
+
+
+Congratulations!
+You did it! You made it through all of the parts and steps to successfully create a fully functioning record type with a Summary view, record actions, and a user filter. You are now ready to create record types that enable your own unique business data to do more all on your own!

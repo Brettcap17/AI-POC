@@ -1,0 +1,50 @@
+
+layout: function
+title: a!testRunStatusForId() Function
+space: function_page
+excerpt: "Provided a test-run ID, this function queries for the status of an expression rule test run."
+category: function_page
+fncname: a!testRunStatusForId
+fncsubcat: Testing
+fncexample: "Click on the function name for examples."
+fnccat: Smart_Service
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: testRunId
+    types: Integer
+    description: |
+      The test-run ID for the test run you want to check on.
+
+If you want to get the results of a test run, use a!testRunResultForId(). To learn about starting a test run, see a!startRuleTestsAll(), a!startRuleTestsApplications().
+Test runs can only be queried by the user who initiated the test run, or a user of type System Administrator.
+Results from a test run expire after 7 days. After 7 days, an error will be returned indicating that the test run has been deleted. If you'd like to persist this data for a longer period of time, you will need to write this data into a table in your business data source.
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+The following statuses can be returned:
+
+COMPLETE: All test cases have been executed, and the results are ready to be retrieved with a!testRunResultForId().
+IN PROGRESS: Not all test cases have been executed yet.
+
+Error Scenarios
+
+INVALID ID
+The ID provided does not match an active test run.
+The user lacks sufficient privileges to see the results (the user isn’t an administrator and the test run wasn’t initiated by them).
+
+
+
+Example
+a!testRunStatusForId(25)
+Where 25 is a valid test-run ID.
+See the Common Uses section of Expression Rule Testing Functions page for more examples.
+See Also
+
+a!startRuleTestsApplications()
+a!startRuleTestsAll()
+a!testRunResultForId()

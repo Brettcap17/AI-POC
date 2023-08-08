@@ -1,0 +1,52 @@
+
+layout: "basic"
+title: "docExtractionResult() Function"
+category: "function_page"
+excerpt: "Retrieves results from a doc extraction run started by the Start Doc Extraction Smart Service."
+fnccat: "Smart_Service"
+fncexample: "a!docExtractionResult(docExtractionId:5)"
+fncname: "a!docExtractionResult"
+fncresult: "ANYTYPEDATACDT"
+fncsubcat: "Document_Management"
+proxy-topic: document_extraction
+type: Reference
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: docExtractionId
+    types: Integer
+    description: |
+       ID of the doc extraction run. In order to retrieve the results, a run must first be started by the Start Doc Extraction smart service and a!docExtractionStatus() function should return COMPLETE.
+  - keyword: typeNumber
+    types: Integer
+    description: |
+       The type to which the values should be populated on output. This may be retrieved by using typeof(), where x is a value of the intended type, or reference a type with 'type!{namespace}type-name' (within single quotes).
+  - keyword: confidenceThreshold
+    types: Decimal
+    description: |
+       Optional input. Only results that meet or exceed this value will be automatically populated into the provided type. Default confidence is 0. Valid values are between 0 (everything included) and 100 (only results with 100 confidence are included). Confidence is the analysis model's interpretation of how good it thinks the prediction is. The best use case for confidence is a rough first-order filter for "good" or "bad" predictions before further processing.
+  - keyword: isStructuredDoc
+    types: Boolean
+    description: |
+       Set this value to true when fields to be extracted are in the same location for all documents of the specified Data Type Number. When you pass in structured documents and perform reconciliation, Appian Document Extraction learns to recognize this information based on its position, improving results for future extractions. Default: false.
+
+Doc extraction runs can only be queried by a user with access to the original document, started by the Start Doc Extraction Smart Service.
+The Appian Document Extraction page walks you through how to use document extraction functionality together in a process model. See the following list for the other smart services and functions you need to use with the Doc Extraction Result Function:
+- Start Doc Extraction Smart Service
+- a!docExtractionStatus()
+- Reconcile Doc Extraction Smart Service
+- Admin Console > Document Extraction
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Reconciled Data - returns the data in the form of the Input Data Type Number.
+Example
+a!docExtractionResult(docExtractionId: 25, typeNumber: typeof('type!{urn:com:appian:types}employee'()), confidenceThreshold: 70)
+Where 25 is a valid docExtractionId and 'type!{urn:com:appian:types}employee' is a valid CDT.  Results with a confidence over 70 will be returned.
+See the Appian Document Extraction page for a full end to end example.
+Usage considerations
+The doc extraction result can only be accessed by a user who has permissions to the original document.
+Appian will delete document extraction runs after 30 days, or when the total amount of data surpasses 10 GB.  If you attempt to access a run that has been deleted, you will see INVALID ID.

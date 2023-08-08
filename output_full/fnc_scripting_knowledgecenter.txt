@@ -1,0 +1,50 @@
+
+layout: function
+title: knowledgecenter() Function
+space: function_page
+excerpt: "Returns the properties of a knowledge center."
+category: function_page
+fncname: knowledgecenter
+fncexample: "knowledgecenter(2, \"name\")"
+fncresult: "System Knowledge Center"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: knowledgeCenterId
+    types: Number(Integer)
+    description: |
+      The Id of the knowledge center to be retrieved. This parameter accepts knowledge center objects as well. Knowledge center objects are represented by their Id number internally.
+  - keyword: property
+    types: Text
+    description: |
+      Information to retrieve for this knowledge center.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The property parameter accepts the following case-sensitive values:
+
+autoApproveForReadOnlyAccess
+changesRequireApproval
+communityId
+communityName
+creator
+dateCreated
+description
+expirationDays
+Id
+isSearchable
+name
+numberOfDocuments
+size
+type
+
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+knowledgecenter(2,"name") returns System Knowledge Center

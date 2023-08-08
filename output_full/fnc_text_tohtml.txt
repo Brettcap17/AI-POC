@@ -1,0 +1,32 @@
+
+layout: function
+title: toHtml() Function
+space: function_page
+excerpt: "Converts a string in plain text to the HTML equivalent that displays appropriately in an HTML page, by replacing reserved characters with their escaped counterparts."
+category: function_page
+fncname: toHtml
+fncexample: "toHtml(\"Hello  World\")"
+fncresult: "Hello <br> World"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The string of text to be converted to HTML
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+This function is not necessary when using certain allowed HTML tags, which are always allowed in Expressions.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+toHTML("Hello <br> World") returns Hello &lt;br&gt; World

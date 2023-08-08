@@ -1,0 +1,52 @@
+
+layout: function
+title: index() Function
+category: function_page
+excerpt: 'Returns the data[index] if it is valid or else returns the default value.'
+fnccat: Array
+fncexample: 'index({10, 20, 30}, 2, 1)'
+fncname: index
+fncresult: '20'
+parameters:
+  - keyword: data
+    types: Any Type
+    description: 'A homogeneous array, whose indexed value is expected. Can also be a dictionary, map, CDT, or Record.'
+  - keyword: index
+    types: Any Type
+    description: 'The index or array of indices of the data. Index can be an integer, text, or a record type field reference.'
+  - keyword: default
+    types: Any Type
+    description: 'The default value to be returned if the data or the index is invalid, e.g. if the data itself is empty or the index is not found in the data. The type of the default value must be the same as that of the elements of the data. This parameter is optional.'
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: property(): This function acts as an alias to the index() function especially when applied over custom data types.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+The type of the default value must be same as that of the elements in the array.
+When the data is a dictionary, if the index is not found in the dictionary, the default will be ignored and a null value will be returned. Consider using a map instead of a dictionary.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Retrieving a value at a single index
+index({10, 20, 30}, 2, 1) returns 20
+Return the value of a field name within a CDT where the array is the PV and the index is the field name
+index(pv!person, "firstName", "") returns the value of the "firstName" field in a CDT of person with two fields (firstName and lastName)
+Retrieving values at multiple indices
+index({10, 20, 30}, {1, 3}, 0) returns 10, 30
+Retrieving values at repeated indices
+index({10, 20, 30}, {1, 1, 3}, 0) returns 10, 10, 30
+Retrieving the value of a CDT field using the field name as the index argument
+index(topaginginfo(1, 10), "startIndex", 0) returns 1
+Retrieving the value of a map field using the field name as the index argument
+index(a!map(a: 1, b: 2), "b", 0) returns 2
+Retrieving the value of a record using the record field reference as the index argument
+index(recordType!Department(name: "Engineering"), recordType!Department.fields.name, "") returns "Engineering"

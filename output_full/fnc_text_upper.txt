@@ -1,0 +1,27 @@
+
+layout: function
+title: upper() Function
+space: function_page
+excerpt: "Converts all letters in the text into uppercase."
+category: function_page
+fncname: upper
+fncexample: "upper(\"Boston\")"
+fncresult: "BOSTON"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The string of characters to be converted into uppercase.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+upper("Boston") returns BOSTON

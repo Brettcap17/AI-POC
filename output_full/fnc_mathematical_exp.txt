@@ -1,0 +1,30 @@
+
+layout: function
+title: exp() Function
+space: function_page
+excerpt: "Returns e raised to the specified power."
+category: function_page
+fncname: exp
+fncexample: "exp(2)"
+fncresult: "7.389056"
+fnccat: Mathematical
+parameters:
+  - keyword: power
+    types: "Number(Decimal)"
+    description: |
+      The power to raise e to.
+reftype: function
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+exp(2) returns 7.389056 

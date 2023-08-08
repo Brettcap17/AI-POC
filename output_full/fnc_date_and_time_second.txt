@@ -1,0 +1,30 @@
+
+layout: function
+title: second() Function
+space: function_page
+excerpt: "Returns the seconds from the specified time."
+category: function_page
+fncname: second
+fncexample: "second(time(14, 20, 23))"
+fncresult: "23"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: time
+    types: Time
+    description: |
+      The time from which the seconds are extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+second(time(14,20,23)) returns 23

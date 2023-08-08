@@ -1,0 +1,19 @@
+
+layout: "basic"
+title: "SDK Version Compatibility"
+topic-group: "B"
+weight: 200
+
+The following table shows the supported Integration SDK versions for each Appian release (starting with the initial release in 19.1). All entries assume you are running the latest hotfix.
+
+Component plug-ins reference the SDK version in the plug-in manifest
+Connected system plug-ins reference the SDK version in the project's dependency file (for example, build.gradle).
+Our SDKs use the semver standard.
+
+{% include integration_sdk_table.html %}
+See also:
+
+Component Plug-in Versioning
+Component Plug-in Configuration Files
+Connected System Plug-in Versioning
+Connected System Plug-in Configuration Files

@@ -1,0 +1,67 @@
+
+layout: function
+title: a!dataSubset() Function
+category: function_page
+excerpt: 'Creates a value of type DataSubset for defining the source of expression-backed records and for use with a!pickerFieldCustom, leaving the data as provided. To apply sorting and paging, use todatasubset().'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!dataSubset
+compatibility: -crf
+parameters:
+  - keyword: startIndex
+    name: Start Index
+    types: Integer
+    description: |
+      The index of the first item to be returned in the subset. 
+  - keyword: batchSize
+    name: Batch Size
+    types: Integer
+    description: |
+      The number of items to be returned in the subset.
+  - keyword: sort
+    name: Sort
+    types: SortInfo Array
+    description: |
+      Valid values include null, an empty array of SortInfo, or an array of SortInfo where <SortInfo>.field is the name of a field on the input array elements or "dot" notation for a nested field.
+  - keyword: totalCount
+    name: Total Count
+    types: Integer
+    description: |
+      The number of items in total.
+  - keyword: data
+    name: Data
+    types: Any Type Array
+    description: |
+      The data to be returned in the subset.
+  - keyword: identifiers
+    name: Identifiers
+    types: Any Type Array
+    description: |
+      A parallel list of unique identifiers for each item in the subset.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+See also: DataSubset
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DataSubset
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+sail 
+    =a!dataSubset(
+       startIndex: 1,
+       batchSize: 4,
+       sort: a!sortInfo(
+         field: "name",
+         ascending: true()
+       ),
+       totalCount: 10,
+       data: {"a", "b", "c", "d"},
+       identifiers: {1, 2, 3, 4}
+    )
+returns
+{:.screenshot style="width:50%"}

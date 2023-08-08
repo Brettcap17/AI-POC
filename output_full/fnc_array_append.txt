@@ -1,0 +1,45 @@
+
+layout: function
+title: append() Function
+space: function_page
+excerpt: "Appends a value or values to the given array, and returns the resulting array."
+category: function_page
+fncname: append
+fncexample: "append({10, 20, 30}, 99)"
+fncresult: "{10, 20, 30, 99}"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: The array to modify.
+  - keyword: value
+    types: Any Type or Any Type Array
+    description: The value or values to append.
+reftype: function 
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+insert(): Use this function to add items to the beginning or middle of an array.
+joinarray(): Use this function to insert a string element between each item in the resulting array.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Only the first value parameter is required.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Append one item to an array
+append({10, 20, 30, 40}, 50) returns 10, 20, 30, 40, 50
+Append an array to an empty array
+append({}, {60, 70}) returns 60, 70
+Append one array to another
+append({10, 20, 30, 40}, {50, 60, 70}) returns 10, 20, 30, 40, 50, 60, 70
+Append multiple arrays to an original array
+append({"Red", "Green"}, {"Blue", "Yellow"}, {"Brown", "White"}) returns Red, Green, Blue, Yellow, Brown, White

@@ -1,0 +1,49 @@
+
+layout: function
+title: a!integrationError() Function
+category: function_page
+excerpt: Creates an integration error value. Use when configuring custom error handling for integration objects.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!integrationError
+fncresult: ''
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: title
+    types: Text
+    description: |
+      A short summary of the error or the error type.
+  - keyword: message
+    types: Text
+    description: |
+      A description of the error.
+  - keyword: detail
+    types: Text
+    description: |
+      Technical details about the error, including error codes or underlying error messages.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integration error value
+Usage considerations
+Get error values
+fv!success, fv!error, and fv!result can be used to get response values from any errors. 
+Example
+In a call to another system that does not support PUT, the following error message: 
+sail 
+=a!integrationError(
+  title: fv!error.title,
+  message: fv!result.statusCode & "- " & fv!error.message,
+  detail: fv!error.detail
+)
+Results in:
+IntegrationError
+    title: "The external system cannot support the request"
+    message: "405 - The requested URL does not support the PUT method"
+    detail: "HTTP/1.1 405 Method not allowed"

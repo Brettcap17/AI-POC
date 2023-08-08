@@ -1,0 +1,84 @@
+
+layout: basic
+title: Set up Appian AI
+topic-group: A
+topic: ai
+weight: 202
+
+Both Appian AI and non-Appian AI customers are able to use the out-of-the-box AI services as long as they have a valid Google Cloud set up and meet the minimum system requirements. To use certain AI functionality, you will need to download and deploy additional plug-ins before you can use the Appian design objects in your application.
+Review the sections below to ensure you are ready to begin building AI into your application.
+System requirements
+
+To use the Google Cloud AI connected systems and connected system plug-ins, Appian must be running version 19.2 or higher.
+To use IDP, Appian must be running version 20.1 or higher.
+A supported web browser.
+If your Appian installation is on a dedicated VPN, the VPN must allow Google's APIs to be accessible from the application server.
+
+Google Cloud setup
+Since Appian AI leverages the power of Google Cloud AI, you must have a Google Cloud account, service account, and service account key to connect to Google Cloud AI services.
+
+appian-style-tip
+Appian offers fully built-in document extraction capabilities with no need to send your data to Google. If your business requires you to keep your document data within Appian, you can do just that using these built-in services.
+
+Appian AI Customers
+If you have opted in to being an Appian AI customer, your Google Cloud setup is already handled for you.
+Appian will configure a Google Cloud Platform project on your behalf. Since the project uses automatic provisioning, your service account credentials are generated automatically and no other users see or have access to the credentials during the process. For more details on Google's data security and privacy practices, see Google Cloud Security.
+Once the project is set up, the service account credentials, bucket names, and region information will be sent to your Appian technical contact through the License Management site on Appian Community. To get started, contact your Appian technical contact administrator to obtain your credentials.
+Your technical contact administrator is listed on the Accounts page in Community, under Administrators. Note that you must be registered with your company on Community to access this site.
+Non-Appian AI Customers
+If you've purchased Google Cloud separately and already have an existing account, you don't need to create a new one to use Appian AI. You will, however, need to take a few additional configuration steps.
+To use the Appian AI offering, you must do the following:
+1. As the Project Owner, log into the Google Cloud console and select an existing project or create a new project.
+1. Ensure that billing is enabled for your project.
+1. Enable the following APIs: 
+  - Cloud AutoML API
+  - Google Cloud Storage JSON API
+  - Cloud Document AI API
+1. Create Cloud Storage buckets that follow the bucket requirements to store the AutoML Natural Language files:
+  - For us-central1:
+    - Location type: Region
+    - Location: us-central1
+    - Storage class: Standard (sometimes displayed in the Cloud Storage browser as Regional)
+  - For eu:
+    - Location type: Multi-region
+    - Location: eu
+    - Storage class: Standard (sometimes displayed in the Cloud Storage browser as Multi-Regional)
+1. You may choose to have two buckets: one for the training documents and one for the prediction documents. Or, you can use the same storage bucket for both. If you use two buckets, then they must be in the same regional location.
+1. Create a Google Service Account in the Google Cloud Console with AutoML Admin and Storage Admin permissions.
+1. Create the service account key and save the file as a JSON document.
+Using Google's Document AI API v1 {#v1beta3}
+In the v1 release of Google's Document AI API, the service is better equipped to handle more complex text content in documents, such as handwriting. Customers can take advantage of this updated endpoint by setting up a Form Parser processor in their Google Cloud console.
+
+appian-style-tip
+Setting up the Form Parser processor in the Google Document AI API v1 endpoint is optional. If you choose not to use the feature, documents will be processed using the existing v1beta2 functionality.
+This option is currently only available for Non-Appian AI customers because you will need access to your Google Cloud Platform project to set up the processor and retrieve the processor ID.
+
+Before you get started, create a Form Parser processor in your Google Cloud Platform:
+
+In the Google Cloud Platform, open the Form Parser processor you created.
+Locate and copy the processor ID. You'll use this value in Appian to connect to the processor.
+
+Then you can connect the Google Document AI Form Parser with Appian's document extraction features:
+
+In Appian Designer, open the process model used for document extraction.
+Open the Start Doc Extraction Smart Service and select the Data tab.
+On the Inputs tab, click Processor ID and configure a value so it uses the processor ID from the Form Parser processor you set up earlier. You can paste the processor ID directly, or configure it using a process variable.
+Note: Processor ID is not supported when Appian is selected for Preferred Vendor.
+
+
+Click OK.
+Save and publish your process model.
+
+When a document is extracted in this process, it will be sent to the new Form Parser processor you set up, which uses Google's Document AI API v1.
+Deploy plug-ins
+To use custom machine learning models or access a Google Cloud Storage bucket in your application, you'll need to deploy the associated connected system plug-ins:
+- Google Cloud Storage connected system plug-in
+- Google Cloud AutoML connected system plug-in
+To deploy the plug-ins for Appian Cloud installations:
+1. In your Appian environment, log in as a system administrator.
+1. Go to  > Admin Console.
+1. On the left side of the console, click Plug-ins.
+1. Click DEPLOY NEW PLUG-INS.
+1. Search for and click the desired plug-in. Note that only cloud-approved plug-ins that are supported for your site's version of Appian will appear. 
+1. Click DEPLOY.
+To deploy plug-ins for self-managed installations, see Appian Suite Plug-Ins.

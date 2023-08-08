@@ -1,0 +1,37 @@
+
+layout: function
+title: calisworkday() Function
+space: function_page
+excerpt: "This returns whether or not the given Date and Time is a work day, according to the calendar defined for the system."
+category: function_page
+fncname: calisworkday
+compatibility: -portal, -om, +pe, +pr
+fncexample: "calisworkday(datetime(2011, 12, 13, 12, 0, 0))"
+fncresult: "true"
+fnccat: Date_and_Time
+reftype: function
+parameters:
+  - keyword: datetime
+    types: Date and Time
+    description: |
+      The Date and Time to test.
+  - keyword: calendar_name
+    types: Text
+    description: |
+      This optional parameter accepts the name of a system calendar; otherwise, the default calendar is used.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Passing a calendar name allows you to validate working days using an alternate system calendar, if you have multiple calendars configured.
+See also: Process Calendar Settings
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+calisworkday(datetime(2011,12,13,20,0,0),"Second") returns true

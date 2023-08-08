@@ -1,0 +1,105 @@
+
+layout: basic
+title: Create a Document Classification AI Skill
+title_short: Create Doc Classification AI Skill
+type: How To
+notice: ia_notice
+
+This topic covers how to create an AI skill to classify documents using machine learning (ML) models.
+What is an AI skill?
+An AI skill is a design object that enables you to build, configure, and train an ML model using low-code. A skill takes documents as inputs via the Classify Documents smart service, analyzes the documents, and returns predictions about a document's type.
+Here's a high-level breakdown of how to create and use a document classification AI skill:
+
+What is an AI skill?
+Create an AI skill
+Create document types
+Add training documents
+Start training
+Assess the results
+Retrain the model
+Retraining vs. creating a new skill
+Publish the model
+
+Create an AI skill
+{% comment %}Same content as the ai-skill-object.md page{% endcomment %}
+First, you'll create a new AI skill design object:
+
+
+In the Build view, click NEW > AI Skill.
+{:.screenshot style="width: 25%"}
+
+
+Configure the following properties:
+|Property|Description|
+|-|-|
+| Name | Enter a name that follows the recommended naming standard. |
+| Description | (Optional) Enter a brief description of the AI skill. |
+1. Click CREATE.
+1. On the Select a Skill page, choose Classify Documents.
+
+
+The AI skill opens in a new dialog or window, where you can add document types.
+Create document types
+Document types are the categories of documents you want this skill to classify. For example, document types might be purchase orders or invoices. You'll define a document type for each category of document, and then provide training documents that represent the documents you expect to classify in production.
+To create a document type:
+
+
+On the Configure Training page, click NEW DOCUMENT TYPE.
+{:.screenshot style="width: 75%"}
+
+
+Enter the Document Type Name.
+
+Click UPLOAD to add training documents.
+Browse for and select the documents you want to add.
+Click CREATE to finish creating the document type, or CREATE AND ADD ANOTHER to create this document type and add another document type.
+
+Add training documents
+The model needs training documents to learn about the patterns or traits the documents have in common. The model also uses some of these training documents to test its knowledge after training.
+The model can only learn from the documents you provide, so be sure to build a comprehensive and diverse set of documents that represent what you expect to classify in your process. {% comment %}Will link to the "What makes a good data set?" page{% endcomment %}
+Training documents must meet the following requirements:
+
+Upload at least 10 documents, though you may need many more based on your use case. We recommend you start with at least 50 documents.
+All documents must be PDFs.
+Each document must be unique.
+
+You can add training documents to a new or existing document type. 
+To add training documents to an existing document type:
+
+Click CONTINUE EDITING on the unpublished model where you want to add more documents.
+Click EDIT in the row of the relevant document type.
+Click UPLOAD.
+Browse for and select the documents you want to add.
+
+After you've added training documents, you're ready to start training the model.
+Start training
+You'll manually prompt the model to start training based on the training documents you provided. When you've created the relevant document types and provided training documents for each one, click TRAIN MODEL on the Configure Training page.
+During training, the model analyzes a portion of your training documents to learn about the traits or patterns that could identify them as the document type.
+After learning about your documents, the model uses the remaining portion of the training documents to test itself. The model training will display metrics to show how it performed. {% comment %}Will link to glossary on these "test set" term{% endcomment %}
+Assess the results
+After the model is finished training and testing, you're shown a number of metrics measuring its performance. You'll use this information to determine if this model is ready to publish, or if you'd like to provide more documents for the model to continue training.
+Some of these metrics might be more or less relevant based on your use case and the type of documents you expect to classify.
+{% comment %}Link to Evaluate page{% endcomment %}
+Retrain the model
+If the model's training metrics don't yet meet your requirements, you can continue training to try to boost the model's performance. Each time you retrain, you're creating a new model that builds on what the previous model has already learned in previous training. Provide the new model with additional training documents to help it learn more about the document type. Be sure your training documents represent the documents you expect to see in production.
+{% comment %}Link to page on what makes a good data set{% endcomment %}
+Retraining vs. creating a new skill
+Each time you retrain, you're creating a new model. Each model leverages its learning from the previous training, so it will improve its knowledge each time you provide more documents. As you expand how you use machine learning models throughout your applications, you might wonder: when should I train a new model vs. creating an entirely new skill?
+Keep in mind you can only publish one model for a skill. In practice, this means that a Classify Documents smart service will only be able to access one model for the skill the smart service is configured to use.
+Also keep in mind that ML models are designed for a specific purpose. To help the model specialize and hone in on key traits in your document types, consider creating one at the lowest level possible for your process. That is, if a single step in a process requires you to classify invoices and purchase orders, don't bother including a third document type for inventory reports. Adding this extraneous information will only serve to distract the model, so it's best to exclude. Instead, create document types specific to the documents you expect to classify in your specific use case.
+To help demonstrate these ideas, let's use the example of studying for a test. Imagine you're taking a driving exam to get your license. You'll study laws and general rules of the road, as well as practice identifying street signs. You may even test your knowledge by navigating a practice test that contains word problems and multiple choice questions. Your family is moving to a neighboring state around the same time you're planning to take the test.
+With these two things in mind, you can begin to consider when to create a new AI skill instead of using an existing one. In short:
+
+If you're classifying the same document types in multiple processes and you trained the model based on what the model expects to see in production for each process, you can call the same skill each time. Retrain the model as needed to improve performance or recalibrate its baseline understanding of your documents.
+Using the example above, this would be a situation where you can use your same knowledge no matter where you take the test. In all states, a red octoganal sign with STOP written across it means the same thing.
+
+
+If you're classifying new and different document types in a different process, use a separate AI skill. The more models are used in production, the greater chance that they experience data drift. Data drift is when your production data moves away from training data, which can result in a degraded model performance over time. One way to help treat data drift is to retrain the model using updated training documents, so the model can adjust its understanding of your document types over time.
+Using the example above, this would be a situation where you want to focus on learning about the state-specific laws that might appear on the test you're taking. 
+
+
+
+Publish the model
+When the model's training metrics meet your requirements, you're ready to put it to use. Publish the model to make it available for use in your process, through the Classify Documents smart service.
+{% include zoompic.html url="images/ai-published-model.png" %}
+You'll configure the Classify Documents smart service to use your AI skill. When the process reaches the smart service node, it uses the published model within the skill to analyze and classify documents.

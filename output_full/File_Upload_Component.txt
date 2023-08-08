@@ -1,0 +1,287 @@
+
+layout: function
+title: File Upload Component
+category: function_page
+compatibility: -crf
+excerpt: Allows users to upload one or more files. File upload is only supported on start forms and task forms. Uploaded documents are not accessible until after form submission.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!fileUploadField
+fncsubcat: Inputs
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: target
+    name: Target Folder
+    types: Document or Folder
+    description: Determines the eventual location of the uploaded files.
+  - keyword: fileNames
+    name: File Names
+    types: Text
+    description: |
+      Determines the names for the files. When not provided, the uploaded filenames are used. Access name, size, and extension of each file using the variables fv!file.name, fv!file.size, and fv!file.extension. Access the index of each file using the variable fv!index.
+  - keyword: fileDescriptions
+    name: File Descriptions
+    types: Text
+    description: |
+      Determines the descriptions for the files. When not provided, the descriptions of the new files are empty. Access name, size, and extension of each file using the variables fv!file.name, fv!file.size, and fv!file.extension. Access the index of each file using the variable fv!index.
+  - keyword: maxSelections
+    name: Maximum Selections
+    types: Number (Integer)
+    description: |
+      Maximum number of allowed files. Once this number is reached, further uploads are blocked until a file is removed.
+  - keyword: value
+    name: Display Value
+    types: List of Document
+    description: The files associated with this field.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: |
+      One or more variables that are updated with the files when the user uploads files. Removing all uploaded files saves a null document. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the field should display as potentially editable but grayed out. When files are present in this state, they may not be deleted. Default: false.
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: |
+      Validation errors to display below the field when the value is not null. Access the names, sizes, and extensions of the uploaded files using the variables fv!files.name, fv!files.size, and fv!files.extension.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.
+  - keyword: buttonStyle
+    name: Button Style
+    types: Text
+    description: |
+      Determines the style of the upload button. Valid values:
+        - "NORMAL" Displays the label and border in the accent color.
+        - "PRIMARY" Displays the label in white on an accent color background.
+        - "SECONDARY" (default) Displays the label and border in gray.
+        - "LINK" Displays the label in the accent color and has no border until focused.
+  - keyword: buttonSize
+    name: Button Size
+    types: Text
+    description: |
+      Determines the size of the upload button. Valid values:  "SMALL" (default), "STANDARD", "LARGE".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: uploadMethods
+    name: Upload Methods (Mobile only)
+    types: List of Text
+    description: |
+      (Mobile only) Determines which mobile upload methods are displayed to users. If one method is specified, the upload button will be customized. Multiple may be applied. If value is null, all methods are provided. Valid values include: null (Default),“SIGNATURE”, “CAMERA”, “CHOOSE_PHOTO”, “CHOOSE_FILE”.
+  - keyword: buttonDisplay
+    name: Button Display
+    types: Text
+    description: |
+      Determines if the file upload will display a button with a label or an icon. Valid values: "LABEL", "ICON", and "LABEL_AND_ICON". Default behavior displays "LABEL" on web and "LABEL_AND_ICON" on mobile.
+  - keyword: placeholder
+    name: Placeholder
+    types: Text
+    description: |
+      Text to display when no file is uploaded. Default: "Drop files here".
+  - keyword: showVirusScanMessage
+    name: Show scanning for viruses message
+    types: Boolean
+    description: |
+      Determines whether the "Scanning for viruses" message appears during file upload. When set to false, the message is hidden, but the file is still scanned for viruses. An error message will still appear if real-time virus scanning is enabled and the uploaded file contains a virus. Default: true.
+reftype: sailcomponent
+scdisplayname: File Upload
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Allows users to upload a file. File upload is only enabled on start and task forms. Permitted file extensions can be controlled via the File Upload settings in the Admin Console.
+See Also: Document, Document or Folder
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Temporary files
+
+When a file is uploaded, the component updates with a temporary Document representing the uploaded file. Between the upload and the form submission, the file on the server is an inactive temporary file and not accessible except through fv! variables described in the File Name, File Description, and Validations parameters. This is the only way to access file metadata before the form is submitted.
+If a file is uploaded to a form that is never submitted, the temporary file is automatically deleted after 30 days.
+
+Forms and tasks containing file upload components
+
+The file upload component only functions on start and task forms. When placed on a record view or report, the field appears but is automatically disabled.
+When implementing form cancel behavior via a submission, remember that the uploaded files are moved to the target on submission. If this is undesirable in a cancel scenario, it should be deleted (if target is a folder) or reverted via a new version (if the target is a document) by the process after submission.
+Task forms with one or more file upload fields can only be saved if either no file has been uploaded or every uploaded file has been removed.
+
+Permissions and virus scanning
+
+The user submitting the form must have at least author access to the target folder or document. Any error creating the new document or version causes submission to be canceled and an error to be displayed to the user.
+If real-time virus scanning is enabled for file uploads in the Admin Console, the uploaded file will always be scanned for viruses, regardless of whether the virus scanning message is shown.
+
+Uploading files
+
+The uploadMethods parameter is only supported within the Appian Mobile application. This parameter allows you to limit the upload methods a mobile user has access to when tapping an upload button. This can be helpful in, for example, ensuring users do not upload photos of a signature instead of drawing their signature within the application.
+The file upload component may not be used to upload new versions of multiple files. To accomplish that, use one component for each file to replace.
+If any of the following characters appear in a file's name, they are replaced by underscores after submitting the form: \ / " ; : | ? ' < > *.
+Files cannot be larger than 1GB in size.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+The following examples require an existing target folder or document.
+File upload with no files
+sail
+a!fileUploadField(
+  label: "Upload Resume",
+  target: cons!APPLICANT_FOLDER,
+  value: ri!resume,
+  saveInto: ri!resume
+)
+Displays the following:
+{:.screenshot}
+File upload with the icon style and no files
+INCLUDE PAGE: SAIL intro
+To test out different file upload styles and placeholder texts, change the value of the buttonDisplay parameter to "LABEL_AND_ICON" and enter a different text value for the placeholder parameter.
+{% sailbox 580 %} 
+{
+  a!fileUploadField(
+    label: "Upload Cover Letter",
+    labelPosition: "ABOVE",
+    placeholder: "Drop cover letter here to upload",
+    saveInto: {},
+    validations: {},
+    buttonDisplay: "ICON",
+    showVirusScanMessage: false
+  )
+}
+{% endsailbox %}
+Single file upload with a file
+sail
+a!fileUploadField(
+  label: "Cover Letter",
+  target: cons!APPLICANT_FOLDER,
+  maxSelections: 1,
+  value: ri!coverLetter,
+  saveInto: ri!coverLetter
+)
+Displays the following:
+{:.screenshot}
+File upload with multiple files
+sail 
+a!fileUploadField(
+  label: "Inspection Photos",
+  target: cons!INSPECTION_PHOTOS_FOLDER,
+  value: ri!photos,
+  saveInto: ri!photos
+)
+Displays the following:
+{:.screenshot}
+### Signature-capture only field on the Appian Mobile application***
+sail
+a!fileUploadField(
+  label: "Signature",
+  target: cons!APPLICANT_FOLDER,
+  maxSelections: 1,
+  value: ri!signature,
+  saveInto: ri!signature,
+  uploadMethods: "SIGNATURE"
+)
+Resulting behavior: 
+Users in the Appian Mobile application, when tapping on the "Signature" file upload button, are instantly prompted to draw their signature and cannot use other upload methods such as taking a photo.
+Add one of these parameter configurations to a file upload component to achieve a the desired behavior. These examples demonstrate how to use the fv! variables available in the File Name, File Description, and Validations parameters to set file metadata or create complex validations.
+Swap spaces for underscores in file names
+sail
+fileNames: substitute(fv!file.name, " ", "_")
+Set file descriptions to a value plus file index
+sail
+fileDescriptions: "Application ABC-123 attachment " & fv!index
+All files must be PDFs
+sail
+validations: a!localVariables(
+  local!invalidExtensions: difference(upper(fv!files.extension), "PDF"),
+  if(
+    length(local!invalidExtensions) > 0, 
+    "Attachments must be pdf files. Remove: " & 
+      index(fv!files, "name", wherecontains(local!invalidExtensions, upper(fv!files.extension)), {}), 
+    ""
+  )
+)
+No files may be PDFs
+sail
+validations: if(
+  contains(upper(fv!files.extension), "PDF"), 
+  "Attachments must not be pdf files. Remove: " & 
+    index(fv!files, "name", wherecontains("PDF", upper(fv!files.extension))), 
+  ""
+)
+Files may only be PNG or JPG
+sail
+validations: a!localVariables(
+  local!invalidExtensions: difference(upper(fv!files.extension), { "PNG", "JPG" }),
+  if(
+    length(local!invalidExtensions) > 0, 
+    "Attachments must be images. Remove: " & 
+      index(fv!files, "name", wherecontains(local!invalidExtensions, upper(fv!files.extension)), {}), 
+    ""
+  )
+)
+Files must be larger than 5MB
+sail
+validations: if(
+  or(fv!files.size < 5000000),
+  "Attachments must be at least 5MB. Remove: " &
+    index(fv!files, "name", where(fv!files.size < 5000000), {}),
+  ""
+)
+Files must be smaller than 5MB
+sail
+validations: if(
+  or(fv!files.size > 5000000), 
+  "Attachments may not exceed 5MB. Remove: " & 
+    index(fv!files, "name", where(fv!files.size > 5000000), {}), 
+  ""
+)
+Up to five files are allowed
+sail
+validations: if(length(fv!files) > 5, "Only 5 attachments are allowed", "")
+Exactly five files are required
+sail
+validations: if(not(length(fv!files) = 5), "5 files must be attached", "")
+At least five files are required
+sail
+validations: if(length(fv!files) < 5, "There must be at least 5 attachments", "")

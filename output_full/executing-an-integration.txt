@@ -1,0 +1,148 @@
+
+layout: basic
+title: Execute an Integration
+topic-group: C
+weight: 4
+
+Overview
+This page shows how to set up execution for a connected system plug-in. There are examples of showing different types of execution results and debugging information to the designer.
+Indicating a successful execution
+Return IntegrationResponse.forSucess() in the template's execute() method.
+java1
+Map<String,Object> resultMap = new HashMap<>();
+resultMap.put("mySuccessfulResponseCode", 123);
+return IntegrationResponse.forSucess(resultMap).build();
+Indicating a failed execution
+Return IntegrationResponse.forError() in execute() method.
+```java
+IntegrationError integrationError = IntegrationError.builder()
+    .title("My error title")
+    .message("My error message")
+    .detail("My error detail")
+    .build();
+return IntegrationResponse
+    .forError(integrationError)
+    .build();
+```
+
+appian-style-note
+These strings in the IntegrationError should not be internationalized because they are used by designers to perform error handling. Changing these strings can break existing integrations.
+
+Adding debugging information about the request
+When an integration fails or doesn't work as expected, the designer will need additional information about the request to debug the issue. For that reason, you should always add diagnostics to your IntegrationResponse.
+Add information about the request using to the diagnostic map. Obfuscate any sensitive values because these values will be displayed to the designer in the request tab.
+```java
+String region = connectedSystemConfiguration.getValue(REGION_KEY);
+String apiKey = connectedSystemConfiguration.getValue(API_KEY);
+String city = integrationConfiguration.getValue(CITY_KEY);
+Map requestDiagnostic = new HashMap<>();
+requestDiagnostic.put("API Key", apiKey == null ? null, "**");
+requestDiagnostic.put("Region", region);
+requestDiagnostic.put("City", city);
+IntegrationDesignerDiagnostic diagnostic = IntegrationDesignerDiagnostic.builder()
+    .addRequestDiagnostic(requestDiagnostic)
+    .build();
+return IntegrationResponse.forSuccess(new HashMap<>())
+    .withDiagnostic(diagnostic)
+    .build();
+```
+{:screenshot}  
+Adding Debugging Information about the Response
+When an integration fails or doesn't work as expected, the designer will need additional information about the response to debug the issue. For that reason, you should always add diagnostics to your IntegrationResponse.
+Add information about the response using to the diagnostic map.
+```java
+// Step 1: Get information from the response
+CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+HttpRequestBase myHttpRequest = new HttpGet("https://example.com");
+HttpResponse httpResponse = httpClient.execute(myHttpRequest);
+int statusCode = httpResponse.getStatusLine().getStatusCode();
+String response = EntityUtils.toString(httpResponse.getEntity());
+// Step 2: Add information to Integration Response
+Map responseDiagnostic = new HashMap<>();
+responseDiagnostic.put("Status Code", statusCode);
+responseDiagnostic.put("Raw Response", response);
+IntegrationDesignerDiagnostic diagnostic = IntegrationDesignerDiagnostic.builder()
+        .addResponseDiagnostic(responseDiagnostic)
+        .build();
+return IntegrationResponse.forSuccess(new HashMap<>())
+    .withDiagnostic(diagnostic)
+    .build();
+```
+{:screenshot}  
+Adding timing information
+If performance becomes an issue for a designer, it's important for them to understand the performance breakdown. Is the issue pre- or post-processing, or is the issue in the network connection or external system?
+To add timing information, use the addExecutionTimeDiagnostic() on the diagnostic builder. We recommend you only record the time it takes for the external system to respond.
+```java
+final long start = System.currentTimeMillis();
+makeExternalCall(...)
+final long end = System.currentTimeMillis();
+final long executionTime = end - start;
+IntegrationDesignerDiagnostic diagnostic = IntegrationDesignerDiagnostic.builder()
+    .addExecutionTimeDiagnostic(executionTime)
+    .build();
+return IntegrationResponse.forSuccess(new HashMap<>())
+    .withDiagnostic(diagnostic)
+    .build();
+```
+{:screenshot}  
+Configuring HttpClient when a proxy is enabled
+If a proxy is enabled by an Appian administrator, you must use the provided configuration data when making HTTP requests to non excluded hosts. Here is an example of using the proxy data to configure the Apache HttpClient.
+```java
+//Step 1: Configure RequestConfig and add to HttpRequest
+ProxyConfigurationData proxyConfigurationData = executionContext.getProxyConfigurationData();
+RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+if (proxyConfigurationData.isEnabled() && !proxyConfigurationData.isExcludedHost(httpPost.getURI().getHost())) {
+  String proxyHost = proxyConfigurationData.getHost();
+  int proxyPort = proxyConfigurationData.getPort();
+  HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+  requestConfigBuilder.setProxy(proxy);
+}
+RequestConfig requestConfig = requestConfigBuilder.build();
+httpPost.setConfig(requestConfig);
+//Step 2: Configure Credential Provider
+// If your 3rd party system requires username and password credentials, add them to the credential provider
+CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+credentialsProvider.setCredentials(AuthScope.ANY,
+    new UsernamePasswordCredentials("Your User Name",
+        "Your Password"));
+HttpClientContext context = HttpClientContext.create();
+context.setCredentialsProvider(credentialsProvider);
+// Add credentials to client if needed
+if (proxyConfigurationData.isEnabled() && proxyConfigurationData.isAuthRequired()) {
+  AuthScope authScope = new AuthScope(proxyConfigurationData.getHost(),
+      proxyConfigurationData.getPort());
+  Credentials credentials = new UsernamePasswordCredentials(proxyConfigurationData.getUsername(),
+      proxyConfigurationData.getPassword());
+  credentialsProvider.setCredentials(authScope, credentials);
+}
+//Step 3: Create a http client and execute with the configurations from above steps
+HttpClient httpClient = HttpClientBuilder.create().build();
+httpResponse = httpClient.execute(httpPost, context);
+```
+Sending documents
+When a configuration contains a document property, and the designer provides a value for the property, the configuration will contain a Document object during execution. Use the document object to acquire the an input stream of the document's data.
+java
+Document document = integrationConfiguration.getValue("documentKey");
+String documentName = document.getFileName();
+InputStream inputStream = document.getInputStream();
+Receiving documents
+The code snippet below demonstrates how to download a file from an external system, store it in a folder, and provide a reference to the downloaded file to the designer.
+For a complete example on how to download documents, look at Google Drive example in our GitHub repository.
+```java
+// Get the location of where to store the file
+// The configuration must have a FolderPropertyDescriptor to allow the
+// Appian Designer to specify where to store the downloaded file
+Long folderId = integrationConfiguration.getValue(FOLDER_ID_KEY);
+String fileName = ...; / The name of the file /
+InputStream inputStream = ...; / Input stream to the file to download /
+// Now download the file and place it into the folder and obtain
+// a Document reference 
+Document document = executionContext.getDocumentDownloadService()
+                                    .downloadDocument(inputStream, 
+                                                      folderId, 
+                                                      fileName);
+// Now return the Document to the designer                                                    
+Map result = new HashMap<>();
+result.put("Document", document);
+return IntegrationResponse.forSuccess(result).build();
+```

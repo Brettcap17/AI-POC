@@ -1,0 +1,46 @@
+
+layout: function
+title: Paging Grid Image Column Component [Deprecated]
+category: function_page
+compatibility: -crf
+depver: 19.2
+evolved_fncname: a!gridColumn
+evolved_reason: Now supports multiple interface components.
+fnccat: "一Deprecated一"
+depver: 19.2
+fncname: a!gridImageColumn
+reftype: sailcomponent
+scdisplayname: Paging Grid Image Column
+evolved_fncname: a!gridColumn
+evolved_reason: "Now supports multiple interface components."
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Name to display for the column heading.
+  - keyword: field
+    name: Field
+    types: Text
+    description: 'Name of the field that populates the column. Stored into Paging and Selection Value when the user clicks on the column label. A sort indicator displays on the column when its Field argument matches pagingInfo.sort[1].field.'
+  - keyword: data
+    name: Data
+    types: Array of Images
+    description: 'Array of images values to display in the column. Create images with a!documentImage(), a!userImage(), a!webImage().'
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the component is displayed on the interface. When set to false, the reference line is hidden and is not evaluated. Default: true.' 
+  - keyword: size 
+    name: Size
+    types: Text
+    description: 'Determines how the images are sized. Valid values: "ICON" (default), "TINY", "GALLERY", "SMALL", "MEDIUM", and "LARGE".'
+  - keyword: isThumbnail
+    name: Is Thumbnail
+    types: Boolean
+    description: 'Determines whether the images can be viewed at a larger size when clicked. Multiple images will be visible in a slideshow. Default: false.'
+  - keyword: style
+    name: Style
+    types: Text
+    description: 'Determines how the images are rendered. Valid values: "STANDARD" (default) or "AVATAR".'
+
+The grid image column component has been deprecated, and will be removed in a future release of Appian. Instead, use a grid column. For information about the grid image column, see the Appian 19.4 documentation.

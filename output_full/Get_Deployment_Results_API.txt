@@ -1,0 +1,52 @@
+
+layout: basic
+title: Deployment API - Get Deployment Results
+title_short: Get Deployment Results API
+topic: deploymentapis
+weight: 1200
+
+Overview
+This endpoint retrieves information about a deployment on an Appian environment, given the UUID of the deployment.
+
+HTTP Request Method: GET
+Endpoint: /deployments/<uuid>
+
+Request
+When performing a GET request, you do not need a request body. However, you do need to specify the UUID of the deployment that you are querying for. This is done by adding a path parameter to the end of the URL, such as:
+https://<domain>/suite/deployment-management/v1/deployments/<UUID>
+Request example
+Request
+GET /deployments/<uuid>
+cURL example
+When calling the API from a command line interface, you can use cURL to make a request. The cURL command with the deployment UUID looks like:
+curl --location --request
+GET 'https://mysite.appiancloud.com/suite/deployment-management/v1/deployments/d243b14c-3ba5-41c3-9f51-76da51beb8f5/' \
+--header 'Appian-API-Key: <API key>'
+Response
+Successful response
+| Attribute | Value |
+| - | - |
+| summary | Overview of the number of database scripts and objects that were deployed.|
+| summary.databaseScripts | The total number of database scripts included in the original deployment request. |
+| summary.objects | Overview of deployment results for the objects included in the original deployment request, as part of the package (.zip). |
+| summary.objects.total | The total number of objects in the package. |
+| summary.objects.imported | The number of objects in the package that successfully imported. |
+| summary.objects.failed | The number of objects in the package that failed to import due to problems. |
+| summary.objects.skipped | The number of objects in the package that were skipped because there were no changes. |
+| deploymentLogUrl | The URL to use to retrieve the deployment log of this deployment. |
+| status | Status of the deployment. These correspond to the statuses that appear on the Deploy view in Appian Designer.  Possible statuses: IN_PROGRESS, COMPLETED, COMPLETED_WITH_IMPORT_ERRORS, COMPLETED_WITH_PUBLISH_ERRORS, FAILED, PENDING_REVIEW, or REJECTED.  |
+Response example
+json
+{
+    "summary": {
+        "databaseScripts": 0,
+        "objects": {
+            "total": 22,
+            "imported": 22,
+            "failed": 0,
+            "skipped": 0
+        },
+        "deploymentLogUrl": "https://mysite.appiancloud.com/suite/deployment-management/v1/deployments/d243b14c-3ba5-41c3-9f51-76da51beb8f5/log/"
+    },
+    "status": "COMPLETED"
+}

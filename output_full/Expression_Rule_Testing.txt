@@ -1,0 +1,274 @@
+
+layout: basic
+title: Expression Rule Testing with Appian
+topic-group: B
+weight: 150
+
+Overview
+This document provides general guidance and best practices for testing expression rules with the test cases feature.
+For information on automated testing strategies and testing rules in bulk, see: Automated Testing for Expression Rules
+What can test cases be used for?
+Test cases aren't just useful for teams that have large testing infrastructures or use automated testing, they can help improve the maintenance of individual rules as well.
+Save Ad-Hoc Tests
+
+The ad-hoc, informal tests that you write while working on a rule can be saved as test cases that you can delete later.
+
+Inline Documentation
+
+Test cases can describe the expected behavior and results of an expression rule which can inform other developers of what the rule should do.
+
+Test-Driven Design
+
+You can write test cases before you write your rule, then use them to determine when you’ve succeeded. This is known in the software-development world as "Test-Driven Development."
+
+Use Cases
+
+Write test cases that cover the various ways in which your rule can be used.
+
+Edge Cases
+
+Write test cases for rare but potential inputs that could break the rule.
+
+Regression Testing
+
+The test cases you write can also be run in bulk so you can test the rest of your application/system for quick feedback on potential unintended changes to objects that rely on the rules you edited.
+
+General guidance
+The following list of guidelines can help direct your testing efforts and avoid common mistakes. These guidelines have been generalized; for examples on how they are specifically applied, see the Common Testing Scenarios section below.
+
+
+Test only your logic. Make sure your test cases are testing the logic of your rule and not testing Appian built-in logic. You can rely on Appian to function as expected. For example, don’t test that the sum() function can add numbers. If your rule is taking numerical values from multiple sources and summing them together, you may want to create tests that ensure the inputs are of the correct type or that it can handle nulls, but you should not test that 2 + 2 = 4.
+
+
+Make tests as specific as possible. Isolate one part of the expression rule when creating a test case, so the result of the test execution is more specific. For example, if your rule can have three different results, instead of having one test that checks three parts of a rule, have three separate tests per expected result.
+
+
+Make sure the test isn’t testing itself. If the assertion is the same as the expression rule definition, it’s what we call a "1=1 test," and we don’t learn anything from it. This is a surprisingly easy mistake to make.
+
+
+Write reliable tests. Tests that incorporate values from an external system (either via a query, or using a date/time function, etc.) in their definitions are considered "fragile," as their results can be affected by changes to those external sources. For example, a test that queries a table for the values in select rows could fail when the values in those rows are changed by another process; in this case the test failure would not reflect a failing of the rule's logic.
+
+
+Test appropriate expression rules. Not all expression rules can be effectively tested. There are some rules, such as rules that query transactional (non-reference) data, that do not need test cases, because the data is different on each environment. To learn more about when to write test cases, see the Playbook article on Expression Rule Test Cases.
+
+
+Test case management
+Writing and maintaining unit tests is an integral part of ensuring the long term success of an application. The Manage Test Cases dialog can assist you with this maintenance. For more information on writing test cases for expression rules, see Expression Rule Test Cases.
+Manage test cases {#prodlink-manageTestCases}
+Manage Test Cases allows you to manage the test cases for all of the expression rules in your application. From this view you can identify rules without any test coverage (rules without test cases), run the test cases for any number of rules in your application, and review the results of the previous run in order to address any failures.
+Throughout development you should ensure that you have comprehensive test coverage for your expression rules, and that all of test cases for those rules are passing. Appian recommends running the test cases for all rules in your package at least once directly prior to deployment.
+To view test cases, open the settings menu , then select Manage Test Cases.
+{% include zoompic.html url="images/Expression_Rule_Testing/settingsMenu.png" border="-nb"%}
+{% include zoompic.html url="images/Expression_Rule_Testing/manageTestCases_landingView.png" border="-nb"%}
+When you open the Manage Test Cases dialog, you will see the following:
+
+A grid containing a list of all of the expression rules within your application and the status of their most recent test execution results. Hover over each rule's status icon to learn more about the rule's specific results status and when its tests were last executed. Expression rule statuses include:
+Passed: All test cases passed successfully.
+Failed: One or more test cases failed, timed out, or encountered an error.
+No test cases: No test cases are defined.
+Outdated: No previous test results are available. When a rule's status is outdated, Appian recommends re-running its test cases to get its latest results. A rule's status can be outdated due to one of the following reasons (in priority order):
+Rule definition changed: The rule’s definition has changed since its test cases were last executed.
+Precedent rule definition changed: The rule has one or more precedent objects whose definitions have changed since its test cases were last executed. Note that Appian looks for changes in up to 20 levels of a rule's precedents to determine whether to mark that rule's latest test results as outdated.
+No recent results: The rule’s test cases have never been executed before or have not been executed within the last 14 days.
+
+
+Filters, including:
+Rule Statuses filter: Filters rules by their status.
+Only view rules in patch filter: Filters to only rules in your patch. This can help you to ensure that all of your patched rules have test coverage and that their test cases are passing before you deploy your patch to another environment.
+Last Modified By filter: Filters by the user or users who last modified any of the rules. This is useful during code reviews or more generally throughout the development process when looking for any failures that may have been caused by your, or another developer's, latest changes.
+Last Modified From / To filter: Filters rules down to those modified within a particular date range. For example, this filter can help to find all of the rules that have changed since your last deployment date.
+Run All Rules / Run Filtered Rules button: Runs the test cases for all of the expression rules visible in the grid. Note that running tests can take a few minutes depending on the number of rules and the complexity of your test cases. Expression rule statuses will refresh automatically as their test cases finish.
+Status: Provides an overview of the expression rule statuses displayed in the grid. The timestamp reflects when the rule statuses within the grid were last refreshed.
+
+
+appian-style-tip
+Manage Test Cases only displays previous test case results for test cases that were run from inside of Manage Test Cases, the Start All Rule Tests smart service, or the Start Application Rule Tests smart service. Test case runs from within an expression rule’s test pane do not have their results persisted and their results will not be reflected within the Manage Test Cases dialog.
+
+You can also manage and execute your test cases when comparing and deploying your packages. During direct deployments you will be warned if any packaged rules have outdated test data, failing test cases, or are missing test coverage. 
+Rule results
+Once your tests have finished executing you can select an expression rule from the rules grid on the left hand side of the dialog and see its test case results in more detail in the rule results grid on the right hand side. 
+{% include zoompic.html url="images/Expression_Rule_Testing/manageTestCases_ruleResultsView.png" border="-nb"%}
+
+Expression rule name link: Links to the selected expression rule's object definition where you can address test failures or modify the rule.
+Filters, including:
+Test Case Statuses filter: Filters test cases by Passed, Failed, Error, and Timed Out statuses. See Run test cases for more details.
+Note: A test triggers a time out if it takes over a minute to run. There are a number of reasons that a test case can time out, including because it has complex expressions or external integration dependencies. Review your code and check for dependencies to resolve any time outs.
+
+
+Assertion types filter: Filters test cases by assertion type. 
+Run All Cases button: Runs all of the test cases for the selected rule and updates the rule's status.
+Test case link: The name of each test case is a link to further details about the test case result.
+
+Individual test case results
+Clicking on a test case's name from the rule results grid provides you with more information about that test case’s execution including its status, execution time, rule inputs, and results.
+{% include zoompic.html url="images/Expression_Rule_Testing/individualResultView.png" border="-nb"%}
+
+Go back: Links to the previous view, returning you to the rule results grid containing all of the test case results for a selected expression rule.
+Summary of the results for the test case including its name, test case status, execution time, and assertion type.
+Inputs grid: Displays the name and value for each of the test case’s rule inputs. If the value of the rule input is an expression, the value column will contain the expression and not the executed form of the value.
+Results section: Displays the test case’s results, including any error messages that may have occurred during its execution. Note that depending on the test case’s assertion type, you will see one of the following in the results section:
+Test output matches the asserted output: For this assertion type, a comparison between the test case’s expected result and actual result will be provided. When the test fails, the differences between these results are highlighted. When the test succeeds, nothing is highlighted.
+Assertion expression evaluates to true: For this assertion type, the results section will display the assertion expression definition and whether the expression evaluated to true.
+Test completes without errors: If the assertion passes, the results section will display the evaluated value and its results. If there is an error, the error message will be displayed. In this case, the actual type and value of the result will not be displayed because the expression could not be evaluated.
+Time Out: If the test timed out, a time out message will be provided.
+
+Common testing scenarios
+The following scenarios describe common expression rule uses and how they can be tested. Each of these scenarios reflects different guidance and practices related to testing expression rules. 
+Dates or times
+Testing a rule that returns an array of years based on the current year (uses the today() function). This scenario reflects guidance on:
+
+Writing reliable tests when dealing with dynamic values
+Avoiding a "1=1 test"
+Testing your application logic, not Appian's function library
+
+CDT input and output
+Testing a rule that takes a CDT array and returns a filtered subset of that CDT array. This scenario reflects guidance on:
+
+Writing reliable tests when working CDTs and external systems
+Only test expression rule logic 
+Isolate parts of the expression rule
+
+Email address format validation
+Testing a rule that validates whether the provided text input is a valid email address. This scenario reflects guidance on:
+
+Test-Driven Development
+Isolate parts of the expression rule
+
+Dates or times
+In this scenario, we have a rule that takes a single year as an input and returns an array of the years between the input year and the current year. 
+We use this rule to populate a dropdown for an application that allows employees to retrieve a copy of their W2 from a select year. In this case we pass the employee’s start year to the rule.
+If that year was 2008, we would get a list of values as seen in the dropdown in the image below.
+{:.screenshot}
+The rule
+Rule inputs
+startYear (type: Integer)
+Rule definition
+sail
+a!localVariables(
+  local!numYearsSinceStartYear: year(today()) - ri!startYear,
+  local!arrayOfIndices: enumerate(local!numYearsSinceStartYear + 1),
+  reverse(local!arrayOfIndices + ri!startYear)
+)
+How should we test this?
+Because this rule uses the today() function, the same input will result in a different output depending on the year that it is run. If we create a test case with 2008 as the input, and we run it in 2016, the output will be an array of 9 values:
+{2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016}
+If we set that array as the asserted output, the test case will pass in 2016, but fail when run in 2017 because the same test case will return 10 values:
+{2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017}
+This is a clear sign that we should avoid asserting the value of this rule directly — any tests that assert a value from something that is dynamic or context dependent like this is likely fragile. 
+Since we can’t assert the literal results in this case, we might try to write an expression to calculate the array to compare. So, maybe we would write an expression that would calculate the array of values, like this:
+sail
+a!localVariables(
+  local!numYearsSinceStartYear: year(today()) - 2008,
+  local!arrayOfIndices: enumerate(local!numYearsSinceStartYear + 1),
+  reverse(local!arrayOfIndices + 2008)
+)
+But, in doing so, we’ve basically rewritten the original expression rule, which doesn’t actually test anything; since we’re rewriting the logic of the expression rule, it’ll just output the rule we’re seeking to test. We call this a "1=1 test."
+
+So, how do we actually test our rule in this situation? Well, instead of testing that the result of one test case matches the result of running the entirety of the expression rule, we’ll break down the result of the rule into testable components.
+Test cases
+Can return a single-item array
+
+Here we assert that when the start year is the current year, we should always expect the rule to output only a single year. We don't need to assert that the year is 2016, 2017, or 2034 because we are confident that year(today()) is always going to return the right current year in the expression rule. Our tests don’t need to test Appian functionality.
+Returns an array of the correct length
+
+Here we assert that we'll always have a certain number of values in the output array given the number of years ago the start date is. A common error in rule logic is that values are sometimes off by one index. Testing for 1 and for 6 years is enough coverage that if they both pass, we can safely assume all intervening and exceeding years will work as well because the logic is straight-forward, and we are still relying on Appian functions to work as intended.
+Output type is correct
+When writing test cases, we should also keep in mind how other application objects use this rule, and what assumptions that are making about what the rule returns. For example, another rule might take the output of this rule and use it as the list parameter for the apply function. If this sometimes returned a scalar, then the apply function would break. We should protect & document these types of assumptions in test cases.
+
+Above we are asserting that even if we only return a single year that it’s an array type. This test case can serve as documentation for other developers to understand that this is the expected behavior; if they make changes that affect the output data type, this test will fail. 
+Adapting the rule and test cases
+Weeks later it turns out there is a bug where the rule breaks when a future year is passed into it, so we add some additional logic to handle this case. To fix this bug, we'll add logic to check whether the number of years since the start date is negative; if so, we'll return an empty integer array to handle this case.
+sail
+a!localVariables(
+  local!numYearsSinceStartYear: year(today()) - ri!startYear,
+  local!numYearsIsNegative: local!numYearsSinceStartYear < -1,
+  if(
+    local!numYearsIsNegative, 
+    tointeger({}),
+    reverse(enumerate(local!numYearsSinceStartYear + 1) + ri!startYear)
+  )
+)
+We'll add another test case that asserts the output value is an empty integer array for any input values that are future start years.
+
+CDT input and output / external data
+In this scenario, we have a rule that takes a set of purchase requests (a CDT array) and a type (like stationary, or electronic equipment, or office furniture), and returns only the requests that match the type. This is used by multiple parts of an application for ordering office supplies. One process model queries for all new purchase requests and sends them to this rule to be sorted by type and sent to the appropriate department.
+The rule
+Rule inputs
+purchaseRequests (type: Purchase Request [Array])
+type (type: Text)
+Rule definition
+sail
+a!localVariables(
+  /* Find the indices of the purchase requests of a given type, then */
+  /* use those indices to only return those items from the array     */
+  local!filteredIndices: wherecontains(ri!type,index(ri!purchaseRequests,"type",{})),
+  index(ri!purchaseRequests, local!filteredIndices,{})
+)
+How should we test this?
+Because the input to this rule will be different depending on the day (since we are querying a database that is constantly being updated), we can’t create a test output that will consistently be the same. We don’t want to run the same query on the purchase requests table and use its result as the input value here, because it’ll be different from moment to moment. So, we need to define a static set of purchase requests to test against to safeguard against making the test fragile.
+Since our rule only filters a set of data, that’s the only part we really need to test. We don't need to test what the entire CDT definition of a purchase request data type looks like, and we don't need to test the values of all the fields in the purchase request because they aren't relevant here. So, we need to create our data set with purchase requests of different types and check to make sure that the result of running the rule only contains requests of a single type.
+Test cases
+We came up with the following test cases to ensure our rule is working as intended.
+Rule's logic filters properly
+Since we know exactly what fields of the purchaseRequest input the rule needs, we can hardcode some example data by just adding a dictionary with the fields of the CDT. 
+Since the rule input is already of type array of PurchaseRequest, any values we pass into that rule input will be cast to the appropriate type. We don't need to query on real data, and we can hardcode our types to avoid any brittleness without sacrificing test coverage. We can specify the test input as the expression below:
+sail
+{
+  {type:"OFFICE"},
+  {type: "ELECTRONICS"},
+  {type:"PAPER"},
+  {type: "ELECTRONICS"}
+}
+Notice how we didn't add any of the other fields to the CDT, we know we don't care about these for this specific rule, so don't bother!
+
+This tests that a set of Purchase Requests with varying purchase types will filter out all requests that don’t match the specified type. We check that the remaining purchase requests don’t have any with a different type than the one specified. We've effectively tested the logic of this rule without having to rely on any actual data from an external source.
+Returns an array of the correct length
+Another aspect we might want to verify is that the expected number of items was returned. If we expect 7 results, we can check to make sure we get 7 unique results. 
+We can use the same test inputs for this case, so let's duplicate the test case (select it in the test cases grid and click the duplicate button) and assert the length of the test output.
+
+Though the test cases in this scenario have relatively simple assertions you should always make separate test cases for them. This will assist you when troubleshooting the rule - if the assertions were all in one test case then you wouldn't immediately know if the output was wrong because it is returning the wrong status values or it's not returning all the items with a given status value.
+Email address format validation
+In this scenario we have a rule that takes a text input, performs a lot of different logic to ensure it is in the format of a valid email address, and returns a boolean corresponding to whether or not it is a valid email address format.
+We use this rule to validate a user's input on an email address field on a customer onboarding form and block the user from submitting the form until they provide a valid email address.
+The rule
+Rule inputs
+address (type: Text)
+Rule definition
+sail
+if(
+  or(
+    len(trim(ri!address)) > 255,
+    length(split(trim(ri!address), " ")) > 1,
+    count(split(ri!address, "@")) <> 2
+  ),
+  false(),
+  a!localVariables(
+    local!localPart: split(trim(ri!address),"@")[1],
+    local!domainPart: split(trim(ri!address),"@")[2],
+    if(
+      or(
+        length(split(local!domainPart, ".")) < 2,
+        contains(split(local!localPart, "."), ""),
+        contains(split(local!domainPart, "."), ""),
+        not(isnull(stripwith(lower(local!domainPart), "abcdefghijklmnopqrstuvwxyz1234567890-."))),
+        not(isnull(stripwith(lower(local!localPart), "abcdefghijklmnopqrstuvwxyz1234567890-._+'&%")))
+      ),
+      false(),
+      true()
+    )
+  )
+)
+How should we test this?
+When first identifying that you need to create this rule, it is likely that you are thinking about examples of valid and invalid email addresses to understand what rule's behavior will need to be. This rule actually has a lot of separate pieces of logic working together here - this is a good opportunity to use Test-Driven Development when writing this rule. 
+In Test-Driven Development you'd start creating a test case for each example email address strings you need to validate and whether or not they'd return true or false. Then once you were finished, you would start writing the expression rule itself and continuously test it via the test cases grid to start watching tests pass as you implement more and more of the necessary logic. This would help ensure that none of the relevant examples we are aiming to support are missing.
+Test cases
+Happy path case
+
+Error cases
+This rule has a lot of separate pieces of logic working together and it will be up to you to determine how much of it you'll want to document and test. In the example below we are testing that all the logic pertaining to the @ symbol works properly:
+
+Edge cases and documenting the output type
+Since this rule will be used by many other rules, we'll also want to make sure that we document what the output type will be in most occasions. The next two test cases below ensure that even in edge cases, the rule still returns a scalar boolean value. 
+
+
+Rules that have a lot of unrelated logic in them (like this one) should have test cases that describe each of these parts of logic separately. Like we mentioned in the CDT rule example, even though these are simple assertions and you could verify many of them together by just using and() in your assertion expression, separating your assertions to multiple test cases will make debugging your rule easier. Having multiple test cases is a good way to define the expected behavior of the rule, which isn't possible to decipher from a single test case with a complicated assertion.

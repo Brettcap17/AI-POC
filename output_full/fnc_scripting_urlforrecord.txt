@@ -1,0 +1,51 @@
+
+layout: function
+title: urlforrecord() Function
+category: function_page
+excerpt: This function allows you to return the URLs for one or more records or a record list view that can then be used in a link component.
+fnccat: Scripting
+fncexample: urlforrecord(cons!MY_RECORD_TYPE)
+fncname: urlforrecord
+fncresult: '"https:///suite/tempo/records/type//view/all"'
+compatibility: -crf, ~portal, ~om
+space: function_page
+reftype: function
+parameters:
+  - keyword: recordType
+    types: RecordType
+    description: |
+      The record type for the record(s).
+  - keyword: recordIds
+    types: Any Type Array
+    description: |
+      The identifiers of the record(s) to return URLs for.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+- Record Type
+- Link Component
+- Records Tutorial
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Usage considerations
+The user executing the function must have at least viewer rights to the record type or the expression will fail and an error will occur. They do not need to have viewer rights to the record(s).
+For a process model record type, the recordIds value is the process Id. For a data store entity record type, it is the primary key for the entity.
+If the recordIds value is null or empty, the function returns the URL for the record list view of the recordType value record type.
+If the record type for the recordType value does not exist, the expression will fail and an error will occur.
+If a user does not have at least viewer rights to the record or record type in the returned URL, the user will see an error when trying to open the URL.
+Examples
+These examples are designed to illustrate how to use the urlforrecord() function in the Expression Rule Interface.
+NOTE: Record type object references are specific to each environment. If you copy and paste these examples into the Expression Rule interface, they will not evaluate in your Test Rules interface. Use them as a references only.
+URL for a Single Record
+urlforrecord(recordType!Employee, "7")
+returns "https://records.appian.com/suite/tempo/records/item/lEBSrlhKCqg69HAu5p42M3632RnTYq-d5AqIKaBom7sLiFvJOSzpARyM-kd7KgN-8MOapw8znEfVTQBBN2Qnr-ZrMF7tmb3PDA6qF3LnSzTO5o/view/summary"
+URLs for Multiple Records
+urlforrecord(recordType!Employee, {"7","8"})
+returns {"https://records.appian.com/suite/tempo/records/item/lEBSrlhKCqg69HAu5p42M3632RnTYq-d5AqIKaBom7sLiFvJOSzpARyM-kd7KgN-8MOapw8znEfVTQBBN2Qnr-ZrMF7tmb3PDA6qF3LnSzTO5o/view/summary", "https://records.appian.com/suite/tempo/records/item/lEBSrlhKCqg69HAu5p42M3632RnTYq-d5AqIKaBom7sLiFvJOSzpARyM-kd7KgN-8MOapw8znEfVTQBB92QKQVUVC4xY-d68bk8oOb1HICAjKA/view/summary"}
+URL for a Record Type
+urlforrecord(recordType!Employee, null)
+returns "https://records.appian.com/suite/tempo/records/type/V1muDw/view/all"

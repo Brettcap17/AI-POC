@@ -1,0 +1,37 @@
+
+layout: function
+title: toboolean() Function
+space: function_page
+excerpt: "Converts a value to Boolean."
+category: function_page
+fncname: toboolean
+fncexample: "toboolean(0)"
+fncresult: "false"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Understanding results
+A 0 returns false; all other numbers return true.
+Strings beginning with t, T, y, Y, or 1 return true; all other strings return false.
+Using toboolean() with arrays
+When operating on arrays, it is not necessary to use apply with toboolean. If multiple parameters are passed, or one parameter is an Array, then a Boolean Array is returned.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+toboolean(0) returns false
+toboolean(0,1,0) and toboolean({0,1,0}) both return {false,true,false}

@@ -1,0 +1,30 @@
+
+layout: function
+title: code() Function
+space: function_page
+excerpt: "Converts the text into Unicode integers."
+category: function_page
+fncname: code
+fncexample: "code( \"Convert to Unicode\" )"
+fncresult: "67, 111, 110, 118, 101, 114, 116, 32, 116, 111, 32, 85, 110, 105, 99, 111, 100, 101"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be converted into Unicode codes.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+code("Convert to Unicode") returns 67, 111, 110, 118, 101, 114, 116, 32, 116, 111, 32, 85, 110, 105, 99, 111, 100, 101

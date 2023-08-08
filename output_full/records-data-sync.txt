@@ -1,0 +1,239 @@
+
+layout: basic
+title: Data Sync in Appian Records
+permalink: records-data-sync.html
+topic-group: B
+weight: 200
+
+This page explains what it means to enable data sync in your record type. If you encounter an error while enabling sync, see Troubleshooting Syncs. 
+What is data sync?
+Data sync allows you to work with your enterprise data faster and with more flexibility. When you enable data sync, you unlock a set of powerful features that can speed up your entire development process. These features make it easy to change your data model, access the data you need, and even allow Appian to configure parts of your applications for you.
+For example, instead of needing a data expert to configure complex database views to relate and transform your data, you can do it yourself using record type relationships and custom record fields. 
+{% include zoompic.html url="images/relationship-diagram.png" %}
+But it’s not just data modeling. Enabling data sync also makes it faster to build with your enterprise data by automatically generating important parts of your applications: your record views, record actions, and user filters. Once you’ve built your applications, you can ensure that only the right people have access to the right data using the sync-enabled feature called record-level security. 
+See the table below for a full list of features that are only available when you enable data sync:
+|Feature|Description|
+|-------|-----------|
+|Record type relationships|Establish relationships between record types to easily reference related record data throughout your applications. Build relationships between data from different sources, and easily create comprehensive reports and queries using more of your enterprise data.|
+|Custom record fields|Extend your data by transforming and manipulating existing record data into new custom record fields. Using predefined templates or expression mode, you can perform operations that calculate new values, group your data, manipulate text, and more. These values are then saved as new fields in the record type.|
+|Record-level security|Specify, in plain language, who can view which records in your record type. Once you define your security, Appian will automatically enforce it anywhere the record type is referenced.|
+|Record view security|Further secure your records by configuring security rules on your record views to determine who can see which record views and when.|
+|Auto-generated user filters|Automatically generate user filters whenever a many-to-one relationship is defined on your record type. The user filter leverages related data to filter your list of records, and you can modify the user filter at any time.|
+|Generate record views|Generate a Summary view and additional record views for your record type. Choose to include data from related record types for more complex views.|
+|Generate record actions|Generate common record actions and their associated design objects. Choose whether your record action should create, update, or delete records, and then Appian will configure the record action using existing objects or creating new design objects for you.|
+How does data sync work?
+Data sync caches your source data in Appian. 
+Think of it like a cache on your web browser: when you cache web content locally on your browser, your site content loads faster and improves the speed of your browsing. The same applies when you sync your source data—Appian only has to execute queries against your synced data instead of the external source, so your record data will load faster. In addition to faster queries, Appian also leverages the proximity to your synced data to provide the powerful features listed above. 
+As you build applications, data sync can keep your synced data up-to-date with the source by automatically syncing any data changed using select smart services. This means that when you use Appian to add, update, or delete data in a database or in Salesforce, we’ll write those changes to your source and immediately sync them in Appian.
+For example, let’s say you have a Customer record type that uses a database table as the source. If you use the Write Records smart service to add new customers, then that new customer data will also be synced in Appian and immediately reflected in the record type.
+{% include zoompic.html url="images/syncrecords.png" border="-nb" style="width:80%;" %}
+If Appian is the only system writing to your source, then you can be confident that you are always working with fresh data. However, if there are other systems writing to your source and you want to sync those changes as well, you can add additional sync options.
+How is my synced data secured?
+Appian applies the same object-level security to your data across the platform. Whether it is being displayed in an interface, updated in a process, or synced in Appian, any user’s ability to view or edit data is determined by the permissions structure of your application. 
+You retain complete control over your business data, even when you sync it in Appian. Users can only build with and view synced data through the Appian design objects in your applications; they cannot access it directly. You can even specify who can view your synced data by applying record-level security on your record type.
+If, at any time, you want to make your currently synced data unavailable to all users, you only need to disable data sync on that record type.
+When to use data sync
+Appian recommends only enabling data sync on new record types. If you enable data sync on an existing record type, it will create new record fields with new UUIDs. As a result, any existing references to your record fields will break, and you’ll need to update them with new record field references.
+Instead, Appian recommends creating new record types with data sync enabled so you can ensure that any existing record field references continue to work. Then, you can incrementally update references in your applications to point to your new record type with data sync enabled. This way, you can continuously make changes to your record type without impacting your applications.
+Additionally, there are some data structures and business scenarios that are better fit for data sync than others. Review the following requirements and considerations before enabling data sync in your record type.
+Requirements
+
+Row requirements: 
+Your record type does not need more than 2,000,000 rows. Learn more about the row limit.
+Field requirements:
+Your source has one primary key field.
+You do not need more than 100 fields, including custom record fields.
+You do not need Text columns containing strings longer than 4,000 characters. Learn more about exceeding the field character limit.
+Additional database encryption: 
+You do not need to enable the database encryption capability offered by Appian Cloud. This is an additional layer of protection that can be enabled on top of the out-of-the-box disk encryption provided by Appian Cloud.
+
+
+appian-style-note
+This requirement only applies to customers that are on Advanced or Enterprise Support.
+
+Row limit
+Each record type with data sync enabled can sync up to 2,000,000 rows of data from a source. If your record type exceeds or is expected to exceed the row limit, consider applying source filters to limit the number of rows synced in Appian.
+If your record type is within 10% of the limit (1,800,000 to 2,000,000 rows), a sync will successfully complete but a warning will appear in the Status column on the Record Sync Status page to let you know the record type is approaching or has reached the row limit. 
+After the record type exceeds 2,000,000 rows, it will become unavailable. If the record type reaches the row limit after Appian writes to your source, the write operation to the source will be successful, but the sync will fail and the record type will become unavailable.
+If your record type continues to exceed the row limit, data sync may not be the best option for your business scenario. See Troubleshooting Syncs for steps to disable data sync.
+Exceeding the field character limit
+Any field values with more than 4,000 characters will be truncated in Appian. 
+If your source contains fields with more than 4,000 characters, the sync will still complete successfully and you can use the truncated data throughout your applications. However, it's not recommended to use fields with more than 4,000 characters since it will result in a mismatch between the synced data and the source data. 
+To remove fields that exceed the character limit, deselect them from the field list when configuring the source of the record type.
+API limit to sync rows from Salesforce
+When your record type uses a Salesforce object as the source, syncing 1,000 rows of data requires a single API call. If your record type has the maximum number of rows (1,000,000), the API limit on your Salesforce instance must be at least 1,000 per day. If you have multiple record types that use a Salesforce object with data sync enabled, ensure your API limit is large enough to support all your record types. 
+For example, say you have five record types that total to 400,000 rows, and each record type has a scheduled sync. To successfully sync each record type, you would need at least 120,000 API calls per month. If the API limit is not high enough, the sync will fail and the record type will be unavailable.
+Writes to your source
+Data sync will automatically sync any data changed by select smart services.
+If you need to capture changes made by other smart services, or even other systems, you can use the Sync Records smart service to sync specific rows of data in Appian. 
+Additionally, you can schedule a full sync to occur once each day. This will purge your existing synced data and replace it with the latest data from your source.
+Learn more about additional sync options.
+Set up data sync
+To set up data sync:
+1. Enable data sync while configuring the source of your record type.
+2. Use select smart services in process models, interfaces, or expression rules to automatically sync changed data. Only data changed by these smart services will be synced (not all source data). 
+3. (Optional) If you have other systems writing to your source data, or you want to use other Appian smart services to update your source data, configure additional sync options:
+   - Configure options to sync all data.
+   - Configure options to sync changed data.
+Smart services that automatically sync data
+To keep your synced data fresh, use the following smart services in your process models, interfaces, or expression rules to update your source data and automatically sync those changes in Appian:
+
+appian-style-note
+Only the following smart services will automatically sync changed data. To sync data changed by other smart services or other systems, configure additional sync options.
+
+
+
+Smart Service
+Supported Data Source
+
+
+Write Records
+Database
+
+
+Write to Data Store Entity
+Database
+
+
+Write to Multiple Data Store Entities
+Database
+
+
+Delete Records
+Database
+
+
+Delete from Data Store Entities
+Database
+
+
+Call integration
+Salesforce
+
+
+Sync Records*
+Database, Salesforce, Web Service
+
+
+* This smart service cannot add, update, or delete source data; it can only sync data in Appian.
+Considerations for updating data
+
+
+Smart services that do not automatically sync data: Appian will not automatically sync updates made using other smart services, plug-ins, or external systems.
+For example, the following services and tools will not automatically trigger a sync:
+
+Query Database smart service
+Execute Stored Procedure smart service
+Call an integration smart service to update data in any other web service besides Salesforce
+Manual edits using tools like phpMyAdmin or MySQL workbench
+
+To sync these types of data changes, configure additional sync options.
+
+
+Smart services in portals: A sync will not occur when you use these smart services directly in a portal. To sync data changed by a portal, you’ll need to use a web API and an integration. Learn how.
+
+
+Writing to Salesforce: If the Salesforce integration fails to write to the source, then a sync will not occur. Likewise, if Appian does not receive a notification that the write to the source was successful, the sync will not occur.
+
+
+Writing to a database using a data store entity: To use any of the smart services using a data store entity, you will need to create a custom data type (CDT) to write to the source. Depending on how your table data is structured in the CDT, the maximum number of rows that can be synced will vary:
+
+If you're using a flat CDT, you can sync up to 50,000 rows at a time.
+If you're using a nested CDT, you can sync up to 1,000 rows at a time.
+
+If you update more than the maximum number of rows, the smart service will successfully write to the data source, but the sync will fail.
+
+
+
+appian-style-note
+Additionally, your CDT should not contain any fields that accept an array of values. If you write data to a field that accepts an array of values, those changes cannot be synced. 
+
+Configure additional sync options {#prodlink-sync-options}
+Data sync will automatically sync any data changed by select smart services, but you may have other systems or even other smart services updating your data. 
+For example, if you make data changes directly in the source, using a third-party system, or by a stored procedure, you’ll still need that changed data synced in Appian. 
+To sync these data changes, you can configure additional sync options to:
+- Sync all records: Purge your existing synced data and replace it with the latest data from your source. 
+- Sync changed records: Only sync data that was changed by another system or smart service.
+Sync all data
+You can re-sync all of your source data in Appian by triggering a full sync. You can schedule a full sync to occur once each day, or you can manually trigger a full sync by:
+- Saving the record type.
+- Using an import customization file. 
+- Clicking START FULL SYNC in the record type.
+You can also specify certain full sync behavior by configuring additional settings, like skipping failed syncs and adding a rate limit.
+Schedule a full sync
+You can schedule a full sync to occur once each day. When the scheduled sync occurs, Appian will purge your existing synced data and replace it with the latest data available in your source.
+
+appian-style-tip
+For quicker syncs, Appian recommends scheduling syncs outside of peak traffic or working hours.
+
+To schedule a sync:
+1. On your record type, go to Sync Options.
+1. Under Sync All Records, use the toggle to enable Schedule a full sync.
+2. Select the time and the timezone when you want the sync to occur each day.
+3. Click SAVE CHANGES.
+Skip failed syncs
+When a sync fails on a record type, all references to the record type will be unavailable. This will cause any interfaces, queries, or reports that reference your record type to also be unavailable. 
+To give you the time and flexibility to troubleshoot sync failures, the Skip Failed Syncs setting is enabled by default on all new record types.
+When this setting is enabled, any failed full syncs will be skipped and the record type will use data from the last successful full sync. Since the record type is using data from the last successful sync, all references to the record type will remain available. 
+If your data is time sensitive and you do not want to skip failed syncs, you can also disable this setting at any time.
+To configure Skip Failed Syncs:
+1. In the record type, go to Sync Options.
+2. Under Sync All Records, use the toggle to enable or disable Skip failed syncs.
+3. Click SAVE CHANGES.
+Add a rate limit
+When syncing data from a web service, Appian will make a series of requests to the web service until it returns all of the data. This can result in many requests in a short amount of time to the source system, and some systems may start to reject requests if too many arrive within a certain interval. 
+To prevent overloading the web service, you can configure a rate limit on your service-backed record types to determine the maximum frequency of requests during a full sync. 
+To configure a rate limit:
+1. In the record type, go to Sync Options.
+1. Under Sync All Records, use the toggle to enable Add a rate limit.
+1. Use the dropdown to choose the number of batch requests made to the source when a full sync occurs.
+1. Click SAVE CHANGES.
+The rate limit is only applied when a full sync occurs. If other requests are made to the web service at the same time as the sync occurs, the total number of requests could still exceed the rate limit, so we recommend including a buffer. 
+For example, if the web service allows up to 10 requests per second, it's safer to choose 5 requests per second for the sync rate limit to account for other simultaneous requests.
+Additionally, the rate limit determines the maximum number of requests in the given time period. As a result, the actual rate could be slower if additional formatting or manipulation of the data is necessary after the request is made.
+Sync changed data
+If you're not using smart services that automatically sync data to update your data, and a daily, full sync is not frequent enough to capture your data changes, you can use the Sync Records smart service to sync your data changes.
+This smart service allows you to specify which data to sync from the source. You can use it to sync data in any record type with data sync enabled, including your service-backed record types. Since data sync does not automatically sync changes written to a web service, this smart service allows you to more frequently sync your service-backed record types. 
+
+appian-style-note
+To use the Sync Records smart service with a service-backed record type, you must configure a Sync Expression. Learn how.
+
+There are a few ways to sync your data using this smart service:
+- Generate a web API that includes the a!syncRecords() function and add the API's URL to your source system's webhook so it can notify Appian of changes and sync them.
+- Use the a!syncRecords() function in an interface so end users can choose to sync data whenever they submit a form or click a button.
+- Use the Sync Records smart service in a process model to trigger a sync after a call to an integration or stored procedure executes, or to start a sync using a record action.
+Depending on your business needs, the way you choose to use this smart service or function may vary. See the Sync Records smart service page for examples.
+Generate a Sync Expression
+To use the Sync Records smart service with a service-backed record type, you must first configure a Sync Expression on your record type.
+A Sync Expression is similar to a Record Data Source expression; the only difference is that you pass individual record identifiers to your Sync Expression to fetch and return a row or set of rows from the web service. This enables Appian to sync specific rows of data from the web service when you use the Sync Records smart service.
+You can generate a Sync Expression directly from your record type. Appian will create a new expression rule that calls your integration and retrieves a set of records using their identifiers.
+INCLUDE PAGE: Sync Expression How To
+Once you generate the expression, you may need to modify it to work with your application. For example, you may need to select fields from the response that match your record type's fields. You can then get started using the Sync Records smart service throughout your application.
+Use an existing Sync Expression
+In addition to generating a new Sync Expression, you can also select an existing expression rule to use as your Sync Expression. 
+You can use any expression rule as your Sync Expression as long as it calls your integration and returns data based on a set of record identifiers.
+To use an existing expression rule as your Sync Expression:
+1. In the record type, go to Sync Options.
+2. Under Sync Changed Records, locate Configure Sync Expression and click + GENERATE EXPRESSION RULE. 
+3. Under Sync Expression, enter the name of your expression rule.
+4. Click OK.
+5. Click SAVE CHANGES.
+Modify the Sync Expression
+After you generate the Sync Expression, you have the flexibility to update the existing configurations or add your own. 
+You may consider modifying the expression if you want to:
+- Change the default local!deleteMissingRecords behavior so that the sync fails when any requested records are not returned by the integration.
+- Add more error handling and customized messages.
+- Format the data returned by your integration.
+- Add paging.
+Monitor your data syncs
+To ensure that your data is syncing successfully, you can check the status and history of syncs associated with your record type.
+Record sync status
+In the Monitor view of Appian Designer, the Record Sync Status tab displays the status of the most recent sync for all record types with sync enabled that you have access to view. This tab contains a grid that displays the record types with their source type, sync status, and the time of the last sync.
+From this tab, you can click the link in the record type to view its Sync History, and access any errors or warnings that arise during the course of a sync. Learn more about the Record Sync Status tab.
+Sync history
+You can also view detailed information about the syncs that occurred for a specific record type. From either the Monitor view of Appian Designer, or from the Sync History tab of your selected record type. 
+The record type’s sync history will display information on the past and currently running syncs, including the sync status, the times of the sync, and any errors that may have occurred. 
+A record type can have the following sync statuses:
+INCLUDE PAGE: Record Sync Statuses Table
+When a sync fails, the record type will either have a status of Failed or Failed and Skipped. You can click on these sync statuses to open the Sync Alerts dialog and view more information about what went wrong with the sync. System administrators and users with Administrator permission to the record type will also receive email alerts whenever a sync fails. 
+For more information on the different types of sync errors and steps to resolve these errors, see Troubleshooting Syncs.

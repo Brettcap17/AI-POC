@@ -1,0 +1,57 @@
+
+layout: function
+title: choose() Function
+category: function_page
+excerpt: Evaluates the choice argument at the given index and returns the result.
+fnccat: Logical
+fncexample: 'choose(2, "a", "b", "c")'
+fncname: choose
+fncresult: b
+compatibility: +pe, +pr
+parameters:
+  - keyword: key
+    types: Number (Integer)
+    description: The one-based index that selects which choice argument to evaluate and return.
+  - keyword: choice1
+    types: Any Type
+    description: 'The first of n possible expressions, where n must be >= 1.  Only the selected value is evaluated.'
+  - keyword: choiceN
+    types: Any Type
+    description: An unlimited number of expressions.
+reftype: function
+space: function_page
+
+
+appian-style-tip
+Check out the new logical function, a!match(). It does everything choose() does but with additional flexibility so you can simplify your conditional logic without using an index.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: wherecontains() and a!match()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type 
+Usage considerations
+Working with nulls
+
+If the selected choice evaluates to null, null will be returned.
+The index parameter must be a scalar number between 1 and the number of choices. It cannot be null.
+
+Evaluation order
+Unlike most functions, choose does not evaluate all its arguments. First the index is evaluated, then the selected value arguments. The unchosen arguments are not evaluated. Use choose to avoid calling potentially costly expressions whose results would be discarded.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Use expressions as the choice arguments or as the index argument.
+choose(2,2+2,4/2,3^2) returns 2
+choose(weekday(today()),"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday") returns the name of the day of the week
+It can be useful to use the wherecontains function in conjunction with choose.  Since wherecontains returns a list, use the first result for the index parameter.
+choose(
+      wherecontains(ri!rating, {"Poor","Satisfactory","Excellent"})[1],
+      mod(rand() * 10, 5),
+      mod(rand() * 10, 5) + 4,
+      10 - mod(rand() * 10, 2)
+    )

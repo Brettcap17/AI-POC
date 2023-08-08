@@ -1,0 +1,54 @@
+
+layout: function
+title: a!flatten() Function
+category: function_page
+excerpt: Converts an array that contains other arrays into an array of single items.
+fnccat: Array
+fncexample: 'a!flatten(merge({1,2},{11, 12}))'
+fncname: a!flatten
+fncresult: '{1, 11, 2, 12}'
+space: function_page
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: Array to be flattened.
+reftype: function    
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Understanding results
+a!flatten() removes nesting from arrays, such as those created by looping functions. When passed a simple array, a!flatten() returns it unmodified.
+Nulls are not removed from lists. Use reject() and isnull() to easily remove nulls from a flattened list.
+a!flatten() always returns an array, so when passed a single item, a!flatten() returns an array containing that item.
+When passed an empty or null array, a!flatten() returns an empty array.
+If the passed array is type Any Type, a!flatten() returns an array of the appropriate type.
+Examples
+Remove nesting from arrays
+a!forEach(items: {1, 2, 3}, expression: enumerate(fv!item)) returns a 3 item list consisting of {0}, {0, 1}, and {0, 1, 2}
+a!flatten(a!forEach(items: {1, 2, 3}, expression: enumerate(fv!item))) returns {0, 0, 1, 0, 1, 2}
+Remove only array nesting
+Only array nesting is removed when using a!flatten. Nested maps, dictionaries, and data types retain their structure.
+sail 
+a!flatten(
+  {
+    a!map( id: 1 ),
+    a!map( id: 2 ),
+    a!map( id: 3, address: a!map( street: "Main Street", number: 101 ) )
+  }
+)
+returns:
+sail 
+{
+  a!map( id: 1 ),
+  a!map( id: 2 ),
+  a!map( id: 3, address: a!map( street: "Main Street", number: 101 ) )
+}
+Retaining data types
+typename(typeof(a!flatten({a: {1, 2, 3}}.a))) returns "List of Number (Integer)"
+typename(typeof(a!flatten({a: {1, 2, "apple"}}.a))) returns "List of Variant"

@@ -1,0 +1,66 @@
+
+layout: pattern
+title: Aggregate Data on a Date or Date and Time Field
+excerpt: 'Aggregate data, specifically the total number of employees by date.'
+reftype: sailrecipe
+sr-tags:
+  - Reports
+  - Query Data
+  - Grids
+  - Records
+
+{:.screenshot}
+Create this pattern
+You can easily configure a chart in Design Mode when you use a record type as the source. 
+To create this pattern in Design Mode:
+
+Open a new or empty interface object.
+From the PALETTE, drag a Bar Chart component into the interface.
+From Data Source, select RECORD TYPE and search for the Employee record type.
+Under Primary Grouping, select the startDate field.
+Click the edit icon  next to the selected field and set Time Interval to Month of Year.
+Under Format Value, use the dropdown to choose a pre-defined format. Select the short text date.
+Click  Bar Chart to return to the bar chart configuration.
+Click ADD GROUPING.
+Under Secondary Grouping, select the department field.
+Under Measure, use the dropdown to select Count of, then select the id field.
+From Stacking, select Normal. 
+From Color Scheme, select Ocean.
+
+{% include zoompic.html url="images/configure-bar-chart-pattern.gif" %}
+Your resulting expression will look something like this:
+sail
+a!barChartField(
+    data: recordType!Employee,
+    config: a!barChartConfig(
+      primaryGrouping: a!grouping(
+        field: recordType!Employee.fields.startDate,
+        alias: "startDate_month_of_year_primaryGrouping",
+        interval: "MONTH_OF_YEAR_SHORT_TEXT"
+      ),
+      secondaryGrouping: a!grouping(
+        field: recordType!Employee.fields.department,
+        alias: "department_secondaryGrouping"
+      ),
+      measures: {
+        a!measure(
+          function: "COUNT",
+          field: recordType!Employee.fields.id,
+          alias: "id_count_measure1"
+        )
+      },
+      dataLimit: 100
+    ),
+    label: "Bar Chart",
+    labelPosition: "ABOVE",
+    stacking: "NORMAL",
+    showLegend: true,
+    showTooltips: true,
+    colorScheme: "OCEAN",
+    height: "MEDIUM",
+    xAxisStyle: "STANDARD",
+    yAxisStyle: "STANDARD"
+  )
+Test it out
+
+Hover over each of the stacked month data to see a breakdown of the number of employees in each department.

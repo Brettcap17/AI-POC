@@ -1,0 +1,39 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldLogicalExpression() Function
+category: function_page
+excerpt: Used in the whenTrue parameter of a!customFieldMatch(), this function allows you to group multiple logical conditions using the "AND" and "OR" operators.
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldLogicalExpression
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: operator
+    types: Text
+    description: |
+      Determines how a set of conditions are evaluated. Valid values: "AND" and "OR".
+  - keyword: conditions
+    types: Any Type
+    description: |
+      A list of a!customFieldLogicalExpression(), a!customFieldCondition(), or both. Alternatively, you can provide any custom field function or record field that returns a boolean. You can reference record fields or related record fields using the recordType! domain. You can also use fv!value to access the value parameter from a!customFieldMatch().
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldLogicalExpression() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Example
+See the a!customFieldMatch() function for an example.
+{% comment %}
+Supported functions
+You can also use any of the following supported functions in the value parameter of a!customFieldCondition():
+INCLUDE PAGE: Supported Custom Field Functions Table
+{% endcomment %}

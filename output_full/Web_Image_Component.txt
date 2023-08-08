@@ -1,0 +1,54 @@
+
+layout: function
+title: Web Image
+category: function_page
+compatibility: -crf, -om
+excerpt: Displays an image from the web.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!webImage
+fncsubcat: Display
+parameters:
+  - keyword: source
+    name: Source
+    types: SafeURI
+    description: 'Location of the image. See SafeURI.'
+  - keyword: altText
+    name: Alternate Text
+    types: Text
+    description: Alternate text of the image used for the image s alt attribute and read by screen readers; see accessibility considerations for more information.
+  - keyword: caption
+    name: Caption
+    types: Text
+    description: Optional text to display in the mouseover text for the image and when the images is viewed in slideshow mode.
+  - keyword: link
+    name: Link
+    types: Link
+    description: |
+      Link that determines the behavior of an image when clicked. Create links with: 
+        - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink() 
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the image is displayed in the component. When set to false, the image is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Web Image
+scsubcat: Image_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays an image from the web for use in an image field, rich text field, tree browser field, billboard layout or grid column in a Read-Only Grid.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

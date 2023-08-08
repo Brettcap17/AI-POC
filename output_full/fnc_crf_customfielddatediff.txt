@@ -1,0 +1,54 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldDateDiff() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function returns the difference between two dates as a Number (Integer). The difference can be returned in days, hours, minutes, or seconds. Returns null when the startDate or endDate is null or empty.
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldDateDiff
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: startDate
+    types: Any Type
+    description: |
+      The record field or expression that evaluates to a Date or Date and Time value to use in the date subtraction.
+  - keyword: endDate
+    types: Any Type
+    description: |
+      The record field or expression that evaluates to a Date or Date and Time value to use in the date subtraction.
+  - keyword: interval
+    types: Text
+    description: |
+      Determines whether the difference is calculated in days, hours, minutes, or seconds. Valid values are "DAY" (default), "HOUR", "MINUTE", "SECOND".
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldDateDiff() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+By default, this function is used in the Date Difference template. You can also use this function when you write your own custom record field expression that evaluates in real-time.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Using the startDate and endDate parameters
+By default, the startDate parameter is subtracted from the endDate parameter. This means that if the startDate is 12/1/2022 and the endDate is 12/10/2022, the resulting value would be 9 days. 
+You can use the following values in the startDate and endDate parameters:
+- Record field or related record fields of type Date or Date and Time. Use the recordType! domain to reference your fields. For example, recordType!Case.fields.submittedDate.
+- Relative date and time functions, like today() or now(). 
+> appian-style-note
+> You cannot use a relative date and time function in both parameters.
+
+
+Constants.
+
+If either parameter is null or empty, a null value is returned.
+Example
+See the Date Difference template for an example.
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you reference any of the following supported functions in the interval parameter of a!customFieldDateDiff(). This allows you to use functions like if() or not() to determine which interval value to return.
+INCLUDE PAGE: Supported Custom Field Functions Table

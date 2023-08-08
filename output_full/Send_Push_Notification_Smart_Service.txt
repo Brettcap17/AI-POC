@@ -1,0 +1,103 @@
+
+layout: function
+title: Send Push Notification Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Send Push Notification smart service is used to send notifications to one or more Appian for Mobile Devices application users
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!sendPushNotification
+fncsubcat: Communication
+parameters:
+  - keyword: recipients
+    types: User or Group
+    description: List of users and/or groups who are the intended recipients of the push notification.
+  - keyword: title
+    types: Text
+    description: The title to display in the notification.
+  - keyword: body
+    types: Text
+    description: The message to display in the notification below the title.
+  - keyword: link
+    types: Link
+    description: 'The link to open when the user taps on the notification. Supported link types include a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), and a!userRecordLink().'
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Communication
+ssicon: Send_Push_Notification.png
+ssparentcat: Automation_Services
+
+Overview
+The Send Push Notification smart service is used to send notifications to one or more Appian Mobile application users. You can specify a title, a message, and a link to open when users tap on the notification.
+
+appian-style-note
+Mobile push notifications are only available on Appian Cloud and are encrypted end-to-end.
+
+Properties
+
+
+Category: Communication
+
+
+Icon: 
+
+
+Assignment Options: Unattended 
+
+
+See also:  Smart Services
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Node inputs
+| Name | Data Type | Description | Required | Multiple |
+| - | - | - | - | - |
+| Recipients | User Or Group | Recipients of the push notification. Even if users are included multiple times, they receive a single notification. | Yes | Yes | 
+| Title | Text | The title to display in the notification. The title text is truncated starting at 49 characters on some devices. | Yes | No | 
+| Body | Text | The message to display below the title. The body text is truncated starting at 140 characters on some devices. | No | No | 
+| Link | Link | The link to open when the user taps on the notification. Supported link types are a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), and a!userRecordLink(). | Yes | No | 
+Exceptions
+An exception is thrown which pauses the process at this node if: 
+- Invalid expression specified in the Recipients, Title, Body, or Link fields 
+- Any of the required fields cannot be resolved (expression evaluates to null or empty)
+- An unsupported link type is specified
+a!sendPushNotification()
+Sends a push notification with the specified title, body, and link to one or more Appian Mobile application users. This function will only execute inside a saveInto.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+
+appian-style-note
+The maximum number of people that a push notification is sent to is defaulted to 100. You can adjust this from the maximum notification recipients setting.
+
+Example
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Replace FIELD_WORKERS, Record Type, and Record Identifier for your application. User(s) in the FIELD_WORKERS group need to have the server account configured on the Appian Mobile iOS or Android app and be previously logged in to receive the push notification.
+sail
+{
+  a!buttonArrayLayout(
+    buttons: {
+      a!buttonWidget(
+        label: "Send Push Notification",
+        style: "NORMAL",
+        saveInto: {          
+          a!sendPushNotification(
+            recipients: cons!FIELD_WORKERS,
+            title: "New Inspection",
+            body: "Perform Inspection for Mr. Ragnar Lothbrok",
+            link: a!recordLink(
+              recordType: 'recordType!{687c7860-2c7c-4e19-8d1f-c2104295cce4}Home Inspection',
+              identifier: "1"
+            )
+          )
+        }
+      )
+    },
+    align: "START"
+  )
+}

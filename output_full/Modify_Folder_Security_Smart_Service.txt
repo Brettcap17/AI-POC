@@ -1,0 +1,99 @@
+
+layout: function
+title: Modify Folder Security Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: 'The Modify Folder Security smart service allows you to select a user to be added to a specified folder as a reader, author, and/or administrator.'
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!modifyFolderSecurity
+fncsubcat: Document_Management
+parameters:
+  - keyword: folder
+    types: Folder
+    description: The folder you want to set security for.
+  - keyword: readers
+    types: List of User or Group
+    description: The new users and groups to have reader access to the folder.
+  - keyword: authors
+    types: List of User or Group
+    description: The new users and groups to have author access to the folder.
+  - keyword: administrators
+    types: List of User or Group
+    description: The new users and groups to have administrator access to the folder.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Document_Management
+ssicon: Modify_Folder_Security.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} Only a System Administrator or a Knowledge Center Administrator can add users in these roles.
+
+appian-style-caution
+This node can only be executed with the appropriate user rights. Attempting to complete this task without sufficient rights generates an error message for the Process Administrator and pauses the process.
+
+Properties
+
+
+Category: Document Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+This tab displays all the Node Inputs and Node Outputs for the Service Node. You can add additional inputs and outputs, if needed. The default inputs are:
+
+
+
+Input
+Type
+Required
+Multiple
+
+
+
+
+Folder
+Folder
+Yes
+No
+
+
+Readers
+People
+No
+Yes
+
+
+Authors
+People
+No
+Yes
+
+
+Administrators
+People
+No
+Yes
+
+
+
+The users and groups selected as readers, authors, and administrators will be added to that role for the folder.  The folder's existing readers, authors, and administrators, will not be removed when this smart service executes.
+a!modifyFolderSecurity()
+The Modify Folder Security smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

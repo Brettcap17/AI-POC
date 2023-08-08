@@ -1,0 +1,38 @@
+
+permalink: Appian_AI.html
+layout: basic
+title: Appian AI
+topic: ai
+type: Home
+automation-order: 100
+proxy-topic: automation
+proxy-topic-group: C
+
+Every day, artificial intelligence (AI) allows users to focus on more critical and meaningful work by delegating routine tasks to intelligent machines and software. Integrating AI capabilities like speech recognition, computer vision, or document extraction into your business applications can make your processes faster and more accurate. With so many AI options available, you may start to consider:
+- Which features should I use? 
+- What's the cost associated with these features? 
+- How do I configure AI to work in my project? 
+Appian addresses these questions by providing you with an easily configured AI offering for little or no cost at all!
+About Appian AI
+The Appian AI offering provides a series of design objects to connect and leverage Google Cloud AI services out-of-the-box. In a matter of minutes, you can use AI for translations, image recognition, content classification, and more through connected systems, plug-ins, and smart services. 
+{% include zoompic.html url="images/ai_services.png"  style="width:65%;"%}
+When you become an Appian AI customer, Appian provides you with pre-configured Google Cloud services to assure that your project structure, security, and storage needs are in place with full tracking and traceability. All you have to do is get started creating smart, modern applications.
+
+appian-style-tip
+Appian offers fully built-in document extraction capabilities with no need to send your data to Google. If your business requires you to keep your document data within Appian, you can do just that using these built-in services.
+Customers who wish to use Appian's built-in document extraction capabilities don't need to opt into the service in their customer agreement. These services are available by default for certain customers.
+
+How do I get access to Appian AI?
+To become an Appian AI customer, you just need to opt-in to use Appian AI in your customer agreement. That’s it! No additional configurations or charges are needed. 
+Once you enroll in Appian AI, all the administrative setup and management of your Google Cloud services are handled for you. You will receive the necessary service account credentials and keys in the License Management section of Appian Community. With your credentials, you are ready to configure and use the available services. Check out the available AI features to get started.
+You do not have to be an Appian AI customer to use the out-of-the-box AI capabilities. If you already have a Google Cloud account set up for your business, you can use that account to create service accounts and service account keys. As long as you have a valid Google Service Account and key, you can configure and use the AI smart services, plug-ins, and connected systems. Depending on the AI functionality, you may need to configure additional items in your Google Account. 
+How is my data protected? {#appian-ai-security}
+Appian ensures your data moves securely between Appian and Google Cloud.
+Each Google Cloud Platform project is configured for each customer to segregate data flows, security, and storage. Each project is also created with privileges that only provide access to the needed APIs. 
+The project uses automatic provisioning of unique service accounts to access Google Cloud Platform resources. Automatic provisioning means that service account credentials are generated automatically and no other users see or have access to the credentials during the process, making it more secure and straightforward. Additionally, the Google Cloud Platform project is set up in a region most applicable or as you select (us-central1 or eu).
+Data is concealed through key parts of setup:
+- Provisioning: The entire Google Cloud Platform project setup process is automated with no human intervention.
+- Access: A limited number of support and engineering team members have access to metadata (customer name, support contact, and preferred region) to confirm the setup was complete and successful, with no access to underlying project resources or service account credentials.
+- Monitoring: We have monitoring dashboards to ensure we meet our service level agreements (SLAs) and monitor for problems with proactive alerts on performance, budget, and other diagnostic information.
+For details on Google's data security and privacy practices, see Google Cloud Security.
+Learn more about how Appian and Google protect your data as it moves through the Intelligent Document Processing application.
