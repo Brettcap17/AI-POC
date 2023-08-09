@@ -1,5 +1,5 @@
 import requests
-from secrets import api_key
+from .secrets import api_key
 
 model = "llama-2-7b-chat"
 CONTEXT_STORED = 5
@@ -25,10 +25,10 @@ def stop():
     print("EXECUTION STOPPED")
 
 
-def ask_question(question):
+def ask_question(question, context):
     url = "https://api.together.xyz/inference"
 
-    prompt = format_prompt(question)
+    prompt = format_prompt(question, context)
 
     payload = {
         "model": f"togethercomputer/{model}",
@@ -67,9 +67,8 @@ def ask_question(question):
 
 
 
-def format_prompt(question):
-    with open('test_docs.txt', 'r') as file:
-       documentation_text = file.read()
+def format_prompt(question, context):
+    documentation_text = context
     prompt = f"Answer questions based on this context:\n{documentation_text}"
 
     prompt += "\n\nThe following is the chat history:\n"
@@ -81,3 +80,8 @@ def format_prompt(question):
     prompt += f"Question: {question}<|END|>"
 
     return prompt.strip()
+
+# if __name__ == "__main__":
+#     start()
+#     print(ask_question("Can you summarize this documentation for me?"))
+#     stop()

@@ -17,8 +17,7 @@ export const MainContainer = styled.main`
 
 // A mock array of messages
 const initialMessages = [
-  { id: 1, sender: "User", text: "Hello there!" },
-  { id: 2, sender: "Bot", text: "Hi! How can I assist you?" },
+  { id: 1, sender: "Bot", text: "How can I help you?" },
 ];
 
 const ChatMessage = ({ message }) => {
@@ -41,6 +40,14 @@ function ChatApp() {
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
 
+    const userMessageObj = {
+      id: messages.length + 1,
+      sender: "User",
+      text: newMessage,
+    };
+
+    setMessages([...messages, userMessageObj])
+
     const response = await fetch("/process_text", {
       method: "POST",
       headers: {
@@ -51,13 +58,13 @@ function ChatApp() {
 
     const responseMessage = await response.json();
 
-    const newMessageObj = {
-      id: messages.length + 1,
-      sender: "User",
+    const responseMessageObj = {
+      id: messages.length + 2,
+      sender: "Bot",
       text: responseMessage.message,
     };
 
-    setMessages([...messages, newMessageObj]);
+    setMessages([...messages, userMessageObj, responseMessageObj]);
     setNewMessage("");
   };
 
