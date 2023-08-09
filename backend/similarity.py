@@ -4,6 +4,15 @@ import os
 import pandas as pd
 import time
 
+def get_link(top_two):
+    links = []
+    for i in top_two:
+        if i[-1].isnumeric(): temp = i[:-6]
+        else: temp = i[:-4]
+        links.append(f'https://docs.appian.com/suite/help/23.2/{temp}.html')
+    if links[0] == links[1]: return links[0]
+    return links[0] + '; ' + links[1]
+
 def create_dataframe(matrix, tokens):
     df = pd.DataFrame(data=matrix, index=tokens, columns=tokens)
     return(df)
@@ -74,7 +83,7 @@ def vss(question, dir_path):
     temp2 = df2.loc[:, ['question']].sort_values(by=['question'])
     top_two = temp2.index[-3:-1]
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
-    return (final_context)    
+    return (get_link(top_two), final_context)    
 
 
-print(vss('How can I change my default search selection in Designer', 'output_full'))
+vss('How can I change my default search selection in Designer', 'backend/output_full')
