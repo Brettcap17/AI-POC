@@ -69,12 +69,9 @@ def vss(question, dir_path):
     #print("Total time (in sec):", end_time-start_time)
     #with pd.option_context('display.max_rows', None, 'display.max_columns', None):
         #display(df2.loc[:, ['question']].sort_values(by=['question']))
-    
+
     #Return the text of the two highest ranking questions
     temp2 = df2.loc[:, ['question']].sort_values(by=['question'])
     top_two = temp2.index[-3:-1]
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
-    return (final_context)    
-
-
-print(vss('How can I change my default search selection in Designer', 'output_full'))
+    return (final_context)

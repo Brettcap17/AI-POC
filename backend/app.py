@@ -1,6 +1,4 @@
 from flask import Flask, jsonify, request
-from similarity import vss
-
 
 app = Flask(__name__)
 
