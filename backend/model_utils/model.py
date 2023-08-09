@@ -25,10 +25,10 @@ def stop():
     print("EXECUTION STOPPED")
 
 
-def ask_question(question):
+def ask_question(question, context):
     url = "https://api.together.xyz/inference"
 
-    prompt = format_prompt(question)
+    prompt = format_prompt(question, context)
 
     payload = {
         "model": f"togethercomputer/{model}",
@@ -67,9 +67,8 @@ def ask_question(question):
 
 
 
-def format_prompt(question):
-    with open('model_utils/test_docs.txt', 'r') as file:
-       documentation_text = file.read()
+def format_prompt(question, context):
+    documentation_text = context
     prompt = f"Answer questions based on this context:\n{documentation_text}"
 
     prompt += "\n\nThe following is the chat history:\n"
