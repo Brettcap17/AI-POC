@@ -2,9 +2,12 @@ import requests
 from secrets import api_key
 import together
 
+
 model = "llama-2-7b-chat"
-CONTEXT_STORED = 2
+CONTEXT_STORED = 5
 stored_messages = []
+
+
 def start():
     url = f"https://api.together.xyz/instances/start?model=togethercomputer%2F{model}"
     headers = {
@@ -14,13 +17,24 @@ def start():
     response = requests.post(url, headers=headers)
 
 
+def stop():
+    url = f"https://api.together.xyz/instances/stop?model=togethercomputer%2F{model}"
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+    requests.post(url, headers=headers)
+    print("EXECUTION STOPPED")
+
+
 def ask_question(question):
     url = "https://api.together.xyz/inference"
-    question = format_prompt(question)
+
+    prompt = format_prompt(question)
 
     payload = {
         "model": f"togethercomputer/{model}",
-        "prompt": f"{question}",
+        "prompt": f"{prompt}",
         "max_tokens": 256,
         "stop": "<|END|>",
         "temperature": 0.7,
@@ -36,50 +50,48 @@ def ask_question(question):
     try:
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code == 200 and "choices" in response.json()["output"]:
-            print(response.json()["output"]["choices"][0]["text"])
-            if len(stored_messages) < CONTEXT_STORED:
-                stored_messages.append(question)
-            else:
+
+            answer = response.json()["output"]["choices"][0]["text"]
+
+            # Try to adjust context size dynamically
+            if len(stored_messages) > CONTEXT_STORED:
                 stored_messages.pop(0)
-                stored_messages.append(question)
-    except requests.exceptions.RequestException:
+            stored_messages.append((question, answer))
+
+
+            return answer
+        else :
+            print(response.json()["output"])
+
+    except requests.exceptions.RequestException as e:
+        print("EXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTIONEXCEPTION")
         stop()
-        
 
-def stop():
-    url = f"https://api.together.xyz/instances/stop?model=togethercomputer%2F{model}"
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
-    requests.post(url, headers=headers)
-    print("EXECUTION STOPPED")
 
-def execute_llm():
-    while True:
-        user_input = input()
-        if user_input.lower() == "stop":
-            stop()
-            return
-        ask_question(user_input)
+
 def format_prompt(question):
     with open('test_docs.txt', 'r') as file:
        documentation_text = file.read()
-    prompt = f"Context: {documentation_text}"
-    for message in stored_messages:
-        prompt += f"Here is a previous message from this thread to guide you, this is not the actual question: {message}"
+    prompt = f"Answer questions based on this context:\n{documentation_text}"
+
+    prompt += "\n\nThe following is the chat history:\n"
+    for (question_past, answer) in stored_messages:
+
+        prompt += f"Question: {question_past}\n"
+        prompt += f"Answer: {answer}\n"
+
     prompt += f"Question: {question}<|END|>"
-    return prompt
+
+    return prompt.strip()
+
 
 if __name__ == "__main__":
-   documentation_text = ""
-   PRE_PROMPT = f"""
-    Please answer my questions based on the following documentation. No need to respond with anything till I ask a question. {documentation_text}
-    """
-   with open('test_docs.txt', 'r') as file:
-       documentation_text = file.read()
-   start()
-   print("STARTED")
-   ask_question("how do I set a source filter to basic mode in appian?")
-   ask_question("how do I set a source filter using expression mode in appian?")
-   stop()
+
+    start()
+
+    while True:
+        output = ask_question(input())
+        print(output)
+
+
+    stop()

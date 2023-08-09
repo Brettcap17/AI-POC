@@ -1,138 +1,37 @@
-This page describes the difference between source filters and default filters, and how to apply them to your record type.
+This page provides guidance to help you build components that are secure and perform well.
+Security considerations
+Component isolation
+All component plug-ins run in an iframe to isolate them from the surrounding interface. Your component should be designed with the following restrictions in mind:
 
-Overview
-After defining the source of your record type, you may decide that you don't need all the data from your source, or that you want to exclude certain data to prevent end users from viewing it. Appian Records allow you to create filters on your source data so you can exclude data that does not meet the specified criteria.
+Your component's content is loaded from the dynamic content domain rather than the parent site domain to take advantage of cross-origin resource sharing (CORS) protection
+The iframe is sandboxed with the following capabilities enabled: allow-forms, allow-scripts, allow-same-origin, allow-popups
+The following feature policies are enabled (for content in your component only): microphone, geolocation, camera, autoplay
 
-Depending on whether your record type has data sync enabled or not, the way you filter your source data will vary:
+Sensitive data
+These recommendations represent areas that are specific to building component plug-ins. For a more detailed web application security guide, consult the OWASP Top Ten and other OWASP recommendations.
 
-If your record type has data sync enabled, you can apply source filters.
-If your record type does not have data sync enabled, you can apply default filters.
-Both source filters and default filters are not applicable to record types that use a web service as their data source. Instead, you can use the expression rule for the record data source to conditionally filter out records.
+Any data in JavaScript variables or passed over the network to/from your component can be accessed by the user. If the user shouldn't have access to certain data, keep that data out of your component.
+Don't store credentials or other sensitive values in your component code. These values would be easily accessible to anyone using the system.
+Don't provide input parameters for credentials or other sensitive values. This would force the developer to put plaintext values in constants or directly in the interface.
+Store sensitive values like system credentials in a connected system plug-in and access them using client APIs on the server
+Never directly expose connected system credentials using a client API. Always return a calculated value based on the credentials.
+If you're using a client library or integrating with a system that doesn't support this pattern, contact the developer or vendor to ask about how to securely integrate from JavaScript running in a user's browser
 
-Source filters
-When you enable data sync on your record type, you can apply source filters to specify which data is synced and available in the Appian system. With source filters, you can exclude unnecessary data, and even work with data sources that would otherwise cause your record type to exceed the row limit.
+Performance considerations
+Remember that your component will run in an interface with other components, data queries, integrations, etc. It may be used by many users simultaneously, from different locations across the globe. When designing your component, take these performance recommendations into account so that you provide a pleasant user experience:
+Avoid frequent updates
 
-For example, let's say you have a database with over 1 million rows of support case data. To sync and have access to this data, you could create two different record types: the Open Case record type and the Closed Case record type. Both record types would point to the same database, but they each use a source filter so that they only sync cases with a specific status. This way, you can continue to work with all of the data you need, and still leverage powerful sync-enabled features.
+Minimize calls to Appian.Component.saveValue since these calls can trigger potentially time-consuming re-evaluations of the interface
+The JavaScript API automatically throttles calls to Appian.Component.saveValue. Rates higher than 4 per second will cause batching and delays which could severely impact the behavior of your component.
+In general, save values only in response to user input, not as a result of automated processing, and consolidate any sequences of rapid input into a single save (for example, save after a field loses focus rather than on each keystroke)
+If saving values as a result of an external event, limit updates to 2 per minute
 
-You can add source filters when you configure the source of a record type, or anytime after configuring the source by navigating to the Data Model page of the record type.
+Minimize data size
 
-The sections below explain how to add source filters after the source of the record type has been configured. To learn how to add source filters when configuring the source of a record type with sync enabled, see Choose a Record Type Data Source.
+There's no explicit limit on the amount of data you can pass to or from the interface, but keep in mind that if that data is stored in a local variable it could cause the interface to exceed the memory threshold and terminate
+Avoid sending or receiving large requests with external systems that could slow down over low bandwidth connections (for example, mobile devices) or over long distances
+Avoid storing large variables or data sets in JavaScript variables or other parts of your code that could negatively impact memory use on the user's computer
 
-To create a source filter, use one of the following options:
+Avoid loops
 
-Basic mode: Apply multiple source filters joined by an AND union.
-Expression mode: Apply more complex filters by entering an expression containing a!queryLogicalExpression().
-Once you apply your source filters, apply record-level security to determine which records are available to which users.
-
-Basic mode
-Basic mode allows you to easily set up filters using three criteria: Field, Condition, and Value. Multiple filters are combined using the AND operator.
-
-To add a source filter using Basic mode:
-
-In your record type, go to Data Model.
-Under SOURCE FILTERS, click ADD FILTER.
-In the Configure Source Filters form, leave the default selection Basic.
-Click  Add Filter
-
-empty-source-filter
-
-From the Field picker, select the source field you want to filter the data. Only source types that can be converted to Appian types appear in the dropdown.
-From the Condition list, select the operator to apply to the filter.
-Use the context menu next to the Value field to select how you want to pass the value into the filter.
-The options in this menu change based on the data type of the field selected. You can enter a value directly or enter the value using an expression. For date and date and time data types, you can choose from a list of date presets.
-If you want to skip filters that have an empty value, select the Ignore Filters with Empty Values checkbox. See a!queryLogicalExpression() for more information.
-Click TEST FILTER to validate your filter conditions.
-If you have more than one filter, change the order in which the filters are applied by clicking and holding the drag-and-drop icon vertical grip of an individual filter, then dropping the filter into place. Delete a filter by clicking X.
-Click OK.
-Expression mode
-Expression mode allows you to create more complex filters. You can switch to Expression mode at any time during your filter configuration. For example, if you want to use OR to combine filters instead of AND, simply create all of your filters in Basic mode, then switch to Expression mode and change AND to OR for the a!queryLogicalExpression() operator parameter.
-
-When configuring source filters in Expression mode, you must use an expression containing a list of a!queryFilter() or a!queryLogicalExpression().
-
-To configure a source filter using Expression mode:
-
-In your record type, go to Data Model.
-Under SOURCE FILTERS, click ADD FILTER.
-In the Configure Source Filters form, select Expression.
-In the expression editor, enter an expression that returns a list of queryFilter or queryLogicalExpression.
-
-Source filters do not support the now() or loggedinuser() function, nor any object references called from the rule! or cons! domain.
-
-Click TEST FILTER to validate your filter conditions.
-Click OK.
-For example, the following source filter expression would only sync opportunities that have a status of active and an opportunity level of either "Must have" or "Should have". Any data that does not meet these filter conditions will not be synced in Appian.
-
-  /*
-  (Has a status of "Active" AND has an opportunity level of "Must have" OR "Should have")
-  */
-  a!queryLogicalExpression(
-    operator: "AND",
-    logicalExpressions: {
-       a!queryLogicalExpression(
-        operator: "AND",
-        filters: a!queryFilter(
-           field: "status",
-           operator: "=",
-           value: "Active")
-      ),
-       a!queryLogicalExpression(
-         operator: "OR",
-         filters: {
-          a!queryFilter(field: "opportunityLevel", operator: "=", value: "Must have"),
-          a!queryFilter(field: "opportunityLevel", operator: "=", value: "Should have")
-         }
-       )
-    }
-  )
-
-For more information on specifying filters as an expression, see a!queryFilter() or a!queryLogicalExpression().
-
-Default filters
-When your record type does not have data sync enabled, you can use default filters to specify which records appear in the record list and views based on the conditions you specify.
-
-When a record is filtered out by a default filter:
-
-The record does not show up in the record list.
-The record is not returned in queries on that record type.
-Users may not access the views on the record.
-Each default filter defines a condition that must be true for a record to display in the list. If you have multiple conditions, the record must meet all conditions in order to display.
-
-For example, in a Case record type, you may want case managers to view all customer support cases, but you only want support engineers to see the cases that are assigned to them. Using a default filter, you could create a filter condition that states if a logged in user is a member of the Support Engineers group, only return cases assigned to the logged in user; Otherwise, return all customer support cases.
-
-If your record type has data sync enabled, you can use record-level security to achieve this same use case.
-
-To create a default filter, use one of the following options:
-
-By Field: Allows you to apply multiple default filters joined by an AND union.
-Expression: Allows you to apply more complex filters by entering an expression containing a list of a!queryFilter() or a!queryLogicalExpression().
-By field
-Creating filters by field allows you to easily set up filters using three criteria: Field, Operator, and Value. Multiple filters are combined using the AND operator.
-
-To create a default filter by field:
-
-In your record type, go to Source & Default Filters.
-Keep the default selection of By Field.
-Click on  New Default Filter.
-Click the Field dropdown and select the record field that you want to set as the default filter.
-Select the appropriate comparison from the Operator dropdown.
-Enter the value for the comparison in the Value field. This is an expression field, so encase text values in quotes.
-
-For example, the filter in the following screenshot removes all records that do not have an account manager.
-
-Screenshot
-
-Click OK.
-Expression
-Creating filters using an expression allows you to create more complex filters. When configuring source filters in Expression mode, you must use an expression containing a list of a!queryFilter() or a!queryLogicalExpression().
-
-To create a default filter using an expression:
-
-In your record type, go to Source & Default Filters.
-Select Expression.
-
-/record default filters expression
-
-In the expression editor, enter an expression that returns a list of queryFilter or queryLogicalExpression.
-Click OK.
-
-For more information on specifying filters as an expression, see a!queryFilter() or a!queryLogicalExpression().
+Don't call Appian.Component.saveValue from the function registered using Appian.Component.onNewValue. If the developer modifies the saved value and passes it back to another parameter you could trigger a loop. The best way to avoid this is to make sure you only save values in response to actions by the user. Read about how components interact with the interface to learn more.

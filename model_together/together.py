@@ -35,7 +35,7 @@ def ask_question(question):
             print(response.json()["output"]["choices"][0]["text"])
     except requests.exceptions.RequestException:
         stop()
-        
+
 
 def stop():
     url = f"https://api.together.xyz/instances/stop?model=togethercomputer%2F{model}"
