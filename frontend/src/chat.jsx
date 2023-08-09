@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Grid from "@mui/material/Unstable_Grid2";
-import Stack from "@mui/material/Stack"
+import Stack from "@mui/material/Stack";
+import { TextField, Button, Container } from "@mui/material";
 
 export const MainContainer = styled.main`
   display: flex;
@@ -62,22 +63,40 @@ const ChatApp = () => {
             <ChatMessage key={message.id} message={message} />
           ))}
         </Stack>
+
+        <br></br>
+
+        <Container>
+          <TextField
+            fullWidth
+            id="filled-basic"
+            label="Enter Prompt"
+            variant="filled"
+            onChange={handleNewMessageChange}
+          />
+          <Button variant="contained" onClick={handleSendMessage}>
+            Send
+          </Button>
+        </Container>
       </Grid>
 
       <Grid xs={3}>
         <></>
       </Grid>
 
-      <Grid xs={12} display="flex" justifyContent="center">
-        <div className="input-area">
+      <Grid xs={8}>
+        {/* <div className="input-area">
           <input
             type="text"
             placeholder="Type your message..."
             value={newMessage}
             onChange={handleNewMessageChange}
           />
+
+
+
           <button onClick={handleSendMessage}>Send</button>
-        </div>
+        </div> */}
       </Grid>
     </Grid>
   );
