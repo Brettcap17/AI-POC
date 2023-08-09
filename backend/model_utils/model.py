@@ -97,5 +97,5 @@ class LlamaThread:
 
     def clear_chat_history(self):
         self.stored_messages = []
-    
-     
+
+

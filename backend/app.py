@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from vss_utils.similarity import vss
 from model_utils.model import LlamaThread
+from vss_utils.similarity import vss
+import model_utils.model as model
 
 
 app = Flask(__name__)
