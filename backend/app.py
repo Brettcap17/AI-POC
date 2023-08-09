@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
-from vss_utils.similarity import vss
-import model_utils.model
+# from vss_utils.similarity import vss
+# import model_utils.model
 
 
 app = Flask(__name__)

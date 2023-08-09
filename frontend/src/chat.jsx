@@ -30,7 +30,7 @@ const ChatMessage = ({ message }) => {
   );
 };
 
-const ChatApp = () => {
+function ChatApp() {
   const [messages, setMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState("");
 
@@ -38,13 +38,23 @@ const ChatApp = () => {
     setNewMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
+
+    const response = await fetch("/process_text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: newMessage }),
+    });
+
+    const responseMessage = await response.json();
 
     const newMessageObj = {
       id: messages.length + 1,
       sender: "User",
-      text: newMessage,
+      text: responseMessage.message,
     };
 
     setMessages([...messages, newMessageObj]);
@@ -92,8 +102,6 @@ const ChatApp = () => {
             value={newMessage}
             onChange={handleNewMessageChange}
           />
-
-
 
           <button onClick={handleSendMessage}>Send</button>
         </div> */}
