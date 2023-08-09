@@ -1,0 +1,4 @@
+secrets.txt
+backend/model_utils/secrets.py
+backend/__pycache__
+frontend/node_modules

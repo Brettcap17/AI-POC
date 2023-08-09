@@ -1,0 +1,37 @@
+This page provides guidance to help you build components that are secure and perform well.
+Security considerations
+Component isolation
+All component plug-ins run in an iframe to isolate them from the surrounding interface. Your component should be designed with the following restrictions in mind:
+
+Your component's content is loaded from the dynamic content domain rather than the parent site domain to take advantage of cross-origin resource sharing (CORS) protection
+The iframe is sandboxed with the following capabilities enabled: allow-forms, allow-scripts, allow-same-origin, allow-popups
+The following feature policies are enabled (for content in your component only): microphone, geolocation, camera, autoplay
+
+Sensitive data
+These recommendations represent areas that are specific to building component plug-ins. For a more detailed web application security guide, consult the OWASP Top Ten and other OWASP recommendations.
+
+Any data in JavaScript variables or passed over the network to/from your component can be accessed by the user. If the user shouldn't have access to certain data, keep that data out of your component.
+Don't store credentials or other sensitive values in your component code. These values would be easily accessible to anyone using the system.
+Don't provide input parameters for credentials or other sensitive values. This would force the developer to put plaintext values in constants or directly in the interface.
+Store sensitive values like system credentials in a connected system plug-in and access them using client APIs on the server
+Never directly expose connected system credentials using a client API. Always return a calculated value based on the credentials.
+If you're using a client library or integrating with a system that doesn't support this pattern, contact the developer or vendor to ask about how to securely integrate from JavaScript running in a user's browser
+
+Performance considerations
+Remember that your component will run in an interface with other components, data queries, integrations, etc. It may be used by many users simultaneously, from different locations across the globe. When designing your component, take these performance recommendations into account so that you provide a pleasant user experience:
+Avoid frequent updates
+
+Minimize calls to Appian.Component.saveValue since these calls can trigger potentially time-consuming re-evaluations of the interface
+The JavaScript API automatically throttles calls to Appian.Component.saveValue. Rates higher than 4 per second will cause batching and delays which could severely impact the behavior of your component.
+In general, save values only in response to user input, not as a result of automated processing, and consolidate any sequences of rapid input into a single save (for example, save after a field loses focus rather than on each keystroke)
+If saving values as a result of an external event, limit updates to 2 per minute
+
+Minimize data size
+
+There's no explicit limit on the amount of data you can pass to or from the interface, but keep in mind that if that data is stored in a local variable it could cause the interface to exceed the memory threshold and terminate
+Avoid sending or receiving large requests with external systems that could slow down over low bandwidth connections (for example, mobile devices) or over long distances
+Avoid storing large variables or data sets in JavaScript variables or other parts of your code that could negatively impact memory use on the user's computer
+
+Avoid loops
+
+Don't call Appian.Component.saveValue from the function registered using Appian.Component.onNewValue. If the developer modifies the saved value and passes it back to another parameter you could trigger a loop. The best way to avoid this is to make sure you only save values in response to actions by the user. Read about how components interact with the interface to learn more.
