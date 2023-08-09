@@ -84,6 +84,3 @@ def vss(question, dir_path):
     top_two = temp2.index[-3:-1]
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
     return (get_link(top_two), final_context)    
-
-
-vss('How can I change my default search selection in Designer', 'backend/output_full')

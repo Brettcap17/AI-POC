@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
-# from vss_utils.similarity import vss
-# import model_utils.model
+from vss_utils.similarity import vss
+import model_utils.model as model
 
 
 app = Flask(__name__)
@@ -18,7 +18,9 @@ def process_text():
     text_input = data['text']
     print(text_input)
     # Process the text_input here
-    result = {'message': 'Text processed successfully'}
+    model.start()
+    output = model.ask_question(text_input)
+    result = {'message': output}
     return jsonify(result)
 
 

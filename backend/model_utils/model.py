@@ -1,5 +1,5 @@
 import requests
-from secrets import api_key
+from .secrets import api_key
 
 model = "llama-2-7b-chat"
 CONTEXT_STORED = 5
@@ -68,7 +68,7 @@ def ask_question(question):
 
 
 def format_prompt(question):
-    with open('test_docs.txt', 'r') as file:
+    with open('model_utils/test_docs.txt', 'r') as file:
        documentation_text = file.read()
     prompt = f"Answer questions based on this context:\n{documentation_text}"
 
@@ -81,3 +81,8 @@ def format_prompt(question):
     prompt += f"Question: {question}<|END|>"
 
     return prompt.strip()
+
+# if __name__ == "__main__":
+#     start()
+#     print(ask_question("Can you summarize this documentation for me?"))
+#     stop()
