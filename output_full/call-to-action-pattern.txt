@@ -1,0 +1,176 @@
+
+layout: pattern
+title: Call to Action Pattern
+excerpt: Use the call to action pattern as a landing page when your users have a single action to take.
+reftype: pattern
+sr-tags: Formatting
+
+{:.screenshot}
+Design structure
+The main components of this pattern are columns layouts, card layouts, rich text, a document image, and a button. In this design structure breakdown, we will explain how each component is used. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components. 
+Pattern expression
+This pattern introduces a 75-line expression to the interface. It can be found in the EXAMPLES section in the Select a template pane of a blank interface, or you can copy and paste this example into EXPRESSION MODE. 
+sail 
+{
+  /* Use the call to action pattern as a landing page */
+  /* when your users have a single action to take     */
+  a!cardLayout(
+    /* Add whitespace above image */
+    height: "SHORT",
+    showBorder: false
+  ),
+  a!columnsLayout(
+    columns: {
+      /* Empty column layouts on both sides */
+      /* help to center the content */
+      a!columnLayout(),
+      a!columnLayout(
+        contents: {
+          a!imageField(
+            labelPosition: "COLLAPSED",
+            images: {
+              a!documentImage(
+                document: a!EXAMPLE_CALL_TO_ACTION_IMAGE()
+              )
+            },
+            size: "LARGE",
+            align: "CENTER"
+          ),
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              char(10),
+              char(10),
+              a!richTextItem(
+                text: upper("Apply in 5 easy steps"),
+                color: "ACCENT",
+                size: "LARGE",
+                style: "STRONG"
+              ),
+              char(10),
+              char(10),
+              a!richTextItem(
+                text: "This should take less than 10 minutes",
+                size: "MEDIUM"
+              ),
+              char(10),
+              char(10)
+            },
+            align: "CENTER"
+          ),
+          /* If your data is records-based, consider using a!recordActionField() */
+          /* with CALL_TO_ACTION style instead of a!buttonArrayLayout()          */
+          a!buttonArrayLayout(
+            buttons: {
+              a!buttonWidget(
+                label: "Start Now",
+                size: "LARGE",
+                style: "PRIMARY"
+              )
+            },
+            align: "CENTER"
+          )
+        },
+        width: "MEDIUM_PLUS"
+      ),
+      a!columnLayout()
+    },
+    stackWhen: {
+      "PHONE",
+      "TABLET_PORTRAIT"
+    }
+  ),
+  a!cardLayout(
+    /* Add whitespace below button */
+    height: "SHORT",
+    showBorder: false
+  )
+}
+[Lines 1-8] Use a blank card for formatting
+This card layout is used to format the interface by creating white space above the image. 
+sail 
+{
+  /* Use the call to action pattern as a landing page */
+  /* when your users have a single action to take     */
+  a!cardLayout(
+    /* Add whitespace above image */
+    height: "SHORT",
+    showBorder: false
+  ),
+[Lines 9-69] Configure the image, text, and button
+This section of the expression contains the major components of the pattern that the user will be interacting with: the columns, document image, rich text, and button. 
+There are three columns, but only the center column has content. The two empty columns center the content (lines 13 and 63), regardless of screen size. 
+The first component is a!imageField(). You can replace the image by uploading a file and using a constant to reference it. 
+The second component consists of two different rich text items to create the text. Both items contain the char() function for additional formatting. Here, char(10) is used to add space around the text.
+The third component is a button, which is not linked to anything. If your data is  from a record, we suggest replacing the button link with a record action component. You can also use a dynamic link with local variables to show different interfaces in a wizard. 
+sail 
+ a!columnsLayout(
+    columns: {
+      /* Empty column layouts on both sides */
+      /* help to center the content */
+      a!columnLayout(),
+      a!columnLayout(
+        contents: {
+          a!imageField(
+            labelPosition: "COLLAPSED",
+            images: {
+              a!documentImage(
+                document: a!EXAMPLE_CALL_TO_ACTION_IMAGE()
+              )
+            },
+            size: "LARGE",
+            align: "CENTER"
+          ),
+          a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              char(10),
+              char(10),
+              a!richTextItem(
+                text: upper("Apply in 5 easy steps"),
+                color: "ACCENT",
+                size: "LARGE",
+                style: "STRONG"
+              ),
+              char(10),
+              char(10),
+              a!richTextItem(
+                text: "This should take less than 10 minutes",
+                size: "MEDIUM"
+              ),
+              char(10),
+              char(10)
+            },
+            align: "CENTER"
+          ),
+          /* If your data is records-based, consider using a!recordActionField() */
+          /* with CALL_TO_ACTION style instead of a!buttonArrayLayout()          */
+          a!buttonArrayLayout(
+            buttons: {
+              a!buttonWidget(
+                label: "Start Now",
+                size: "LARGE",
+                style: "PRIMARY"
+              )
+            },
+            align: "CENTER"
+          )
+        },
+        width: "MEDIUM_PLUS"
+      ),
+      a!columnLayout()
+    },
+    stackWhen: {
+      "PHONE",
+      "TABLET_PORTRAIT"
+    }
+  ),
+[Lines 70-75] Use a blank card for formatting
+This card is used to format the interface by creating white space below the button. 
+sail
+a!cardLayout(
+    /* Add whitespace below button */
+    height: "SHORT",
+    showBorder: false
+  )
+}

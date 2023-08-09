@@ -1,0 +1,37 @@
+
+layout: function
+title: typename() Function
+category: function_page
+excerpt: Returns the type name of a given type number.
+fnccat: Informational
+fncexample: typename(typeof(1))
+fncname: typename
+fncresult: Number (Integer)
+parameters:
+  - keyword: typeNumber
+    types: Number (Integer)
+    description: |
+      The type number to be inquired for its name. This may be retrieved by using typeof(x), where x is a value of the intended type, or referencing a type with 'type!{namespace}type-name' (within single quotes).
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: typeof(), Delete Data Types
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text 
+Usage considerations
+Referencing data types
+
+To retrieve the type number, use typeof(x), where x is a value of the intended type, or reference a type with type!{namespace}type-name (within single quotes). 
+When referencing a data type, consider the impact that deleting the data type has on the expression that references it.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+typename(27) returns User or Group

@@ -1,0 +1,33 @@
+
+layout: function
+title: minute() Function
+space: function_page
+excerpt: "Returns the minute from the time specified."
+category: function_page
+fncname: minute
+fncexample: "minute(time(14, 20, 23))"
+fncresult: "20"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: time
+    types: Time
+    description: |
+      The time from which the minute is extracted.
+  - keyword: minute
+    types:  "time"
+    description: |
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+minute(time(14,20,23)) returns 20

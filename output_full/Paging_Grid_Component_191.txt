@@ -1,0 +1,477 @@
+
+layout: function
+title: a!gridField_19r1 Component
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+excerpt: 'Displays read-only text, links, and images in a grid that supports selecting, sorting, and paging.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridField_19r1
+fncsubcat: Grids
+fncsyntax: 'a!gridField( [label], [labelPostion], [instructions], [helpTooltip], [totalCount], [emptyGridMessage], [columns], [identifiers], [value], [saveInto], [selection], [requireSelection], [requiredMessage], [disabled], [validations], [validationGroup], [showWhen], [shadeAlternateRows], [spacing], [height], [borderStyle], [selectionStyle], [rowHeader] )'
+space: sail_component
+evolved_fncname: a!gridField
+evolved_reason: |
+  Now supports embedded queries, columns widths, and rich text.
+
+Paging Grid
+Function: a!gridField_19r1()
+Displays read-only text, links, and images in a grid that supports selecting, sorting, and paging. To organize editable inputs in a tabular layout, use an editable grid.
+Parameters
+
+
+Name
+Keyword
+Type
+Description
+
+
+Label
+label
+Text 
+Optional text to display as the field label.
+
+
+Label Position
+labelPosition
+Text 
+
+         Optional text to determine where the label appears. Valid values include
+         
+"ABOVE" (default) Displays the label above the component.
+"ADJACENT" Displays the label to the left of the component.
+
+"COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+            
+"JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+
+
+
+
+Instructions
+instructions
+Text 
+Optional text that displays below the label.
+
+
+Help Tooltip
+helpTooltip
+Text
+Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+
+
+Total Count
+totalCount
+Integer 
+Total number of rows of data for all pages in the grid.
+
+
+Empty Grid Message
+emptyGridMessage
+Text 
+Text to display in the grid when no data is available. Default is "No items available".
+
+
+Columns
+columns
+
+         Array of Text Columns or Image Columns
+
+Holds an array of Text or Image columns that configure and define the data or links to display for each column in the grid. Configured using a!gridTextColumn() or a!gridImageColumn().
+
+
+Identifiers
+identifiers
+Text or Integer Array 
+Accepts an array of text or integers that are used to determine which rows are selected.
+
+
+Paging and Selection Value
+value
+
+PagingInfo or GridSelection
+
+Holds the paging and sorting configurations for the grid as well as which rows in the grid should be selected. When defined with the variable configured in Save Paging and Selection To, it allows users to change the sort column, view another grid page, or select and deselect rows. When the type is GridSelection, checkboxes appear for each row if selection is enabled. When the type is PagingInfo, no checkboxes appear.
+
+
+Save Paging and Selection To
+saveInto
+Save Array
+One or more variables that are updated with the paging or grid selection configuration when the user pages, sorts, or changes the grid's selections. Use a!save() to save a modified or alternative value to a variable.
+
+
+Selectable
+selection
+Boolean
+Determines if the rows in the grid are selectable. Default is false.
+
+
+Selection required
+requireSelection
+Boolean
+Determines if a selection is required to submit the form. Default is false.
+
+
+Required Message
+requiredMessage
+Text
+Custom message to be displayed when a selection is required and not provided.
+
+
+Disabled
+disabled
+Boolean
+Determines if the user is prevented from changing which rows are selected. Default is false.
+
+
+Validations
+validations
+Text Array
+Validation errors to be displayed below the field when the value is not null.
+
+
+Validation Group
+validationGroup
+Text
+When present, this field is only validated when a button in the same validation group is clicked.
+
+
+Visibility
+showWhen
+Boolean
+Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+
+
+Spacing
+spacing
+Text
+Determines the spacing within grid cells. Valid values: "STANDARD" (default), "DENSE".
+
+
+Height
+height
+Text
+Determines the height of the grid. Valid values: “SHORT”, “MEDIUM”, “TALL”, “AUTO” (default). When set to SHORT, MEDIUM, or TALL, the header is frozen.
+
+
+Border Style
+borderStyle
+Text
+Determines the style of the grid border. Valid values: "STANDARD" (default), "LIGHT".
+
+
+Shade Alternate Rows
+shadeAlternateRows
+Boolean
+Determines whether alternate rows are shaded. Default: true.
+
+
+Selection Style
+selectionStyle
+Text
+Determines the style when a row is selected. Valid values: "CHECKBOX" (default), "ROW_HIGHLIGHT".
+
+
+Row Header
+rowHeader
+Integer
+Index of the column to be used as the row header. Screen readers will announce the value in each row header when navigating to other cells within that row. Used only for accessibility; produces no visible change.
+
+
+Configuration Notes
+
+The paging grid requires certain configurations to render properly. It errors under the following conditions:
+The columns and value parameters are null or empty
+The batchSize in Paging and Selection Value is less than the length of the data array in any column
+The startIndex in Paging and Selection Value is greater than the totalCount value
+The length of the data array in any column is null or less than the totalCount value
+Interacting with the grid produces a value of type PagingInfo that is then saved in your Save Paging and Selection To parameter. This is used to refresh and render the grid accordingly.
+Passing a local variable with the load() function to the Value parameter and passing the same local variable to the Save Paging and Selection To parameter allows for re-evaluation of the expression. Re-evaluation occurs when users click a column to change the sorting or navigate to another page of the grid.
+When using a datasubset obtained using a!queryEntity() as the source of data for the paging grid, make sure to set its fetchTotalCount parameter to true. Otherwise, the totalCount field on the resulting datasubset may be invalid (i.e. set to -1). See also: a!queryEntity() Function.
+For accessibility purposes, every grid should have a row header configured. The first column containing text is usually the correct choice for row header. See the SAIL Design System for more information.
+
+Display Notes
+
+To reduce clutter on smaller grids, the following happens:
+No paging controls are displayed when the grid has 5 or fewer rows and all rows are on one page.
+Paging controls to jump to the first or last page are not displayed when a grid has 100 or fewer total items.
+The order of items in Columns determines the order of the columns. The order of items in the Data array in each column determines the default order of the data.
+Spaces and line breaks are supported within a column’s Data values but not its Label values.
+If the Data value for a column is empty or null, the grid still renders the column with just the label.
+Each column’s width is determined by the length of the longest value in that column. If the total width is wider than the page or column containing the grid, a horizontal scroll bar displays for users to view the remaining data.
+Paging and sorting do not function and images do not render when this component is used offline.
+Grid heights behave as a fixed height on web but a maximum height on mobile.
+Setting the height of the grid to SHORT, MEDIUM, or TALL will freeze the grid's header and footer. See the Short Two-Column Grid with Process Task Links example below.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Grid Showing Static Columns
+sail
+    =a!gridField_19r1(
+      label: "Employees",
+      totalCount: 5,
+      columns: {
+        a!gridTextColumn(
+          label: "Name",
+          data: {"John Smith", "Michael Johnson", "Mary Reed", "Angela Cooper", "Elizabeth Ward"},
+          alignment: "LEFT"
+        ),
+        a!gridTextColumn(
+          label: "Title",
+          data: {"Director", "Analyst", "Software Engineer", "Sales", "Sales"},
+          alignment: "LEFT"
+        ),
+        a!gridTextColumn(
+          label: "Department",
+          data: {"Engineering", "Finance", "Engineering", "Sales", "Sales"},
+          alignment: "LEFT"
+        )
+      },
+      value: a!pagingInfo(
+        startIndex: 1,
+        batchSize: 5,
+        sort: a!sortInfo(
+          field: "name",
+          ascending: true
+        )
+      ),
+      rowHeader: 1
+    )
+Displays the following:
+
+Single-Column Grid with Paging/Sorting
+sail
+    =load(
+      local!pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5, sort: a!sortInfo(field: "label", ascending: true)),
+      local!sampleData: {
+        type!LabelValue(label: "John Smith"),
+        type!LabelValue(label: "Michael Johnson"),
+        type!LabelValue(label: "Mary Reed"),
+        type!LabelValue(label: "Angela Cooper"),
+        type!LabelValue(label: "Elizabeth Ward"),
+        type!LabelValue(label: "Daniel Lewis"),
+        type!LabelValue(label: "Paul Martin"),
+        type!LabelValue(label: "Jessica Peterson"),
+        type!LabelValue(label: "Mark Hall"),
+        type!LabelValue(label: "Rebecca Wood")
+      },
+      with(
+        local!datasubset: todatasubset(local!sampleData, local!pagingInfo),
+        local!dataForCurrentPage: local!datasubset.data,
+        a!gridField_19r1(
+          label: "Employees",
+          instructions: local!pagingInfo,
+          totalCount: local!datasubset.totalCount,
+          columns: {
+            a!gridTextColumn(
+              label: "Name",
+              field: "label",
+              data: index(local!dataForCurrentPage, "label", null),
+              alignment: "LEFT"
+            )
+          },
+          value: local!pagingInfo,
+          saveInto: local!pagingInfo
+        )
+      )
+    )
+Displays the following:
+
+NOTE: If you sort or page through this example, you’ll notice the instructions change. We’ve configured this value as local!pagingInfo to show how the pagingInfo value changes each time the expression is re-evaluated.
+Single-Column Grid with Static Links
+sail 
+    =a!gridField_19r1(
+      totalCount: 4,
+      columns: {
+        a!gridTextColumn(
+          label: "Company Information",
+          data:{
+            "Company Website",
+            "LinkedIn",
+            "Twitter",
+            "Facebook"
+          },
+          links: {
+            a!safeLink(uri: "http://www.appian.com"),
+            a!safeLink(uri: "http://www.linkedin.com/company/appian-corporation"),
+            a!safeLink(uri: "https://twitter.com/appian"),
+            a!safeLink(uri: "https://www.facebook.com/AppianCorporation")
+          },
+          alignment: "LEFT"
+        )
+      },
+      value: a!pagingInfo(
+        startIndex: 1,
+        batchSize: 4,
+        sort: a!sortInfo(
+          field: "name",
+          ascending: true
+        )
+      )
+    )
+Displays the following:
+
+Short Two-Column Grid with Process Task Links
+sail
+      =load(
+      local!pagingInfo: a!pagingInfo(startIndex: 1, batchSize: -1, sort: a!sortInfo(field: "label", ascending: true)),
+      local!sampleData: {
+        type!LabelValue(label: "Smith, John"),
+        type!LabelValue(label: "Johnson, Michael"),
+        type!LabelValue(label: "Reed, Mary"),
+        type!LabelValue(label: "Cooper, Angela"),
+        type!LabelValue(label: "Ward, Elizabeth"),
+        type!LabelValue(label: "Garcia, Emilia"),
+        type!LabelValue(label: "Klein, Raphael")
+      },
+      with(
+        local!dataForCurrentPage: todatasubset(local!sampleData, local!pagingInfo).data,
+        a!gridField_19r1(
+          totalCount: length(local!sampleData),
+          columns: {
+            a!gridTextColumn(
+              label: "Name",
+              field: "label",
+              data: local!dataForCurrentPage.label,
+              alignment: "LEFT"
+            ),
+            a!gridTextColumn(
+              label: "Open Task",
+              data: {
+                "Expense Approval",
+                "Expense Approval",
+                "Timesheet Approval",
+                "Timesheet Approval",
+                "Expense Approval",
+                "Timesheet Approval",
+                "Timesheet Approval",
+              },
+              links:{
+                a!processTaskLink(task: 1382),
+                a!processTaskLink(task: 1377),
+                a!processTaskLink(task: 536870918),
+                a!processTaskLink(task: 268436948),
+                a!processTaskLink(task: 1383),
+                a!processTaskLink(task: 268439975),
+                a!processTaskLink(task: 1388),
+              },
+              alignment: "LEFT"
+            )
+          },
+          value: local!pagingInfo,
+          saveInto: local!pagingInfo,
+          height: "SHORT"
+        )
+      )
+    )
+Displays the following:
+
+Paging Grid with Row Selection
+
+appian-style-tip
+This recipe uses an employee data structure and objects created through the Use the Write to Data Store Entity Smart Service Function on an Interface recipe. Make sure that recipes has been built first in order to see data in this example.
+
+sail
+=load(
+  /* Set the default paging and sorting config */
+  local!gridSelection: a!gridSelection(
+    selected: {},
+    pagingInfo: a!pagingInfo(
+      startIndex: 1,
+      batchSize: 10,
+      sort: a!sortInfo(
+        field: "lastName",
+        ascending: true
+      )
+    )
+  ),
+  with(
+    local!datasubset: a!queryEntity(
+      entity: cons!EMPLOYEE_ENTITY,
+      query: a!query(
+        selection: a!querySelection(
+          columns: {
+            a!queryColumn(
+              field: "firstName"
+            ),
+            a!queryColumn(
+              field: "lastName"
+            ),
+            a!queryColumn(
+              field: "title"
+            )
+          }
+        ),
+        pagingInfo: local!gridSelection.pagingInfo
+      ),
+      fetchTotalCount: true
+    ),
+    a!sectionLayout(
+      contents: {
+        a!gridField_19r1(
+          label: "SAIL Example: Employee Grid Selection",
+          totalCount: local!datasubset.totalCount,
+          columns: {
+            a!gridTextColumn(
+              label: "First",
+              field: "firstName",
+              data: index(
+                local!datasubset.data,
+                "firstName",
+                {}
+              )
+            ),
+            a!gridTextColumn(
+              label: "Last",
+              field: "lastName",
+              data: index(
+                local!datasubset.data,
+                "lastName",
+                {}
+              )
+            ),
+            a!gridTextColumn(
+              label: "Title",
+              field: "title",
+              data: index(
+                local!datasubset.data,
+                "title",
+                {}
+              )
+            )
+          },
+          identifiers: local!datasubset.identifiers,
+          value: local!gridSelection,
+          saveInto: {
+            local!gridSelection
+          },
+          rowHeader: 1,
+          selection: true,
+          shadeAlternateRows: false,
+          selectionStyle: "ROW_HIGHLIGHT"
+        ),
+        a!textField(
+          label: "Selected Employee IDs",
+          readOnly: true,
+          value: if(
+            length(
+              local!gridSelection.selected
+            ) = 0,
+            "No employees selected",
+            joinarray(
+              local!gridSelection.selected,
+              ", "
+            )
+          )
+        )
+      }
+    )
+  )
+)
+Displays the following:
+
+See Also
+Tempo Report Design Best Practices: Includes best practices for configuring a grid on a Tempo report for optimal performance and usability.
+SAIL Design System: Grids: Includes UX best practices for designing grids.
+Grid Tutorial: Details the steps for creating a Tempo report using a grid component that shows data queried from an external database and allows for sorting and paging.

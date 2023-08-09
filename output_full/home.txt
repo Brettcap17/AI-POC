@@ -1,0 +1,12 @@
+
+layout: ds-home
+title: SAIL Design System
+proxy-topic: Interfaces
+proxy-title: SAIL Design System
+type: Overview
+weight: 1
+homeDescription: SAIL is Appian's Low-Code Design System
+homeBullets: 
+  - Build once for web, iOS, and Android
+  - Automatic responsiveness and accessibility
+  - Easily design beautiful interfaces with drag and drop

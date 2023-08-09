@@ -1,0 +1,29 @@
+
+layout: function
+title: a!listType() Function
+category: function_page
+excerpt: Returns the list type number for a given type number.
+fnccat: Informational
+fncexample: a!listType(typeof(1))
+fncname: a!listType
+compatibility: -crf
+parameters:
+  - keyword: typeNumber
+    types: Number (Integer)
+    description: |
+      The type for whose corresponding list type should be returned. This may be retrieved by using typeof(x), where x is a value of the intended type, referencing a type with 'type!{namespace}type-name' (within single quotes), or for records, using the record type reference (e.g. recordType!Customer).
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number (Integer)
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+a!listType(recordType!Customer) returns 2893 which corresponds to the type List of Customer. Note that type numbers may vary between environments.

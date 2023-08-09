@@ -1,0 +1,30 @@
+
+layout: function
+title: even() Function
+space: function_page
+excerpt: "Rounds positive numbers up to nearest even integer and negative numbers down to the nearest even integer."
+category: function_page
+fncname: even
+fncexample: "even(5)"
+fncresult: "6"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number that will be rounded.
+
+Functions
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+even(31.5) returns 32 

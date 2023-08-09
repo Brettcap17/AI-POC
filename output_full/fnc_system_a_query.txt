@@ -1,0 +1,54 @@
+
+layout: function
+title: a!query() Function
+category: function_page
+excerpt: Creates a Query object for use in the a!queryEntity() function.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!query
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: selection
+    types: Selection
+    description: |
+      A list of fields that you wish to retrieve, created with a!querySelection().
+  - keyword: aggregation
+    types: Aggregation
+    description: |
+      A list of fields and the operations you wish to perform on them when retrieving the data, created with a!queryAggregation().
+  - keyword: logicalExpression
+    types: LogicalExpression
+    description: |
+      A set of conditions to apply to the queried data before any grouping or aggregation, created with a!queryLogicalExpression().
+  - keyword: filter
+    types: QueryFilter
+    description: |
+      A single condition to apply to the queried data before any grouping or aggregation, created with a!queryFilter().
+  - keyword: pagingInfo
+    types: PagingInfo
+    description: |
+      The paging and sorting configurations to apply when retrieving the data, created with a!pagingInfo().
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Aggregation, Selection, logicalexpression, paginginfo, query, queryfilter
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Query
+Usage considerations
+Required parameter
+
+The pagingInfo parameter is required.
+
+Optional parameters
+
+
+You may specify either the selection parameter or the aggregation parameter but not both. If you do not specify either parameter, all fields are returned.
+
+
+You may specify either the logicalExpression parameter or the filter parameter but not both. If you wish to specify only one condition, use filter. If you wish to specify more than one condition, use logicalExpression.
+

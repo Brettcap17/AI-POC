@@ -1,0 +1,55 @@
+
+layout: function
+title: wherecontains() Function
+space: function_page
+excerpt: "Receives one or more values and returns an array of indices that indicate the position of the values within the array."
+category: function_page
+fncname: wherecontains
+fncexample: "wherecontains(20, {10, 20, 30})"
+fncresult: "{2}"
+fnccat: Array
+parameters:
+  - keyword: values
+    types: Any Type Array
+    description: The values to find.
+  - keyword: array
+    types: Any Type Array
+    description: The array in which the values are found.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+where(): Use this function to return indices of an array that evaluate to true, instead of items that match a user-defined value.
+index(): Use this function to return the values of an array at the indices you gathered with the wherecontains() function.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer Array
+Usage considerations
+When to use wherecontains()
+This function is useful for finding which items in a CDT array have the same value for a field.
+You can then use that array of indices as the index argument for the index() function in order to pull the values for another field in that CDT array. This will give you all the values in the second field that have a matching value in the first field. An example is displayed below.
+Argument types and formatting
+The arguments passed to both the values and array parameters must be of the same type. For example, you can not search through a Decimal Array with a values argument of type Integer.
+Text values are case-sensitive.
+Understanding results
+When there is no match, the function returns an empty array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+wherecontains(20, {10, 20, 30}) returns 2
+wherecontains(50, {10, 20, 30}) returns an empty array
+wherecontains({2, 1}, {1, 2, 2, 3}) returns 1, 2, 3
+wherecontains({20, "b"}, {10, 20, "b"}) returns 2, 3
+wherecontains(topaginginfo(1, 1), {topaginginfo(1, 1), topaginginfo(1, 2)}) returns 1
+wherecontains(null, {"a", "", "b"}) returns 2
+wherecontains(tointeger({}), {1, 2, 3}) returns an empty array
+wherecontains(1, {1.2}) returns an error
+Use with the index() function
+index(pv!employees.firstName, wherecontains("Finance", pv!employees.department)) returns the first names of all employees with their department field set to Finance or an empty array if none have it set to Finance.

@@ -1,0 +1,52 @@
+
+layout: function
+title: a!map() Function
+category: function_page
+excerpt: Creates a map of values (Any Type) with each value stored at the corresponding string key. Values stored in maps are not wrapped in variants.
+fnccat: System
+fncexample: 'a!map(id: 1, name: "Jane Doe")'
+fncname: a!map
+fncresult: 'a!map(id: 1, name: "Jane Doe")'
+parameters:
+  - keyword: key1
+    types: Any Type
+    description: |
+      A key value pair to store in the map. The value is not wrapped in a variant.
+  - keyword: keyN
+    types: Any Type
+    description: |
+      Any additional key value pairs, as needed.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Appian Data Types
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Map
+Usage consideration
+Function requirements
+
+Keywords must be unique.
+Keywords are not case sensitive.
+
+Maps vs. dictionaries
+While similar to a dictionary, which uses curly braces {}, the values stored in a map are not wrapped in variants. This makes it much easier to get values back out of maps by indexing, without having to worry about type casting. There are no advantages to using dictionaries; prefer using maps over dictionaries where possible. 
+Casting a map
+
+A map can be cast to a dictionary, CDT, record, or text.
+A dictionary, CDT, or record can be cast to a map.
+
+Examples
+Single map
+sail
+a!map(id: 1, name: "Jane Doe")
+List of maps
+sail
+{
+   a!map(id: 1, name: "Jane Doe"),
+   a!map(id: 2, name: "John Doe")
+}

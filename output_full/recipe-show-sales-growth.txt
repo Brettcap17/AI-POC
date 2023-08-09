@@ -1,0 +1,472 @@
+
+layout: "pattern"
+title: "Year-Over-Year Sales Growth"
+topic: record_reports
+topic-group: A
+reftype: "sailrecipe"
+weight: 100
+excerpt: "This pattern illustrates how to calculate year-over-year sales growth and display it in a KPI."
+sr-tags:
+  - Records
+  - Reports
+  - Formatting
+
+Sales executives at the Appian Retail company want to know how their sales this year compared to last year so they can see, overall, how business is doing. Specifically, they need to know if business has grown over the last before they decide to expand existing product lines. If business has not grown, this may indicate that they need to shift their existing product strategy before expanding to new ones.
+To show how sales compare to last year's sales, you'll use the pattern on this page to calculate the company's year-over-year sales growth and display that value as a key performance indicator (KPI). 
+The report will look like this:
+{% include zoompic.html url="images/sales-growth-kpi.png" border="-nb" %}
+Setup
+INCLUDE PAGE: Styled Icon Table
+
+Order record type:  Contains order information like the order number, date, status, and whether it was purchased online or in stores. For example, order number SO43659 was purchased in stores on 5/31/2019 and the order is closed.
+Order Detail record type: Contains specific order details like the number of order items, order totals, promo codes applied, and products. For example, the order above contained one product that cost $2,024.99.
+
+Create this pattern
+To create this pattern:
+1. Calculate sales growth.
+2. Show sales growth in a KPI.
+3. Show total sales last year and total sales this year as KPIs.
+Step 1: Calculate year-over-year sales growth {#step-1}
+Sales growth is a common business metric that measures how quickly a company is growing its sales over a period of time. It's measured as a percentage using the following formula:
+[(Sales for the current period - Sales for the previous period) / Sales for the previous period] x 100
+To create this formula, you first need to calculate the sum of sales for this year and last year. You'll use the a!queryRecordType() function to calculate these values and store those values in two different local variables. 
+Once you have those variables, you can plug them into the sales growth formula and store the results in another local variable for easy reuse throughout the interface.
+To calculate sales growth:
+1. In the Appian Retail application, go to the Build view.
+2. Click NEW > Interface.
+3. Click EXPRESSION MODE in the title bar.
+4. Copy and paste the following expression:
+> appian-style-note
+> These record type references are specific to the Appian Retail application. If you're following along in the Appian Retail application, you can copy and paste this expression without updating the record type references.
+
+```sail
+a!localVariables(
+  /* Calculate the sum of sales for orders placed this year */
+  local!salesThisYear: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    filters: a!queryFilter(
+      field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+      operator: "BETWEEN",
+      value: {
+        /* Beginning of the year */
+        eomonth(today(), - month(today())) + 1,
+        now()
+      }
+    ),
+    fields: a!aggregationFields(
+      /* Group by order date year */
+      groupings: a!grouping(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        alias: "orderDate",
+        interval: "YEAR"
+      ),
+      /* Get the sum of line total for all order items */
+      measures: a!measure(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+        function: "SUM",
+        alias: "sumOfOrders"
+      )
+    ),
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+  ).data,
+  /* Calculate the sum of sales for orders placed last year */
+  local!salesLastYear: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    filters: a!queryFilter(
+      field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+      operator: "BETWEEN",
+      value: {
+        /*Beginning of the year - Last year*/
+        datetime(
+          year(eomonth(today(), - month(today())) + 1) - 1,
+          1,
+          1
+        ),
+        /*Today - Last year */
+        datetime(
+          year(today()) - 1,
+          month(today()),
+          day(today())
+        )
+      }
+    ),
+    fields: a!aggregationFields(
+      /* Group by order date year */
+      groupings: a!grouping(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        alias: "orderDate",
+        interval: "YEAR"
+      ),
+      /* Get the sum of line total for all order items */
+      measures: a!measure(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+        function: "SUM",
+        alias: "sumOfOrders"
+      )
+    ),
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+  ).data,
+  /* Sales growth calculation */
+  local!salesGrowth: (
+    local!salesThisYear.sumOfOrders - local!salesLastYear.sumOfOrders
+  ) / local!salesLastYear.sumOfOrders * 100,
+  /* Column layout that we'll use for our KPIs */
+  {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(contents: {}),
+        a!columnLayout(contents: {}),
+        a!columnLayout(contents: {})
+      }
+    )
+  }
+)
+```
+
+Step 2: Show sales growth in a KPI {#step-2}
+Now that you have the sales growth percentage, you can display this value as a KPI in the interface. To create the KPI, you'll use a card layout to display the sales growth percentage and add two labels.
+To display sales growth in a KPI:
+1. In your interface, click DESIGN MODE in the title bar. A column layout with three columns appears.
+2. From the PALETTE, drag a CARD component into the right column. 
+3. From the PALETTE, drag a RICH TEXT component into the Card Layout.
+4. In the Rich Text component configuration, under Display Value, select Configure items.
+5. Click  ADD RICH TEXT.
+6. From the Add Rich Text dialog, select STYLED TEXT.
+7. In Display Value, click Styled Text.
+8. In Text, click Styled Text. 
+9.  Replace the existing expression with the following expression. This will round the sales growth value to the second decimal place, and display a percentage sign.
+```sail
+{round(local!salesGrowth, 2) & "%"}
+```
+
+
+Click OK.
+In the Styled Text configuration, for Size, select Large.
+For Style, select Strong.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+Now that the sales growth percentage is displayed, let's add some labels:
+1. From the PALETTE, drag another RICH TEXT component above the existing rich text component containing the sales growth. You'll use this second rich text component as a label.
+1. In the Rich Text component configuration, under Display Value, keep the default selection of Use editor.
+2. In the editor, enter Sales Growth.
+3. In the editor, highlight the text, then click Size  and select Medium Text. 
+4. For Alignment, select Center.
+5. From the PALETTE, drag another RICH TEXT component below the existing rich text component containing the sales growth. You'll use this third rich text component to display the time frame.
+6. In the Rich Text component configuration, under Display Value, select Configure items.
+7. Click  ADD RICH TEXT.
+8. From the Add Rich Text dialog, select STYLED TEXT.
+9. In Display Value, click Styled Text.
+10. In Text, click Styled Text. 
+11. Replace the existing expression with the following expression. This will display the orderDate from the queries containing the sum of sales. For example, 2020-2021.
+```sail
+local!salesLastYear.orderDate & "-" & local!salesThisYear.orderDate
+```
+
+
+Click OK.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+The KPI will look like something like this:
+{% include zoompic.html url="images/sales-growth-kpi-alone.png" border="-nb" %}
+
+appian-style-note
+Your sales growth percentage may differ from the image above since the queries that calculate the sum of sales for this year and last year use the today() function, which will change the calculation each day.
+
+Step 3: Show this year and last year's sales as KPIs {#step-3}
+In addition to the sales growth, let's add two more KPI: one that shows the sum of sales for last year, and another that shows the sum of sales for this year. Showing these two KPIs will help sales executives visualize the sales growth percentage.
+Create a KPI for sum of sales last year
+To show the sum of sales for last year as a KPI:
+1. From the PALETTE, drag a CARD component into the left column. 
+2. From the PALETTE, drag a RICH TEXT component into the Card Layout.
+3. In the Rich Text component configuration, under Display Value, select Configure items.
+4. Click  ADD RICH TEXT.
+5. From the Add Rich Text dialog, select STYLED TEXT.
+6. In Display Value, click Styled Text.
+7. In Text, click Styled Text. 
+8. Replace the existing expression with the following expression. This will display the sum of sales from last year in a dollar amount.
+```sail
+dollar(local!salesLastYear.sumOfOrders)
+```
+
+
+Click OK.
+In the Styled Text configuration, for Size, select Large.
+For Style, select Strong.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+Like the Sales Growth KPI, you'll also add labels to your sales KPI:
+1.  From the PALETTE, drag another RICH TEXT component above the existing rich text component containing last year's sales. You'll use this second rich text component as a label.
+2.  In the Rich Text component configuration, under Display Value, keep the default selection of Use editor.
+3.  In the editor, enter Total Sales.
+4.  In the editor, highlight the text, then click Size  and select Medium Text. 
+5.  For Alignment, select Center.
+6.  From the PALETTE, drag another RICH TEXT component below the existing rich text component containing last year's sales. You'll use this third rich text component to display the time frame.
+7.  In the Rich Text component configuration, under Display Value, select Configure items.
+8. Click  ADD RICH TEXT.
+9. From the Add Rich Text dialog, select STYLED TEXT.
+10. In Display Value, click Styled Text.
+11. In Text, click Styled Text. 
+12. Replace the existing expression with the following expression. This will display the orderDate from the expression rule containing the sum of sales from last year. For example, 2020.
+```sail
+local!salesLastYear.orderDate
+```
+
+
+Click OK.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+Create a KPI for sum of sales this year
+To show the sum of sales for this year as a KPI:
+1. From the PALETTE, drag a CARD component into the middle column. 
+2. From the PALETTE, drag a RICH TEXT component into the Card Layout.
+3. In the Rich Text component configuration, under Display Value, select Configure items.
+4. Click  ADD RICH TEXT.
+5. From the Add Rich Text dialog, select STYLED TEXT.
+6. In Display Value, click Styled Text.
+7. In Text, click Styled Text. 
+8. Replace the existing expression with the following expression. This will display the sum of sales from this year in a dollar amount.
+```sail
+dollar(local!salesThisYear.sumOfOrders)
+```
+
+
+Click OK.
+In the Styled Text configuration, for Size, select Large.
+For Style, select Strong.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+To add labels to your sales KPI:
+1.  From the PALETTE, drag another RICH TEXT component above the existing rich text component containing this year's sales. You'll use this second rich text component as a label.
+2.  In the Rich Text component configuration, under Display Value, keep the default selection of Use editor.
+3.  In the editor, enter Total Sales.
+4.  In the editor, highlight the text, then click Size  and select Medium Text. 
+5.  For Alignment, select Center.
+6.  From the PALETTE, drag another RICH TEXT component below the existing rich text component containing this year's sales. You'll use this third rich text component to display the time frame.
+7.  In the Rich Text component configuration, under Display Value, select Configure items.
+8. Click  ADD RICH TEXT.
+9. From the Add Rich Text dialog, select STYLED TEXT.
+10. In Display Value, click Styled Text.
+11. In Text, click Styled Text. 
+12. Replace the existing expression with the following expression. This will display the orderDate from the expression rule containing the sum of sales from this year. For example, 2021.
+```sail
+local!salesThisYear.orderDate
+```
+
+
+Click OK.
+Return to the Rich Text configuration.
+For Alignment, select Center.
+
+The final interface will look something like this:
+{% include zoompic.html url="images/sales-growth-kpi.png" border="-nb" %}
+Full expression
+The resulting expression will look like this:
+
+appian-style-note
+You can copy and paste this expression into an interface in the Appian Retail application to see the fully configured pattern. 
+These record type references are specific to the Appian Retail application, so you will only need to replace the record field references if you're following along in a different environment.
+
+sail
+a!localVariables(
+  /* Calculate the sum of sales for orders placed this year */
+  local!salesThisYear: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    filters: a!queryFilter(
+      field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+      operator: "BETWEEN",
+      value: {
+        /* Beginning of the year */
+        eomonth(today(), - month(today())) + 1,
+        now()
+      }
+    ),
+    fields: a!aggregationFields(
+      /* Group by order date year */
+      groupings: a!grouping(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        alias: "orderDate",
+        interval: "YEAR"
+      ),
+      /* Get the sum of line total for all order items */
+      measures: a!measure(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+        function: "SUM",
+        alias: "sumOfOrders"
+      )
+    ),
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+  ).data,
+  /* Calculate the sum of sales for orders placed last year */
+  local!salesLastYear: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    filters: a!queryFilter(
+      field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+      operator: "BETWEEN",
+      value: {
+        /*Beginning of the year - Last year*/
+        datetime(
+          year(eomonth(today(), - month(today())) + 1) - 1,
+          1,
+          1
+        ),
+        /*Today - Last year */
+        datetime(
+          year(today()) - 1,
+          month(today()),
+          day(today())
+        )
+      }
+    ),
+    fields: a!aggregationFields(
+      /* Group by order date year */
+      groupings: a!grouping(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        alias: "orderDate",
+        interval: "YEAR"
+      ),
+      /* Get the sum of line total for all order items */
+      measures: a!measure(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+        function: "SUM",
+        alias: "sumOfOrders"
+      )
+    ),
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+  ).data,
+  /* Sales growth calculation */
+  local!salesGrowth: (
+    local!salesThisYear.sumOfOrders - local!salesLastYear.sumOfOrders
+  ) / local!salesLastYear.sumOfOrders * 100,
+  /* Column layout that we'll use for our KPIs */
+  {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!cardLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(text: { "Total Sales" }, size: "MEDIUM")
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: {
+                        dollar(local!salesLastYear.sumOfOrders)
+                      },
+                      size: "LARGE",
+                      style: { "STRONG" }
+                    )
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(text: { local!salesLastYear.orderDate })
+                  },
+                  align: "CENTER"
+                )
+              },
+              height: "AUTO",
+              style: "NONE",
+              marginBelow: "STANDARD"
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!cardLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(text: { "Total Sales" }, size: "MEDIUM")
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: {
+                        a!richTextItem(
+                          text: {
+                            dollar(local!salesThisYear.sumOfOrders)
+                          }
+                        )
+                      },
+                      size: "LARGE",
+                      style: { "STRONG" }
+                    )
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(text: { local!salesThisYear.orderDate })
+                  },
+                  align: "CENTER"
+                )
+              },
+              height: "AUTO",
+              style: "NONE",
+              marginBelow: "STANDARD"
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!cardLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(text: { "Sales Growth" }, size: "MEDIUM")
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: { round(local!salesGrowth, 2) & "%" },
+                      size: "LARGE",
+                      style: { "STRONG" }
+                    )
+                  },
+                  align: "CENTER"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: {
+                        local!salesLastYear.orderDate & "-" & local!salesThisYear.orderDate
+                      }
+                    )
+                  },
+                  align: "CENTER"
+                )
+              },
+              height: "AUTO",
+              style: "NONE",
+              marginBelow: "STANDARD"
+            )
+          }
+        )
+      }
+    )
+  }
+)

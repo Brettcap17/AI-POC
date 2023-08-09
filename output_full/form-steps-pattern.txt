@@ -1,0 +1,389 @@
+
+layout: pattern
+title: Form Steps
+excerpt: Use the form steps patten to break down complicated forms into a series of quickly completed steps that are well organized and easy to navigate. This pattern uses a combination of cards and rich text to create steps that can represent fields from one or more interfaces.
+reftype: pattern
+sr-tags:
+  - Stamps
+
+
+Design structure
+This page will break down this expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are card layouts, side by side layouts, and rich text. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+
+Pattern expression
+When you drag and drop the form steps pattern onto your interface, 179 lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!formSteps: {
+      "Confirm flight details",
+      "Select flight preferences",
+      "Enter passenger information",
+      "Choose payment plan"
+    },
+    local!currentFormStep: 3,
+    a!forEach(
+      items: local!formSteps,
+      expression: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: a!stampField(
+                icon: if(
+                  fv!index < local!currentFormStep,
+                  "check",
+                  null
+                ),
+                text: if(
+                  fv!index >= local!currentFormStep,
+                  fv!index,
+                  null
+                ),
+                backgroundColor: if(
+                  fv!index < local!currentFormStep,
+                  "POSITIVE",
+                  if(
+                    fv!index > local!currentFormStep,
+                    "#949494",
+                    "ACCENT"
+                  )
+                ),
+                contentColor: if(
+                  fv!index > local!currentFormStep,
+                  "#ffffff",
+                  null
+                ),
+                size: "TINY"
+              ),
+              width: "EXTRA_NARROW"
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  value: a!richTextItem(
+                    text: fv!item,
+                    link: a!dynamicLink(
+                      value: fv!index,
+                      saveInto: local!currentFormStep,
+                      showWhen: fv!index < local!currentFormStep
+                    ),
+                    linkStyle: "STANDALONE",
+                    color: if(
+                      fv!index > local!currentFormStep,
+                      "SECONDARY",
+                      "ACCENT"
+                    ),
+                    size: "MEDIUM",
+                    style: if(
+                      fv!index = local!currentFormStep,
+                      "STRONG",
+                      "PLAIN"
+                    )
+                  ),
+                  align: "LEFT"
+                )
+              }
+            )
+          },
+          alignVertical: "MIDDLE",
+          marginBelow: if(
+            fv!index = local!currentFormStep,
+            "NONE",
+            "STANDARD"
+          ),
+          spacing: "NONE",
+          stackWhen: "NEVER"
+        ),
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(width: "EXTRA_NARROW"),
+            a!columnLayout(
+              contents: a!sectionLayout(
+                contents: {
+                  a!richTextDisplayField(),
+                  choose(
+                    local!currentFormStep,
+                    {
+                      /* Replace this rich text with the component or rule that should populate this step */
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the first step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    },
+                    {
+                      /* Replace this rich text with the component or rule that should populate this step */
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the second step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    },
+                    a!localVariables(
+                      local!passengerName,
+                      local!passengerPhoneNumber,
+                      local!passengerEmail,
+                      {
+                        /* Replace these inputs with the component or rule that should populate this step */
+                        a!textField(
+                          label: "Name",
+                          value: local!passengerName,
+                          saveInto: local!passengerName,
+                          inputPurpose: "NAME"
+                        ),
+                        a!textField(
+                          label: "Email",
+                          value: local!passengerEmail,
+                          saveInto: local!passengerEmail,
+                          inputPurpose: "EMAIL"
+                        ),
+                        a!textField(
+                          label: "Phone Number",
+                          value: local!passengerPhoneNumber,
+                          saveInto: local!passengerPhoneNumber,
+                          inputPurpose: "PHONE_NUMBER"
+                        )
+                      }
+                    ),
+                    {
+                      /* Replace this rich text with the component or rule that should populate this step */
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the fourth step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    }
+                  ),
+                  a!buttonArrayLayout(
+                    buttons: a!buttonWidget(
+                      label: "Continue",
+                      value: local!currentFormStep + 1,
+                      saveInto: local!currentFormStep,
+                      style: "PRIMARY"
+                    ),
+                    align: "START",
+                    marginBelow: "NONE"
+                  )
+                }
+              ),
+              width: "MEDIUM"
+            )
+          },
+          alignVertical: "TOP",
+          showWhen: local!currentFormStep = fv!index,
+          spacing: "NONE"
+        )
+      }
+    )
+  )
+}
+[Line 1-9] Define local variables
+The local variables at the top of the expression are used to define the step titles and determine which step the user is currently on. 
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!formSteps: {
+      "Confirm flight details",
+      "Select flight preferences",
+      "Enter passenger information",
+      "Choose payment plan"
+    },
+    local!currentFormStep: 2,
+{% endhighlight %}
+[Line 10-81] Display current step
+This section begins the a!forEach() function that makes up the majority of the expression. Within the a!forEach() function there are columns layouts, stamps, and rich text fields working with if() statements to define the behavior of the completed, current, and future steps. 
+By default, this pattern shows you on step two. This is so that we can see the behavior of all three step states; completed, current, and future. The if() statements change the color and icon of the stamp and the boldness of the step title depending on the state of that step. The a!forEach() function loops through these if() statements for each step in the form. 
+{% highlight sail linenos start_line=10 %}
+         a!forEach(
+      items: local!formSteps,
+      expression: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: a!stampField(
+                icon: if(
+                  fv!index < local!currentFormStep,
+                  "check",
+                  null
+                ),
+                text: if(
+                  fv!index >= local!currentFormStep,
+                  fv!index,
+                  null
+                ),
+                backgroundColor: if(
+                  fv!index < local!currentFormStep,
+                  "POSITIVE",
+                  if(
+                    fv!index > local!currentFormStep,
+                    "#949494",
+                    "ACCENT"
+                  )
+                ),
+                contentColor: if(
+                  fv!index > local!currentFormStep,
+                  "#ffffff",
+                  null
+                ),
+                size: "TINY"
+              ),
+              width: "EXTRA_NARROW"
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  value: a!richTextItem(
+                    text: fv!item,
+                    link: a!dynamicLink(
+                      value: fv!index,
+                      saveInto: local!currentFormStep,
+                      showWhen: fv!index < local!currentFormStep
+                    ),
+                    linkStyle: "STANDALONE",
+                    color: if(
+                      fv!index > local!currentFormStep,
+                      "SECONDARY",
+                      "ACCENT"
+                    ),
+                    size: "MEDIUM",
+                    style: if(
+                      fv!index = local!currentFormStep,
+                      "STRONG",
+                      "PLAIN"
+                    )
+                  ),
+                  align: "LEFT"
+                )
+              }
+            )
+          },
+          alignVertical: "MIDDLE",
+          marginBelow: if(
+            fv!index = local!currentFormStep,
+            "NONE",
+            "STANDARD"
+          ),
+          spacing: "NONE",
+          stackWhen: "NEVER"
+        ),
+{% endhighlight %}
+[Line 82-179] Configure the content for each step
+This section defines the display for the current step. Here, the displays for what each step will show when it is selected as the current step is defined between {}; (step one, lines 91-103), (step two, lines 104-116), (step three, lines 117-142), and (step four, lines 143-155). Click the CONTINUE button to move through the steps to see what each displays when it's selected as the current step. 
+To modify this pattern to work with your own interface, replace the content in the brackets for each step with the interface rule or components that you want to display.
+In this section you can also see that this pattern uses the input purpose parameter ( lines 127, 133, and 139) to suggest data that your browser has previously saved as values for the name, email, and phone number text fields. This feature streamlines the user experience on forms with common used fields and helps them to move through steps quickly. 
+{% highlight sail linenos start_line=82 %}
+           a!columnsLayout(
+          columns: {
+            a!columnLayout(width: "EXTRA_NARROW"),
+            a!columnLayout(
+              contents: a!sectionLayout(
+                contents: {
+                  a!richTextDisplayField(),
+                  choose(
+                    local!currentFormStep,
+                    {
+                      / Replace this rich text with the component or rule that should populate this step /
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the first step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    },
+                    {
+                      / Replace this rich text with the component or rule that should populate this step /
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the second step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    },
+                    a!localVariables(
+                      local!passengerName,
+                      local!passengerPhoneNumber,
+                      local!passengerEmail,
+                      {
+                        / Replace these inputs with the component or rule that should populate this step /
+                        a!textField(
+                          label: "Name",
+                          value: local!passengerName,
+                          saveInto: local!passengerName,
+                          inputPurpose: "NAME"
+                        ),
+                        a!textField(
+                          label: "Email",
+                          value: local!passengerEmail,
+                          saveInto: local!passengerEmail,
+                          inputPurpose: "EMAIL"
+                        ),
+                        a!textField(
+                          label: "Phone Number",
+                          value: local!passengerPhoneNumber,
+                          saveInto: local!passengerPhoneNumber,
+                          inputPurpose: "PHONE_NUMBER"
+                        )
+                      }
+                    ),
+                    {
+                      / Replace this rich text with the component or rule that should populate this step /
+                      a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "The contents of the fourth step belong here",
+                            style: "EMPHASIS"
+                          )
+                        },
+                        align: "LEFT"
+                      )
+                    }
+                  ),
+                  a!buttonArrayLayout(
+                    buttons: a!buttonWidget(
+                      label: "Continue",
+                      value: local!currentFormStep + 1,
+                      saveInto: local!currentFormStep,
+                      style: "PRIMARY"
+                    ),
+                    align: "START",
+                    marginBelow: "NONE"
+                  )
+                }
+              ),
+              width: "MEDIUM"
+            )
+          },
+          alignVertical: "TOP",
+          showWhen: local!currentFormStep = fv!index,
+          spacing: "NONE"
+        )
+      }
+    )
+  )
+}
+{% endhighlight %}

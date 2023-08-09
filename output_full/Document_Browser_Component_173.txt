@@ -1,0 +1,110 @@
+
+layout: function
+title: a!documentBrowserFieldColumns_17r3
+space: sail_component
+reftype: sailcomponent
+excerpt: 'Displays the contents of a folder and allows users to navigate through a series of folders to find and download documents.'
+category: function_page
+compatibility: -crf, -om, -portal
+fncname: a!documentBrowserFieldColumns_17r3
+fncsubcat: Browsers
+fncexample: Click on the function name for examples.
+fncsyntax: 'a!documentBrowserFieldColumns_17r3( [label], [labelPosition], [instructions], [helpTooltip], [folder], [height], [knowledgeCenter] )'
+fnccat: Interface_Component
+evolved_fncname: a!documentBrowserFieldColumns
+evolved_reason: 'Now supports selection in addition to browsing.'
+
+Document Browser
+Function: a!documentBrowserFieldColumns_17r3()
+Displays the contents of a folder and allows users to navigate through a series of folders to find and download documents.
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Label 
+ label 
+ Text 
+ Optional text to display as the field label. 
+
+
+ Label Position 
+ labelPosition 
+ Text 
+ Optional text to determine where the label appears. Valid values include
+      
+"ABOVE" (default) Displays the label above the component.
+"ADJACENT" Displays the label to the left of the component.
+"COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+"JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+
+
+
+
+
+ Instructions 
+ instructions 
+ Text 
+ Use this parameter to supply supplemental text about this field. 
+
+
+ Help Tooltip 
+ helpTooltip 
+ Text 
+ Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED". 
+
+
+ Folder 
+ folder 
+ Folder 
+ The contents of the selected folder are displayed in the document browser. 
+
+
+ Height 
+ height 
+ Text 
+ Determines the height of the component. Valid values are SHORT, MEDIUM (default), and TALL. 
+
+
+ Knowledge Center 
+ knowledgeCenter 
+ Knowledge Center 
+ The contents of the selected knowledge center are displayed in the document browser. 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true. 
+
+
+Notes
+
+You must specify either a folder or a knowledge center, but not both.
+The current user must have permission to view the selected folder or knowledge center in the parameter.
+Within a folder or knowledge center, the user can only see contents for which they have permission to view.
+Each column displays the first 1000 items in alphabetical order. Contents may consist of any combination of folders or documents, and folders are always listed first.
+Avoid using this component for offline mobile forms because tapping on a folder does not display its contents and tapping on a file does not download it when offline.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+sail 
+=a!localVariables(
+  local!folder,
+  {
+    a!pickerFieldFolders(
+      label: "Select a Folder",
+      maxSelections: 1,
+      value: local!folder,
+      saveInto: local!folder
+    ),
+    a!documentBrowserFieldColumns_17r3(
+      label: "Document Browser",
+      folder: local!folder
+    )
+  }
+)

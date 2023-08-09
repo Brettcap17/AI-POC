@@ -1,0 +1,73 @@
+
+layout: function
+title: a!recordFilterList() Function
+category: function_page
+excerpt: 'Creates a user filter category for the record list.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!recordFilterList
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: name
+    types: Text
+    description: |
+      The name of the user filter that displays to end users.
+  - keyword: options
+    types: FacetOption Array
+    description: |
+      The options that users can select from for a given user filter.
+  - keyword: defaultOption
+    types: Text
+    description: |
+      Determines which, if any, filter option is applied when a record list first loads.
+  - keyword: isVisible
+    types: Boolean
+    description: |
+      Determines whether the filter is visible to the user at runtime. Default is true.
+  - keyword: allowMultipleSelections
+    types: Boolean
+    description: |
+      Determines whether the filter allows the user to select multiple options or a single option. Default is true.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Facet
+Usage considerations
+This function creates a Facet type object, and is used within a Record Type Object
+Options for the user filter are created with the a!recordFilterListOption() function. The most popular use of a!recordFilterList() is to generate filter options instead of manually writing them. 
+Since users can save filter values, try to use expressions that rarely change the options available. If users save an option that is not available the next time they load the record, a warning message will display and the user may need to update their saved filter.
+Example
+sail 
+=a!recordFilterList(
+  name: "Status",
+  options: {
+    a!recordFilterListOption(
+      id: 1,
+      name: "Active",
+      filter: a!queryFilter(
+        field: "status",
+        operator: "=",
+        value: "active"
+      )
+    ),
+    a!recordFilterListOption(
+      id: 2,
+      name: "Inactive",
+      filter: a!queryFilter(
+        field: "status",
+        operator: "=",
+        value: "inactive"
+      )
+    )
+  },
+  defaultOption: "Active",
+  isVisible: true,
+  allowMultipleSelections: true
+)
+See Expression-Based User Filters for common uses.

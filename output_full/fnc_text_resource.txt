@@ -1,0 +1,32 @@
+
+layout: function
+title: resource() Function
+space: function_page
+excerpt: "Retrieves a string of translated text appropriate for the current user, according to their language preference, by matching a given key with text."
+category: function_page
+fncname: resource
+compatibility: ~portal, ~om, +pe, +pr
+fncexample: "resource(\"city\")"
+fncresult: "ciudad"
+fnccat: Text
+reftype: function
+parameters:
+  - keyword: key
+    types: Text
+    description: |
+      The item paired with each desired translation in your resource bundle.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+If no matching translation is available for the user's locale, the key itself is returned.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+resource("city") returns ciudad for es_MX and ville for fr_CA

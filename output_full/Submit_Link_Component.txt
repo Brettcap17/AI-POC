@@ -1,0 +1,107 @@
+
+layout: function
+title: Submit Link
+category: function_page
+compatibility: -crf, -portal
+excerpt: Defines a link to trigger form submission.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!submitLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text associated with this link.
+  - keyword: confirmMessage
+    name: Confirmation Message
+    types: Text
+    description: Text to display in an optional confirmation dialog where a null argument disables the confirmation dialog and a text argument enables it with the text entered as the confirmation message.
+  - keyword: confirmButtonStyle
+    name: Confirmation Button Style
+    types: Text
+    description: |
+      Determines the style of the primary button in the confirmation dialog. Valid values: "PRIMARY" (default),"DESTRUCTIVE".
+  - keyword: value
+    name: Value
+    types: Any Type
+    description: Value to be saved when the link is clicked.
+  - keyword: saveInto
+    name: Save Value To
+    types: List of Save
+    description: |
+      One or more variables that are updated with the link value when the user clicks it. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: skipValidation
+    name: Skip Validation
+    types: Boolean
+    description: |
+      When true, submit without performing validation. Default: false.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is clicked.
+  - keyword: confirmHeader
+    name: Confirmation Header
+    types: Text
+    description: Text to display at the top of the confirmation dialog.
+  - keyword: confirmButtonLabel
+    name: Confirm Button Label
+    types: Text
+    description: |
+      Text to display on the confirm button. Default: "Yes".
+  - keyword: cancelButtonLabel
+    name: Cancel Button Label
+    types: Text
+    description: |
+      Text to display on the cancel button. Default: "No".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Submit Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Submit Button
+Link
+Images
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Primary and secondary buttons
+
+In the confirmation dialog there are two buttons. The confirm button is in the primary position and the cancel button is in the secondary position.
+The cancel button is always "SECONDARY" style.
+
+Saving values
+
+If confirmationHeader and confirmationMessage are null, the interface refreshes and the saveInto state change occurs once the user clicks the link. If either is not null, the confirmation dialog displays. The interface only refreshes and the saveInto state change only occurs if the user clicks the confirm button.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Confirmation dialog
+sail 
+a!linkField(
+  links: {
+    a!submitLink(
+      label: "Delete Request",
+      confirmHeader: "Warning!",
+      confirmMessage: "This request will be permanently deleted. Do you want to continue?",
+      confirmButtonLabel: "Delete Request",
+      confirmButtonStyle: "DESTRUCTIVE",
+      cancelButtonLabel: "Cancel"
+    )
+  }
+)
+Displays the following when clicked:
+{:.screenshot}

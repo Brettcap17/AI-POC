@@ -1,0 +1,39 @@
+
+layout: function
+title: gmt() Function
+space: function_page
+excerpt: "Subtracts a time zone offset from a given Date and Time."
+category: function_page
+fncname: gmt
+fncexample: "gmt(datetime(2011, 12, 13, 12, 05), \"America/New_York\")"
+fncresult: "12/13/2011 5:05 PM GMT"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: datetime
+    types: "Date and Time"
+    description: |
+      The base Date and Time to be modified.
+  - keyword: timezone
+    types: "Number(Integer)"
+    description: |
+      The time zone offset to subtract from the datetime parameter.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date and Time
+Usage considerations
+This function does not store a time zone offset with the returned value.
+The datetime parameter accepts Date variables, Date and Time variables, and process properties such as pp!starttime.
+The timezone parameter accepts inputs as time zone IDs, time zone acronyms, hours and minutes offset from a Datetime stored in GMT such as "GMT-6:00", or in minutes offset -30. If this parameter is not passed, the default behavior is to evaluate the time zone for the current time zone context.
+Passing a time zone ID (such as America/New_York) causes the result to be adjusted for daylight saving time. Passing a time zone acronym (such as "GMT") does not cause the result to be adjusted for daylight savings time. Time zones must be enclosed in quotation marks <">. Colons <:> and plus characters <+> are not accepted, unless the parameter is enclosed in quotation marks.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+gmt(datetime(2011, 2, 07, 16, 05),"America/New_York") returns 2/7/2011 9:05 PM GMT+00:00

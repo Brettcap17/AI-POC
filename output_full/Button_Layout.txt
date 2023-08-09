@@ -1,0 +1,48 @@
+
+layout: function
+title: Button Layout
+category: function_page
+compatibility: -crf
+excerpt: Displays a list of buttons grouped by prominence. Use this layout in cases where prominence needs to be explicitly specified.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!buttonLayout
+fncsubcat: Action
+parameters:
+  - keyword: primaryButtons
+    name: Primary Buttons
+    types: List of ButtonWidget
+    description: Array of prominent buttons created with a!buttonWidget().
+  - keyword: secondaryButtons
+    name: Secondary Buttons
+    types: List of ButtonWidget
+    description: Array of less prominent buttons created with a!buttonWidget().
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Button Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Button design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using buttons on different devices
+
+For web and mobile tablets, buttons display in a horizontal list. The most prominent buttons appear at the far right and the least prominent buttons appear at the far left.
+For mobile phones, buttons display in a vertical line. The most prominent buttons appear at the top and the least prominent buttons appear at the bottom.
+
+Using the primaryButtons and secondaryButtons parameters
+
+For the primaryButtons parameter, the first item in the array is the most prominent. 
+For the secondaryButtons parameter, the first item in the array is the least prominent.

@@ -1,0 +1,27 @@
+
+layout: function
+title: a!fromJson_19r2() Function
+space: function_page
+excerpt: "Converts a JSON string into an Appian value."
+category: function_page
+fncname: a!fromJson_19r2
+fncexample: "a!fromJson(\"{\"\"name\"\":\"\"John Smith\"\", \"\"age\"\":49, \"\"likes\"\":[\"\"green\"\",\"\"dogs\"\",\"\"long walks\"\"]}\")"
+fncresult: "[name:John Smith,age:49,likes:green; dogs; long walks]"
+fnccat: System
+evolved_fncname: a!fromJson
+evolved_reason: "Now automatically converts date and datetime fields to the appropriate Date and Date and Time data types instead of a string. Also converts 64-bit integers to string instead of returning null."
+compatibility: -crf, ~portal, -om
+reftype: function
+parameters:
+  - keyword: jsonText
+    types: Text
+    description: |
+       The text to convert from a JSON string to an Appian value.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+One of: Dictionary, List of Integer, List of Decimal, List of Text, List of Dictionary, List of Boolean, List of Variant

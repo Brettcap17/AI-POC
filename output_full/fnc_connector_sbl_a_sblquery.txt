@@ -1,0 +1,124 @@
+
+layout: "basic"
+title: "a!sblQuery() Function"
+category: "function_page"
+excerpt: "Retrieves records from Siebel."
+fnccat: "Connector"
+fncexample: "Click on the function name for examples."
+fncname: "a!sblQuery"
+fncsubcat: "Siebel"
+space: "function_page"
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: hostname
+    types: Text
+    description: |
+      The application server host of the SAP server (ASHOST). The value can be an IP address, a fully-qualified domain name, or SAP's router string format. For example, "/H/sap_router/W/password/H/app_host/S/service_port".
+  - keyword: port 
+    types: Number (Integer)
+    description: |
+      The port the Siebel server is listening on. For example, 2321.
+  - keyword: enterpriseApp 
+    types: Text
+    description: |    
+      The enterprise application of the target system. For example, "SBA_82".
+  - keyword: appManager 
+    types: Text
+    description: |
+      The active application manager of the target system. For example, "SSEObjMgr_enu".
+  - keyword: language 
+    types: Text
+    description: |
+      The target system language. For example, "enu".
+  - keyword: sort 
+    types: Any Type
+    description: |
+      The sort order to apply to the query, given as a dictionary with field names based on the fields of the Business Object and values of "ASCENDING" or "DESCENDING".
+  - keyword: parameters 
+    types: Any Type
+    description: |
+      The records to query, given as a dictionary with the field structure of the Siebel Business Component and Business Object.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+The function returns the standard connector result dictionary described in the main Connectors page. 
+If successful, the result field contains an array of dictionaries with the Siebel records that match the given query parameters, sorted according to the given sort parameter.
+Usage considerations
+If called multiple times in the same expression with the same parameters, only one query is made to Siebel when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Display orders from Siebel
+sail 
+a!localVariables(
+  local!pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 10),
+  local!queryResult: a!sblQuery(
+    scsExternalSystemKey: cons!SBL_SCS_KEY,
+    usePerUserCredentials: true,
+    hostname: cons!SBL_HOSTNAME,
+    port: cons!SBL_PORT,
+    enterpriseApp: cons!SBL_APP,
+    appManager: cons!SBL_APP_MANAGER,
+    language: cons!SBL_LANGUAGE,
+    parameters: {
+      'Order Entry (Sales)': {
+        'Order Entry - Orders': {
+          "Id",
+          "Order Number",
+          "Status",
+          "Order Type"
+        }
+      }
+    },
+    sort: {}
+  ),
+  local!datasubset: todatasubset(
+    if(local!queryResult.success, local!queryResult.result.Result, {}),
+    local!pagingInfo
+  ),
+  if(local!queryResult.success,
+    a!gridField(
+      data: local!datasubset,
+      columns: {
+        a!gridColumn(
+          label: "Id",
+          value: a!dynamicLink(
+            value: index(fv!row, "Id", ""),
+            saveInto: ri!selectedItem)
+        ),
+        a!gridColumn(
+          label: "Order Number",
+          value:  index(fv!row, "Order Number", ""),
+        ),
+        a!gridColumn(
+          label: "Status",
+          value:  index(fv!row, "Status", ""),
+        ),
+        a!gridColumn(
+          label: "Order Type",
+          value:  index(fv!row, "Order Type", ""),
+        )
+      },
+      saveInto: local!pagingInfo,
+      rowHeader: 2
+    ), 
+    a!textField(
+      label:"Error",
+      readonly: true,
+      value: local!queryResult.error.title
+    )
+  )
+)
+)

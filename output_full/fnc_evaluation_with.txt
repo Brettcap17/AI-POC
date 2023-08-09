@@ -1,0 +1,71 @@
+
+layout: "basic"
+title: "with() Function"
+category: "function_page"
+excerpt: "Lets you define local variables within a function and evaluate the expression with the new variables."
+fnccat: "Evaluation"
+fncexample: "with(local!a:10, local!b:20, local!a+local!b)"
+fncname: "with"
+fncresult: "30"
+space: "function_page"
+parameters:
+  - keyword: "localVar1"
+    types: "Any Type"
+    description: "The local variable to use when evaluating the given expression and defined using with(local!a,..., expression) or with(local!a:10, ..., expression)."
+  - keyword: "localVarN"
+    types: "Any Type"
+    description: "Any additional local variables, as needed."
+  - keyword: "expression"
+    types: "Any Type"
+    description: "The expression to evaluate using the local variables' values."
+reftype: function
+
+
+appian-style-tip
+Check out the new evaluation function, a!localVariables(). It does everything with() does but with additional refresh options that may drastically improve the performance of your design.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Grid Tutorial
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+In interfaces, this function differs from the load() function because it recalculates the local variable values after interactions. This recalculation always happens, even if the interaction's updates could not have impacted the variable's value. This means data queries and other slow operations in with() variables can have important performance impacts.
+Defining values and domains
+A local variable may be defined with or without a value, and the value may be simple or complex. When a value is not defined, it's assigned a null value.
+When you don't specify the local! domain, the system first matches your variables with rules or constants with the same name, then looks for local variables with the name. Appian recommends that you always use the local! domain when referring to local variables.
+Understanding types
+Local variables are not assigned a type. At runtime, the type of the variable will be based on the assigned value. For example, in with(local!myvar:2, ...), myvar is of type Integer.
+The type returned by the with() function will be that of the given expression.
+Evaluating local variables
+A local variable may reference a previously defined local variable. They are evaluated in the given order.
+The local variables are only available in the evaluation of the expression.
+The expression can include other variables available in its context, such as process variables and rule inputs. For example, with(local!myvar: 1, local!myvar + ri!myruleinput).
+If an expression requires multiple evaluations of a complex value, you can use the with() function to define the value as a local variable, so it's only evaluated once.
+Formatting
+When a local variable uses the dot notation or brackets, a runtime error message will display. If the field name must contain special characters, enclose the name in single quotes.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Using Local Variables
+with(local!a:10, local!b:20, local!a+local!b) returns 30 
+with(local!a:10, local!b:20, local!c:30, local!a+local!b+local!c) returns 60
+with(local!a, isnull(local!a)) returns true
+with('local!a-name':10, local!b:20, 'local!a-name'+local!b) returns 30
+Using Local Variables with a Complex Value
+with(local!a:getPersonForId(ri!id), local!a.firstName & " " & local!a.lastName) returns John Smith
+Evaluating an Expression in the Context of a Process or Rule
+When an expression is evaluated in the context of a process, the expression has access to all PV values for that process. Similarly, if the expression is used in a rule, the expression has access to all rule inputs.
+with(local!a:pp!initiator, getDisplayName(local!a) & pv!b) returns John Smith123 where (pv!b=123)
+with(local!a:10, ri!a) returns 100 where (ri!a=100)
+Overriding Variables with the Same Identifier
+If the local variable has the same domain and name (domain + name combination) as another variable in the evaluation context, the local variable is used. 
+with(local!a:100, with(local!a:20, local!z:10, local!a+local!z)) returns 30 
+with(local!a:100, local!b:1, with(local!a:20, local!z:10, local!a+local!b+local!z)) returns 31 
+with(ri!a:10, 2*ri!a) returns 20
+Defining a Local Variable by Referencing another Local Variable
+with(local!a:10, local!b:local!a*2, local!a+local!b) returns 30
+with(local!a:10, with(local!b:local!a, local!c:20, local!a+local!b+local!c)) returns 40
+with(local!a:local!b, local!b:10, local!a+local!b) returns error because "a" references "b" which is not available to "a"

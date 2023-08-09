@@ -1,0 +1,26 @@
+
+layout: "basic"
+title: "Developer Setup"
+topic-group: "Getting Started"
+weight: 100
+
+To build component plug-ins, you'll need an Appian installation to test them. This page walks you through the steps to get your environment up and running so you can develop your first component.
+
+appian-style-note
+We review all component plug-ins to ensure they meet our standards for customer use. Check the review guidelines and get a pre-approval to make sure you're on the right track before starting your developer setup.
+
+Configure your developer instance
+
+If you don't already have an Appian instance, use the installation guide to install one.
+A properly configured dynamic content URL is required to use component plug-ins. For local installations, follow these steps:
+Create a dummy dynamic domain based on your site domain. For example, if your SERVER_AND_PORT property is local.example.com:8080, set DYNAMIC_SERVER_AND_PORT to local.example-dynamic.com:8080.
+Add local.example-dynamic.com to /etc/hosts (or C:\Windows\System32\Drivers\etc\hosts) and map it to your local IP address.
+
+Register your developer instance
+All component plug-ins must be reviewed and approved before they can be deployed and used by Appian developers to build applications. In order to deploy and test components that are still under-development you must register your developer instance using these steps:
+
+Request a developer token from the AppMarket Submissions Site:
+Provide the SERVER_AND_PORT value from custom.properties for your developer instance.
+Include details on the type of component(s) you plan to build.
+Once your instance is approved we will provide a developer token. The token is valid only for the developer instance identified by the SERVER_AND_PORT you provide in the support case.
+Add the following property to your custom.properties file to enable component plug-in development: conf.plugins.INTEGRATION_SDK_DEVELOPER_TOKEN=<token value provided>

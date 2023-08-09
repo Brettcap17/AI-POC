@@ -1,0 +1,61 @@
+
+layout: "basic"
+title: "Interaction Model"
+topic-group: "B"
+weight: 1
+
+This page explains how different parts of your connected system plug-in determine what a developer sees when creating connected systems and integrations, and how those objects execute. This includes:
+
+The icon and description that appear in the list of available connected systems
+The fields that a developer fills out when configuring a connected system
+The list of operations available when creating an integration
+The fields that a developer fills out when configuring an integration 
+The execution behavior and output format of an integration
+
+You define these behaviors by extending classes found in the Core and Client SDK libraries. References on this page generally point to classes in the Client library.
+Selecting a connected system
+{:.screenshot}
+When your plug-in is installed, all connected-system-template definitions in the plug-in manifest will appear in the Create Connected System dialog. The names and descriptions are pulled from internationalization bundles and you provide the logo icons in your plug-in package.
+Configuring a connected system
+All connected systems have inputs for Name and Description, but you define the other fields by implementing the getConfiguration method in the SimpleConnectedSystemTemplate class (or one of it's subclasses). You decide what information is needed from the developer to connect to your target system. We've got a long list of examples showing how to configure different types of fields using the getConfiguration method.
+See also:
+* Configuration Examples
+* SimpleConnectedSystemTemplate.getConfiguration
+* SimpleTestableConnectedSystemTemplate.getConfiguration
+* SimpleOAuthConnectedSystemTemplate.getConfiguration
+* ConnectedSystemTemplate.getConfiguration (Core)
+Testing a connected system
+If you extend SimpleTestableConnectedSystemTemplate, you'll automatically get a Test Connection button at the bottom of your connected system configuration. When the developer clicks this button, it calls the testConnection method, which returns a TestConnectionResult, and uses the result to indicate whether the connection was successful or not.
+See also:
+* SimpleTestableConnectedSystemTemplate.testConnection
+* TestableConnectedSystemTemplate.testConnection (Core)
+Authorizing a connected system
+If you extend SimpleOAuthConnectedSystemTemplate you'll automatically get an Authorize button at the bottom of your connected system configuration. When the developer clicks this button it calls the getOAuthConfiguration method and launches the OAuth 2.0 authorization process.
+See also:
+* SimpleOAuthConnectedSystemTemplate.getOAuthConfiguration
+* OAuthConnectedSystemTemplate.getOAuthConfiguration (Core)
+
+appian-style-tip
+The getOAuthConfiguration method is also used to launch the OAuth 2.0 authorization process when developers click the Authorize link in the Integration dialog.  The getOAuthConfiguration method is also used when users click on a link generated using a!authorizationLink(). 
+
+Selecting an integration operation
+When a developer creates an integration from your connected system, your plug-in controls the list of operations that the developer can chose from. All integration-template definitions within the connected-system-template in the plug-in manifest will appear in the Operation dropdown list. The names and descriptions are pulled from internationalization bundles. If you only define one integration-template, the developer won't see the dropdown and the operation will be selected automatically.
+Configuring an integration
+For a given operation, you define what information is needed from the developer to configure a specific integration to the external system by implementing the getConfiguration method in the SimpleIntegrationTemplate class. The getConfiguration method works the same with integrations as with connected systems, but with integrations you have even more options to change the configuration fields depending on input from the developer. The same list of examples that applies to connected system configuration can be used for integrations too.
+See also:
+* Configuration Examples
+* SimpleIntegrationTemplate.getConfiguration
+* IntegrationTemplate.getConfiguration (Core)
+Testing an integration
+When developers test an integration, it calls the execute method in the SimpleIntegrationTemplate class, passing in the configuration values provided by the developer. The IntegrationResponse returned by execute is used to determine the result of the test (success or failure) and to show the result or error details.
+When an integration fails, developers rely on the information in the IntegrationResponse to correct any problems. This includes the error message and Time breakdown on the Result tab, and the diagnostics shown on the Request and Response tabs.
+See also:
+* Execute an Integration
+* SimpleIntegrationTemplate.execute
+* IntegrationTemplate.execute (Core)
+* IntegrationResponse (Core)
+Executing an Integration
+When an integration is run from an interface, process model, or web API, the execute method in the SimpleIntegrationTemplate class is called (just like when testing an integration). Diagnostic information isn't needed when executing the integration in these cases. You can use the isDiagnosticsEnabled method in the ExecutionContext class to determine when to include them (if you get false from the executionContext.isDiagnosticEnabled then you don’t need to populate the diagnostics).
+See also:
+* Execute an Integration
+* ExecutionContext.isDiagnosticsEnabled (Core)

@@ -1,0 +1,44 @@
+
+layout: function
+title: any() Function
+category: function_page
+excerpt: 'Calls a rule or function that returns either true or false for each item in list by asking the question, "Do any items in this list yield true for this rule/function?" with the intent to discover if any item(s) yield true.'
+fnccat: Looping
+fncexample: 'any(fn!isnull, {10, null, 30})'
+fncname: any
+fncresult: 'true'
+space: function_page
+reftype: function
+parameters:
+  - keyword: predicate
+    types: Function, Rule, or Data Type Constructor
+    description: Expression that returns a Boolean (true or false).
+  - keyword: list
+    types: Any Type Array
+    description: List of elements that the predicate iterates through.
+  - keyword: context
+    types: Any Type Array
+    description: Variable number of parameters passed directly into each predicate evaluation.    
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Referencing expressions and rules
+Use fn!functionName to reference an expression function and rule!ruleName to reference a rule.
+Understanding results
+Returns true as soon as the returned value of an evaluation yields true; otherwise, returns false.
+Empty and null lists yield false.
+Limitations and alternatives
+Serves as an alternative to or(apply(rule!iseven, {-1,0,1,2})).
+a!forEach() cannot be used within rules used in this function.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Given a function f(x), any(fn!f, {a, b, c}, v)) returns or({f(a, v), f(b, v), f(c, v)})
+any(rule!iseven,{-1,0,1,2}) returns true

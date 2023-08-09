@@ -1,0 +1,49 @@
+
+layout: function
+title: a!urlfortask() Function
+category: function_page
+compatibility: '-crf, ~portal, ~om'
+excerpt: This function returns the URL of a process task given the task ID.
+fnccat: Scripting
+fncexample: 'a!urlForTask(taskIds: 12345, returnTaskPathOnly: false)'
+fncname: a!urlForTask
+fncresult: 'https:///suite/tempo/tasks/task/'
+parameters:
+  - keyword: taskIds
+    types: List of Number (Integer)
+    description: |
+      Task IDs of process tasks to generate links.
+  - keyword: returnTaskPathOnly
+    types: Boolean
+    description: |
+      If true, only the last path segment to the task is included; if false, the full URL of the task is returned. Default: false
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Process Task Link: Use this component to within a Link Field to create a link to a process task.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Usage considerations
+
+The taskIds parameter is required. If no task exists with the provided ID number, a URL is still returned.
+If returnTaskPathOnly is true, only the task path after /task is returned.
+If returnTaskPathOnly is false, the URL will return the Tempo URL for the task. 
+To create a URL to a site, use returnTaskPathOnly=true and append the path only to the end of the site URL in the following format: <base_url>/suite/sites/<site_name>/task/<task_path>.
+If a user does not have viewer rights to the task in the returned URL, the user will see an error when trying to open the URL.
+
+Examples
+These examples are designed to illustrate how to use the a!urlForTask() function in the Expression Rule Interface.
+URL for a Single Task
+a!urlForTask(taskIds: 123456, returnTaskPathOnly: false)
+returns "https://tasks.appian.com/suite/tasks/task/WrxYT3TYySQZTUwm"
+URLs for Multiple Tasks
+a!urlForTask(taskIds: {123456, 654321}, returnTaskPathOnly: false)
+returns {"https://tasks.appian.com/suite/tasks/task/WrxYT3TYySQZTUwm", "https://tasks.appian.com/suite/tasks/task/BU8YV4nEFVwMuc3U"}
+Return the Task Path Only
+a!urlForTask(taskIds: {12345, 54321}, returnTaskPathOnly: true)
+returns "WrxYT3TYySQZTUwm"

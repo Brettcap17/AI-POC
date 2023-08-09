@@ -1,0 +1,526 @@
+
+layout: function
+title: Editable Grid Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays a tabular layout of SAIL components to provide quick inline editing of fields. For an example of how to configure an editable grid, see the Add, Edit, and Remove Data in an Inline Editable Grid SAIL Recipe.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridLayout
+fncsubcat: Grids
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the grid label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this grid.
+  - keyword: headerCells
+    name: Header Cells
+    types: List of Variant
+    description: Array of column headers created with a!gridLayoutHeaderCell().
+  - keyword: columnConfigs
+    name: Column Configurations
+    types: List of GridColumnConfiguration
+    description: Array of column configurations created with a!gridLayoutColumnConfig().
+  - keyword: rows
+    name: Rows
+    types: List of Variant
+    description: Array of grid rows created with a!gridRowLayout().
+  - keyword: validations
+    name: Validations
+    types: List of Variant
+    description: Validation errors to display below the grid.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.'
+  - keyword: selectable
+    name: Selectable
+    types: Boolean
+    description: |
+      Determines if the selection column is displayed. Default: false.
+  - keyword: selectionDisabled
+    name: Selection disabled
+    types: Boolean
+    description: |
+      Determines if selection is disabled on all rows. Default: false.
+  - keyword: selectionRequired
+    name: Selection required
+    types: Boolean
+    description: |
+      Determines if a selection is required to submit the form. Default: false.
+  - keyword: selectionValue
+    name: Selection Value
+    types: List of Variant
+    description: Identifiers of selected rows.
+  - keyword: selectionSaveInto
+    name: Save Selection To
+    types: List of Save
+    description: One or more variables that are updated with the selected identifiers when the user changes selections. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: addRowLink
+    name: Add Row Link
+    types: Any Type
+    description: Link for adding a row to the grid. Create link using a!dynamicLink().
+  - keyword: totalCount
+    name: Total Count
+    types: Number (Integer)
+    description: Number of rows of data displayed in the grid.
+  - keyword: emptyGridMessage
+    name: Empty Grid Message
+    types: Text
+    description: Text to display in the grid when no data is available. Default is "No items available".
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: shadeAlternateRows
+    name: Shade alternate rows
+    types: Boolean
+    description: |
+      Determines whether alternate rows are shaded. Default: true.
+  - keyword: spacing
+    name: Spacing
+    types: Text
+    description: |
+      Determines the spacing within grid cells. Valid values: "STANDARD" (web default), "DENSE" (mobile default).
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the height of the grid. Valid values: "SHORT", "MEDIUM", "TALL", "AUTO" (default). When set to SHORT, MEDIUM, or TALL, the header is frozen.
+  - keyword: borderStyle
+    name: Border Style
+    types: Text
+    description: |
+      Determines the style of the grid border. Valid values: "STANDARD" (default), "LIGHT".
+  - keyword: selectionStyle
+    name: Selection Style
+    types: Text
+    description: |
+      Determines the style when a row is selected. Valid values: "CHECKBOX" (default), "ROW_HIGHLIGHT".
+  - keyword: rowHeader
+    name: Row Header
+    types: Number (Integer)
+    description: |
+      Index of the column to be used as the row header. Screen readers will announce the value in each row header when navigating to other cells within that row. Used only for accessibility; produces no visible change.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+reftype: sailcomponent
+scdisplayname: Editable Grid
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Read-Only Grid, Grids design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Performance and data
+
+Performance is affected by the number of components in an interface. If your interface contains an editable grid with many cells, the interface may feel slow. See also: Interface Evaluation Lifecycle
+When using a datasubset obtained using a!queryEntity() as the source of data for the editable grid, make sure to set its fetchTotalCount parameter to true. Otherwise, the totalCount field on the resulting datasubset may be invalid (i.e. set to -1). This is relevant for the totalCount parameter on the editable grid. See also: a!queryEntity() Function.
+
+Component behavior in grid cells
+
+When an interface component is placed into a grid cell, the following component configurations are ignored:
+label
+instructions
+label position 
+Validation messages on the component within the grid cell are displayed when the component's value is not null.
+The components placed within a grid cell can be different across the rows in one column.
+
+Using images in editable grids
+
+When placing an Image Field component inside an editable grid, there are some additional restrictions that do not apply when an image component is outside of a grid.
+The image component behaves slightly differently when it is placed inside of a Grid Layout component than when it is outside of a Grid Layout.
+Inside an editable grid, the image size FIT is not allowed.
+Inside an editable grid, the default size for an image component is ICON. Other valid image sizes include SMALL, MEDIUM, and LARGE.
+Inside an editable grid, you can only have 0 or 1 images in an image component. Multiple images in the same grid cell are not supported.
+All image components in the same column must have the same size.
+The Grid Text Column and Grid Image Column components cannot be used in an editable grid.  
+
+Grid height and headers
+
+Grid heights behave as a fixed height on web but a maximum height on mobile.
+Setting the height of the grid to SHORT, MEDIUM, or TALL will freeze the grid's header and footer. See the Short Editable Grid with Weighted Columns example below.
+For accessibility purposes, every grid should have a row header configured. The first column containing text is usually the correct choice for row header. See the SAIL Design System for more information.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Editable grid with two rows
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 1, unitPrice: 10},
+    {item: "Item 2", qty: 2, unitPrice: 20}
+  },
+  a!gridLayout(
+    label: "Products",
+    instructions: "Update the item name, quantity, or unit price.",
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    rows: {
+      a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: local!items[1].item,
+            saveInto: local!items[1].item
+          ),
+          a!integerField(
+            value: local!items[1].qty,
+            saveInto: local!items[1].qty
+          ),
+          a!floatingPointField(
+            value: local!items[1].unitPrice,
+            saveInto: local!items[1].unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(local!items[1].qty) * todecimal(local!items[1].unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      ),
+      a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: local!items[2].item,
+            saveInto: local!items[2].item
+          ),
+          a!integerField(
+            value: local!items[2].qty,
+            saveInto: local!items[2].qty
+          ),
+          a!floatingPointField(
+            value: local!items[2].unitPrice,
+            saveInto: local!items[2].unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(local!items[2].qty) * todecimal(local!items[2].unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    },
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+{:.screenshot}
+{% endcomment %}
+Editable grid with two rows using looping
+See  Add, Edit, and Remove Data in an Inline Editable Grid recipe for more help using a!forEach with the editable grid.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 1, unitPrice: 10},
+    {item: "Item 2", qty: 2, unitPrice: 20}
+  },
+  a!gridLayout(
+    label: "Products",
+    instructions: "Update the item name, quantity, or unit price.",
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    rows: a!forEach(
+      items: local!items,
+      expression: a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: fv!item.item,
+            saveInto: fv!item.item
+          ),
+          a!integerField(
+            value: fv!item.qty,
+            saveInto: fv!item.qty
+          ),
+          a!floatingPointField(
+            value: fv!item.unitPrice,
+            saveInto: fv!item.unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(fv!item.qty) * todecimal(fv!item.unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    ),
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+{:.screenshot}
+{% endcomment %}
+Editable grid with validations
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 10, unitPrice: 10},
+    {item: "Item 2", qty: 2,  unitPrice: 20}
+  },
+  a!gridLayout(
+    label: "Products",
+    instructions: "Update the item name, quantity, or unit price.",
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    rows: a!forEach(
+      items: local!items,
+      expression: a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: fv!item.item,
+            saveInto: fv!item.item
+          ),
+          a!integerField(
+            value: fv!item.qty,
+            saveInto: fv!item.qty
+          ),
+          a!floatingPointField(
+            value: fv!item.unitPrice,
+            saveInto: fv!item.unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(fv!item.qty) * todecimal(fv!item.unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    ),
+    validations: {
+      if(
+        sum(tointeger(local!items.qty) * todecimal(local!items.unitPrice))>100,
+        "Total must not exceed $100",
+        null
+      ),
+      if(
+        length(local!items)<3,
+        a!validationMessage(
+          message: "Enter at least 3 items",
+          validateAfter: "SUBMIT"
+        ),
+        null
+      )
+    },
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+Displays the following:
+{:.screenshot}
+{% endcomment %}
+Editable grid with selection
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 1, unitPrice: 10},
+    {item: "Item 2", qty: 2, unitPrice: 20}
+  },
+  local!selected: tointeger({}),
+  a!gridLayout(
+    label: "Products",
+    instructions: "Selected: " & local!selected,
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    rows: a!forEach(
+      items: local!items,
+      expression: a!gridRowLayout(
+        id: fv!index,
+        contents: {
+          a!textField(
+            value: fv!item.item,
+            saveInto: fv!item.item
+          ),
+          a!integerField(
+            value: fv!item.qty,
+            saveInto: fv!item.qty
+          ),
+          a!floatingPointField(
+            value: fv!item.unitPrice,
+            saveInto: fv!item.unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(fv!item.qty) * todecimal(fv!item.unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    ),
+    selectable: true,
+    selectionValue: local!selected,
+    / Flatten the selected values so the result is easier to work with /
+    / when the select/deselect all option is used in an editable grid  /
+    selectionSaveInto: a!save(local!selected, a!flatten(save!value)),
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+Displays the following:
+{:.screenshot}
+{% endcomment %}
+Editable grid with weighted columns
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 10, unitPrice: 10},
+    {item: "Item 2", qty: 2,  unitPrice: 20}
+  },
+  a!gridLayout(
+    label: "Products",
+    instructions: "This is a grid layout with column weights: 5, 1, 1, 2",
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    columnConfigs: {
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 5),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE"),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE"),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 2)
+    },
+    rows: a!forEach(
+      items: local!items,
+      expression: a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: fv!item.item,
+            saveInto: fv!item.item
+          ),
+          a!integerField(
+            value: fv!item.qty,
+            saveInto: fv!item.qty
+          ),
+          a!floatingPointField(
+            value: fv!item.unitPrice,
+            saveInto: fv!item.unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(fv!item.qty) * todecimal(fv!item.unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    ),
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+Displays the following:
+{:.screenshot}
+{% endcomment %}
+Short editable grid with weighted columns
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+=a!localVariables(
+  local!items: {
+    {item: "Item 1", qty: 1, unitPrice: 10},
+    {item: "Item 2", qty: 2, unitPrice: 20},
+    {item: "Item 3", qty: 3, unitPrice: 30},
+    {item: "Item 4", qty: 4, unitPrice: 40},
+    {item: "Item 5", qty: 5, unitPrice: 50},
+    {item: "Item 6", qty: 6, unitPrice: 60},
+    {item: "Item 7", qty: 7, unitPrice: 70},
+    {item: "Item 8", qty: 8, unitPrice: 80},
+    {item: "Item 9", qty: 9, unitPrice: 90},
+    {item: "Item 10", qty: 10, unitPrice: 100}
+  },
+  a!gridLayout(
+    label: "Products",
+    instructions: "Update the item name, quantity, or unit price.",
+    headerCells: {
+      a!gridLayoutHeaderCell(label: "Item"),
+      a!gridLayoutHeaderCell(label: "Qty"),
+      a!gridLayoutHeaderCell(label: "Unit Price"),
+      a!gridLayoutHeaderCell(label: "Total", align: "RIGHT")
+    },
+    columnConfigs: {
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 5),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE"),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE"),
+      a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 2)
+    },
+    rows: a!forEach(
+      items: local!items,
+      expression: a!gridRowLayout(
+        contents: {
+          a!textField(
+            value: fv!item.item,
+            saveInto: fv!item.item
+          ),
+          a!integerField(
+            value: fv!item.qty,
+            saveInto: fv!item.qty
+          ),
+          a!floatingPointField(
+            value: fv!item.unitPrice,
+            saveInto: fv!item.unitPrice
+          ),
+          a!textField(
+            value: dollar(tointeger(fv!item.qty) * todecimal(fv!item.unitPrice)),
+            readOnly: true,
+            align: "RIGHT"
+          )
+        }
+      )
+    ),
+    height: "SHORT",
+    rowHeader: 1
+  )
+)
+{% endsailbox %}
+{% comment %}
+Displays the following:
+{:.screenshot}
+{% endcomment %}

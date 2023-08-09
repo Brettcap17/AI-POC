@@ -1,0 +1,30 @@
+
+layout: function
+title: usertimezone() Function
+space: function_page
+excerpt: "Returns the site primary timezone if the application is configured to override user preferences; otherwise it returns the preferred timezone of the given user or the site primary timezone if the user doesn't have a preference set."
+category: function_page
+fncname: usertimezone
+fncexample: "usertimezone(loggedinuser())"
+fncresult: "GMT"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: user
+    types: user
+    description: |
+      The user (or the username of the user) for whom the timezone should be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The timezone is returned as a string, such as "GMT" or "EST".
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+usertimezone(pv!user) returns GMT

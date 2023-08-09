@@ -1,0 +1,31 @@
+
+layout: function
+title: char() Function
+space: function_page
+excerpt: "Converts a number into its Unicode character equivalent."
+category: function_page
+fncname: char
+fncexample: "char( 65 )"
+fncresult: "A"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Number
+    description: |
+      The Unicode decimal value of the character to return.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: unicode.org
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+char(65) returns A

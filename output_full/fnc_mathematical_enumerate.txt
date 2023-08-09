@@ -1,0 +1,33 @@
+
+layout: function
+title: enumerate() Function
+space: function_page
+excerpt: "Returns a list of integer numbers from 0 through n-1."
+category: function_page
+fncname: enumerate
+fncexample: "enumerate(5)"
+fncresult: "0, 1, 2, 3, 4"
+fnccat: Mathematical
+compatibility: +pe, +pr
+parameters:
+  - keyword: n
+    types: "Number(Integer)"
+    description: |
+      The number of days to test.
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer Array 
+Usage considerations
+The resulting enumerated list begins with zero.
+To start the list at 1, add +1 onto the syntax as follows: enumerate(*n*)+1
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+enumerate(10) returns 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 

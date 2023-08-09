@@ -1,0 +1,43 @@
+
+layout: basic
+title: Feature Overview
+topic-group: A
+topic: ai
+weight: 200
+
+Appian provides you with low-code design objects and functions to easily integrate artificial intelligence (AI) functionality into your application. These objects are available out-of-the-box to both Appian AI customers and non-Appian AI customers. To use these objects, you just need a valid Google Cloud set up. 
+This page outlines the specific functionality available through the Appian AI offering, as well as the associated design objects and solutions. 
+{:.screenshot}
+Unsure which service best applies to your business needs? Check out some common use cases for using AI. Already up-to-speed on how Appian AI can empower your processes? Start building AI into your application, or learn more about the pre-built solutions that leverage AI functionality. 
+Computer vision
+Powered by Google Cloud Vision AI, computer vision allows you to collect key information and structured data from images. Using this feature of AI, you can extract the colors, logos, and labels of an image and then organize that information into categories. 
+This functionality also allows you to extract text from a PDF or image. Unlike document extraction, Google Cloud Vision can analyze pieces of unstructured data, like paragraphs or sentences. When working with contracts, you may find Google Cloud Vision useful to extract signatures or written names.
+To use computer vision features, learn how to configure the Google Cloud Vision connected system. Once you’ve configured your connected system, create an integration to retrieve the data so you can analyze the results.
+Related design object
+{:.doicons} Google Cloud Vision connected system
+Cloud storage
+To support the available Google Cloud AI services and store related documents or files, you can use Google Cloud Storage to store the items in a bucket. Cloud Storage allows you to store and retrieve an unlimited amount of data from a secure location. This is often used alongside Google Cloud AutoML and Document Extraction to store the items being evaluated.
+To use Google Cloud Storage, deploy the Google Cloud Storage connected system plug-in to your application. Once you’ve configured the connected system, create an integration to retrieve the data about a file, delete a file, create a new bucket, and more.
+Related design object
+{:.doicons} Google Cloud Storage connected system plug-in
+Custom machine learning models
+Using Google Cloud AutoML, you can create and modify custom machine learning models that fit your specific business needs. AutoML provides a series of products that harness the power of existing Google Cloud AI features, like Natural Language, Translation, and Vision, and provides you with the flexibility to customize the feature to your exact use case.
+To leverage this functionality, deploy the Google Cloud AutoML connected system plug-in to your application so you can configure the connected system. Before you get started using the connected system, review the specific bucket requirements{: target="blank"} required to create and modify models.
+Related design object
+{:.doicons} Google Cloud AutoML connected system plug-in
+Document extraction
+Appian offers fully built-in document extraction capabilities with no need to send your data to Google. If your business requires you to keep your document data within Appian, you can do just that using these built-in services.
+You also have the option to leverage document extraction capabilities using Google Cloud Document AI. No matter which vendor you choose, you can use document extraction to identify data from PDF documents and then extract and save that data into key-value pairs that can be used in other parts of your application or saved to your database.
+Document extraction is best suited for situations where you need to process numerous documents that have similar information, structured data, and clearly labeled values. For example, Appian recently created the Paycheck Protection Program Lending Application to assist banks in managing an influx of small business loan applications. Since loan applications are standardized with fillable fields, the data to extract from these forms is both structured and clearly identifiable. Using Appian's document extraction services combined with Appian RPA, loan application information can be collected within minutes and then passed to a robotic process to look up or enter information in other systems.
+To use document extraction capabilities, Appian offers a pre-built document extraction application called Intelligent Document Processing (IDP). IDP takes advantage of all the document extraction features, plus adds the capability to automatically classify documents. If you're an Appian customer on 20.1 or higher, this application is preinstalled on your Appian cloud site. Use IDP to start your document extraction process in minutes.
+To build your own document extraction application, you'll need to create a process model including the document extraction smart services and functions. See Appian Document Extraction for more information.
+Related design objects and solution
+
+Intelligent Document Processing (IDP)
+Appian Document Extraction Suite:
+Start Doc Extraction Smart Service
+a!docExtractionStatus()
+a!docExtractionResult()
+Reconcile Doc Extraction smart service
+
+

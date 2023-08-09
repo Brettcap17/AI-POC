@@ -1,0 +1,411 @@
+
+layout: basic
+title: Function Plug-ins
+permalink: Custom_Function_Plug-ins.html
+topic-group: C
+weight: 300
+
+Overview
+Appian allows you to create your own custom functions that can then be used in expressions within process models, rules, and interfaces.
+
+Functions must execute without side effects because under some circumstances they may be executed more or fewer times than expected.
+Custom functions are not available for use in process reports.
+These functions appear in the Expression Editor along with other Appian rules and functions. Due to browser caching, a user might need to sign out and sign back in, in order for new expression functions to appear in the Expression Editor.
+
+Custom function plug-ins simplify the creation and deployment of custom functions in Appian. These Appian Plug-Ins are based on the OSGi model, an industry standard approach to packaging modular functionality.
+See also: Appian Plug-Ins
+Concepts
+Function: A function performs an idempotent operation based on a set of inputs and returns a value.
+Category: A logical grouping of functions. The categories of functions are available in the Expression Editor.
+Parameter: The input to a function. A function parameter equates to a Java method parameter.
+Return Value: The value that is returned by the function.
+Creating and deploying the function plug-in
+This example assumes you are using Eclipse as your IDE.
+
+Create a new Java project in Eclipse.
+Click File > New > Other...
+Select Java Project from the Select a Wizard options. Click Next.
+Type a name for your project. Click Finish (accept the default settings).
+Configure the Java Build Path.
+Right-click the project. Click Properties.
+In the left navigation, select Java Build Path.
+Select the Libraries tab. Click the Add External JARs... button.
+Add the following Appian JAR as an external dependency and click OK.
+        - <APPIAN_HOME>/_admin/sdk/appian-plug-in-sdk.jar
+          - Your plug-in must be designed to access only the classes and methods documented in the Public API javadocs.
+Configure Project Folders.
+In the Package Explorer (left navigation) right-click the src folder.
+Select New > Folder.
+Type META-INF in the folder name field and click Finish.
+With the META-INF folder selected, right-click and select New > Folder.
+Type lib in the folder name field and click Finish.
+With the src folder selected, right-click and select New > Package.
+Click Finish.
+Your file structure should appear similar to the following:
+
+|_src
+       |_com.example.plugins.<YOUR_PLUGIN>
+       |
+       |_ META-INF
+           |_ lib
+
+Add your appian-plugin.xml file at the root level. See below: Configuring the appian-plugin.xml File.
+Create your classes. See below: Function Parameters.
+Only use Appian's public Java API to invoke Appian functionality.  Generally public interfaces are found in com.appiancorp.suiteapi.
+Add any JAR files required by your custom function to the src/META-INF/lib/ folder.
+Update your Java Build Path to include any new JAR files; otherwise Eclipse won't compile.
+Right-click the project and select Properties.
+In the Package Explorer (left navigation) click Java Build Path.
+On the Libraries tab, click Add JARs....
+Select the JAR files in your project.
+Add the internationalization bundles to the <YOUR_PLUGIN> folder. See below: Internationalization.
+Export your project as a JAR file.
+Right-click your project and click Export....
+Select the JAR file option as the Export destination.
+On the Resources to export dialog, clear the .classpath and .project selections as these files are used exclusively by Eclipse.
+Select the _admin/plugins folder of your installation directory for your export destination.
+This directory is created during application server startup.
+
+
+Click Finish.
+
+Your plug-in is deployed. The plug-ins framework locates the new JAR file and deploys your custom functions when the application server starts.
+Configuring the appian-plugin.xml file
+xml
+<appian-plugin name="Twitter Functions" key="com.mycompany.twitter">
+    <plugin-info>
+        <description>A group of expressions for querying Twitter</description>
+        <vendor name="My Organization" url="http://www.mycompany.com" />
+        <version>1.0.0</version>
+    </plugin-info>
+    <function-category key="twitterCategory" name="Twitter Functions" />
+    <function key="twitterFunctions" class="com.mycompany.twitter.TwitterFunctions" />
+</appian-plugin>
+All plug-ins must contain an appian-plugin.xml configuration file. Plug-ins that do not contain this configuration file won't be registered in Appian.
+
+appian-plugin: The main parent element. This element defines the plug-in properties and references. The name is used for documentation purposes only. The key must be unique among all Appian plug-ins. It represents a unique namespace for your plug-in function. We recommend using the same convention established for Java package names.
+plugin-info: This element contains plug-in metadata, including the following subelements.
+description: Specify a description of the plug-in itself.
+vendor: Specify your organization's name and URL.
+version: Specify the version of the plug-in. Remember that installing newer versions overrides older versions.
+application-version: Specify the minimum version of Appian that the plug-in requires to run.
+
+
+function-category key: (Optional) Specify a category key if you implement a custom category within your plug-in. This key can only be defined in a single plug-in. Multiple plug-ins can use the defined category if the plug-in that contains this definition is deployed first.
+function-key: List your function and its main class.
+
+Annotations
+@Category
+The custom function Java class, or each method exported as a function, must have an @Category annotation that indicates the function category to which a given function belongs. It takes a String as a parameter, which is the internationalization key to the category name.
+The following categories are available.
+category.name.AppianScriptingFunctions
+category.name.ArrayFunctions
+category.name.BaseConversion
+category.name.ConversionFunctions
+category.name.DateandTimeFunctions
+category.name.InformationalFunctions
+category.name.LogicalFunctions
+category.name.MathematicalFunctions
+category.name.SetFunctions
+category.name.StatisticalFunctions
+category.name.TextFunctions
+category.name.TrigonometryFunctions
+For example:
+@Category("category.name.ConversionFunctions")
+Notes on function categories
+
+
+Your custom function is displayed in the Expression Editor in all contexts, even in places of the product where they cannot be used (such as in expressions that define report data).
+
+
+The AppianScriptingFunctions category only appears in the Expression Editor in contexts where the functions can be used.
+
+
+@AppianScriptingFunctionsCategory
+A special category annotation, @AppianScriptingFunctionsCategory, extends the @Category annotation.
+
+
+All functions marked with this annotation are added to the Scripting Functions category.
+
+
+Functions that are included in the Scripting Functions category do not appear when the Expression Editor opens in a place where the function cannot be used (such as in reports).
+
+
+Using this category may be preferable to a custom category, in that it avoids possible conflicts when deploying multiple plug-ins that use the same custom category.
+
+
+See also: Scripting Functions
+@HiddenCategory
+The @HiddenCategory annotation for custom expression functions allows the developer to prevent a function from appearing in the Expression Editor.
+
+
+All functions marked with this annotation will not appear in any categories in the Expression Editor, nor will they be found using auto-complete searches. The documentation for these functions will not be viewable.
+
+
+Adding a function to the hidden category does not prevent it from being used. It can still be used by Designers by typing the function name in an expression.
+
+
+This category can be useful for cases where the developer intends the function for limited use and does not want it to be discovered and widely used by other process Designers.
+
+
+@Function
+Each method that is exported as an expression function must have an @Function annotation. The class itself can be annotated. Then, all the public methods are exported as expression functions.
+For example:
+@Function
+public Boolean isCorrectFolder(@Parameter @FolderDataType @Name("folder_to_check") Long folderId){
+//Correct folder
+return true;
+Specifying a return data type is not required if the function is returning a supported native type. It is required if the function returns an Appian Object, such as Folder.
+See below: Type Conversion for supported Appian Objects and details on the Type inference mechanism.
+@Parameter
+Annotates the Java method parameters as function parameters. Parameters annotated with the @Parameter annotation will show up in the Expression Editor UI documentation section.
+It has two optional parameters:
+
+
+required: Defines whether a parameter is required or not. Defaults to true.
+
+
+unlimited: If true, this parameter behaves as a Java vararg, meaning that an unlimited number of parameters of the same type are accepted. The default value is false. If set to true, it must be the last parameter in the list of parameters and the parameter to the java method must be declared as an array or a varargs parameter (e.g. String[] params or String... params).
+
+
+Creating a custom category annotation
+It is possible to create your own category annotation, which is annotated with the @Category annotation itself. For example:
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Category("customerCategory")
+/ -
+ Defines a group of functions with a name.
+ - /
+public @interface CustomCategory { 
+}
+A custom annotation is meant to promote re-usability and avoid hardcoding the category name in different places.
+
+The @Retention(RetentionPolicy.RUNTIME) and @Target({ElementType.METHOD, ElementType.TYPE}) annotations are required.
+
+Keep the following information in mind when defining and deploying expression function plug-ins that define a new category:
+
+The category module can only be defined in a single custom expression's appian-plugin.xml configuration file.
+Other custom expression plug-ins can reference this same category, if the plug-in that includes the defined category is deployed first.
+If you do not deploy the plug-in containing the category module definition (in its appian-plugin.xml file) before others that use this same category, the Expression Editor displays the expression function category name as ???.
+When plug-ins that use the same category are deployed out of order, the internationalization bundle does not resolve properly.
+
+Parameters, return types, and type conversion
+
+In addition to the data type formatting described in this section, you can now use @Type annotations for defining data types used by parameters and return values.
+
+See also: Defining Data Types Used by Inputs and Outputs.
+Function parameters
+Function parameters are broken into two groups:
+
+Injectable resources can be obtained by passing them as parameters to the method.
+Any of the *Service interfaces in the public API (such as, ProcessAnalyticsService, or ContentService) can be injected to provide access to Appian data and context information.
+In order for the plug-in to be authorized to use the EncryptionService, the plug-in key must be granted access by an administrator in the Plug-ins page of the Admin Console.
+Deprecated services, such as com.appiancorp.suiteapi.collaboration.DocumentService, are not injected. In place of the DocumentService, use the com.appiancorp.suiteapi.content.ContentService.
+Note: This is the only valid method for obtaining a *Service within custom function code.  Do not call ServiceLocator.get*.
+
+
+The javax.naming.Context can be injected to provide access to data sources.
+Use the lookup method in Context to get access to the objects that are registered in the JNDI tree, such as data sources.
+
+
+Function inputs
+All inputs must be declared with @Parameter.
+All function inputs should have an associated description in the appropriate properties file.
+
+See also: Admin Console
+
+appian-style-tip
+The only way to access data sources is by injecting the javax.naming.Context into your plug-in function constructor. Plug-in functions, smart services, and servlets using new InitialContext() will fail when trying to access a data source configured in the Admin Console.
+
+Return types
+Standard type conversion is supported for both single and array types.
+
+You can directly return objects that implement the LocalId interface, such as Group, or Folder.
+
+If you want to directly return objects in this way, you must define the returnType in the @Function annotation.
+
+
+If the returnType is AppianType.USER_OR_GROUP or AppianType.LIST_OF_USER_OR_GROUP, then the returned values must be subclasses of the LocalObject class.
+
+
+Type conversion
+The Expression Evaluator automatically converts most Appian types to Java types. This conversion happens on input as well as on output. If TypedValue is used for parameters and/or return types, no conversion occurs.
+
+
+Appian Types
+Java types
+
+
+AppianType.DATE
+java.sql.Date
+
+
+AppianType.TIME
+java.sql.Time
+
+
+AppianType.TIMESTAMP
+java.sql.Timestamp
+
+
+AppianType.STRING
+java.lang.String
+
+
+AppianType.LONG
+int primitive/java.lang.Integer/long primitive/java.lang.Long
+
+
+AppianType.BOOLEAN
+boolean primitive/java.lang.Boolean
+
+
+AppianType.DOUBLE
+double primitive/java.lang.Double
+
+
+AppianType.NULL
+null
+
+
+Handling credentials securely
+Custom functions that integrate with external systems should use the Secure Credentials Store to securely handle the third-party credentials. The credentials stored in and retrieved from the Secure Credentials Store can be site-wide credentials, such as those used to represent a single integration user, or per-user credentials, where each individual user's credentials are used to authenticate against the external system. When using per-user credentials, the expression containing the custom function must be run in the active user's context in order to access that user's credentials (for instance, on an interface).
+The SecureCredentialsStore is injected just like other Appian services, by adding it to the parameters to the method that implements the function. The injected SecureCredentialsStore object provides a getSystemSecuredValues(String) and a getUserSecuredValues(String) method, which take the external system key as the parameter and returns a Map of unencrypted values keyed by their corresponding attributes.
+Before the credentials can be used by the plug-in, the following steps must be taken:
+
+Create an entry for the external system credentials in the Third-Party Credentials page in the Admin Console.
+Note the system key that is generated based on the given name.
+Pass this value as the parameter to SecureCredentialsStore.getSystemSecuredValues(String)  or SecureCredentialsStore.getUserSecuredValues(String) to obtain the map of credentials.
+Create credentials. The given field names translate into the attribute keys that are used in the map according to the following rules:
+The name is lower-cased.
+Any punctuation is stripped.
+Any spaces are translated into dots.
+Once the plug-in is deployed, add it to the list of plug-ins allowed to access the credentials by picking the plug-in in the Plug-ins List section on the Third-Party Credential page.
+
+Tip: Create your function to take the external system key as a parameter, and create a constant that holds the value of the generated key from the Third-Party Credentials page. Encourage designers to use the constant when calling the function.
+See also:
+
+Secure Credentials Store
+Admin Console
+
+Secure Credentials Store Example
+```
+@Function
+String getCustomerName(SecureCredentialsStore scs, 
+                       @Parameter String externalSystemKey,
+                       @Parameter String id){
+  / This example uses scs.getSystemSecuredValue to get the site-wide
+   * credentials for the external system. To get the map of per-user 
+   * credentials, use scs.getUserSecuredValues
+   /
+  Map credentials = scs.getSystemSecuredValues(externalSystemKey);
+CRMClient client = //some client object provided by a 3rd party sdk
+  //The field name set as "Username" in the Third-Party Credentials page
+  client.setUsername(credentials.get("username"));
+  //The field name set as "Auth Token" in the Third-Party Credentials page
+  client.setAuthToken(credentials.get("auth.token"));
+  Connection conn = client.connect();
+//use the authenticated connection to retrieve the customer name by id from the remote system
+}
+```
+Exception handling
+Custom functions can declare that they throw an AppianException. This ensures that error messages are translated appropriately to the end user. The exception behavior is undefined if you throw any other type of exception.
+Internationalization
+Category name internationalization
+Internationalization bundles for categories are by default placed in a folder structure based on the plug-in key. The category key will also be the name of the internationalization bundle.
+For example, if the plugin-key is com.example and the category name is ExampleCategory, the name of the file that will contain the translations will be ExampleCategory_en_US.properties and will be located in the /com/example folder. It will only contain one key—the category key itself.
+Function name and parameter internationalization
+Internationalization bundles for function names, parameter names, and descriptions are by default placed in a folder structure based on the plug-in key. These are stored in the same folder as the category resource bundle. All keys must start with function. followed by the lowercase name of the function.
+
+
+The function description, which appears in the Expression Editor interface, is specified by the .description key: (function.functionname.description=).
+
+
+The description of each parameter should also be translated. The name of each parameter is its key, preceded by the function.functionName.param. string and followed by the .description string.
+
+The name of the parameter in the key is case sensitive. For example, if a function named functionExample has a parameter named parameterExample, then its description is translated under the following key: function.functionExample.param.parameterExample.description=.
+
+US English internationalization example
+The following keys are listed in the US English internationalization properties file used by the example plug-in available on Appian Forum (twitterFunctions_en_US.properties).
+function.twittertrends.description=Returns the top 10 Twitter trends
+function.twittersearch.description=Returns the top 10 Search results on Twitter
+function.twittersearch.param.query.description=The search query
+
+Writer functions
+Expression functions must not have side effects and therefore cannot modify data. Side effect behavior can be achieved in interfaces using smart services and writer functions. Smart services are preferred when available as they can return values, support error-handling, and can be used in Web APIs, but since plug-in smart services can't be used in expressions, writer functions offer a way to execute custom Java code during an interface update.
+Writer functions allow you to create a function that defines an update to data in a way that is safe for expression evaluation. When the function is bound to a variable using bind(), the writer is invoked when a new value is saved to the variable in an interface component saveInto parameter. If a writer function evaluates during normal expression evaluation, it will simply return a value of type Writer, which will do nothing.
+To create a writer function, your function must return an object of a class that implements the writer Java interface. The writer interface has a single method, execute that must be implemented. It is within the body of the execute method that you define the logic that updates data.
+public interface Writer {
+      void execute();
+    }
+The execute method takes no parameters. Any values given as parameters to the function should be used in the constructor for the class that implements Writer and then stored as member variables. Those member variables can then be used in the body of the execute method.
+The writer can be designed to accommodate storing into a specific index of a bound variable by declaring a constructor parameter to contain the index that is being saved into. If the function defined as the setter in the bind() function has a second blank argument declared, that blank argument will be given the value of the index.  Examples:
+
+When storing into a variable such as local!variable.field1, the index argument supplied will be field1
+When storing into a variable such as local!variable[18], the index argument supplied will be 18
+When storing into a variable such as local!employee.address.city, the index argument supplied will be the array of indices {address, city}
+
+If an error occurs during the execution of the execute method, it must throw a RuntimeException. Writers associated with bound variables that are being saved-into during the same interface-save evaluation will be executed in order after all non-bound variable saves. Any exceptions will accumulate, but not prevent the remaining writers from executing their execute method. For any exceptions that are thrown, the message given to the RuntimeException will be part of an error displayed to the end user.
+An example writer function implementation:
+```java
+public class ExampleWriter implements Writer {
+ private String systemName;
+ private String value;
+public ExampleWriter(String systemName, String value) {
+   this.systemName = systemName;
+   this.value = value;
+ }
+@Override
+ public void execute() {
+   // use systemName and value to make update
+   if(failure) {
+     throw new RuntimeException("Failed to process write");
+   }
+ }
+}
+public class ExampleWriterFunction {
+ @Function
+ public Writer examplewrite(@Parameter String systemName, @Parameter String value) {
+   return new ExampleWriter(systemName, value);
+ }
+}
+```
+Best practices
+Development
+
+Inject Appian Services directly instead of injecting the ServiceContext.
+Be mindful of namespacing. All function names and rule names in Appian exist in a single namespace.
+Appian always uses the most current version of a custom function. If you upgrade a custom function, you must ensure that the new custom function's behavior does not break existing code that relies on a prior version. If you modify the parameter signature or return type of a custom function, you should consider creating a new custom function rather than versioning an older one.
+Annotate the custom functions with @AppianScriptingFunctionsCategory to place them in the Scripting Functions category in order to hide them from the Expression Editor in areas of the product that cannot use custom expression functions.
+Expression functions must not be used to update data, make changes to the filesystem, or perform other operations that have potential side effects. In order to create a function that results in an update, you must use a writer function in conjunction with the bind() function.
+
+Versioning and upgrading
+
+Custom functions use standard OSGi versioning: later versions override earlier versions.
+All custom functions should be shipped as plug-ins. Custom functions built prior to the release of the plug-in architecture should be upgraded to use the plug-in architecture.
+Keep related custom functions in their own function categories.
+Use the Java package name convention in the key definition.
+
+Examples
+Below is a link to download a code sample from Appian Forum.
+
+Twitter Smart Services and Expression Function Plug-In Examples
+
+Example plug-in file tree
+
+Limitations
+Functions used in an unattended node must be able to complete that node within 60 minutes or it will pause the process by exception. However, the thread running the code will not be terminated.
+Special considerations for Appian Cloud customers
+
+
+In order to individually build a custom function, a licensed local installation of Appian is required. Appian Cloud customers who have a local installation must develop and test the custom function locally and coordinate with Appian Technical Support to deploy the custom function on their sites.
+
+
+An alternative is to utilize Appian Professional Services to build and test these custom plug-in functions.
+
+
+Appian Technical Support is not responsible for any issue caused by custom plug-in functions deployed on a site; Appian Cloud customers are responsible for maintaining these customizations.
+
+
+Once all the appropriate custom code is provided to Appian Technical Support, the custom function is made available on the corresponding Appian site within a week.
+

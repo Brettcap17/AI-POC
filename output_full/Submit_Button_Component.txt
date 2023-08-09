@@ -1,0 +1,13 @@
+
+layout: function
+title: Submit Button Component [Deprecated]
+depver: 19.1
+category: function_page
+compatibility: -crf
+fncname: a!buttonWidgetSumbit
+fnccat: "一Deprecated一"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian.
+You can now configure a Button Component as submittable by setting the submit parameter to true. Works the same way as a Submit Button Component!
+For information about the {{ page.title }}, see the Appian 18.4 documentation.

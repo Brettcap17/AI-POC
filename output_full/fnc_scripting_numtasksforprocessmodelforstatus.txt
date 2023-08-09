@@ -1,0 +1,51 @@
+
+layout: function
+title: numtasksforprocessmodelforstatus() Function
+category: function_page
+excerpt: Returns the number of tasks with the specified status in process instances of the process model.
+fnccat: Scripting
+fncexample: 'numtasksforprocessmodelforstatus(processModelId, "completed", true)'
+fncname: numtasksforprocessmodelforstatus
+fncresult: '112'
+space: function_page
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: processModelId
+    types: Integer
+    description: |
+      The Id number of the process model.
+  - keyword: status
+    types: Text
+    description: |
+      The status of the tasks you want counted.
+  - keyword: includeSubProcessData
+    types: Boolean
+    description: |
+      Controls whether data from subprocesses are included in the count.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+The status of each process instance is not considered.
+The current user must hold at least viewer rights for the specified process model, in order to execute this function.
+Deleted and archived process instances are not counted.
+The following (case sensitive) values are available for the status parameter:
+
+accepted
+assigned
+cancelled
+completed
+paused
+problem ("problem" tasks are attended tasks that are canceled by exception)
+
+If you do not provide a value for the includeSubProcessData parameter, the default value is taken from the current context or set to false if no subprocesses available.
+For example, if the function is used on a Web Content with Process Details Channel and the channel's context includes subprocesses, these subprocesses are included by default.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+numtasksforprocessmodelforstatus(processModelId,"completed",true) returns 112

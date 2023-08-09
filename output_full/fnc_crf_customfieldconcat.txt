@@ -1,0 +1,50 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldConcat() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function concatenates the specified values into a single value.
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldConcat
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      An array of 2 to 10 values to concatenate. Values can be any combination of record fields, related record fields, custom field functions, or literal values of type Text, Number (Integer), User, or Group.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldConcat() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Example
+Let's say you have a Case record type and you want to create a custom record field that displays each case's status and priority as a single field value. For example, a field value could be "Open - Critical" or "In Progress - Low". The case status and priority are stored in two separate record types: the Status record type and the Priority record type. 
+To create this field, you can create a new custom record field that evaluates in real time and use the a!customFieldConcat() function to concatenate the two values:
+sail
+a!customFieldConcat(
+  {
+    recordType!Case.relationships.status.fields.label,
+    "-",
+    recordType!Case.relationships.priority.fields.label
+  }
+)
+Returns values like:
+Open - Low
+Open - Medium
+Open - Critical
+In Progress - Low
+In Progress - Medium
+...
+See the Real-time evaluation recipes for more examples using this function.
+Supported functions
+You can also use any of the following supported functions in the value parameter of a!customFieldConcat():
+INCLUDE PAGE: Supported Custom Field Functions Table

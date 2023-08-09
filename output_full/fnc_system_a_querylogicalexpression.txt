@@ -1,0 +1,77 @@
+
+layout: function
+title: a!queryLogicalExpression() Function
+category: function_page
+excerpt: Creates a LogicalExpression object that determines the filtration to apply in Query object.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryLogicalExpression
+permalink: fnc_system_a_querylogicalexpression.html
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: operator
+    types: Text
+    description: |
+      Determines the operation to apply to the set filters. Valid values: "AND", "OR", and "AND_ALL". The “AND_ALL” operator is only valid when filtering on multiple fields from a one-to-many relationship.
+  - keyword: logicalExpressions
+    types: List of LogicalExpression
+    description: |
+      A list of LogicalExpression objects to apply using the operator parameter, created with a!queryLogicalExpression().
+  - keyword: filters
+    types: List of QueryFilter
+    description: |
+      A list of QueryFilters to apply using the operator parameter, created with a!queryFilter().
+  - keyword: ignoreFiltersWithEmptyValues
+    types: Boolean
+    description: |
+      Specifies whether to ignore filters within a!queryLogicalExpression() if the filter’s value parameter is empty. If you are using nested logical expressions, this parameter must have the same value for each logical expression. For example, if the value is set to true for the parent logical expression, it should be set to true for all children logical expressions. Default: false
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: LogicalExpression, Query, QueryFilter
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+LogicalExpression
+Usage considerations
+Using the AND_ALL operator {#prodlink-operators}
+There are three valid values for the operator parameter: 
+- "OR"
+- "AND"
+- "AND_ALL" 
+However, the “AND_ALL” operator is only available when you’re filtering by multiple fields from the same one-to-many relationship. 
+When you use the "AND_ALL" operator to filter by multiple related record fields from the same one-to-many relationship (i.e., the "many" side of the relationship), the filter will return all records from the base record type (the "one" side of the relationship) that have at least one related record that meets each filter condition.
+For example, let's say you want to return all customers that have at least one active support case that was created within the last week. In this scenario, the Customer record type has a one-to-many relationship with the Case record type.
+To query this data, you can create an expression that looks like this:
+{% include zoompic.html url="images/and_all_example.png" alt="AND_ALL example" %}
+This query will only return customers that have at least one related case that meets both filter conditions. This is different from using the “AND” operator to filter by your one-to-many data. 
+If you use the “AND” operator to filter multiple related record fields from the same one-to-many relationship (i.e., the "many" side of the relationship), the filter will return all records from the base record type (the "one" side of the relationship) that have at least one related record that meets all filter conditions or different related records that meet each filter condition.
+So, if you created the same query as above using the "AND" operator, it would return any customers that have at least one case that is both active and created in the last week; it would also return any customers that have at least one active case and at least one other case that was created in the last week. 
+In the image below, you can see how this returns more customers than the "AND_ALL" operator expression above.
+{% include zoompic.html url="images/wrong-and-example.png" alt="Same expression from above but using AND instead" %}
+What if I need to filter by record fields and related record fields from a one-to-many relationship?
+You can use "AND_ALL" to filter by multiple fields from the same one-to-many relationship as well as other record fields too. 
+For example, let's say you only want to see active cases created in the last week for customers in the retail industry. In this example, the Customer record type has a one-to-many relationship with the Case record type, and a many-to-one relationship with the Industry record type.
+Since this query requires you to filter on many fields from the same one-to-many relationship (case status and createdOn), you need the "AND_ALL" operator to return all customers that meet each filter condition. The “AND_ALL” operator will evaluate the other filter that does not reference a one-to-many field like a normal “AND” operator.
+{% include zoompic.html url="images/and-all-with-other-fields.png" alt="AND_ALL example with other record fields" %}
+What if I need to filter by multiple fields from multiple one-to-many relationships?
+If you need to filter by fields from multiple one-to-many relationships, you can create a nested a!queryLogicalExpression() so you can evaluate both sets of filters with "AND_ALL". 
+For example, let's say you want to return all customers that have an active case created in the last week, and those cases must also have at least one comment from a specific support engineer from the last day. In this example, the Customer record type has a one-to-many relationship with the Case record type, and the Case record type has a one-to-many relationship with the Comment record type.
+To query this data, you would first filter on the one-to-many relationship between customers and cases using the "AND_ALL" operator to return all customers with active cases created this week. Then, you'd create a nested logical expression using "AND_ALL" to filter those cases by comments.
+The expression would look like this:
+{% include zoompic.html url="images/nested-logical-expression.png" alt="Use case with nested AND_ALL statement" %}
+Notice that both sets of filters start from the same shared relationship: recordType!Customer.relationships.cases. If you create a nested a!queryLogicalExpression(), you must reference your related record fields starting from the same shared relationship. This means that you could not create a nested filter that starts from a different one-to-many relationship. 
+For example, if you changed the nested a!queryLogicalExpression() from recordType!Customer.relationships.cases.relationships.comments to recordType!Customer.relationships.orders, the query would error. 
+When do I use "AND" instead of "AND_ALL"?
+More often than not, you'll use the "AND_ALL" operator to filter by multiple fields from the same one-to-many relationship; however, there are certain cases when you would want to use "AND" instead of "AND_ALL". 
+For example, if you wanted to see all customers that have at least one open support case and in progress support case. Since you're filtering on the same field (recordType!Customer.relationships.cases.fields.status) the same case cannot meet both criteria. 
+To return this type of information, you would instead use the "AND" operator so you can see customers who have at least one open case and at least one other case that is in progress. The expression would look something like this:
+{% include zoompic.html url="images/correct-and-example.png" alt="Use case to use the AND operator" %}
+Using the ignoreFiltersWithEmptyValues parameter
+By default, the ignoreFiltersWithEmptyValues parameter will return all data if all of your query filters have empty values. Set this parameter to true if all of your query filters are optional. 
+For more examples on how to use this parameter with your queries, see Querying on Multiple Conditions and Querying on Nested Conditions.
+Examples
+For more details about how to use a!queryLogicalExpression(), see Query Recipes.

@@ -1,0 +1,371 @@
+
+layout: "pattern"
+title: "Percentage of Online Sales"
+topic: record_reports
+topic-group: B
+weight: 100
+reftype: "sailrecipe"
+excerpt: "This pattern illustrates how to calculate the percent of sales generated from online orders and display it in a gauge component."
+sr-tags:
+  - Records
+  - Reports
+  - Formatting
+
+Account managers at the Appian Retail company want to know how much of their yearly sales are generated from online sales so they can determine if they need to do more online advertising, or hire more in-person staff.
+To show the percentage of online sales, you’ll use the pattern on this page to create a query using a!queryRecordType() to calculate the sum of sales for all orders purchased this year and the sum of sales for orders purchased online this year. Then, you'll uses a gauge component to calculate and display the percentage of online sales generated this year. 
+To allow account managers to better understand whether online sales are growing, stagnant, or decreasing, you'll also create a second gauge component that shows the percentage of online sales generated last year. 
+The report will look like this:
+{% include zoompic.html url="images/ytd-and-ly-ytd.png" %}
+Setup
+INCLUDE PAGE: Styled Icon Table
+
+Order record type:  Contains order information like the order number, date, status, and whether it was purchased online or in stores. For example, order number SO43659 was purchased in stores on 5/31/2019 and the order is closed.
+Order Detail record type: Contains specific order details like the number of order items, order totals, promo codes applied, and products. For example, the order above contained one product that cost $2,024.99.
+
+Create this pattern
+To create this pattern, you will:
+1. Get the sum of sales for all orders purchased this year, and the sum of sales for orders purchased online this year.
+2. Calculate the percentage of online sales this and display it in a gauge component.
+3. Get the sum of sales for all orders purchased last year, and the sum of sales for orders purchased online last year. 
+4. Calculate the percentage of online sales last year and display it in another gauge component.
+Step 1: Get the sum of sales for all orders purchased this year, and the sum of sales for orders purchased online this year {#step-1}
+Your first step is to get the sum of sales for all orders purchased this year, and the sum of sales for orders purchased online this year. To calculate these values, you'll create a query using a!queryRecordType() and save the value in a local variable within an interface.
+Within the query, you'll filter the data so you only return records from the beginning of the year to today. Then, you'll group by the year when the order was made, and calculate two measures: the sum of all orders, and the sum of orders that have the onlineOrderFlag equal to 1, where 1 means the order was made online, and 0 means the order was made in-stores.
+We'll use this query in the next step to calculate the percentage in the gauge component.
+To calculate these values:
+1. In the Appian Retail application, go to the Build view.
+2. Click NEW > Interface.
+3. Click EXPRESSION MODE in the title bar.
+4. Copy and paste the following expression. This creates a local variable with our query, and includes a column layout that we'll use later in this pattern:
+    > appian-style-note
+    > These record type references are specific to the Appian Retail application. If you're following along in the Appian Retail application, you can copy and paste this expression without updating the record type references.
+```sail
+a!localVariables(
+    local!onlineSalesTY: a!queryRecordType(
+        recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+        /* Only include orders created this year: year-to-date */
+        filters: {
+        a!queryFilter(
+            field:'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+            operator: "BETWEEN",
+            value: {
+            /* Beginning of the year */
+            eomonth(today(), -month(today()) ) + 1,          
+            now()
+            }
+        )
+        },
+        fields: {
+        a!aggregationFields(
+            /* Group by the order date year */
+            groupings: a!grouping(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+            interval: "YEAR",
+            alias: "orderDateYear"
+            ),
+            measures: {
+            /* Get the sum of all orders */
+            a!measure(
+                field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+                function: "SUM",
+                alias: "totalSales"
+            ),
+            /* Get the sum of all orders that have an online order flag */
+            a!measure(
+                field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+                function: "SUM",
+                alias: "onlineSales",
+                filters: {
+                a!queryFilter(
+                    field: 'recordType!{bec4a875-9980-4bbf-a38c-c492ebed065a}Order Detail.relationships.{e6b1dbca-6c3c-4540-a093-3c581a73ad17}order.fields.{5bade7d5-5fbc-4cc4-807f-907f8f65969b}onlineOrderFlag',
+                    operator: "=",
+                    value: 1
+                ),
+                }
+            )
+            }
+        )
+        },
+        pagingInfo: a!pagingInfo(1,10)
+    ).data,
+    /* Column layout that we'll use for our gauge components */
+    {
+        a!columnsLayout(
+        columns: {
+            a!columnLayout(contents: {}),
+            a!columnLayout(contents: {})
+        }
+        )
+    }
+)
+```
+
+Step 2: Show the percentage of online sales this year {#step-2}
+Now that you have a query that calculates your total sales this year and sales from online orders this year, you can calculate the percentage of online sales directly in a gauge component.
+To calculate the percentage of online sales this year in a gauge component:
+1. In your interface, click DESIGN MODE in the title bar. A column layout with two columns appears.
+2. From the PALETTE, drag a GAUGE component into the left column layout.
+3. In the Gauge component configuration, hover over Fill Percentage and click Edit as Expression .
+4. In the Fill Percentage dialog, replace the existing value with the following expression. This will calculate the percent of online sales:
+```sail
+local!onlineSalesTY.onlineSales / local!onlineSalesTY.totalSales * 100
+```
+
+
+Click OK.
+In Secondary Text, enter YTD. This stands for year to date.
+Hover over Tooltip and click Edit as Expression .
+
+In the Tooltip dialog, enter the following expression. This will display the sum of sales for this year.
+sail
+"Online Sales: " & dollar(a!defaultValue(local!onlineSalesTY.onlineSales,0))
+9.  Click OK. 
+
+
+The interface will look something like this:
+{:.screenshot}
+
+appian-style-note
+Your percentage may differ from the image above since the query in local!onlineSalesTY uses the today() function, which will change the calculation each day.
+
+Step 3: Get the sum of sales for all orders purchased last year, and the sum of sales for orders purchased online last year {#step-3}
+Now you need to calculate last year's percentage of online sales. 
+To get this percentage, you first need to gets the sum of sales for all orders purchased last year, as well as the sum of sales for orders purchased online last year. 
+This query will look similar to the one you created in step 1, but instead of filtering by sales from the beginning of the year to today (eomonth(today(), -month(today()) ) + 1), you will filter sales data from the beginning of last year to today's date last year (datetime(year(eomonth(today(), -month(today()) ) + 1) - 1, 1, 1)). 
+To calculate these values:
+1. In your interface, click EXPRESSION MODE in the title bar.
+2. In the Interface Definition, enter a new line after line 48. 
+3. Copy and paste the following expression on line 49. This creates a second local variable with our second query:
+```sail
+local!onlineSalesLY: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    /* Only include orders created last-year-to-date */
+    filters: {
+    a!queryFilter(
+        field:'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        operator: "BETWEEN",
+        value: {
+        /* Beginning of the year - Last year */
+        datetime(year(eomonth(today(), -month(today()) ) + 1) - 1, 1, 1),
+        /* Today - Last year */
+        datetime(year(today()) -1,  month(today()), day(today()))
+        }
+    )
+    },
+    fields: {
+    a!aggregationFields(
+        /* Group by the order date year */
+        groupings: a!grouping(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        interval: "YEAR",
+        alias: "orderDateYear"
+        ),
+        measures: {
+        /* Get the sum of all orders */
+        a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}salesOrderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "totalSalesLY"
+        ),
+        /* Get the sum of all orders that have an online order flag */
+        a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}salesOrderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "onlineSalesLY",
+            filters: {
+            a!queryFilter(
+                field: 'recordType!{bec4a875-9980-4bbf-a38c-c492ebed065a}Order Detail.relationships.{e6b1dbca-6c3c-4540-a093-3c581a73ad17}salesOrderHeader.fields.{5bade7d5-5fbc-4cc4-807f-907f8f65969b}onlineOrderFlag',
+                operator: "=",
+                value: 1
+            ),
+            }
+        )
+        }
+    )
+    },
+    pagingInfo: a!pagingInfo(1,10)
+).data,
+```
+
+Step 4: Show the percentage of online sales last year {#step-4}
+Now that you have your query, you'll add a second gauge component to calculate and display last year's online sales percentage.
+To calculate the percentage of online sales last year in a gauge component:
+1. In your interface, click DESIGN MODE in the title bar.
+2. From the PALETTE, drag a GAUGE component into the right column layout.
+3. In the Gauge component configuration, hover over Fill Percentage and click Edit as Expression .
+4. In the Fill Percentage dialog, replace the existing value with the following expression:
+```sail
+local!onlineSalesLY.onlineSalesLY / local!onlineSalesLY.totalSalesLY * 100
+```
+
+
+Click OK.
+In Secondary Text, enter LY YTD. This stands for last year, year to date.
+Hover over Tooltip and click Edit as Expression .
+
+In the Tooltip dialog, enter the following expression:
+sail
+"Online Sales: " & dollar(a!defaultValue(local!onlineSalesLY.onlineSalesLY,0))
+9.  Click OK.
+10. From the PALETTE, drag a RICH TEXT component above the columns layout and configure the following:
+-  In Display Value, keep the default selection of Use editor.
+-  In the editor, enter Percent of Online Sales.
+-  In the editor, highlight the text, then click Size  and select Medium Header. 
+11. Click SAVE CHANGES.
+{:.screenshot}
+
+
+Full expression
+The resulting expression will look like this:
+
+appian-style-note
+You can copy and paste this expression into an interface in the Appian Retail application to see the fully configured pattern. 
+These record type references are specific to the Appian Retail application, so you will only need to replace the record field references if you're following along in a different environment.
+
+```sail
+a!localVariables(
+  local!onlineSalesTY: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    / Only include orders created this year: year-to-date /
+    filters: {
+      a!queryFilter(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        operator: "BETWEEN",
+        value: {
+          / Beginning of the year /
+          eomonth(today(), - month(today())) + 1,
+          now()
+        }
+      )
+    },
+    fields: {
+      a!aggregationFields(
+        / Group by the order date year /
+        groupings: a!grouping(
+          field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+          interval: "YEAR",
+          alias: "orderDateYear"
+        ),
+        measures: {
+          / Get the sum of all orders /
+          a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "totalSales"
+          ),
+          / Get the sum of all orders that have an online order flag/
+          a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "onlineSales",
+            filters: {
+              a!queryFilter(
+                field: 'recordType!{bec4a875-9980-4bbf-a38c-c492ebed065a}Order Detail.relationships.{e6b1dbca-6c3c-4540-a093-3c581a73ad17}order.fields.{5bade7d5-5fbc-4cc4-807f-907f8f65969b}onlineOrderFlag',
+                operator: "=",
+                value: 1
+              ),
+        }
+      )
+    }
+  )
+},
+pagingInfo: a!pagingInfo(1, 10)
+
+).data,
+  local!onlineSalesLY: a!queryRecordType(
+    recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+    filters: {
+      a!queryFilter(
+        field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+        operator: "BETWEEN",
+        value: {
+          /Beginning of the year - Last year/
+          datetime(
+            year(eomonth(today(), - month(today())) + 1) - 1,
+            1,
+            1
+          ),
+          /Today - Last year /
+          datetime(
+            year(today()) - 1,
+            month(today()),
+            day(today())
+          )
+        }
+      )
+    },
+    fields: {
+      a!aggregationFields(
+        / Group by the order date year /
+        groupings: a!grouping(
+          field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+          interval: "YEAR",
+          alias: "orderDateYear"
+        ),
+        measures: {
+          / Get the sum of all orders /
+          a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "totalSalesLY"
+          ),
+          / Get the sum of all orders that have an online order flag/
+          a!measure(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.relationships.{0bde4028-fd7a-411f-97ad-7ad5b84e0d18}orderDetail.fields.{db456082-5f77-4765-bc3e-f662651e0d52}lineTotal',
+            function: "SUM",
+            alias: "onlineSalesLY",
+            filters: {
+              a!queryFilter(
+                field: 'recordType!{bec4a875-9980-4bbf-a38c-c492ebed065a}Order Detail.relationships.{e6b1dbca-6c3c-4540-a093-3c581a73ad17}order.fields.{5bade7d5-5fbc-4cc4-807f-907f8f65969b}onlineOrderFlag',
+                operator: "=",
+                value: 1
+              ),
+        }
+      )
+    }
+  )
+},
+pagingInfo: a!pagingInfo(1, 10)
+
+).data,
+  / Column layout that we'll use for our gauge components/
+  {
+    a!richTextDisplayField(
+      labelPosition: "COLLAPSED",
+      value: {
+        a!richTextHeader(text: { "Percent of Online Sales" })
+      }
+    ),
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!gaugeField(
+              labelPosition: "COLLAPSED",
+              percentage: local!onlineSalesTY.onlineSales / local!onlineSalesTY.totalSales * 100,
+              primaryText: a!gaugePercentage(),
+              secondaryText: "YTD",
+              tooltip: "Online Sales: " & dollar(
+                a!defaultValue(local!onlineSalesTY.onlineSales, 0)
+              )
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!gaugeField(
+              labelPosition: "COLLAPSED",
+              percentage: local!onlineSalesLY.onlineSalesLY / local!onlineSalesLY.totalSalesLY * 100,
+              primaryText: a!gaugePercentage(),
+              secondaryText: "LY YTD",
+              tooltip: "Online Sales: " & dollar(
+                a!defaultValue(local!onlineSalesLY.onlineSalesLY, 0)
+              )
+            )
+          }
+        )
+      }
+    )
+  }
+)
+```

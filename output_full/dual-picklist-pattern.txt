@@ -1,0 +1,601 @@
+
+layout: pattern
+title: Dual Picklist Pattern
+excerpt: Use this pattern to view side-by-side lists and move items from one list to the other. The dual picklist is great for moving items from one state to another, like from active to inactive.
+reftype: pattern
+sr-tags:
+  - Choice Components
+  - Cards
+  - Checkboxes
+  - Buttons
+
+{:.screenshot}
+Design structure
+This page will break down the expression so you can better understand how to adapt this pattern to your own data so that it works to best suit your needs.
+The main components in this pattern are card layouts, checkboxes, and buttons using the a!save() function. The image below displays how the pattern looks on a blank interface with callouts for the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the dual picklist pattern onto your interface, 276 lines of expressions will be added to the section where you dragged it.
+sail
+a!localVariables(
+  local!availableList: {
+    a!map(id: 1, name: "Item 1"),
+    a!map(id: 2, name: "Item 2"),
+    a!map(id: 3, name: "Item 3"),
+    a!map(id: 5, name: "Item 5"),
+    a!map(id: 6, name: "Item 6")
+  },
+  local!selectedList: {
+    a!map(id: 4, name: "Item 4"),
+    a!map(id: 7, name: "Item 7")
+  },
+  local!availableListChoices: { 1 },
+  local!selectedListChoices,
+  {
+    a!sectionLayout(
+      label: "Items",
+      labelSize: "SMALL",
+      labelColor: "SECONDARY",
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    "Available",
+                    " ",
+                    a!richTextItem(
+                      text: "(" & length(local!availableList) & ")",
+                      style: "STRONG"
+                    )
+                  }
+                ),
+                a!cardLayout(
+                  contents: {
+                    a!checkboxField(
+                      label: "Available Items",
+                      labelPosition: "COLLAPSED",
+                      choiceLabels: local!availableList.name,
+                      choiceValues: local!availableList.id,
+                      value: local!availableListChoices,
+                      saveInto: local!availableListChoices,
+                      showWhen: length(local!availableList) > 0,
+                      choiceLayout: "STACKED",
+                      choiceStyle: "CARDS"
+                    )
+                  },
+                  height: "MEDIUM_PLUS",
+                  marginBelow: "STANDARD"
+                )
+              },
+              width: "MEDIUM"
+            ),
+            a!columnLayout(
+              contents: {
+                a!buttonArrayLayout(
+                  buttons: {
+                    a!buttonWidget(
+                      label: "Add Selected",
+                      icon: if(
+                        a!isPageWidth("PHONE"),
+                        "chevron-down",
+                        "chevron-right"
+                      ),
+                      saveInto: {
+                        /* Add chosen available items to selected list */
+                        a!save(
+                          target: local!selectedList,
+                          value: cast(
+                            typeof(local!selectedList),
+                            todatasubset(
+                              arrayToPage: append(
+                                local!selectedList,
+                                index(
+                                  local!availableList,
+                                  wherecontains(
+                                    local!availableListChoices,
+                                    local!availableList.id
+                                  ),
+                                  {}
+                                )
+                              ),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        /* Remove from available list */
+                        a!save(
+                          local!availableList,
+                          remove(
+                            local!availableList,
+                            wherecontains(
+                              local!availableListChoices,
+                              local!availableList.id
+                            )
+                          )
+                        ),
+                        /* Clear out choices */
+                        a!save(local!availableListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: or(
+                        a!isNullOrEmpty(local!availableListChoices),
+                        length(local!availableList) = 0
+                      )
+                    ),
+                    a!buttonWidget(
+                      label: "Add All",
+                      icon: "plus",
+                      saveInto: {
+                        /* Add all available items to selected list */
+                        a!save(
+                          target: local!selectedList,
+                          value: cast(
+                            typeof(local!selectedList),
+                            todatasubset(
+                              arrayToPage: append(local!selectedList, local!availableList),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        /* Clear available list */
+                        a!save(local!availableList, {}),
+                        /* Clear out choices */
+                        a!save(local!availableListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: length(local!availableList) = 0
+                    )
+                  },
+                  align: "START",
+                  marginBelow: "EVEN_MORE"
+                ),
+                a!buttonArrayLayout(
+                  buttons: {
+                    a!buttonWidget(
+                      label: "Remove Selected",
+                      icon: if(
+                        a!isPageWidth("PHONE"),
+                        "chevron-up",
+                        "chevron-left"
+                      ),
+                      saveInto: {
+                        /* Add chosen selected items to available list */
+                        a!save(
+                          target: local!availableList,
+                          value: cast(
+                            typeof(local!availableList),
+                            todatasubset(
+                              arrayToPage: append(
+                                local!availableList,
+                                index(
+                                  local!selectedList,
+                                  wherecontains(
+                                    local!selectedListChoices,
+                                    local!selectedList.id
+                                  ),
+                                  {}
+                                )
+                              ),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        /* Remove from selected list */
+                        a!save(
+                          local!selectedList,
+                          remove(
+                            local!selectedList,
+                            wherecontains(
+                              local!selectedListChoices,
+                              local!selectedList.id
+                            )
+                          )
+                        ),
+                        /* Clear out choices */
+                        a!save(local!selectedListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: or(
+                        a!isNullOrEmpty(local!selectedListChoices),
+                        length(local!selectedList) = 0
+                      )
+                    ),
+                    a!buttonWidget(
+                      label: "Remove All",
+                      icon: "times",
+                      saveInto: {
+                        /* Add all selected items to available list */
+                        a!save(
+                          target: local!availableList,
+                          value: cast(
+                            typeof(local!availableList),
+                            todatasubset(
+                              arrayToPage: append(local!availableList, local!selectedList),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        /* Clear selected list */
+                        a!save(local!selectedList, {}),
+                        /* Clear out choices */
+                        a!save(local!selectedListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: length(local!selectedList) = 0
+                    )
+                  },
+                  align: "START"
+                )
+              },
+              width: "NARROW"
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    "Selected",
+                    " ",
+                    a!richTextItem(
+                      text: "(" & length(local!selectedList) & ")",
+                      style: "STRONG"
+                    )
+                  }
+                ),
+                a!cardLayout(
+                  contents: {
+                    a!checkboxField(
+                      label: "Selected Items",
+                      labelPosition: "COLLAPSED",
+                      choiceLabels: local!selectedList.name,
+                      choiceValues: local!selectedList.id,
+                      value: local!selectedListChoices,
+                      saveInto: local!selectedListChoices,
+                      showWhen: length(local!selectedList) > 0,
+                      choiceLayout: "STACKED",
+                      choiceStyle: "CARDS"
+                    )
+                  },
+                  height: "MEDIUM_PLUS",
+                  marginBelow: "STANDARD"
+                )
+              },
+              width: "MEDIUM"
+            ),
+            a!columnLayout(contents: {})
+          },
+          alignVertical: "MIDDLE"
+        )
+      }
+    )
+  }
+)
+[Line 1-14] Define local variables
+The local variables at the top of the expression do the following:
+
+Define the data that will be displayed in each list and list item.
+Set up two variables to store the Available and Selected list choices.
+
+{% highlight sail linenos start_line=1 %}
+a!localVariables(
+  local!availableList: {
+    a!map(id: 1, name: "Item 1"),
+    a!map(id: 2, name: "Item 2"),
+    a!map(id: 3, name: "Item 3"),
+    a!map(id: 5, name: "Item 5"),
+    a!map(id: 6, name: "Item 6")
+  },
+  local!selectedList: {
+    a!map(id: 4, name: "Item 4"),
+    a!map(id: 7, name: "Item 7")
+  },
+  local!availableListChoices: { 1 },
+  local!selectedListChoices,
+{% endhighlight %}
+[Line 15-55] Formatting the Available list {#available-list}
+This section uses card layouts and checkboxes to format the list of available items. The Available list header and counter for how many items are in the list are both created using rich text items.
+Lines 30-33 define the expression for the item counter. The counter updates as you move items to and from lists. To create the counter, the expression uses the length() function to count how many items are in the local variable that contains the Available list items.
+The Available list is created using a card layout and a checkbox field. The checkbox field uses the "STACKED" layout to create a vertical list and the "CARDS" style to create large click-targets for the user.
+{% highlight sail linenos start_line=15 %}
+  {
+    a!sectionLayout(
+      label: "Items",
+      labelSize: "SMALL",
+      labelColor: "SECONDARY",
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    "Available",
+                    " ",
+                    a!richTextItem(
+                      text: "(" & length(local!availableList) & ")",
+                      style: "STRONG"
+                    )
+                  }
+                ),
+                a!cardLayout(
+                  contents: {
+                    a!checkboxField(
+                      label: "Available Items",
+                      labelPosition: "COLLAPSED",
+                      choiceLabels: local!availableList.name,
+                      choiceValues: local!availableList.id,
+                      value: local!availableListChoices,
+                      saveInto: local!availableListChoices,
+                      showWhen: length(local!availableList) > 0,
+                      choiceLayout: "STACKED",
+                      choiceStyle: "CARDS"
+                    )
+                  },
+                  height: "MEDIUM_PLUS",
+                  marginBelow: "STANDARD"
+                )
+              },
+              width: "MEDIUM"
+            ),
+{% endhighlight %}
+[Line 56-145] Creating the Add Selected and Add All buttons {#add-buttons}
+This is the first of two buttons sections in this pattern. This section of the expression contains the Add Selected and Add All buttons.
+The Add Selected button (lines 60-113) uses the a!save() function, local variables, and a few other functions within the saveInto parameter. The button checks which items in the Available list are chosen and moves them to the Selected list. If no items are selected, the button is disabled.
+The Add All button (lines 114-141) uses the a!save() function, local variables, and a few other functions within the saveInto parameter. The button adds all the items from the Available list to the Selected list. If no items are in the Available list, this button is disabled.
+{% highlight sail linenos start_line=56 %}
+            a!columnLayout(
+              contents: {
+                a!buttonArrayLayout(
+                  buttons: {
+                    a!buttonWidget(
+                      label: "Add Selected",
+                      icon: if(
+                        a!isPageWidth("PHONE"),
+                        "chevron-down",
+                        "chevron-right"
+                      ),
+                      saveInto: {
+                        / Add chosen available items to selected list /
+                        a!save(
+                          target: local!selectedList,
+                          value: cast(
+                            typeof(local!selectedList),
+                            todatasubset(
+                              arrayToPage: append(
+                                local!selectedList,
+                                index(
+                                  local!availableList,
+                                  wherecontains(
+                                    local!availableListChoices,
+                                    local!availableList.id
+                                  ),
+                                  {}
+                                )
+                              ),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        / Remove from available list /
+                        a!save(
+                          local!availableList,
+                          remove(
+                            local!availableList,
+                            wherecontains(
+                              local!availableListChoices,
+                              local!availableList.id
+                            )
+                          )
+                        ),
+                        / Clear out choices /
+                        a!save(local!availableListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: or(
+                        a!isNullOrEmpty(local!availableListChoices),
+                        length(local!availableList) = 0
+                      )
+                    ),
+                    a!buttonWidget(
+                      label: "Add All",
+                      icon: "plus",
+                      saveInto: {
+                        / Add all available items to selected list /
+                        a!save(
+                          target: local!selectedList,
+                          value: cast(
+                            typeof(local!selectedList),
+                            todatasubset(
+                              arrayToPage: append(local!selectedList, local!availableList),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        / Clear available list /
+                        a!save(local!availableList, {}),
+                        / Clear out choices /
+                        a!save(local!availableListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: length(local!availableList) = 0
+                    )
+                  },
+                  align: "START",
+                  marginBelow: "EVEN_MORE"
+                ),
+{% endhighlight %}
+[Line 146-235] Creating the Remove Selected and Remove All buttons {#remove-buttons}
+This is the second of two buttons sections in this pattern. This section of the expression contains the Remove Selected and Remove All buttons.
+The Remove Selected button (lines 148-201) is the same as the Add Selected button, except that the Remove Selected button takes the chosen items in the Selected list and moves them to the Available list.
+The Remove All button (lines 202-229) is the same as the Add All button, except that the Remove All button adds all items in the Selected list to the Available list.
+{% highlight sail linenos start_line=146 %}
+                a!buttonArrayLayout(
+                  buttons: {
+                    a!buttonWidget(
+                      label: "Remove Selected",
+                      icon: if(
+                        a!isPageWidth("PHONE"),
+                        "chevron-up",
+                        "chevron-left"
+                      ),
+                      saveInto: {
+                        / Add chosen selected items to available list /
+                        a!save(
+                          target: local!availableList,
+                          value: cast(
+                            typeof(local!availableList),
+                            todatasubset(
+                              arrayToPage: append(
+                                local!availableList,
+                                index(
+                                  local!selectedList,
+                                  wherecontains(
+                                    local!selectedListChoices,
+                                    local!selectedList.id
+                                  ),
+                                  {}
+                                )
+                              ),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        / Remove from selected list /
+                        a!save(
+                          local!selectedList,
+                          remove(
+                            local!selectedList,
+                            wherecontains(
+                              local!selectedListChoices,
+                              local!selectedList.id
+                            )
+                          )
+                        ),
+                        / Clear out choices /
+                        a!save(local!selectedListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: or(
+                        a!isNullOrEmpty(local!selectedListChoices),
+                        length(local!selectedList) = 0
+                      )
+                    ),
+                    a!buttonWidget(
+                      label: "Remove All",
+                      icon: "times",
+                      saveInto: {
+                        / Add all selected items to available list /
+                        a!save(
+                          target: local!availableList,
+                          value: cast(
+                            typeof(local!availableList),
+                            todatasubset(
+                              arrayToPage: append(local!availableList, local!selectedList),
+                              pagingConfiguration: a!pagingInfo(
+                                startIndex: 1,
+                                batchSize: - 1,
+                                sort: a!sortInfo(field: "id", ascending: true)
+                              )
+                            ).data
+                          )
+                        ),
+                        / Clear selected list /
+                        a!save(local!selectedList, {}),
+                        / Clear out choices /
+                        a!save(local!selectedListChoices, null)
+                      },
+                      width: "FILL",
+                      style: "SECONDARY",
+                      disabled: length(local!selectedList) = 0
+                    )
+                  },
+                  align: "START"
+                )
+              },
+              width: "NARROW"
+            ),
+{% endhighlight %}
+[Line 236-276] Formatting the Selected list
+This section is similar to the Formatting the Available list section. Check that section out to learn how the item counter and Selected list are created.
+{% highlight sail linenos start_line=236 %}
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    "Selected",
+                    " ",
+                    a!richTextItem(
+                      text: "(" & length(local!selectedList) & ")",
+                      style: "STRONG"
+                    )
+                  }
+                ),
+                a!cardLayout(
+                  contents: {
+                    a!checkboxField(
+                      label: "Selected Items",
+                      labelPosition: "COLLAPSED",
+                      choiceLabels: local!selectedList.name,
+                      choiceValues: local!selectedList.id,
+                      value: local!selectedListChoices,
+                      saveInto: local!selectedListChoices,
+                      showWhen: length(local!selectedList) > 0,
+                      choiceLayout: "STACKED",
+                      choiceStyle: "CARDS"
+                    )
+                  },
+                  height: "MEDIUM_PLUS",
+                  marginBelow: "STANDARD"
+                )
+              },
+              width: "MEDIUM"
+            ),
+            a!columnLayout(contents: {})
+          },
+          alignVertical: "MIDDLE"
+        )
+      }
+    )
+  }
+)
+{% endhighlight %}

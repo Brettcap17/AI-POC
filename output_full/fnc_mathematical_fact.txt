@@ -1,0 +1,30 @@
+
+layout: function
+title: fact() Function
+space: function_page
+excerpt: "The factorial of specified number."
+category: function_page
+fncname: fact
+fncexample: "fact(4)"
+fncresult: "24"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Integer
+    description: |
+      A number between 0 and 170, the factorial of which will be returned.
+
+Functions
+{% include fncsyntax.html %}
+{{ page.excerpt }} Returns a decimal even though the factorial is an integer.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+fact(6) returns 720 

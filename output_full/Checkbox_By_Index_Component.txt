@@ -1,0 +1,114 @@
+
+layout: function
+title: Checkbox By Index Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays a limited set of choices from which the user may select none, one, or many items and saves the indices of the selected choices.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!checkboxFieldByIndex
+fncsubcat: Selection
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the field should display as potentially editable but grayed out. Default: false.
+  - keyword: choiceLabels
+    name: Choice Labels
+    types: List of Text String
+    description: Array of options for the user to select.
+  - keyword: value
+    name: Display Value
+    types: List of Number (Integer)
+    description: Indices of choices to display as selected.
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: Validation errors to display below the field when the value is not null.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: |
+      One or more variables that are updated with the choice indexes when the user changes the selections. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of choice labels. Appian recommends this setting only be used inside the Grid Layout component. Valid values: "LEFT", "CENTER", "RIGHT".
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: choiceLayout
+    name: Choice Layout
+    types: Text
+    description: |
+      Determines the layout. Valid values include "STACKED" (default) to display the choices one on top of another and "COMPACT" to display the choices side-by-side.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: choiceStyle
+    name: Choice Style
+    types: Text
+    description: |
+      Determines how the choices should be displayed on the interface. Valid values: "STANDARD" (default), "CARDS".
+reftype: sailcomponent
+scdisplayname: Checkbox By Index
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} To save a value instead of an index, use checkboxes. This component is not available from the interface component picker in the design view.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage Considerations
+Saving values
+
+If a single item is selected, the system saves a single-item array.
+If no selection is made, the system saves a null value into the component's saveInto parameter. If a single item is selected, the system saves a single-item array.
+
+Using the choiceLabels and choiceLayout parameters
+
+Choices display in the same order as defined in the choiceLabels parameter. The choiceLabels argument cannot be null.
+The "COMPACT" option for choiceLayout should only be used for checkboxes with short choice labels, such as "Yes", "No", or "Maybe". When using the "COMPACT" option, labels with text longer than two lines will be truncated. 
+For long labels, use the "STACKED" option for choiceLayout.

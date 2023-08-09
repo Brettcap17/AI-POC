@@ -1,0 +1,94 @@
+
+layout: basic
+title: Connecting a Portal Directly to an External Database
+weight: 1000
+topic-group: C
+title_short: Working with an External Database
+
+
+appian-style-note
+This is a preview feature. Currently, you can only connect your portal directly to an external database if that database can be accessed at a public IP address. Make sure that these requirements fit your use case before adopting this feature.
+
+Overview
+For your external users to complete their workflows and tasks with ease, they'll likely need to enter or view data within your portal. Writing and querying data in a portal allows you and your users to easily get and share more information than ever.
+There are two ways to write and query data within your portal:
+
+Use a web API and integration to write to or query a record type or data store.
+Directly write to or query from an external database.
+
+Currently, you can only connect a portal directly to an external database if that database can be accessed at a public IP address. The database must be a supported external database that isn't behind a VPN.
+This page will explain how to directly connect to an external database to work with data in your portal.
+Why connect directly to an external database
+There are a few reasons that you might want to connect directly to an external database that is publicly accessible instead of using web APIs and integrations to connect to an Appian data store. The primary reasons are scalability, isolation, and speed of development.
+Scalability
+When you connect directly to an external database, calls to the database don't pass through Appian. This means that your portal isn't bound to scalability of Appian and can scale independently.
+Isolation
+When you connect directly to an external database, your portal is not connected to your Appian applications via web APIs and integrations. During heavy usage, this isolation means that you don't have to worry about a lot of web API calls from your portal impacting the performance of your Appian applications.  
+Speed of development
+When you connect directly to an external database, it becomes easier and faster to use data in a portal. It only takes a few simple steps to set up your external database as a data source connected system and call it directly from an interface.
+Writing data directly to an external database
+Writing data through a portal opens the door to new users and more information. Portal users can fill out a questionnaire, respond to an anonymous survey, request rebates or services, apply for grants, or kick-off their own onboarding process. But while you're reaching more information and a broader audience, you still need for your data to stay safe. Portals' isolated architecture gives you the best of both, by allowing you to write data to your external databases safely and effectively from public forms.
+Setting up your data source to write data
+To write data from your portal directly to an external database:
+
+Provide a supported database that can be accessed at a public IP address.
+Add your database to the platform as a data source connected system.
+Create a corresponding data store object.
+In the interface used for your portal, use either a!writeToDataStoreEntity(), a!writeToMultipleDataStoreEntities(), or a!deleteDataStoreEntity() just as you normally would in Appian.
+Set up a service account to give your users access to your external database. For more information, see the Security and service accounts section below.
+
+Be aware that any calls to your external database go directly to the database and don't pass through Appian.
+Provide connection information in the import customization file
+When you deploy your portal object to a different environment, include an import customization file (ICF) in the application or deployment package. In the ICF, provide your API key as well as any other connected system credentials and information. For more information, see Deploying a portal.
+Checklist: objects and credentials required for writing data directly to an external database
+To write data in a portal to an external database, you need:
+
+An interface that uses a data store entity function to write data to your database (a!writeToDataStoreEntity(), a!writeToMultipleDataStoreEntities(), a!deleteDataStoreEntity()).
+A service account with Viewer permissions to your data store.
+A data source connected system object.
+Connected system credentials.
+A data store object.
+A publicly accessible external database.
+
+Querying data directly from an external database
+Querying data through a portal allows for more of your users to quickly and easily access information. While using your portal, users may need to check out the status of their in-flight processes, view information about your products or services, or search public records. We understand that allowing public access to some of your data may seem risky, but don't worry, you choose which data you allow users to access. Portals' isolated architecture gives you peace of mind while allowing you to query data from your external databases for public access safely and efficiently.
+Setting up your data source to query data
+To query data in your portal directly from an external database:
+
+Provide a supported database that can be accessed at a public IP address.  
+Add it to the platform using a data source connected system.
+Create a corresponding data store object.
+In the primary interface used for your portal, use a!queryEntity() just as you normally would in Appian.
+We recommend that you cast the dictionary returned from your query to a CDT.
+Set up a service account to control access to your external database for your external users. For more information, see the Security and service accounts section below.
+
+Be aware that any calls to your external database go directly to the database and don't pass through Appian.
+Provide connection information in the import customization file
+When you deploy your portal object to a different environment, include an import customization file (ICF) in the app or deployment package. In the ICF, provide your API key as well as any other connected system credentials and information. For more information, see Deploying a portal.
+Checklist: objects and credentials required for querying data directly to an external database
+To query data in a portal from an external database, you need:
+
+An interface that uses the a!queryDataStoreEntity() function to query data from your database.
+A service account with Viewer permissions to your data store object.
+A data source connected system object.
+Connected system credentials.
+A data store object.
+A publicly accessible external database.
+
+Security and service accounts
+To write and query data in an external database, your users must have Viewer permissions to the data store that connects your portal to your database.
+To give users access to your external database:
+
+Use an existing service account or create a new one by adding an existing user to the Service Accounts group.
+Add the service account to your Users group in your application.
+Give the Users group Viewer permissions to your data store or create new end-user groups with more granular permissions to your data and application objects.
+In your portal object, select your service account in the Service Account field.  
+When deploying a portal object to a different environment, add your API key to the import customization file and upload the file as a part of the app or deployment package containing your portal object.
+
+For more information about using service accounts with your portal, see Service Accounts in Portals.
+
+appian-style-note
+If you need to update which data stores your portal has access to after your portal has been published, update the portal's service account permissions and republish the portal.
+
+Testing
+Be sure to fully test all parts of the connections to your portal with a production-level amount of data and usage to make sure everything is performing at scale. Test your primary interface before publishing. Then, test all aspects of your published portal to make sure your users can write and query data correctly. Some connections can't be tested until after publishing.

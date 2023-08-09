@@ -1,0 +1,298 @@
+
+layout: function
+title: Stamp Component
+category: function_page
+compatibility: -crf
+excerpt: Displays an icon and/or text on a colored circular background.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!stampField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: icon
+    name: Icon
+    types: Text
+    description: |
+      Icon to display inside the stamp. See the documentation for details.
+  - keyword: text
+    name: Text
+    types: Text
+    description: Text to display within the stamp.
+  - keyword: backgroundColor
+    name: Background Color
+    types: Text
+    description: |
+      Determines the background color. Valid values: Any valid hex color or "ACCENT" (default), "POSITIVE", "NEGATIVE", "SECONDARY", "TRANSPARENT". If "TRANSPARENT" is selected, the circle border will take on the content color and the circle fill will be transparent.
+  - keyword: contentColor
+    name: Content Color
+    types: Text
+    description: |
+      Determines the icon color. Valid values: Any hex color or "STANDARD" (default), "ACCENT", "POSITIVE", "NEGATIVE".
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the size of the stamp. Valid values: "TINY", "SMALL", "MEDIUM" (default), "LARGE".
+  - keyword: align
+    name: Align
+    types: Text
+    description: |
+      Determines alignment of the stamp. Valid values: "START", "CENTER" (default), "END".
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: Text to display on mouseover (web) or tap (mobile).
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: link
+    name: Link
+    types: Any Type
+    description: |
+      Link to apply to the stamp. Create a link with a!documentDownloadLink(), a!dynamicLink(), a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), a!safeLink(), a!startProcessLink(), a!submitLink(), a!userRecordLink(), or a!authorizationLink().
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Stamp
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} They are best used as a decorative component to add visual interest to your page. This feature is perfect for drawing attention to important content and reduces the need for custom images. 
+Stamps can include a link and are an alternative style in places where you might otherwise use a button or a link.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Stamp color
+
+A stamp with a "TRANSPARENT" background displays an icon and/or text with a colored circular border. The contentColor will be used for the icon, text, and circular border.
+
+Examples
+INCLUDE PAGE: SAIL intro
+Stamp with an ACCENT background
+{% sailbox 600 %} 
+a!stampField(
+  label: "Stamp",
+  labelPosition: "COLLAPSED",
+  backgroundColor: "ACCENT",
+  icon: "STAR",
+  contentColor: "STANDARD"
+)
+{% endsailbox %}
+Stamp with a TRANSPARENT background
+{% sailbox 600 %} 
+a!stampField(
+  label: "Stamp",
+  labelPosition: "COLLAPSED",
+  backgroundColor: "TRANSPARENT",
+  icon: "HOME",
+  contentColor: "POSITIVE" 
+)
+{% endsailbox %}
+Stamp with text
+{% sailbox 600 %} 
+{
+  a!sideBySideLayout(
+    items: {
+      a!sideBySideItem(
+        item: a!stampField(
+          backgroundColor: "#cc0000",
+          text: "1",
+          align: "END"
+        )
+      ),
+      a!sideBySideItem(
+        item: a!stampField(
+          backgroundColor: "#cc0000",
+          text: "2",
+          align: "CENTER"
+        )
+      ),
+      a!sideBySideItem(
+        item: a!stampField(
+          backgroundColor: "#cc0000",
+          text: "3",
+          align: "START"
+        )
+      )
+    }
+  )
+}
+{% endsailbox %}
+Stamps with dynamic links
+{% sailbox 900 %}
+{
+  a!localVariables(
+    / The selected navigation section /
+    local!activeNavSection: 1,
+    / The navigation sections /
+    local!navSections: {
+      a!map(name: "Workspace", icon: "briefcase"),
+      a!map(name: "Tasks",     icon: "tasks"),
+      a!map(name: "Requests",  icon: "paper-plane"),
+      a!map(name: "Calendar",  icon: "calendar"),
+      a!map(name: "My Time",   icon: "clock-o"),
+      a!map(name: "Expenses",  icon: "money")
+    },
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!forEach(
+                items: local!navSections,
+                expression: { 
+                  a!stampField(
+                    labelPosition: "COLLAPSED",
+                    icon: fv!item.icon,
+                    backgroundColor: if(
+                      fv!index = local!activeNavSection,
+                      "ACCENT",
+                      "SECONDARY"
+                    ),
+                    link: a!dynamicLink(
+                      value: fv!index,
+                      saveInto: local!activeNavSection
+                    ),
+                    size: "MEDIUM",
+                    align: "CENTER"
+                  )
+                }
+              )
+            },
+            width: "NARROW"
+          ),
+          a!columnLayout(
+            contents: {
+              choose(
+                local!activeNavSection,
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your workspace content here."
+                      )
+                    )
+                  }
+                ),
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your tasks content here."
+                      )
+                    )
+                  }
+                ),
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your requests content here."
+                      )
+                    )
+                  }
+                ),
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your calendar content here."
+                      )
+                    )
+                  }
+                ),
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your time management content here."
+                      )
+                    )
+                  }
+                ),
+                a!sectionLayout(
+                  label: index(
+                    local!navSections.name,
+                    local!activeNavSection,
+                    ""
+                  ),
+                  contents: {
+                    a!richTextDisplayField(
+                      value: a!richTextItem(
+                        text: "Put your expenses content here."
+                      )
+                    )
+                  }
+                )
+              )
+            }
+          )
+        },
+        spacing: "SPARSE",
+        showDividers: true
+      )
+    }
+  )
+}
+{% endsailbox %}

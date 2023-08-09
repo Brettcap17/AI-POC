@@ -1,0 +1,90 @@
+
+layout: function
+title: Video Component
+category: function_page
+compatibility: '-crf, -om, -portal'
+excerpt: Creates a Video component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!videoField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: videos
+    name: Videos
+    types: Any Type
+    description: |
+      Array of videos to display, created with a!webVideo().
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Video
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Web Video
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Supported formats
+
+The video formats supported by this component vary by device and browser. Videos of a format not supported by a device/browser will not play in the device/browser.
+WebM and Ogg are supported on Chrome and Firefox.
+MP4, 3gp, mov, and mpv are supported on iOS devices.
+MP4, 3gp, webm, and mkv are supported on Android devices.
+Videos served over HTTP and HTTPS are both supported. For videos that require authentication, we strongly recommend that you set up single sign-on between Appian and the server that hosts the video so that the video can play without requiring the user to authenticate a second time.
+
+Appian Documents
+a!videoField() cannot be used to display videos stored as Appian documents.
+Examples
+INCLUDE PAGE: SAIL intro
+{% sailbox 900 %}
+a!videoField(
+  label: "Video Example",
+  videos: {
+    a!webVideo(
+      source: "https://www.w3schools.com/html/mov_bbb.mp4"
+    )
+  }
+)
+{% endsailbox %}

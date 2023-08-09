@@ -1,0 +1,69 @@
+
+layout: "basic"
+title: "Versioning"
+topic-group: "B"
+weight: 3
+
+No matter how hard you work to design your connected system, there comes a time when you'll need to release another version to fix bugs, handle new use cases, or add additional operations. This page explains how connected system plug-ins handle versioning so you can add capabilities while minimizing disruption for your users.
+Overview
+When you create the connected system plug-in manifest, you define one version for the entire plug-in (in plugin-info) and separate versions for each connected system. There's no direct dependency between the two version types.
+Connected system plug-in versions
+The plug-in version must be incremented with each release (no matter how minor) in order for the newer version to be deployed over prior releases. During development you can deploy with the same version as long as the filename of the plug-in remains the same. We recommend including the plug-in version in the package filename to help distinguish between different files.
+Connected system versions
+Each connected system template in your plug-in has it's own versions. There can be multiple versions of a connected system in the same plug-in, but you can only have one instance of each major version. The following sections will help you decide when and how to make different version changes to your connected system.
+Backward compatibility
+We work hard to ensure that customer applications keep working even when they upgrade Appian. We call this backward compatible. The same principle applies when you release new versions of your connected system plug-in.
+Some things to keep in mind when you think about what compatibility looks like for your connected system:
+
+Imagine a customer already uses your connected system in an application
+The customer installs your updated plug-in
+The customer does not have to modify their application
+The runtime integration does not have errors or undesireable behavior changes in their exising applications
+
+The promise of backward compatibility is core to the Appian platform, and therefore, it is important for your connected system to use the different versioning options provided.
+Major versions
+Use major versions when your connected system changes won't be compatible with prior versions. For example:
+
+Adding a new required field (existing connected system or integration objects won't have this field populated)
+Changing the default value of a field (for example, the default was false, but now you want it to be true)
+Changing the expected format of a field
+Changing the behavior of the integration in a functional way (for example, users previously received data as JSON, but now it is a dictionary)
+
+If you are going to make a major version change to any object (connected system template, integration template, client API Template), create a copy of your existing connected system, including all the related code, resources, and definitions in your plug-in manifest. For more details, see How to version.
+Different major versions must be packaged in the same appian-plugin.xml, but packaging two connected system templates with the same name and same major version together will result in an error when the plug-in is loaded. 
+When you deploy a new major version of your connected system, Appian retains the behavior of the existing connected systems and integrations. Integrations will continue to use the prior version of your connected system and their behavior won't change. When designers create new connected systems, they'll only see your new connected system version in the connected system modal.
+There's no limit to the number of major versions you can create for your connected system, integration, or client API templates. Keep in mind that with each major version, designers have to manually update existing integrations to use the new version. If your change doesn't impact backward compatibiliy it's better to make a less-disruptive minor update to your connected system.
+Migrating connected system objects to a new major version
+Existing connected system objects cannot be upgraded to a new major version. Newly created connected system objects will use the latest version. Manually update the properties with values from the existing connected system object.
+Migrating integrations to a new major version
+Open the integration in Appian Designer and point it to a connected system object built off the version you would like to migrate to. Existing properties should be auto-populated from the existing integration configuration.
+
+appian-style-note 
+The migrated IntegrationTemplate may have added or removed properties. To revert the integration, use the integrations versions dialog (rollbacks are only possible if previous versions of the plug-in are installed). 
+
+Minor versions
+Use minor versions when you add functionality that is compatible with prior versions of your plug-in. For example:
+
+Adding an entirely new integration or client API
+Adding a new optional field to a connected system, integration, or client API
+Adding additional language/internationalization support
+
+Connected system templates do not directly support minor versions. We recommend that you indicate the logical minor versions through the appian-plugin.xml instead. So, backwards-compatible feature additions to a connected systems should cause a minor version bump (for example, 1.1.3 --> 1.2.0). Don't create a copy of the connected system tag or contents. Make your (compatible) updates to the existing connected system. See versioning how to for more details.
+When you deploy a new minor version of your connected system, Appian automatically starts using the new version in all connected system and integration objects. Designers don't need to take any action to update existing interfaces unless they want to take advantage of new functionality.
+Patch versions
+Use patch versions when you fix bugs or update non-functionality that is compatible with prior versions of your plug-in. For example:
+
+Fixing a bug changing functionality or breaking compatibility
+Changing the behavior of the connected system in a non-functional way (for example, improving performance)
+
+Connected system templates do not directly support patch versions. We recommend that you indicate the logical patch versions through the appian-plugin.xml instead. So, backwards-compatible feature additions to a connected systems should cause a patch version bump (for example, 1.1.3 --> 1.1.4) for the plug-in bundle. Don't create a copy of the connected system tag or contents. Make your (compatible) updates to the existing connected system. See versioning how to for more details.
+When you deploy a patch version of your connected system, Appian automatically starts using the new version in all connected system and integration objects. Designers don't need to take any action to update existing interfaces unless they want to take advantage of new functionality.
+Integration and client API versions
+Connected systems act as a parent container for integration templates and client APIs. Any addition or modification of an integration template or client API should result in an update to the parent connected system and plug-in manifest.
+Integration versions
+Integration templates are considered part of connected system templates, and do not have or need their own version number. Any major change to an integration needs to be reflected in the parent connected system and plug-in manifest.
+Adding an enhancement or bugfix to an integration template should result in a version bump to the parent package (appian-plugin.xml). See minor and patch versioning above.
+Adding a new integration template to an existing connected system template should be considered a minor version change for the plug-in bundle. See minor and patch versioning above.
+Adding a new required field to an integration is a major version change and must happen in lock stop with major version bumps of the parent connected system and plug-in manifest. See major versioning above.
+Client API versions
+Like integration templates, client APIs are considered part of connected system templates, and do not have or need their own version number. Client APIs should obey exactly the same versioning rules as integration templates.

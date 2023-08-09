@@ -1,0 +1,49 @@
+
+layout: basic
+title: Monitoring Applications
+topic-group: E
+weight: 100
+
+Overview
+This page is about the different areas in Appian applications that can be monitored, as well as the tools you can use to support your monitoring goals.
+Monitoring is the final stage in your DevOps journey. It provides feedback that flows back into the planning and development stages, enabling continuous improvements to your applications. User feedback should also be regularly collected and incorporated into the same early stages of the application lifecycle.
+Application monitoring consists of two general areas: application performance and system resources. Monitoring these areas can help you prevent issues with your applications, as well as resolve them quickly once they are reported.
+Learn more about the Monitor view.
+Application performance
+When monitoring an application you should prioritize the most important pieces of it, such as process models, records, and interfaces. 
+If you don’t know where to start, you should focus on these three objectives:
+
+The application is functional and not producing any errors. 
+The application is running efficiently and providing a good user experience. 
+The application is providing business value.
+
+This section divides application performance monitoring into two questions that you should ask yourself after every release: is your application running and is your application fast. For more information, see Application Monitoring.
+Is your application running?
+Process activity
+Processes are at the core of most Appian applications. In order to understand how your application is performing, it’s important to monitor the running and completed processes for errors. The Monitor view allows you to review recent process activity and process errors in a centralized place. 
+Appian developers can also configure alerts on process models, so a proactive warning is sent when there is a process error.
+Logs
+Log files are useful tools for identifying and troubleshooting errors that occur outside of processes, such as record view or task form errors. Logs are stored on the file system, and can be accessed through the Appian Designer navigation menu for Cloud customers.
+One of the most important logs for investigating errors is the Design Error Log. This log captures every expression error that directly impacts a user. These types of errors often prevent a user from completing their work, so they are important to identify and resolve quickly.
+You can also use the Appian Health Check to automatically analyze the most important logs. The report identifies objects with errors, application performance bottlenecks, and other risks, such as application design best practices.
+
+appian-style-tip
+Log Streaming is available for Cloud customers with Advanced or Enterprise Support. It allows you to leverage other monitoring tools, such as Splunk, to configure real time alerts based on your logs.
+
+Is your application fast?
+Response time
+Records are another key part of Appian applications. In order for users to have a good experience while navigating and completing their work, records need to respond quickly. Appian developers can track this metric by monitoring record response times. Appian narrows down which record interfaces have the slowest response times so you can focus your investigation there.
+Performance
+The response time of records and other user functionality depends on the performance of the underlying objects. Appian provides individual performance views for interfaces, expression rules, decisions, record types, and web APIs. These performance views can be used to troubleshoot slow response times.
+You can also track consolidated execution history and performance for the past 30 days through the Rule Performance page in the Admin Console.
+System resources
+Issues with system resources can affect your application performance. It’s important to monitor your system resources to ensure that they have sufficient capacity to support your application or that your application isn’t taking up more resources than necessary. System resources include CPU, RAM, disk space, and heap space. 
+There are several ways you can monitor the system resources for your Appian installation:
+
+Monitor process model metrics to see which process models are using the most memory on your system.
+Run Appian Health Check to monitor server metrics such as high CPU utilization, high heap utilization, and high disk utilization. You should regularly run Appian Health Check on all of your environments, including Production.
+Use the Server Monitoring Checklist to find out what you should monitor and what the recommended thresholds are.
+Cloud Resources allows you to proactively view key metrics and configuration information for your Appian Cloud environments via Appian Community.
+Appian Cloud Monitoring tracks key metrics for you and we inform you about any alerts and how we are resolving them. 
+
+For more guidance on how to distribute system resources for your Appian environment, see Scaling Appian.

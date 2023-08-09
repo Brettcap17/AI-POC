@@ -1,0 +1,55 @@
+
+layout: function
+title: News Entry Link Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to news entries.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!newsEntryLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text associated with this link.
+  - keyword: entry
+    name: Entry
+    types: Text
+    description: The ID of the linked feed entry.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: News Entry Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Link
+Read-Only Grid
+Images
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using and finding the entry ID
+
+To get an entry ID of a post created via smart service, use the Entry Id node output of the Post Event to Feed or the Post System Event to Feed smart services.
+To manually get an entry ID from a post while browsing the news feed with a web browser, click on the post's timestamp. The end of the resulting URL in your browser address bar is of the form tempo/news/entry/[entry ID].
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Basic news entry link
+sail 
+a!newsEntryLink(
+  label: "Discuss This Case",
+  entry: "f-109"
+)

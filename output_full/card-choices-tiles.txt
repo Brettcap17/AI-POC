@@ -1,0 +1,104 @@
+
+layout: function
+title: Tiles Template
+category: function_page
+compatibility: -crf
+excerpt: |
+   Displays a tile card template with a stacked icon, primary text, and secondary text. For use in the Card Choice Field cardTemplate parameter.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!cardTemplateTile
+fncsubcat: Selection
+parameters:
+  - keyword: id 
+    name: Id
+    types: Any Type
+    description: |
+       Value that identifies the card.
+  - keyword: primaryText
+    name: Primary Text
+    types: Text
+    description: |
+      Optional text to display on the first line inside the card.
+  - keyword: secondaryText
+    name: Secondary Text
+    types: Text
+    description: |
+      Optional text to display beneath the primary text inside the card.
+  - keyword: icon
+    name: Icon
+    types: Text
+    description: |
+      Icon to display inside the card.
+  - keyword: iconColor
+    name: Icon Color
+    types: Text
+    description: |
+      Determines the icon color. Valid values: Any hex color or "ACCENT" (default), "STANDARD", "SECONDARY", "POSITIVE", "NEGATIVE".
+  - keyword: iconAltText 
+    name: Icon Alternative Text
+    types: Text
+    description: |
+       Equivalent alternate text for use by screen readers.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: |
+       Text to display on mouseover (web) or tap (mobile).
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+       Determines whether the card is displayed in the set of card choices. When set to false, the card is hidden. Default: true.
+reftype: sailcomponent
+scdisplayname: Tiles Template
+scsubcat: Card_Choices_Templates
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+INCLUDE PAGE: SAIL intro
+{% sailbox 580 %} 
+a!localVariables(
+  local!save, 
+  {
+    a!sectionLayout(
+      label: "What can we help you with today?",
+      labelSize: "LARGE",
+      contents: {
+        a!cardChoiceField(
+          label: "What can we help you with today?",
+          labelPosition: "COLLAPSED",
+          instructions: "",
+          data: {
+            a!map(id: 1, icon: "shipping-fast", primaryText: "Order Tracking", iconAltText: "Delivery truck"),
+            a!map(id: 2, icon: "box-open", primaryText: "Problem with Order", iconAltText: "open box" ),
+            a!map(id: 3, icon: "credit-card", primaryText: "Refund", iconAltText: "credit card"),
+            a!map(id: 4, icon: "tachometer", primaryText: "Order Status", iconAltText: "gauge")
+      },
+      sort: {
+        a!sortInfo(
+          field: "primaryText",
+          ascending: true
+        )
+      },
+      cardTemplate: a!cardTemplateTile(
+        id: fv!data.id,
+        primaryText: fv!data.primaryText,
+        icon: fv!data.icon,
+        iconAltText: fv!data.iconAltText
+      ),
+      value: local!save,
+      saveInto: local!save,
+      maxSelections: 1
+    )
+  }
+)
+
+}
+)
+{% endsailbox %}

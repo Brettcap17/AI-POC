@@ -1,0 +1,30 @@
+
+layout: function
+title: typeof() Function
+category: function_page
+excerpt: Returns the type number of a given value.
+fnccat: Informational
+fncexample: typeof("a")
+fncname: typeof
+fncresult: '3'
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: 'The value to be inquired for type.  For example, typename(typeof(123)) might return "Integer (Number)".'
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+typeof(123) returns 1, which is the numerical representation of the Number (Int) system data type.
+typeof(loggedInUser()) = type!User returns true

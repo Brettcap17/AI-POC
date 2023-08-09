@@ -1,0 +1,55 @@
+
+layout: basic
+title: Execute Process Report Smart Service
+reftype: smart_service
+sscat: Analytics
+ssicon: Execute_Process_Report.png
+ssparentcat: Automation_Services
+
+Overview
+This activity reads a report and saves the result(s) into a process variable. The process report must already exist within Appian. 
+One way to conserve the memory used by your processes is to collect any data or statistics that you might want to preserve using a report that is run by the Execute Process Report smart service in a subprocess. This allows you to completely delete the parent process upon (or shortly after) completion, while retaining any archival data you need to keep.
+Permissions needed
+The user running the smart service must have at least Viewer rights to the process report. Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process.
+Properties
+
+
+Category: Analytics
+
+
+Icon: 
+
+
+Assignment Options: Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Setup tab
+
+Report: Browse to and select a saved process report (.arf). The process reports list includes only those reports where you have Viewer permissions.
+Max Rows: Specify the number of rows to return from the report. If you think of a report returned from this smart service as a single page of a process report, this setting is similar to the Rows Per Page setting on the Display tab of the Report Options dialog. Having a value that surpasses the total number of rows in the report does not affect the report performance.
+Context: (Optional) When a process instance is defined for the selected report's context, you can type the process ID of a new process instance context to use for the report, or you can use an expression to select the desired context. 
+Additional Filters: If the report is a process report (such as the Default Process Optimization Metrics report), this group box is displayed for you to add another by entering values for the following:
+Column: Specify the report column to use for filtering the results. A filter allows you to limit the report rows according to certain parameters.
+Operator: Select the type of matching you want your filter to perform, such as equals or greater than.
+Filter Value: Enter a value to use in the filter comparison - OR - click  to specify a filter value using an expression. 
+
+For example, if your report includes a list of office locations and staff, you might want to filter the report to only display office locations that include more than 50 staff members. Assuming that the staff column in your process report lists the number of people in each location. You would select the Staff column from the Column list; select >= from the Operator list; and enter 50 in the Value field. 
+When you add another filter, the system applies the filter to the underlying analytics query before loading the report.
+Data tab
+Node outputs
+Select the Outputs tab. Each column returned by the report is displayed as an entry on the node outputs list. 
+Select the node output that contains the data you want to save into a process variable. The Result Properties are displayed. If your report saves multiple data values into a single cell (the intersection of a row and a column), only the first element is saved.
+Select one of the following operators for saving your data:
+
+is stored as: Saves the entire result set into the variable you select.
+is stored at index: Select the index position in a multiple-value process variable. Each place in a multiple-value variable is indexed (numbered) starting with the number one. Enter the desired index position in the field provided, or use the expression editor to determine the desired index value. 
+is appended to list: Saves the result set at the end of an existing multiple-value variable without overwriting existing values. 
+
+Select an existing process variable from the Target list, or click  to create a new process variable. 
+If you need to use an expression to modify your report data before saving it into a process variable, you can create a custom output. The report columns can be referenced as activity class parameters.
+Data considerations
+Process reports query data from the analytics engine. The analytics engine checks the execution engines for changes and refreshes its database at a very high frequency. However, until the updates from the execution engines take place, there could be some disparity between the data stored in the execution engines and the data rendered by the analytics engine.
+A simple way to ensure that your analytical data is current before proceeding in your process is to insert an activity-chained user input form before loading the node that queries the analytics engine. By inserting another form directly before the report, you'll delay the process model by a few moments, giving the analytics engine time to synchronize data with the execution engines. Simply chain the node, assign it to the same user, and display a Continue message on the screen. You can offer the user a chance to confirm data, or simply describe what is going to be presented next. For example: "The following page displays XYZ information and metrics. Click Next to continue." This should alleviate any problems you might encounter with chained tasks executing before the analytics engine updates a report.
+If a user input node isn't practical, you can also call a synchronous subprocess that inserts a short delay by incrementing a process variable in a looped flow until an arbitrary limit is reached (say 50 times). Or, if the process can wait for an entire minute, simply use a timer event to delay the flow.

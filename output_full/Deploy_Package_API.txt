@@ -1,0 +1,87 @@
+
+layout: basic
+title: Deployment API - Deploy Package
+title_short: Deploy Package API
+topic: deploymentapis
+weight: 1100
+
+Overview
+This endpoint executes a deployment on an Appian environment. You can specify the name and description of the deployment, as well as upload a deployment package, import customization file, and database scripts.
+
+HTTP Request Method: POST
+Endpoint: /deployments
+
+Request
+When performing a POST request, you must define a request body using the multipart/form-data content type. Form data allows you to send key-value pairs and upload files, such as your deployment package.
+Each POST request’s body must include a JSON object (application/json content type) and form parameters (uploaded files). The JSON object is a list of key-value pairs, as listed below.
+JSON object parameters
+| Key | Value | Required |
+| - | - | - |
+| name | Name of the deployment. This name will appear in the Deploy view in Appian Designer. | Y |
+| description | Description of the deployment. This description will appear in the Deploy view in Appian Designer. | N |
+| packageFileName | File name of the deployment package (.zip). | Y |
+| customizationFileName | File name of the import customization file (.properties). | N |
+| dataSource | Name or UUID of the data source. If the data source is connected through the Admin Console, use the value in the Name field. If the data source is connected through a data source connected system, use the UUID of the connected system. | N |
+| databaseScripts | Array of data; each of the database scripts to be executed and their order. | N |
+| databaseScripts.fileName | File name of each database script to be executed (.sql or .ddl). | N |
+| dataScripts.orderId | The order in which each database script will be executed, starting at 1. | N |
+Request example
+In addition to the JSON object below, the request should have the referenced files attached.
+Request
+POST /deployments
+JSON object example
+json
+{
+   "name": "Fraud Investigation Management Release 1.0",
+   "description": "Base functionality to input and manage fraud cases",
+   "packageFileName": "Fraud Investigation Management.zip",
+   "customizationFileName": "Fraud Investigation Management.properties",
+   "dataSource": “jdbc/AppianAnywhere”,
+   "databaseScripts": [
+      {
+         "fileName": "Create Tables.sql", "orderId": "1"
+      },
+      {
+         "fileName": "Update Reference Data.sql", "orderId": "2"
+      }
+   ]
+}
+cURL example
+If you’re calling the API from a command line interface, you can use cURL to make a request. The cURL command with the above JSON object and its corresponding files looks like:
+curl --location --request
+POST 'https://mysite.appiancloud.com/suite/deployment-management/v1/deployments' \
+--header 'Appian-API-Key: <API key>' \
+--form 'json="{
+      \"name\": \"Fraud Investigation Management Release 1.0\",
+      \"description\": \"Base functionality to input and manage fraud cases\", 
+      \"packageFileName\": \"Fraud Investigation Management.zip\",
+      \"customizationFileName\": \"Fraud Investigation Management.properties\",
+      \"dataSource\": \"jdbc/AppianAnywhere\",
+      \"databaseScripts\": [
+         {
+            \"fileName\": \"Create Tables.sql\", \"orderId\": \"1\"
+         },
+         {
+            \"fileName\": \"Update Reference Data.sql\", \"orderId\": \"2\"
+         }
+      ]
+   }"' \
+--form 'randomKey1=@"Fraud Investigation Management Release 1.0.zip"' \
+--form 'randomKey2=@"Fraud Investigation Management Release 1.0.properties"' \
+--form 'randomKey3=@"Create Tables.sql"' \
+--form 'randomKey4=@"Update Reference Data.sql"'
+Each form parameter requires a key name, as indicated by randomKey1, but these can be arbitrarily named and do not need to match anything in the JSON object.
+Response
+Successful response
+| Attribute | Value |
+| - | - |
+| uuid | UUID of the deployment. This can be used to retrieve details of the deployment. |
+| url | The URL to use to retrieve the details of the deployment. |
+| status | Status of the deployment. These correspond to the statuses that appear on the Deploy view in Appian Designer.  Possible statuses: IN_PROGRESS, COMPLETED, COMPLETED_WITH_ERRORS, FAILED, PENDING_REVIEW, or REJECTED. |
+Response example
+json
+{
+   "uuid": "d243b14c-3ba5-41c3-9f51-76da51beb8f5",
+   "url": "https://mysite.appiancloud.com/suite/deployment-management/v1/deployments/d243b14c-3ba5-41c3-9f51-76da51beb8f5/",
+   "status": "IN_PROGRESS"
+}

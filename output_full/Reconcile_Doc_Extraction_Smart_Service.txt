@@ -1,0 +1,128 @@
+
+layout: basic
+title: Reconcile Doc Extraction Smart Service
+proxy-title: Reconcile Doc Extraction SS
+proxy-topic: document_extraction
+reftype: smart_service
+sscat: Document_Management
+ssicon: Reconcile_Doc_Extraction.png
+ssparentcat: Automation_Services
+type: Reference
+
+Overview
+The Reconcile Doc Extraction node allows you to assign an interface to review and update extracted data from a doc extraction run, started by the Start Doc Extraction Smart Service.
+The Appian Document Extraction page walks you through how to use document extraction functionality together in a process model. See the following list for the other smart services and functions you need to use with the Reconcile Doc Extraction Smart Service:
+- Start Doc Extraction Smart Service
+- a!docExtractionStatus()
+- a!docExtractionResult()
+- Admin Console > Document Extraction
+Properties
+
+
+Category: Document Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+This tab displays all the Node Inputs and Node Outputs for the Service Node. You can add additional inputs and outputs, if needed. 
+Node inputs
+The default inputs are:
+
+
+
+Input
+Data Type
+Required
+Multiple
+Description
+
+
+
+
+Document Extraction Id
+Integer
+Yes
+No
+ID of the doc extraction run. In order to retrieve the results, a run must first be started by the Start Doc Extraction Smart Service and a!docExtractionStatus() function should return `COMPLETE`.
+
+
+Data Type Number
+Integer
+Yes
+No
+Data Type Number is the type to which the values should be cast. 
+  
+This should be a Custom Data Type (CDT).
+This may be retrieved by using `typeof(x)`, where x is a value of the intended type.
+
+
+
+
+Title
+Text
+No
+No
+Text for the title of the interface. Default is `Reconcile [name of document]`.
+
+
+
+Submit Button Label
+Text
+No
+No
+Label for the “Submit” button. Default is `Submit`.
+
+
+
+Mark As Invalid Button Label
+Text
+No
+No
+Label for the “Mark as Invalid” button. Default is `Mark as Invalid`.
+
+
+Is Structured Doc
+Boolean
+No
+No
+Set to true when fields to be extracted are in the same location for all documents. When you pass in structured documents and perform reconciliation, Appian Document Extraction learns to recognize this information based on its position, improving results for future extractions.
+
+
+
+Node outputs
+
+Name
+Data Type
+Description
+
+Reconciled Data
+Any Type
+The data reconciled by the user. The data type will match the custom data type (CDT) number passed in the inputs.
+
+
+Is Submit
+Boolean
+User selected the “Submit” button.
+
+
+Is Invalid
+Boolean
+User selected the “Mark as Invalid” button.
+
+
+To save the Reconciled Data into a process variable:
+
+Select the Outputs property sheet (tab).
+Click Reconciled Data on the Results list. The result properties are displayed.
+Create a new process variable to store the result, or select an existing process variable with data type of your input Data Type Number from the available list.
+
+Usage considerations
+The doc extraction reconciliation interface can only be accessed by a user who has permissions to the original document.
+Appian will delete document extraction runs after 30 days, or when the total amount of data surpasses 10 GB.  If you attempt to access a run that has been deleted, you will see an error.  Appian will not delete the documents you uploaded.

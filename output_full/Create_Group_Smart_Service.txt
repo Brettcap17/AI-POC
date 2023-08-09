@@ -1,0 +1,310 @@
+
+layout: function
+title: Create Group Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Create Group smart service allows you to add new groups at runtime via process model.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!createGroup
+fncsubcat: Identity_Management
+parameters:
+  - keyword: name
+    types: Text
+    description: The name of the group.
+  - keyword: description
+    types: Text
+    description: The description of the group.
+  - keyword: groupType
+    types: Text
+    description: The type of the group.
+  - keyword: delegatedCreation
+    types: Boolean
+    description: Should administrators of this group be permitted to create additional groups as children? Default is false.
+  - keyword: parent
+    types: Group
+    description: The group's parent. You must be an administrator of this group.
+  - keyword: membershipPolicy
+    types: Text
+    description: 'The membership policy of the new group. Valid values include CLOSED (default), EXCLUSIVE, AUTOMATIC. See Group Membership Policy for definitions of the membership policies.'
+  - keyword: securityType
+    types: Text
+    description: 'The security type of the new group. Valid values include PUBLIC (default), PERSONAL, RESTRICTED. See Group_Visibility for definitions of the security types.'
+  - keyword: groupPrivacy
+    types: Text
+    description: 'The privacy policy of the new group. Valid values include LOW (default), HIGH. See Group Privacy Policy for definitions of the group privacy rules.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!group function variable (Any Type) is available to specify the group that was created. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Add_Group_Members.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }}
+This activity allows you to display a form for your users to fill out, which creates a group based on the information they submit. Alternatively, you can also set all the required node inputs at design time.
+
+appian-style-note
+- This smart service was previously called Create Custom Group.
+- This smart service has been enhanced to support Group Type as opposed to just Text. As a consequence, group types can be tracked as precedents.
+
+Permissions needed
+The Assignment tab allows you to specify a user account that is assigned the activity, or to run the activity automatically, taking the process designer or the process initiator's user account for security purposes. You can only run this activity as a user that is a system administrator or in the process administrator's role. (Other users, such as members of the Portal Administrators group cannot execute this activity.)
+Attempting to execute this task as a basic user causes a runtime exception that pauses the process and sends an alert to the process administrator.
+Properties
+
+
+Category: Identity Management
+
+
+Icon:  
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+
+Name
+Type
+Required
+Multiple
+Default Value
+Comments
+
+
+
+
+Name
+Text
+Yes
+No
+
+The following characters are not allowed in group names.
+/ \ < > " , . * '
+
+
+Description
+Text
+No
+No
+
+
+
+
+Group Type
+Group Type
+Yes
+No
+
+You must select a group type for the node input. This data cannot be collected from users at runtime, from an associated form.
+
+
+Delegated Creation?
+Integer
+
+No
+0 (No)
+The default values are Yes or No. The integer 1 equals yes. 0 equals no.
+
+
+Parent Group
+Group
+No
+No
+
+The user account that activates this activity must have Administrator rights for the parent group in order to add this new group as a child.
+
+
+Membership Policy
+Number
+Yes
+No
+Closed
+Default value options: Closed, Exclusive, Automatic
+
+
+Visibility
+Number
+Yes
+No
+Public
+Default value options: Public, Personal, Restricted
+
+
+Privacy Policy
+Number
+Yes
+No
+Low
+Default value options: Low, High
+
+
+
+If the activity is run without being assigned to a user (or a group) you must specify values for each of the required node inputs listed.
+Selecting a Personal visibility input value sets other associated node input values automatically. Be aware that the node input lists on the Data tab and the dropdown lists displayed task form are not automatically filtered when this happens to show only valid options for the Visibility. Any invalid selections (made by you at design time, or by your users at runtime) are ignored when the group is created.
+If the Visibility input is set to Personal, the following settings are configured automatically.
+
+The Group Type input is set to Custom
+No value can be specified for the Parent Group node input.
+The Membership Policy node input is set to Closed.
+The Group Privacy node input is set to High.
+
+Node outputs
+| Name | Data Type | Description |
+| - | - | - |
+| New Group | Group | This activity returns the group created. |
+You can save this group into a process variable in the following manner.
+
+Select the Outputs property sheet (tab).
+Click group on the Results list. The result properties display.
+Create a new process variable to store the result, or select an existing process variable with a Group data type from the available list.
+
+a!createGroup()
+The Create Group smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Save
+Example
+The following is a simple example that allows you to create, edit, and delete a group using an interface.
+These actions need to be performed in the order mentioned above as the edit and delete actions use the group returned by the Create Group action.
+```sail 
+=a!localVariables(
+  local!group,
+  local!groupName,
+  local!groupDescription,
+  local!groupType: "Custom",
+  local!groupSecurity: "PERSONAL",
+  local!groupPrivacy: "LOW",
+  a!formLayout(
+    label: "Create / Edit / Delete Group Test",
+    contents: {
+      a!sectionLayout(
+        label: "Create Group",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!textField(
+                    label: "Name",
+                    value: local!groupName,
+                    saveInto: local!groupName,
+                    refreshAfter: "UNFOCUS"
+                  ),
+                  a!paragraphField(
+                    label: "Description",
+                    value: local!groupDescription,
+                    saveInto: local!groupDescription,
+                    refreshAfter: "UNFOCUS"
+                  )
+                }
+              ),
+              a!columnLayout(
+                contents: {
+                  a!textField(
+                    label: "Type",
+                    value: local!groupType,
+                    saveInto: local!groupType,
+                    readOnly: true,
+                    refreshAfter: "UNFOCUS"
+                  ),
+                  a!dropdownField(
+                    label: "Security",
+                    choiceLabels: {"PUBLIC", "PERSONAL", "RESTRICTED"},
+                    choiceValues: {"PUBLIC", "PERSONAL", "RESTRICTED"},
+                    value: local!groupSecurity,
+                    saveInto: local!groupSecurity
+                  ),
+                  a!dropdownField(
+                    label: "Privacy",
+                    choiceLabels: {"LOW", "HIGH"},
+                    choiceValues: {"LOW", "HIGH"},
+                    value: local!groupPrivacy,
+                    saveInto: local!groupPrivacy
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        / CREATE GROUP /
+        a!buttonWidget(
+          label: "Create Group",
+          style: "NORMAL",
+          saveInto: {
+            a!createCustomGroup(
+              name: local!groupName,
+              description: local!groupDescription,
+              groupType: local!groupType,
+              delegatedCreation: false,
+              securityType: local!groupSecurity,
+              groupPrivacy: local!groupPrivacy,
+              onSuccess: {
+                a!save(local!group, fv!group)
+              },
+              onError: {}
+            )
+          },
+          submit: true
+        ),
+    /* EDIT GROUP */  
+    a!buttonWidget(
+      label: "Update Group",
+      style: "NORMAL",
+      saveInto: {
+        a!editGroup(
+          group: local!group,
+          name: local!groupName,
+          description: local!groupDescription,
+          groupType: local!groupType,
+          delegatedCreation: false,
+          securityType: local!groupSecurity,
+          groupPrivacy: local!groupPrivacy,
+          onSuccess: {},
+          onError: {}
+        )
+      },
+      disabled: if(isnull(local!group),true,false),
+      submit: true
+    ),
+
+    /* DELETE GROUP */  
+    a!buttonWidget(
+      label: "Delete Group",
+      style: "NORMAL",
+      saveInto: {
+        a!deleteGroup(
+          group: togroup(local!group), /* Converts the local variable from Any Type back to Group */
+          onSuccess: {},
+          onError: {}
+        ),
+        a!save(local!group, null),
+        a!save(local!groupName, null),
+        a!save(local!groupDescription, null)
+      },
+      disabled: if(isnull(local!group), true, false),
+      submit: true
+    )     
+  }
+)
+
+)
+)
+```

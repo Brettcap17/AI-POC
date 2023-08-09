@@ -1,0 +1,299 @@
+
+layout: basic
+title: Add Record Type Relationships
+title_short: Add Relationships
+topic-group: B
+weight: 201
+
+This page explains what record type relationships are and how to take advantage of them. 
+Overview
+It’s not often that you have one record type to rule them all. Instead, you usually have several record types that work together to create a comprehensive view of your enterprise data. For example, if you work at a Customer Support Center, you may have a Case record type, and a separate record type for Customers who submit cases.
+Since there is a business relationship between these data sets, you'll need to query data from each record type to know which cases are associated with each customer, what support level each customer pays for, and more. To make working with this data easier, data experts may create database views to relate the data so developers can build their applications more quickly and simply.
+When you sync your data in Appian, you don't need a data expert to relate your data---you can build the relationships yourself. Using record type relationships, you can use a low-code experience to relate your record data so you can start building your applications faster. 
+About relationships
+Record type relationships provide a fast and easy way to connect and reference related data. Just as you can reference a record type’s fields, filters, and actions throughout your applications, you can reference its related record data by defining relationships with other record types. 
+Relationships can be established between record types with data sync enabled. This means you can go beyond the traditional relationships established in a database---you can establish relationships between any record types that have sync enabled, regardless of the source. 
+So if your enterprise data lives in different database tables and in Salesforce, you can unify this data in Appian without making copies of your data, or migrating your data to have the same source type.
+{% include zoompic.html url="images/relationship-sources.png" border="-nb" %}
+Connect data
+Connecting your enterprise data is easy since relationships are defined directly in the record type. Simply choose which record type to establish a relationship with, and then define the relationship name, the relationship type, and the two common fields shared between the record types that will enforce the relationship type.
+For example, the Case record type contains detailed information about each submitted support case. However, when reviewing a support case, users also want to know about the customer associated with each case. To easily reference and display related customer information, you can add a many-to-one relationship on the Case record type.  
+To add the relationship, simply choose the Customer record type as the related record type. Then, select Many-to-One as the relationship type, and enforce that relationship using the customerId field from the Case record type, and the id field from the Customer record type. 
+You can then verify your relationship using the Preview, where you can select a record to see a preview of the related record. In this example, we've selected a Case record, which allows us to preview and verify the related Customer record.
+{% include zoompic.html url="images/many-to-one-records.png" %}
+Not only does this make it easy to connect your enterprise data, it makes development more flexible. Rather than having to set up relationships early in a database view, then waiting for change requests to be processed by your data expert, you can add record type relationships at any point in development without affecting other existing relationships. 
+Build with related data
+Once you define a relationship, you are effectively creating a link from the record type to the related record type. This link is part of the record type's data model, and it allows the record type to access the record fields and relationships defined on the related record type.
+This means that the Case record type can now reference the fields and relationships on the Customer record type. Using a simple relationship reference, the Case record type can display the customer name associated with each case, and even create a user filter to filter the list of support cases by customer name. 
+{% include zoompic.html url="images/customer-support-ticket.gif" %}
+The Case record type can also index into the relationships on the Customer record type to leverage additional related data. 
+So if the Customer record type has a relationship with the Region record type, you can reference the relationship on the Customer record type and select the label field from the Region record type to display the number of open support tickets in each region. See Reference related data for more examples.
+By adding multiple relationships, you can use a single record type to quickly build advanced records and reports that display a holistic version of your enterprise data. 
+Supported relationship types
+Record type relationships currently support the following relationship types:
+
+One-to-many relationships: One record in the record type is related to many records in the related record type.
+For example, you want to create a column chart that shows the number of orders associated with each customer. All orders are in the Order record type, and all customer information is in the Customer record type. Since a customer can have one or more orders, you can add a one-to-many relationship on the Customer record type. Now, you can reference the id field on the Order record type to count the number of orders associated with each customer.
+
+Many-to-one relationships: Many records in the record type are related to one record in the related record type.
+For example, you want to create a pie chart that shows the number of customers per industry, and this information lives in two separate record types: the Customer record type, and the Industry record type. Since many customers belong to the same industry, you can add a many-to-one relationship on the Customer record type so you can reference the industryLabel field on the Industry record type to group the number of customers by industry.
+
+One-to-one relationships: Each record in the record type relates to exactly one record in the related record type. 
+For example, you need to display the phone number and address associated with each employee on the Employee record list, but that information lives in a separate record type called Employee Contact Information. Since each employee has their own contact information, you could create a one-to-one relationship on the Employee record type so you can easily reference the phoneNumber and address fields from the Employee Contact Information record type on the Employee record list. 
+
+
+
+appian-style-tip
+Although you cannot set up a direct many-to-many relationship between two record types, you can still achieve many-to-many behavior. Learn how.
+
+Common field values
+When defining any type of relationship, you will need to use a unique value as the common field on the one-side of the relationship. In a one-to-one relationship, both common fields must be unique. The unique value should either be a primary key field or a field with a uniqueness constraint.
+For example, in a many-to-one relationship between customers and industries, you could use the industryId field from the Customer record type and the primary key field (id) from the Industry record type as the two common fields. This will tell Appian to use the industryId field to look up the corresponding value of the id field in the Industry record type and return the associated data for that industry.
+{% include zoompic.html url="images/customer-industry-commonfields.png" border="-nb" %}
+Referential integrity
+When data experts relate data by joining database tables into a database view, they rely on the referential integrity of foreign keys: that is, a foreign key will only refer to a valid row in another table, or it will be null. This means that when rows of data are deleted, this integrity can be maintained by also deleting the rows in other tables that refer to the deleted rows, or by failing the delete operation.
+When you relate your data using record type relationships, Appian leverages your synced data. This means that the data in these relationships reflect the data and rules enforced by your source. As a result, whenever you add, update, or remove data from the source of your record type, the changes are written directly to your source and then synced in Appian, which means that record type relationships do not inherently enforce referential integrity; instead, any referential integrity enforced on your source data will be reflected in Appian when it's synced.
+For example, let's say that the Customer and Order record types are related, and in the database tables that they use, the Order table has a foreign key to Customer which enforces referential integrity. 
+If you use a process model to delete a Customer from the database table, any Orders referencing that Customer would have an invalid foreign key. Therefore, the database will either cause the delete operation to fail and nothing will be deleted, or it will delete both the Customer and all Orders associated with that Customer. If the delete operation fails, no sync is needed because data has not changed. If it succeeds, Appian will immediately sync the deletions from both record types.
+Now, let's say that the Customer record type also has a relationship with the Industry record type, and in this case it's the Customer database table that holds a foreign key to the Industry table, since Industry is just reference information. 
+When you delete a Customer, there's no need to affect the Industry table because the foreign key itself is being deleted and there's no risk to referential integrity. In this case, Appian will immediately sync the change to the Customer record, but a sync will not occur on the Industry record type.
+If you enforce referential integrity on the sources of your related record types, it's recommended to keep these record types on a similar sync schedule. This way, you can be sure that your foreign key relationships are consistently reflected in the synced data, and any changes to the data as a result of referential integrity are synced at the same time.
+
+appian-style-note
+If you create a relationship between record types with different sources, referential integrity cannot be enforced by any one system.
+
+Add relationships
+You can add up to 50 relationships on a record type that has data sync enabled. The relationship can be with another record type with data sync enabled, or with itself. 
+For example, if your Employee record type has a supervisorId and an employeeId, you could create a many-to-one relationship on the Employee record type using those two fields as the common fields. Then you can use the relationship to reference the supervisor's first and last name instead of displaying the supervisorId.
+When you add a relationship, the relationship will only exist in the record type that defines the relationship. If you want to establish the inverse relationship on the related record type, use the Suggested Relationships available on the related record type's Data Model page.
+To add a record type relationship:
+1. In a record type, go to Data Model.
+2. Click ADD RELATIONSHIP.
+3. Under Related Record Type, enter the name of the record type you want to establish a relationship with. 
+4. Click NEXT.
+5. Under Relationship Name, enter a name for the relationship. This is how you’ll reference the relationship to access the related record fields. 
+6. Under Relationship Type, select One-to-Many, Many-to-One, or One-to-One.
+7. Under Common Fields, choose the fields to enforce the relationship type. The common fields can be of type Text, Number (Integer), User, or Group, and the common fields must be the same data type.
+
+appian-style-note
+You must use the primary key or other unique field on the one-side of any relationship type. For example, you could use the customerId field in a Case record type and the Id field (the primary key) of the Customer record type as the common fields.
+8. Under Preview, select a record to see a preview of the related record. 
+
+{% include zoompic.html url="images/many-to-one-records.png" %}
+
+
+Click ADD.
+
+A link icon will appear next to any fields used as common fields in a relationship. 
+All relationships defined in the record type will appear in the RELATIONSHIPS section of the Data Model page. To view all relationships accessible from your record type, select the Show relationships from related record types checkbox under the relationship diagram. To enlarge the diagram and easily view complex relationships, click the Expand relationship diagram in dialog box button.
+{% include zoompic.html url="images/relationship-diagram.png" %}
+Add many-to-many relationships
+In addition to one-to-many, many-to-one, and one-to-one relationships, it's likely that your enterprise data also contains many-to-many relationships. For example, say you have an Employee record type and a Project record type. Each project has a team of multiple employees, and a given employee can be on more than one project.
+Unlike the other relationship types, you can’t implement a direct many-to-many relationship between these two record types in Appian. Instead, you can effectively create a many-to-many relationship by creating a third record type to connect the other two. 
+This third record type will sit between the two record types of the many-to-many relationship. It should include a primary key field, and two additional fields that references the primary key fields from the other two record types. In a database, this would be your join table. Once you set up the source, you can then connect the three record types using one-to-many and many-to-one relationships.
+Let's look at the Employee and Project example. 
+{% include zoompic.html url="images/many-to-many-diagram.png" border="-nb" %}
+To create a many-to-many relationship between employees and projects:
+1. Create a new record type. In this example, we'll call it Project Assignments.
+2. Set the data source of the record type to a join table. In this example, the Project Assignment record type uses a join table with the fields Id (primary key), employeeId, and projectId.
+> appian-style-note
+> In the underlying data source of your third record type, you must have a primary key field. It's also recommended to add foreign keys to the fields that reference the primary keys from the other two record types. This will allow your source to enforce referential integrity. Learn more about [referential integrity and record type relationships](#referential-integrity).
+
+
+
+From the Project Assignment record type, add a many-to-one relationship with the Employee record type, and a many-to-one relationship with the Project record type.
+{% include zoompic.html url="images/join-record-type.png" %}
+
+
+Click SAVE CHANGES.
+
+From the Employee record type, add a one-to-many relationship with the Project Assignment record type.
+From the Project record type, add a one-to-many relationship with the Project Assignment record type.
+
+Now, you can use the relationship on the Employee record type to index into the Project Assignment record type, then use the relationship on the Project Assignment record type to index into the Project record type. For example, recordType!Employee.relationships.projectAssignments.relationships.projects.fields.name would return the related project names for a given employee.
+Since the Project record type also has a relationship with Project Assignments, you can use the Project record type to return fields from the Employee record type. In this instance, you could use recordType!Project.relationships.projectAssignments.relationships.employees.fields.lastName to return the related employee last names for a given project.
+By connecting all three record types, you can easily reference your many-to-many data in your grids, charts, queries, and more. 
+Manage relationships
+Once you create a record type relationship in the record type, you can edit it, see all relationship dependencies, or remove the relationship.
+Edit relationships
+To edit a record type relationship:
+
+In the record type, go to Data Model.
+Under RELATIONSHIPS, click the name of the relationship. The Edit Relationship dialog appears.
+Change the Relationship Name, Relationship Type, or Common Fields as necessary.
+Click OK.
+Click SAVE CHANGES.
+
+View relationship dependents
+To see which objects depend on the record type relationship:
+
+In the record type, go to Data Model.
+Under RELATIONSHIPS, click  View objects that reference this relationship next to the relationship name.
+
+A list of relationship dependents will appear. 
+Delete relationships
+To delete a record type relationship:
+1. In the record type, go to Data Model.
+2. Under RELATIONSHIPS, click  Remove Relationship next the relationship name.
+
+appian-style-note
+If you remove a relationship, any references to the relationship will break.
+
+
+Click SAVE CHANGES.
+
+Reference related data
+Once you configure a record type relationship, you can easily reference your related data to build advanced record views, lists, reports, or queries. 
+
+appian-style-note
+When you reference related record fields, Appian automatically enforces the record type object security and any record-level security configured on the related record type. This means you don't need to add any additional configurations to your queries to filter out sensitive or conditionally available information.
+
+Select a related record field
+You can reference your related record data in Design Mode or using simple relationship references in Expression Mode.
+In Design Mode
+In Design Mode, you can easily leverage related record fields when you configure a records-powered component.  
+When you select a field to configure the component, you'll see your relationship names appear in the list of available record fields. By hovering over the relationship, you can select a related record field, or index into any relationships defined on the related record type to select a field from a different record type.
+For example, say you have a read-only grid that uses the Case record type to display relevant case information, including the customerId associated with each case. 
+Since the Case record type has a relationship with the Customer record type, you can reference the name field from the Customer record type in your grid.
+To reference the related record field in this example:
+
+In a new or existing grid column, go to the Display Value field.  
+From the dropdown, hover over the customer relationship. This will display all available fields on the Customer record type.
+
+Select the name field from the Customer record type. The related record field will appear appended to the relationship name. In this example, the field appears as customer.name.
+{% include zoompic.html url="images/customer-support-ticket.gif" %}
+
+
+Now, let's say you want to create a chart that shows the number of cases per customer industry. If the Customer record type has a relationship with the Industry record type, then the Case record type can index into the relationship on the Customer record type and select a field from the Industry record type. 
+To reference the nested relationship in this example:
+
+In the chart's Primary Grouping field, use the dropdown and hover over the customer relationship.
+From the customer relationship, hover over the industry relationship.
+
+Select the label field from the Industry record type. The related record field appears as customer.industry.label.
+{% include zoompic.html url="images/nested-relationship.gif" style="width:90%;" %}
+
+
+In Expression Mode
+To reference a related record field in an expression, you'll use the recordType! domain followed by . dot notation and the relationships property. 
+Simply append the relationships property to the record type object reference to autosuggest a list of available relationships. From the relationship, you can select a related record field or index into a relationship on the related record type to select a record field from a different record type. 
+For example, you want users to easily view more information about each related customer, so you want to add a link to each Customer record. From the read-only grid, you can edit the Customer column and enter an expression in the Display Value:
+sail
+a!linkField(
+  links: {
+    a!recordLink(
+      label: fv!row[recordType!Case.relationships.customer.fields.name],
+      recordType: recordType!Customer,
+      identifier: fv!row[recordType!Case.relationships.customer.fields.id]
+    )
+  }
+)
+Like in Design Mode, you can also reference nested relationships by indexing into the relationships property on a related record type. 
+For example, to display the customer industry as a column in the read-only grid, you could use the following reference as the Display Value: fv!row[recordType!Case.relationships.customer.relationships.industry.fields.label]. 
+See Reference a record type in an expression to learn more about referencing relationships in Expression Mode.
+Filter, sort, and limit related record fields
+When you select the related record fields to display in your interfaces and reports, you may decide that you only need a limited amount or a filtered subset of your related data. 
+For example, if the Case record type has a one-to-many relationship with the Comments record type, you may not want to list every comment left on a case in your read-only grid. Instead, you just want to display the most recent comment left on each case. 
+To return the exact data you need, you can use a!relatedRecordData() to filter, sort, and limit the related record set returned from a one-to-many relationship. You can use this function in a query or a read-only grid.
+In Design Mode
+In Design Mode, you can filter, limit, and sort your related record set by clicking FILTER RELATED RECORDS under Related Record Data. This will walk you through configuring each parameter in the a!relatedRecordData() function.
+Back in our example, we can limit the number of comments returned to 1 and sort by the latest value in the createdOn field from the Comment record type.
+To configure this in Design Mode:
+1. In the read-only grid, click FILTER RELATED RECORDS under Related Record Data. 
+2. Next to Related Record Data, click Edit as Expression. An expression dialog appears with the function a!relatedRecordData().
+3. In the Relationship parameter, enter a relationship reference. In this example, that is recordType!Case.relationships.comments.
+4. In the Limit parameter, enter the number of related records to return. In this example, that is 1.
+5. In the Sort parameter, use a!sortInfo() to sort the related record data. In this example, we'll use the createdOn field from the Comment record type in descending order.
+    >appian-style-tip
+    > When applying a sort, you must start your record type reference directly from the related record type (recordType!<Related record type name>). See Filtering and sorting the related record set for more information.
+{% include zoompic.html url="images/relatedRecordData_dv.png" %}
+
+
+Click OK.
+
+In Expression Mode
+In Expression Mode, you can filter, sort, and limit a related record set using a!relatedRecordData() in the relatedRecordData parameter of a!recordData() or a!queryRecordType().
+To return the latest comment left on each case in a read-only grid, the full expression would look like this:
+```sail
+a!gridField(
+  label: "Support Cases",
+  labelPosition: "ABOVE",
+  data: a!recordData(
+    recordType: recordType!Case,
+    relatedRecordData: a!relatedRecordData(
+      relationship: recordType!Case.relationships.comment,
+      limit: 1,
+      sort: a!sortInfo(
+        field: recordType!Comment.fields.createOn,
+        ascending: false
+      ),
+)
+
+),
+  columns: ...
+)
+```
+Both configurations would return something like this:
+{% include zoompic.html url="images/related-record-data-grid-ex.png" %}
+See Reference a record type in an expression for more information on how to use relationships in Expression Mode.
+Aggregate related record fields
+Not only can you select related record fields, you can also aggregate across related record fields, and even filter your aggregation to get the exact data you need. 
+In Design Mode
+When configuring a chart component in Design Mode, you can use your related record fields as a Measure and apply additional filters on the measure to specify which data is included in the aggregation. 
+For example, let's say you want to create a column chart that displays the number of cases associated with each customer, and the number of cases that have a status of "Critical".
+Instead of creating two separate charts to display this information, we can use a single chart with two different measures: one calculating the total count of cases for each customer, and the other counting only cases that have a status of critical.
+In this example, you'll use the Customer record type as the source of the column chart, and use the name field as the Primary Grouping field. Since the Customer record type has a one-to-many relationship with the Case record type, you can reference the id and status fields from the Case record type in the Measure fields and filters.
+To create this chart:
+1. Set the Measure to Count of and select the id field from the Case record type. This displays the total count of cases associated with each customer.
+1. Click ADD MEASURE.
+1. Set the second Measure to Count of and select the id field from the Case record type. 
+1. Click the edit icon  next to the second measure.
+1. Click + ADD FILTERS and configure the filter:
+   1. Set Field to status from the Case record type.
+   2. Set Condition to equal to.
+   3. Set Value to "Critical".
+1. Click OK. The second measure now displays the number of cases with the status of "Critical".
+{% include zoompic.html url="images/all-cases-and-critical-cases.png" %}
+See Configuring Charts Using Records for more information and examples of how to configure charts.
+In Expression Mode
+To aggregate related record fields in Expression Mode, you'll use the a!measure() function. You can use this function in a!queryRecordType() or in any chart configuration.
+For example, say you want to calculate the total number of cases created each month, and you also want to know how many of those cases had a status of "Critical". We'll use a!queryRecordType() to query this data, and use the Customer record type as the source. 
+For the grouping parameter, you'll use the name field from the Customer record type. Then, for the measure parameter, you'll use two instances of a!measure() to calculate the count of all cases, and the count of cases with a status of "Critical". 
+The expression would look something like this:
+```sail
+a!queryRecordType(
+  recordType: recordType!Customer,
+  fields: a!aggregationFields(
+    groupings: a!grouping(
+      field: recordType!Customer.fields.name,
+      alias: "customerName",
+),
+measures: {
+  /*Total case count */
+  a!measure(
+    field: recordType!Customer.relationships.cases.fields.id,
+    function: "COUNT",
+    alias: "totalCaseCount"
+  ),
+  /*Count of cases set to "Critical" */
+  a!measure(
+    field: recordType!Customer.relationships.cases.fields.id,
+    function: "COUNT",
+    filters: {
+      a!queryFilter(
+        field: recordType!Case.fields.status,
+        operator: "=",
+        value: "Closed"
+      )
+    },
+    alias: "closedCases"
+  )
+}
+
+),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+)
+```
+Which would returns: 
+{:.screenshot style="width: 50%"}
+See Where to use Records for more examples using records and related records in your applications.

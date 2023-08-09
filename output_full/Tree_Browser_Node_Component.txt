@@ -1,0 +1,96 @@
+
+layout: function
+title: Hierarchy Browser Node (Tree) Component
+category: function_page
+compatibility: -crf, -om
+excerpt: 'Returns a Tree Node, used in the Node Configurations parameter of the Tree Browser Component to determine how items in the hierarchy are displayed.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!hierarchyBrowserFieldTreeNode
+fncsubcat: Browsers
+parameters:
+  - keyword: id
+    name: Identifier
+    types: Any Type
+    description: Required unique identifier of the node. This value only needs to be unique within the nodes level.
+  - keyword: label
+    name: Label
+    types: Text
+    description: Required text to display in the node.
+  - keyword: description
+    name: Description
+    types: Text
+    description: Text to display below the node label.
+  - keyword: details
+    name: Details
+    types: Text
+    description: Text to display below the node description.
+  - keyword: image
+    name: Image
+    types: Image
+    description: |
+      Required image to display in the node, created with: 
+        - a!documentImage()
+        - a!userImage() 
+        - a!webImage()
+  - keyword: link
+    name: Link
+    types: Array of Links
+    description: |
+      Optional link to display in the node  s label title. Create links with: 
+        - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink()
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: isDrillable
+    name: Node is drillable
+    types: Boolean
+    description: |
+      If true, clicking the node will drill into it, saving the tree browsers navigation path and revealing another level to the user. If false, clicking the node's will not reveal another level, but the navigation path will still be saved (default: true). 
+  - keyword: nextLevelCount
+    name: Next Level Count
+    types: Integer
+    description: Optional count of nodes that would be displayed in the next level were this node in the navigation path.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Hierarchy Browser Node (Tree)
+scsubcat: Hierarchy_Browser_Elements
+space: sail_component
+
+This component is used within the Tree Browser Component.
+{% comment %}
+For an interface recipe using the hierarchy browser tree, see the Contact Management application page. 
+{% endcomment %}
+For more information on how the hierarchy browser tree works, see the detailed explanation.
+Function
+{% include fncsyntax.html %}
+Returns a Tree Node, used in the Node Configurations parameter of the Tree Browser Component to determine how items in the hierarchy are displayed.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Drillable and non-drillable elements
+You can see some of these terms and parameters labeled in the following screenshot.
+{:.screenshot}
+Using links and data
+
+The hierarchy browser tree component does not permit links in images in node configurations.
+The identifier field can be any value, but using long strings or large data types could cause performance problems. We recommended using a data type's primary key, if available.
+
+Using the nodeConfigs parameter
+
+The variable fv!nodeValue is only available when the node is used in either the nodeConfigs or nextColumnValues parameters of the browser.
+A hierarchy browser tree node can only be displayed if passed to the nodeConfigs parameter of the hierarchy browser tree.
+
+Examples
+For an example of how to configure a hierarchy browser tree node, see the example in the Tree Browser Component page.

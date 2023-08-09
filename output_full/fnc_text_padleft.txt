@@ -1,0 +1,38 @@
+
+layout: function
+title: padleft() Function
+space: function_page
+excerpt: "Pads text with spaces on the left so that it is a certain length."
+category: function_page
+fncname: padleft
+fncexample: "padleft(\"Boston\", 10)"
+fncresult: "    Boston"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be padded.
+  - keyword: length
+    types: Number
+    description: |
+      The target number of characters desired in the final text.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Padding and text length
+Spaces will be added until the text has the number of characters entered for the length parameter.
+Text longer than the specified length remains untouched.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+padleft("boston",10) returns &nbsp;&nbsp;&nbsp;&nbsp;boston

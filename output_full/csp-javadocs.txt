@@ -1,0 +1,12 @@
+
+layout: "basic"
+title: "JavaDocs"
+topic-group: "D"
+weight: 5
+
+This page provides links to JavaDocs for connected system plug-ins.
+For full connected system plug-ins reference, visit our JavaDocs:
+- Core contains data contracts for how connected system plug-ins communicate with Appian
+- Client streamlines creation of templates by assembling and managing the data contracts for you 
+Recommendation: Always start your development with Client.  Method signatures will indicate when a class from Core must be used.
+Find the current version of Core and Client to use on the SDK Version Compatibility page.

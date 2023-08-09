@@ -1,0 +1,40 @@
+
+layout: function
+title: rounddown() Function
+space: function_page
+excerpt: "Rounds the number down to the specified digit."
+category: function_page
+fncname: rounddown
+fncexample: "round(2.8888, 2)"
+fncresult: "2.88"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number to be rounded.
+  - keyword: num_digits
+    types: Integer
+    description: |
+      Determines the digit or place to which the number will be rounded down to the nearest 10^(-num_digits). 2 is default.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+To round the number down to the nearest hundred, set num_digits to -2. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+rounddown(7.36819) returns 7.36
+rounddown(7.36819, 3) returns 7.368
+rounddown(7.36819, 4) returns 7.3681
+See Also
+fixed(): Use this function with rounddown() to display your desired output. 

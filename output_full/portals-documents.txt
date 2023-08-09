@@ -1,0 +1,149 @@
+
+layout: basic
+title: Working with Documents in a Portal
+weight: 900
+topic-group: C
+title_short: Working with Documents
+
+Overview
+Documents are an important part of many Appian workflows. Whether you want to provide documents to download, show a PDF, or provide a way for customers to upload their files, Portals connects you, your users, and all the necessary information to get their tasks done.
+With a practically indistinguishable user experience from the rest of Appian, you can support your users interactions with documents through a portal using the file upload, document download link, document viewer and document image components. You can also use the document() function to access document properties.
+
+appian-style-note
+To allow your users to download and view documents, you must connect a service account to your portal and give the service account Viewer permissions to any document folders using user groups. To upload files, the service account must have Edit permissions to the target folder.
+
+Uploading files in a portal
+
+appian-style-plugindisclaimer
+WARNING: To write document IDs from uploaded files to a database through an integration, the integration input that you're writing must be of type Number(Integer), not Document. An incorrect type can cause the data and document IDs to not save properly.
+
+Portals can be used to fit a wide range of your organization's needs, many of which may require users to upload documents. Whether your users are applying for grants, submitting onboarding documents, or creating an accident claim, uploading documents to a process or record is a vital part of your application's workflow.
+Using file uploads in your portal is very similar to using file uploads in a standard interface or application, with a few minor differences.
+When a user uploads a file using the file upload or signature components, the portal places the file in a temporary folder and saves the document ID in the component's saveInto parameter. The user submits the uploaded files using the a!submitUploadedFiles function in the saveInto parameter of a submission link or button. Once submitted, the uploaded files are saved to the specified target folder.
+Use the following function variables as you normally would with any other file upload or signature components:
+
+fv!file.name
+fv!file.size
+fv!file.extension
+fv!file.index
+
+When uploading files in a portal, files can be no larger than 10 MB.
+The submit uploaded files function
+The a!submitUploadedFiles() function connects the uploaded files in any a!fileUploadField or a!signatureField components in your portal with their target folder in Appian. This function can only be used inside the saveInto parameter of components and it works best when used in submit links and buttons.
+To learn more, check out a!submitUploadedFiles.
+
+appian-style-note
+This function can only be used with portals and should be tested in published portals.
+
+Example: Upload a file in a portal
+This expression should only be used as an example and should not be used to test the a!submitUploadedFiles() function. If you copy and paste the expression into an expression editor, the a!submitUploadedFiles() function will not operate.
+sail
+a!localvariables(
+local!file,
+  {
+    a!fileUploadField(
+      label: "Supporting Image",
+      value: local!file,
+      saveInto: local!file,
+      target: cons!myFolder,
+      maxSelections: 1,
+      validations: if(
+        or(fv!files.extension = { "png", "jpg" }),
+        null,
+        "Please upload a valid image type: png or jpg"
+      )
+    ),
+    a!buttonArrayLayout(
+      buttons: {
+        a!buttonWidget(
+          label: "Submit",
+          submit: true,
+          style: "PRIMARY",
+          saveInto: a!submitUploadedFiles()
+        )
+      },
+      align: "END"
+    )
+  }
+)
+Downloading files and viewing documents in a portal
+Whether your users need to download documents from in-flight processes or view documents in the portal interface, your portal enables users to download and view information seamlessly.
+The developer and user experience for downloading files and viewing document images in a portal is the same as it is in the rest of Appian. Simply use the document download Link, document image, and document viewer components as you normally would, complete with all the normal parameters. Note that when using a constant to reference a document, you must use a constant of type document.
+When referencing documents in a portal, we recommend that you use a constant to serve the document directly from the portal. You can use the document ID instead, but that method is less performant than using a constant because the portal must query Appian for the document.
+Example: Downloading files in a portal using a constant
+The following example uses the document download Link component to download a document.
+Note that we use the document() function to access the name of the document to display in the interface.
+To test this example in a portal:
+
+Copy the example into an interface and replace cons!myDocument with a constant that points to a document in your environment.
+Make sure a service account has Viewer permissions to the folder that the document is stored in.
+Add the service account and interface to the portal object before publishing it.
+View the published portal to verify you can download the document.
+
+sail
+{
+  a!linkField(
+    label: "Download document",
+    labelPosition: "ABOVE",
+    links: {
+      a!documentDownloadLink(
+        label: document(
+          documentId: cons!myDocument,
+          property: "name"
+        ),
+        document: cons!myDocument
+      )
+    }
+  )
+}
+Example: Viewing document images in a portal using a constant
+The following example illustrates two ways you can view a document in a portal:
+
+Using the image field component to display a document image component. This works well to display images such as PNGs.
+Using the document viewer component to display a document in a viewer. This works well to display documents such as PDFs.
+The document viewer component displays documents stored in Appian. To display documents from another system use the web content field component.
+
+Note that we use the document() function to access the name of the document to display in the interface.
+To test this example in a portal:
+
+Copy the example into an interface and replace cons!myPNG and cons!myPDF with constants that point to documents in your environment.
+Make sure a service account has Viewer permissions to the folder that the documents are stored in.
+Add the service account and interface to the portal object before publishing it.
+View the published portal to verify you can view the documents.
+
+sail
+{
+  a!imageField(
+    label: document(
+      documentId: cons!myPNG,
+      property: "name"
+    ),
+    labelPosition: "ABOVE",
+    images: {
+      a!documentImage(
+        document: cons!myPNG
+      )
+    }
+  ),
+  a!documentViewerField(
+    label: document(
+      documentId: cons!myPDF,
+      property: "name"
+    ),
+    document: cons!myPDF
+  )
+}
+Security and service accounts
+Whether your users are uploading, downloading, or viewing files in your portal, they need to have permissions to provide and access documents through your portal. For viewing and downloading files, they need Viewer permissions to the folders that contain the files. For uploading files, they will need Editor permissions to the target folders that the files will be uploaded to.
+Since portal users are external and don't have individual Appian user accounts, grant them permissions to your documents and folders using a service account and end-user groups.
+To give users access to documents and folders:
+
+Use an existing service account or create a new one by adding an existing user to the Service Accounts group.
+Add that same service account to your Users group in your application.
+Give the Users group the correct permissions to your document folders or create new end-user groups with more granular permissions to your document folders.
+Add your service account to the portal object.
+
+If you're already using a service account for data services in your portal, use the same service account that you set up with your API key or the service account used with the data source connected system for your external database as the service account for your portal.
+For more information about using service accounts with your portal, see Service Accounts in Portals.
+Testing
+Be sure to fully test all parts of your document services in your portal with production-level usage. Test your primary interface before publishing. Then, test all aspects of your published portal to make sure your users can upload, download, or view documents correctly. Some connections can't be tested until after publishing.

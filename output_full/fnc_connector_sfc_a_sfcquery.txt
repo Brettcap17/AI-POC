@@ -1,0 +1,12 @@
+
+layout: "basic"
+title: "a!sfcQuery() Function [Deprecated]"
+category: "function_page"
+depver: 19.2
+fnccat: "一Deprecated一"
+fncname: "a!sfcQuery"
+space: "function_page"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. Use the Salesforce connected system to integrate with Salesforce instead.
+For information about a!sfcQuery(), see the Appian 19.1 documentation.

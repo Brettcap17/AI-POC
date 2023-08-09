@@ -1,0 +1,209 @@
+
+layout: basic
+title: Portal Object
+weight: 300
+topic-group: A
+
+Overview
+A portal is a public web app that users can access without signing in to Appian. A portal object is what you use to define and customize the settings and content for your portal. This includes configurations, service access information, branding, and progressive web app (PWA) settings.
+{:.screenshot}
+This page provides detailed information on how to create and configure a portal object. 
+See also
+To learn more about Appian Portals, check out these pages:
+
+For design guidance, see Design a portal.
+For a conceptual overview of Portals, see What is a portal.
+To learn how to query and write data using a portal, see Working with data in a portal.
+To learn how to use documents in a portal, see Working with documents in a portal.
+For information on publishing, testing, and deploying a portal, see Manage a Portal.
+
+Properties
+You can create a portal object in two places:
+
+In the Build view, click NEW, then Portal.
+In the Explore view, click NEW in the Sites and Portals section.
+
+When creating your portal, configure the following properties:
+| Field | Description |
+| - | - |
+| Name | Enter a name for the portal object that follows the recommended naming standard. Only developers can see this name.|
+| Display Name | Enter a name that will be displayed in the the browser tab to identify the portal. Follow the recommended naming standard for display names.|
+| Web Address Identifier | A unique identifier that is part of the web address. Appian uses this identifier to construct the web address where published portals are available to end users. For more information on web address identifiers, see  Configurations. |
+| Description | (Optional) Enter a description of the portal. |
+Configurations
+The Configurations section allows you to:
+
+Publish a portal.
+Edit the Display Name and Web Address Identifier.
+Add contents to your portal.
+
+| Field | Description |
+| - | - |
+| Published | Determines whether or not your portal is available to end users at the specified web address. For more information on publishing, see Manage a portal. |
+| Display Name | The website name displayed in the browser tab. Visible to end users. |
+| Web Address Identifier | A unique identifier that is part of the web address. Appian uses this identifier to construct the web address where published portals are available to end users.  Web addresses in your environment may contain a UUID to help you restrict access to portals that are intended for development and testing. This setting is applied at the environment level in the Administration Console. For more information on the web address identifiers and UUIDs, see Manage a portal.|
+| Content | The interface that is published to end users in your portal.  When you design an interface to use in a portal, there are a few design considerations to keep in mind. To learn about these design considerations, see Design a Portal. |
+
+appian-style-note
+The interface used for the portal content is called the primary interface. When you're selecting a primary interface for your portal object, you can't use interfaces with rule inputs. Appian automatically filters out interfaces that use rule inputs and removes them from the list of interfaces to choose from. For more information on alternatives to rule inputs in your primary interface, check out Design a Portal.
+
+Service Access
+The Service Access section is where you can add any service accounts or reCAPTCHA connected systems that your portal is using.
+| Field | Description |
+| - | - |
+| Service Account | The service account used to allow end users permission to data stores, documents, and folders. Service accounts are required for users to be able to work with data and documents in your portal. For more information about service accounts, see Service Accounts in Portals. |
+| Google reCAPTCHA | A reCAPTCHA connected system that connects to Google's reCAPTCHA services to help monitor you portals for unauthorized usage. Learn more about reCAPTCHA. |
+Branding
+The Branding section allows you to configure the branding colors, shapes, and favicon for your portal. Check out the Branding Preview to see these configurations applied to the primary interface for your portal.
+
+
+Field
+Description
+Default Value
+
+
+ Input Shape 
+ The shape applied to all input fields, selection fields, and picker components in a portal. There are two options for input shape: squared and semi-rounded.
+ Squared
+
+
+ Button Shape 
+ The shape applied to all buttons in a portal. There are three options for button shape: squared, semi-rounded, and rounded.
+Squared
+
+
+ Accent Color 
+
+   Affects the color of many elements in all interfaces, such as buttons, links, active field border colors, milestone bars, and section titles. Avoid grayscale colors (black, white, and gray) as the accent color, since these are similar to colors used for interface elements. Avoid green/red colors as the accent color, since these are commonly used to indicate positive/negative values.
+
+
+#1d659c
+
+
+
+
+Loading Bar Color
+The color of the bar at the top of the page that indicates when the system is processing. Select a loading bar color with sufficient contrast against the navigation bar color to ensure users notice it.
+The accent color.
+
+
+Favicon Image
+
+   The favicon (or "favorite icon") is the icon that appears in the browser tab or URL bar. File requirements:
+   
+ICO file. 
+Size 16x16 or 32x32. 
+Be less than 100 KB. 
+
+
+Appian "a" icon.
+
+
+Branding preview
+Check out the Branding Preview to see the branding configurations applied to the primary interface for your portal.
+The branding preview only shows a preview of the branding configurations applied to your primary interface. It shouldn't be used to test the expressions, interface components, or functionality of the primary interface or portal.
+Always fully test your portal and any connecting services after publishing. See Managing a portal for more information.
+Progressive Web App
+In the Progressive Web App section, you can choose to configure your portal as a progressive web app (PWA).
+It is a good idea to select this if:
+
+You want to give your users an easy way to access a portal that they use frequently. For example, a portal that allows users to submit repair requests.
+You want to make sure your portal maintains consistent branding if a user decides to install the app on their device.
+
+See the What is a progressive web app section for more information about PWAs.
+| Field | Description |
+| - | - |
+| Configure portal as a progressive web app | Determines whether or not your portal will be configured as a PWA. Selecting this requires you to specify an app name and icon. |
+| App Name | The default name that displays when a user installs the app on their device. Names can use letters, numbers, and spaces and can be up to 12 characters long, including spaces. |
+| App Icon | The app icon to use when users install the portal on their device. By default, the Appian "a" icon is selected. We recommend selecting a custom icon, which you can upload as a document. For icon best practices and requirements, see Designing an app icon. |
+What is a progressive web app?
+A PWA is a web app that looks and behaves as if it is a native application.
+PWAs allow developers to have more control over the experience end users have when they install a portal on their device. When you configure a portal as a PWA, you  specify the default app name and icon that users see when they install the portal on their device.
+{:.screenshot}
+In some browsers, when users first visit a PWA-configured portal, a prompt displays that asks them if they want to add the portal to their device.
+{:.screenshot style="width:50%"}
+Additionally, when a user opens an installed portal on their device, it gives a more app-like experience. For example, the address bar doesn't display, and it may display its own menu bar on some devices.
+{% include zoompic.html url="images/portal_object_pwa_comparison.png" alt="comparison of how a portal displays in a browser versus how it displays as a PWA"%}
+Designing an app icon
+The app icon is one of the first parts of your PWA that your users interact with. To make sure your icon looks clean and professional on all devices and displays, there are some general guidelines and requirements you should follow.
+Icon size
+To make the portal app icon work across all devices and browsers, it must be at least 512 x 512 pixels and square. However, since it may be displayed in higher resolution on some devices, we recommend icons that are 1024 x 1024 pixels. The app icon will be resized depending on where it displays.
+Icon safe zone
+App icons are maskable, meaning that the icon will fill up any shape that the device uses for icons. For example, icons may be circle, square, or teardrop shaped.
+{:.screenshot}
+This means that the edges of your app icon may be cut off to fit a certain shape. To make sure that the important parts of your icon aren't cut off, design your app icons with a safe zone. The standard safe zone is a circle in the center of the icon with a radius that is 40% of the icon size. For more information about the safe zone and maskable icons, see this web.dev article.
+{:.screenshot}
+Device settings for portals published from the same environment
+If a user installs multiple portals that were published from the same environment, the portals may share some of the same settings. For example, cookie preferences and permissions such as access to the device microphone and location.
+For these types of settings, the user will be unable to choose different options for PWAs published from the same environment.
+Visitor Activity Log
+The Visitor Activity Log section is only available if the portal has been published. In this section, you can find insights about user activity on your portal and find errors to help you troubleshoot.
+To download your visitor activity logs:
+
+Under Visitor Activity Log, use the dropdown list to select an increment of time to view the visitor activity during that time frame. You can choose to view logs from the last 15 minutes, hour, day, or week.
+(Optional) To reduce your logs download time, select Limit to 1000 entries to see only the last 1000 visitor activity entries.
+Click Download Activity Log to download the logs for the selected time frame.
+
+Finding errors related to your portal
+The Visitor Activity Log does not include every error related to your portal or the objects and connections it uses.
+In addition to the visitor activity log, you can find errors related to your portal, processes, and actions in the following places:
+
+Your environment server log.
+Your external system or database server log.
+
+If you're having trouble finding the cause of an error, start by looking at the objects, connections, and configurations that may be implicated by the error.
+If the error is about connecting back to Appian, integrations, databases, or APIs, check out the server log for your environment, external system, or database.
+If your error doesn't have to do with one of those, check the visitor activity log in your portal object.
+For more information on troubleshooting issues with a portal, see Troubleshooting a Portal.
+Security
+Portals are publicly accessible, but that doesn't mean they aren't secure. You control access to your Appian environment using service accounts. End users will only be able to access the objects and data in your portal that you give them access to through service accounts.
+Additionally, portals have both design-time and runtime security protections to keep your portal safe.
+Denial-of-service protections
+Portals uses denial-of-service (DoS) protections to help make sure your published portal remains available.
+If a portal experiences an unusually high level of traffic, the DoS protections may be triggered. When this happens, new requests to the affected environment may be blocked until the in-flight requests are completed or the high load subsides.
+As a part of DoS protections, Portals also include web application firewall (WAF) protections, which protect against common web exploits and mitigate bots.
+Security role map
+The following table outlines the actions that can be completed for each permission level in a portal's security role map:
+
+
+ Actions 
+ Administrator 
+ Editor 
+ Viewer 
+
+
+View the portal 
+Yes 
+Yes
+Yes
+
+
+View the definition
+Yes
+Yes
+Yes
+
+
+View the security
+Yes
+Yes
+Yes
+
+
+Republish the portal
+Yes
+Yes
+No
+
+
+Update the security
+Yes
+No
+No
+
+
+Delete the portal
+Yes
+No
+No
+

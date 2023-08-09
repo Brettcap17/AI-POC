@@ -1,0 +1,60 @@
+
+layout: function
+title: Cancel Process Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Cancel Process Smart Service allows you to halt all process flow and cancel all tasks associated with a process.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!cancelProcess
+fncsubcat: Process_Management
+parameters:
+  - keyword: processId
+    types: Number(Integer)
+    description: The id of the process to cancel.
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!alreadyClosed function variable (Boolean) is available to indicate whether or not the process was already canceled prior to execution of this smart service. For more information, see Function Variable.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Process_Management
+ssicon: Cancel_Process.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }}
+Permissions needed
+The user running the smart service must have administrator rights to the selected process. Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process.
+Properties
+
+
+Category: Process Management
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+| Input | Data Type | Description | Required | Multiple |
+| - | - | - | - | - |
+| Process Id | Number (Integer) | The Id of the process to cancel | Yes | No |
+Node outputs
+| Output | Data Type | Description|
+| - | - | - |
+| Already Closed | Boolean | true if the process was already closed prior to execution of this smart service, otherwise false |
+a!cancelProcess()
+The Cancel Process smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Runtime Behavior
+When this smart service runs, the specified process will be canceled. This matches the behavior as if the user clicked the Cancel button from the Monitor view, which means that all process flow stops, all tasks for the process are removed from user's task lists, and the end events of the process do not execute.  The user who executed the smart service will be listed in the process's history as having canceled the process. Additionally, for processes that have already been canceled, an error will not be thrown.

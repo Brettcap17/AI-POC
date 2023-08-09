@@ -1,0 +1,35 @@
+
+layout: function
+title: touniformstring() Function
+space: function_page
+excerpt: "Converts a value to Text, preserving the original scalar or array structure."
+category: function_page
+fncname: touniformstring
+fncexample: "touniformstring(\"John Doe 1060 West Addison Chicago\", \"IL\")"
+fncresult: "{\"John Doe 1060 West Addison Chicago\", \"IL\"}"
+fnccat: Conversion
+compatibility: +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} To concatenate the array into one string, see tostring.
+See also: tostring()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using touniformstring() on arrays
+Arrays are preserved.
+When operating on arrays, it is not necessary to use apply with touniformstring. If multiple parameters are passed, or one parameter is an Array, then an Array of Text is returned.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+touniformstring("John Doe 1060 West Addison Chicago","IL") returns {"John Doe 1060 West Addison Chicago", "IL"}

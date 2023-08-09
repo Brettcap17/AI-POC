@@ -1,0 +1,30 @@
+
+layout: function
+title: runtimetypeof() Function
+category: function_page
+excerpt: Returns the numerical representation of an Appian system data type when used during process execution.
+fnccat: Informational
+fncexample: runtimetypeof( 12345)
+fncname: runtimetypeof
+fncresult: '9'
+parameters:
+  - keyword: value
+    types: Any Type
+    description: 'The value to be inquired for type.  For example, typename(runtimetypeof(topeople(123))) might return "Group".'
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+typename(runtimetypeof(topeople(123))) returns Group 
+if(runtimetypeof(topeople(loggedInUser())) = type!User, "You're a User", "You're a Group") returns You're a User

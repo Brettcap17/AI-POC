@@ -1,0 +1,124 @@
+
+layout: function
+title: a!fromJson() Function
+category: function_page
+excerpt: Converts a JSON string into an Appian value.
+fnccat: System
+fncexample: 'a!fromJson("{""name"":""John Smith"", ""age"":49, ""likes"":[""green"",""dogs"",""long walks""]}")'
+fncname: a!fromJson
+fncresult: '[name:John Smith,age:49,likes:green; dogs; long walks]'
+compatibility: -crf, -portal, -om
+parameters:
+  - keyword: jsonText
+    types: Text
+    description: |
+      The text to convert from a JSON string to an Appian value.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Appian Data Types
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+One of: 
+- Dictionary
+- List of Integer
+- List of Decimal
+- List of Text
+- List of Dictionary
+- List of Boolean
+- List of Variant
+Usage considerations
+Automatic casting
+Certain JSON formats will be converted to Appian Data Types. See the following table for a list of the JSON formats and their associated data types.
+
+
+JSON Format
+Appian Date Type
+
+
+String
+Date (when supported date format is found)Date and Time (when supported datetime format is found)Text (when no supported date or datetime format is found)
+
+
+Number
+Decimal (when number is a decimal)Integer (when number is an integer that fits in a signed 32-bit integer)Text (when number is an integer that doesn’t fit in a signed 32-bit integer, such as 64-bit integers)
+
+
+Object
+Dictionary
+
+
+Array
+List of Variant
+
+
+Boolean
+Boolean
+
+
+Null
+null (Text)
+
+
+See the example below for an example of how these values are converted.
+Cast to a record type
+INCLUDE PAGE: Cast JSON example
+Date and datetime formats
+If the JSON text includes fields that match the following date and datetime formats, they will be automatically detected and converted to the appropriate Date or Date and Time data type. The following table lists the supported date and datetime formats that will be converted to Appian data types.
+| Supported Format                                 | Example                                 |
+|--------------------------------------------------|-----------------------------------------|
+| ISO Date                                         | 2019-03-25                              |
+| Date with UTC Timezone                           | 2019-03-25Z                             |
+| Datetime without Timezone                        | 2019-03-25T20:17:46                     |
+| UTC Datetime                                     | 2019-03-25T20:17:46Z                    |
+| UTC Datetime without Seconds                     | 2019-03-25T20:17Z                       |
+| UTC Datetime with Decimal Fraction of a Second   | 2019-03-25T20:17:46.384Z                |
+| Offset Datetime                                  | 2019-03-25T20:17:46+01:00               |
+| Offset Datetime Hour Only                        | 2019-03-25T20:17:46+01                  |
+| Offset Datetime No Colon                         | 2019-03-25T20:17:46+0100                |
+| Offset Datetime with ZoneId                      | 2019-03-25T20:17:46+01:00[Europe/Paris] |
+Note that the Appian Date and Time data type does not include seconds. If the JSON field includes seconds, it will be ignored.
+Also, if a timezone is not explicitly stated, it is assumed to be in Universal Time Coordinated (UTC)/Greenwich Mean Time (GMT). However, it is adjusted to the logged in user's time zone (accounting for daylight saving time) when displayed.
+For example 2019-03-25T20:17:46 displays as 3/25/2019 4:17 PM EDT for a user whose time zone is set to (UTC-05:00) Eastern Time (America/New_York) and 3/25/2019 8:17 PM GMT+00:00 for a user whose time zone is set to Use system default: (UTC) Greenwich Mean Time (GMT). 
+Example
+sail
+a!fromJson("[{
+  ""transId"":9223372036854775807,
+  ""submitTimeUTC"":""2019-07-16T14:52:26Z"",
+  ""submitTimeLocal"":""2019-07-16T07:52:26"",
+  ""transactionOk"":true,
+  ""accountType"":""Visa"",
+  ""accountNumber"":123456,
+  ""settleAmount"":412.97,
+  ""product"":"""",
+  ""marketType"":[""Business"",""Clothing"",""Child""]
+}]")
+Returns
+sail
+List of Dictionary: 1 item
+    Dictionary
+        /*64-Bit Integer converted to Text*/
+        transId: "9223372036854775807"
+        /*UTC Datetime without Seconds converted to Date and Time*/
+        submitTimeUTC: 7/16/2019 10:52 AM EDT
+        /*Datetime without Timezone converted to Date and Time*/
+        submitTimeLocal: 7/16/2019 3:52 AM EDT
+        /*Boolean data type*/
+        transactionOk: true
+        /*Text data type*/
+        accountType: "Visa"
+        /*Number(Integer) data type*/
+        accountNumber: 123456
+        /*Number(Decimal) data type*/
+        settleAmount: 412.97
+        /*Null value*/
+        product: null (Text)
+        /*Array*/
+        marketType: List of Text String: 3 items
+            "Business"
+            "Clothing"
+            "Child"

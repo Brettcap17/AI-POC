@@ -1,0 +1,47 @@
+
+layout: function
+title: a!wsConfig() Function
+space: function_page
+excerpt: "Constructs the config parameter to the webservicequery() and webservicewrite() functions."
+category: function_page
+fncname: a!wsConfig
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: wsdlUrl
+    types: Text
+    description: |
+      The url of the WSDL for the web service.
+  - keyword: service
+    types: Text
+    description: |
+      The service to invoke. The value that should be passed here is found in the WSDL for the web service as the value of the name attribute of the <wsdl:service> element. The name must be prefixed with the target namespace of the WSDL, and that namespace must be surrounded by braces. For example, if the target namespace of the wsdl is "http://example.org" and the name attribute of the <wsdl:service> element is "ExampleService," the value for this parameter would be {http://example.org}ExampleService.
+  - keyword: port 
+    types: Text
+    description: |
+      The port within the given service to invoke. The value that should be passed here is found in the WSDL as the value of the name attribute of the <wsdl:port> element within the selected <wsdl:service> element. For example, if the port name is "ExampleSoap," the value for this parameter would be ExampleSoap.
+  - keyword: operation
+    types: Text
+    description: |
+      The operation on the web service to invoke. The value that should be passed here is found in the WSDL as the value of the name attribute of the <wsdl:operation> element within the <wsdl:binding> element that corresponds to the selected <wsdl:port> element. The name must be prefixed with the target namespace of the WSDL, and that namespace must be surrounded by braces. For example, if the target namespace of the wsdl is "http://example.org" and the name attribute of the <wsdl:operation> element is "echoHello," the value for this parameter would be {http://example.org}echoHello.
+  - keyword: wsdlCredentials
+    types: WsHttpCredentials
+    description: |
+      If the WSDL requires authentication credentials in order to access it, they must be provided as this parameter. Use the a!wsHttpCredentials system function to construct the value.
+  - keyword: endpointcredentials
+    types: WsHttpCredentials
+    description: |
+      If the web service endpoint requires authentication credentials in order to invoke the web service, they must be provided as this parameter. Use the a!wsHttpCredentials system function to construct the value.
+  - keyword: extensions
+    types: Any Type Array
+    description: |   
+      Additional configurations are provided in the extensions parameter. If the web service requires that certain HTTP Headers should be passed, an array of WsHttpHeaderField constructed using a!wsHttpHeaderField can be passed. If the web service requires that WS-Security UsernameToken be used, a single WsUsernameToken or WsUsernameTokenScs can be passed. 
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

@@ -1,0 +1,40 @@
+
+layout: function
+title: userdate() Function
+space: function_page
+excerpt: "Identifies the date represented by year, month, and day and then interprets it in the user preferred calendar, converting it into a serial number."
+category: function_page
+fncname: userdate
+fncexample: "datetext(userdate(1427, 8, 18), \"mm/dd/yyyy\")"
+fncresult: "8/18/1427"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: year
+    types: Number
+    description: |
+      The year of the date you would like to convert into a serial number.
+  - keyword: month
+    types: Number
+    description: |
+      The number of the month of the date.
+  - keyword: day
+    types: Number
+    description: |
+      The day of the date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: datetext()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+Usage considerations
+To display the date, always wrap the output with datetext().
+For the month parameter, do not include leading zeroes for a month with one digit.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+datetext(userdate(1427,8,18),mm/dd/yyyy) returns 8/18/1427

@@ -1,0 +1,57 @@
+
+layout: "basic"
+title: "Versioning"
+topic-group: "Core Concepts"
+weight: 500
+
+No matter how hard you work to design your component, there comes a time when you'll need to release another version to fix bugs, handle new use cases, or add additional language support. This page explains how component plug-ins handle versioning so you can add capabilities while minimizing disruption for your users.
+Overview
+When you create the component plug-in manifest you define one version for the entire plug-in (in plugin-info) and separate versions for each component. Both version values use the semver standard (for example, 2.1.3). There's no direct dependency between the two version types.
+Component plug-in versions
+The plug-in version must be incremented with each release (no matter how minor) in order for the newer version to be deployed over prior releases. During development you can deploy with the same version as long as the filename of the plug-in remains the same. We recommend including the plug-in version in the package filename to help distinguish between different files.
+Component versions
+Each component in your plug-in has it's own versions. There can be multiple versions of a component in the same plug-in (though you can only have one instance of each major version). The following sections will help you decide when and how to make different version changes to your component.
+Backward compatibility
+We work hard to ensure that customer applications keep working even when they upgrade Appian. We call this being backward compatible. The same principle applies when you release new versions of your component plug-in.
+The right way to think about what this compatibility looks like for your component is:
+
+Imagine a customer already uses your component in an interface
+The customer installs your updated plug-in
+The customer does not have to modify their interface
+The interface does not have errors or undesirable behavior changes in their exising interfaces
+
+The promise of compatibility is core to the Appian platform. It's important for your component to keep that promise by using the appropriate versioning option when you make a change.
+Major versions
+Use major versions when your component changes won't be compatible with prior versions. For example:
+
+Adding a new required parameter (existing interfaces won't have this parameter populated)
+Changing the default value of a parameter (for example, the default was false, but now you want it to be true)
+Changing the expected format of a parameter or adding stricter validations
+Changing the behavior of the component in a functional way (for example, replacing a text field with a dropdown may seem more efficient, but existing users might rely on the text field's flexibility)
+Updating the minimum required version of Appian or the SDK version
+
+Add a major version by making a copy of your component. Copy the component tag in your manifest file and increment the major version number (for example, 1.1.3 --> 2.0.0). Copy the content in the component version folder to a matching folder name (for example, v2). Leave the original version unchanged and make your (incompatible) updates to the new version only.
+When you deploy a new major version of your component, any interfaces using your component will keep using the existing version and their behavior won't change. Just like standard Appian functions and components, we'll indicate to the developer that it's an old version by changing the display name (for example, mapField_v1). Going forward, developers will use the new version of the component by default.
+There's no limit to the number of major versions you can create for your component. Keep in mind that with each major version, developers have to manually update existing interfaces to use the new version. If your change doesn't impact backward compatibiliy it's better to make a less-disruptive minor version update.
+
+appian-style-tip
+You can't change the rule name of a component using versions. Any rule name change will be treated as a new component. Keep the old component in the plug-in to make sure existing customer applications that rely on it don't break.
+
+Minor versions
+Use minor versions when you add functionality that is compatible with prior versions of your plug-in. For example:
+
+Adding an entirely new component (or "changing the name" of a component by adding a new one)
+Adding a new optional parameter
+Adding additional language/internationalization support
+
+Add a minor version by incrementing the minor version number for an existing component in your manifest (for example, 1.1.3 --> 1.2.0). Don't create a copy of the component tag or contents. Make your (compatible) updates to the existing component.
+When you deploy a new minor version of your component, Appian automatically starts using the new version in all interfaces. There's no change to existing component references like there is with a major version change. Designers don't need to take any action to update existing interfaces unless they want to take advantage of new functionality.
+Patch versions
+Use patch versions when you fix bugs or update non-functional behavior that is compatible with prior versions of your plug-in. For example:
+
+Fixing a bug so that the component works as the user expects (without breaking compatibility)
+Changing the behavior of the component in a non-functional way (for example, improving performance)
+
+Patch versions are created and deployed the same way as minor versions, just increment the patch version number (for example, 1.1.3 --> 1.1.4) instead of the minor version number.
+SDK versions
+In addition to a plug-in version and component versions, you also define an SDK version for each component which indicates the minimum JavaScript API version your component requires. Changing the SDK version should only be done as a major version release of your component, but beyond that there's no impact on your plug-in releases.

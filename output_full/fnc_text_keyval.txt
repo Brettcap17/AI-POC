@@ -1,0 +1,48 @@
+
+layout: function
+title: keyval() Function
+category: function_page
+excerpt: Returns the value(s) associated with the given key(s).
+fnccat: Text
+fncexample: 'keyval("[hello=alpha][goodbye=beta]", {"hello"}, "=", "]") '
+fncname: keyval
+fncresult: alpha
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to parse.
+  - keyword: keys
+    types: Text Array
+    description: |
+      Array of keys.
+  - keyword: separators
+    types: Text Array
+    description: |
+      Array of key-value separators.
+  - keyword: delimiters
+    types: Text Array
+    description: |
+      Array of delimiters specifying the end of a value.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} This function performs the reverse of insertkeyval() function.
+See also: insertkeyval()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Usage considerations
+Using the separators parameter
+If a single separator value is passed, it is used for parsing all key-value pairs; if multiple separators are specified, the number of separators must match the number of keys.
+Using the delimiter parameter
+If a single delimiter value is passed, it is used for parsing all key-value pairs; if multiple delimiters are specified, the number of delimiters must match the number of keys.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+keyval("hello=alpha][goodbye=beta]", {"hello"}, "=", "]") returns alpha

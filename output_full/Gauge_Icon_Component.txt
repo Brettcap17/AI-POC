@@ -1,0 +1,47 @@
+
+layout: function
+title: Gauge Icon
+category: function_page
+compatibility: -crf
+excerpt: Displays an icon for use within the gauge field primary text parameter.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gaugeIcon
+fncsubcat: Display
+parameters:
+  - keyword: icon
+    name: Icon
+    types: Text
+    description: |
+      Icon to display. See the list of available icons.
+  - keyword: altText
+    name: Icon Alternative Text
+    types: Text
+    description: Equivalent alternate text to display in the hover tooltip and for use by screen readers.
+  - keyword: color
+    name: Icon Color
+    types: Text
+    description: |
+      Determines the icon color. Access the percentage using fv!percentage. Valid values: Any valid hex color or "ACCENT", "POSITIVE", "NEGATIVE". Defaults to the gauge field color.
+reftype: sailcomponent
+scdisplayname: Gauge Icon
+scsubcat: Gauge_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays an icon for use within the gauge field primaryText parameter.
+See also: Gauge design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+=a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primarytext: a!gaugeIcon(icon: "pencil"),
+  secondaryText: "25 of 26"
+)
+{% endsailbox %}

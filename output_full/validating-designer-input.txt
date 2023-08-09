@@ -1,0 +1,61 @@
+
+layout: "basic"
+title: "Validate Designer Input"
+topic-group: "C"
+weight: 3
+
+The page shows how to validate designer input within a connected system plug-in.  There are examples of validating a credentials and different types of designer input.
+Validating credentials and connection information
+Credentials and connection information should be stored in the connected system. So, extend SimpleTestableConnectedSystemTemplate to test a designer's credentials. A Testable Connected System Template gives the designer the ability to verify the endpoint, credentials, and more when editing the Connected System.
+Implementing SimpleTestableConnectedSystemTemplate means implementing the testConnection method. Your implementation should test all values in the configuration and give the designer a clear message if something is invalid. This almost always means reaching out to the external service. In the example below, isValid(...) is a stub for some method that validates the API key.
+java
+@Override
+protected TestConnectionResult testConnection(
+    SimpleConfiguration simpleConfiguration, ExecutionContext executionContext) {
+  String apiKey = simpleConfiguration.getValue(API_KEY);
+  boolean isSuccess = isValid(apiKey);
+  if(isSuccess) {
+      return TestConnectionResult.success();    
+  }
+  return TestConnectionResult.error("This is not a valid api key");
+}
+{:.screenshot}  
+Validating a single input
+To validate an input (for example, length of a text input), you need to get the value, validate it, and then provide a message if the value is invalid.
+See the code snippet below for an example of validating the length of a text input.
+```java
+@Override
+protected SimpleConfiguration getConfiguration(
+    SimpleConfiguration integrationConfiguration,
+    SimpleConfiguration connectedSystemConfiguration,
+    PropertyPath propertyPath,
+    ExecutionContext executionContext) {
+  integrationConfiguration.setProperties(
+      textProperty(NAME_KEY).label("File Name")
+          .refresh(RefreshPolicy.ALWAYS)
+          .build());
+String name = integrationConfiguration.getValue(NAME_KEY);
+  if (name != null && name.length() > 255) {
+    integrationConfiguration.setErrors(NAME_KEY, Arrays.asList("Name cannot be longer than 255 characters"));
+  }
+return integrationConfiguration;
+}
+```
+Validations for sets of inputs
+Integrations often need connected system data to build their own configuration. For example, the out-of-the-box Amazon Machine Learning integration uses the connected system credentials to retrieve the models available for querying. If the connected system credentials are incorrect, we need to display that information to the designer in the appropriate location.
+To display validations on connected system information or validations that apply to more than one field, use SimpleConfiguration.setErrors(). If you do not specify a key or propertyPath, the validation messages appear at the top of the integration designer below the connected system.
+See the code snippet below for an example of validating connected system credentials in an integration.
+```java
+@Override
+protected SimpleConfiguration getConfiguration(
+    SimpleConfiguration integrationConfiguration,
+    SimpleConfiguration connectedSystemConfiguration,
+    PropertyPath propertyPath,
+    ExecutionContext executionContext) {
+  String apiKey = connectedSystemConfiguration.getValue(API_KEY);
+  if (apiKey == null || apiKey.isEmpty()) {
+    integrationConfiguration.setErrors(Arrays.asList("API Key is required"));
+  }
+return integrationConfiguration;
+}
+```

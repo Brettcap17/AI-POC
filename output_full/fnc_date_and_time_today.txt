@@ -1,0 +1,27 @@
+
+layout: function
+title: today() Function
+space: function_page
+excerpt: "Returns the current day in GMT."
+category: function_page
+fncname: today
+fncexample: "today()"
+fncresult: "2/2/2022"
+fnccat: Date_and_Time
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters: none  
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+This function returns the current day in Greenwich Mean Time (GMT) so the result may differ from the current day in your local timezone.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+today() returns 12/20/2010

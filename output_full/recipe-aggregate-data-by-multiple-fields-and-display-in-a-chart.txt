@@ -1,0 +1,69 @@
+
+layout: pattern
+title: Aggregate Data by Multiple Fields and Display in a Chart
+excerpt: 'Aggregate data by multiple fields and display it in a stacked column chart. In this pattern, we will calculate the total number of employees for each title in each department and display it in a stacked column chart.'
+reftype: sailrecipe
+sr-tags:
+  - Reports
+  - Charts
+  - Query Data
+  - Records
+
+{:.screenshot}
+This scenario demonstrates:
+
+How to aggregate data by multiple fields and display in a column chart
+
+Create this pattern
+You can easily configure a chart in Design Mode when you use a record type as the source. 
+To create this pattern in Design Mode:
+
+Open a new or empty interface object.
+From the PALETTE, drag a Column Chart component into the interface.
+From Data Source, select RECORD TYPE and search for the Employee record type.
+Under Primary Grouping, select the department field.
+Click ADD GROUPING.
+Under Secondary Grouping, select the title field.
+Under Measure, use the dropdown to select Count of, then select the id field.
+From Stacking, select Normal. 
+For the X-Axis Title, enter Department.
+For the Y-Axis Title, enter Number of Employees.
+
+{% include zoompic.html url="images/columChartClassicPattern.gif" %}
+Your resulting expression will look something like this:
+sail 
+  a!columnChartField(
+    data: recordType!Employee,
+    config: a!columnChartConfig(
+      primaryGrouping: a!grouping(
+        field: recordType!Employee.fields.department,
+        alias: "department_primaryGrouping"
+      ),
+      secondaryGrouping: a!grouping(
+        field: recordType!Employee.fields.title,
+        alias: "title_secondaryGrouping"
+      ),
+      measures: {
+        a!measure(
+          function: "COUNT",
+          field: recordType!Employee.fields.id,
+          alias: "id_count_measure1"
+        )
+      },
+      dataLimit: 100
+    ),
+    label: "Column Chart",
+    xAxisTitle: "Department",
+    yAxisTitle: "Number of Employees",
+    stacking: "NORMAL",
+    showLegend: true,
+    showTooltips: true,
+    labelPosition: "ABOVE",
+    colorScheme: "CLASSIC",
+    height: "MEDIUM",
+    xAxisStyle: "STANDARD",
+    yAxisStyle: "STANDARD"
+  )
+Test it out
+
+Hover over each of the stacked department data to see a breakdown of the title of employees in that department

@@ -1,0 +1,38 @@
+
+layout: function
+title: intervalds() Function
+space: function_page
+excerpt: "Converts the given time components into an equivalent time duration, an interval expressing days to seconds.  This value is treated as a duration (Joe ran the marathon in 3 hours and 23 minutes), not a point in time."
+category: function_page
+fncname: intervalds
+fncexample: "intervalds(2, 4, 5)"
+fncresult: "0::02:04:05.000"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: hour
+    types: Integer
+    description: |
+      The number of hours in the time duration.
+  - keyword: minute
+    types: Integer
+    description: |
+      The number of minutes in the time duration.
+  - keyword: second
+    types: Integer
+    description: |
+      The number of seconds in the time duration.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Interval (Day to Second)
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+intervalds(2, 4, 5) returns 0::02:04:05.000

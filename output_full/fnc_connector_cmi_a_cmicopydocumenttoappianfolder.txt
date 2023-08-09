@@ -1,0 +1,102 @@
+
+layout: function
+title: a!cmiCopyDocumentToAppianFolder() Function
+space: function_page
+excerpt: "Copies a document from the CMIS target system to an Appian folder, creating a new document."
+category: function_page
+fncname: a!cmiCopyDocumentToAppianFolder
+fncsubcat: "CMIS"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: atomPubUrl
+    types: Text
+    description: |
+      The Atom Pub URL of the CMIS target system.
+  - keyword: repositoryId
+    types: Text
+    description: |
+      The repository id on the CMIS target system.
+  - keyword: objectId
+    types: Text
+    description: |
+      The object id of the CMIS document that will be copied to Appian.
+  - keyword: appianFolder
+    types: Folder
+    description: |
+      The Appian folder to which the document from the CMIS system will be copied.      
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Writer, bind().
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+This function returns a writer and must be used with the bind() function.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Copy a document from CMIS as a new document in an Appian folder
+sail 
+=load(
+  local!cmisDocId,
+  local!appianFolder,
+  local!cmiCopyDocumentToAppianFolderWriter: bind(
+    null,
+    a!cmiCopyDocumentToAppianFolder(
+      scsExternalSystemKey: cons!CMIS_SCS_KEY,
+      usePerUserCredentials: true,
+      atomPubUrl: cons!CMIS_URL,
+      repositoryId: cons!CMIS_REPO_ID,
+      objectId: local!cmisDocId,
+      appianFolder: _
+    )
+  ),
+  {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!textField(
+                label: "Object ID of CMIS Document",
+                instructions: "The CMIS document to copy",
+                value: local!cmisDocId,
+                saveInto: local!cmisDocId
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!pickerFieldFolders(
+                label: "Target Appian Folder",
+                instructions: "The document from the CMIS site will be copied as a new document in this folder",
+                maxSelections: 1,
+                value: local!appianFolder,
+                saveInto: local!appianFolder
+              ),
+              a!buttonArrayLayout(
+                buttons: {
+                  a!buttonWidget(
+                    label: "Copy Document to Appian",
+                    value: local!appianFolder,
+                    saveInto: local!cmiCopyDocumentToAppianFolderWriter
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+  }
+)

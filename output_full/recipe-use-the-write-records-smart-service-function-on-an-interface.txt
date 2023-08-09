@@ -1,0 +1,95 @@
+
+layout: pattern
+title: Use the Write Records Smart Service Function on an Interface
+excerpt: Allow the user to publish several rows of data to a database table with the a!writeRecords() smart service function.
+notice-hide:
+  - employee
+reftype: sailrecipe
+sr-tags:
+  - Smart Services
+  - Looping
+
+Follow this pattern to create example data and supporting objects to use with other interface patterns (including those that use record types) and tutorials like the Records Tutorial. After using this pattern, review other patterns to learn how to build reports and interfaces using this data in different components.
+This page shows you:
+
+How to use the a!writeRecords() smart service function to create record data directly from an interface.
+How to use the disabled parameter of an interface component based on user interactions.
+
+Setup
+For this pattern, we'll create a record type with data sync enabled, and then use the a!writeRecords() smart service function in a basic interface to populate the record type's data source with example data. We'll use the Appian Tutorial application as a starting point.
+To set up this pattern:
+
+Create the Appian Tutorial application.
+Create a record type.
+Create a data model.
+Create an interface.
+Load the sample data.
+
+Create the Appian Tutorial Application
+INCLUDE PAGE: skip-appian-tutorial-step
+To begin, we need to create an application to contain our design objects.
+INCLUDE PAGE: Create the Appian Tutorial Application
+Create a record type
+
+appian-style-note
+If you are completing the Records Tutorial, you should already have created the Employee record type and its data model. Skip to Create an interface to finish setting up the record data.
+
+To create the record type you'll need for this pattern:
+
+In the Build view of the Appian Tutorial application, click NEW > Record type.
+Configure the following properties:
+
+| Property | Description |
+   | - | - |
+   | Name | Keep the application prefix that prepopulates this property, and add Employee, so that the name is <prefix> Employee. |
+   | Display Name (Plural) | Keep the generated value of Employees.|
+   | Description | (Optional) Enter a brief description of the record type. |
+
+Click CREATE.
+In the Review Record Type Security dialog, keep the default settings. AT Administrators group should be assigned Administrator permissions for the group.
+Click SAVE.
+
+Create a data model
+You're ready to create the data model for the Employee record type. Instead of using an existing data source, we'll add a new table to the database to store employee data. This new data model includes six record fields for employee information, as well as some automatically generated metadata fields for tracking data creation and modification.
+
+appian-style-note
+This step takes advantage of codeless data modeling, which requires an environment connected to a MariaDB database. For example, an Appian Cloud or an Appian Community Edition environment. If your environment connects to a different database, instead of following the instructions below, you'll need to create a database table that contains the needed fields, then choose that database table as the source of your record type.
+
+To create the data model:
+
+Click TELL US ABOUT YOUR DATA.
+Select New Data Model.
+Click NEXT.
+For Data Source, select jdbc/Appian (Tomcat). This is the database included with each Appian instance.
+Click NEXT.
+In the row for the id field, click  Add Multiple Fields.
+For Enter a number between 1 and 20, enter 5.
+Click Add.
+For each field in the following table, enter the field name in one of the empty fields created in the previous step.
+
+| Name | Type |
+   | - | - |
+   | firstName | Text |
+   | lastName | Text |
+   | department| Text |
+   | title | Text |
+   | phoneNumber | Text |
+
+In the list of Suggested Fields, click  startDate.
+Remove the following fields:
+Created By
+Created On
+Modified By
+Modified On
+
+
+Click NEXT.
+On the Relationships page, click NEXT.
+On the Review page, click SAVE CHANGES.
+On the success page, click FINISH. You can discard the database script created for the record type.
+
+
+appian-style-note
+It is normally a best practice to include the default Created By, Created On, Modified By, and Modified On fields in your record type, but we are removing them for the purposes of this recipe and the tutorials that rely on it.
+
+INCLUDE PAGE: 

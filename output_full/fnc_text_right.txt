@@ -1,0 +1,36 @@
+
+layout: function
+title: right() Function
+space: function_page
+excerpt: "Returns a specified number of characters from the text, starting from the last character."
+category: function_page
+fncname: right
+fncexample: "right(\"Boston\",3)"
+fncresult: "ton"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text from which the substring will be taken.
+  - keyword: num_chars
+    types: Number
+    description: |
+      The length in characters of the subtext to extract.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Although the characters are counted right-to-left, their order will remain left-to-right.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+right("boston",3) returns ton

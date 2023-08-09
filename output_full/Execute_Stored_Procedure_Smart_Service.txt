@@ -1,0 +1,190 @@
+
+layout: function
+title: Execute Stored Procedure Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Execute Stored Procedure smart service lets you execute a stored procedure that is defined on any of the Appian supported relational databases that you have connected to.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!executeStoredProcedureOnSave
+fncsubcat: Data_Services
+parameters:
+  - keyword: dataSource
+    types: Any Type
+    description: 'The data source that contains the stored procedure. The value depends on how your data source is connected. For data source connected systems, enter the connected system constant. For data sources connected in the Admin Console, enter the name of the data source or a Text constant that stores the name.'
+  - keyword: procedureName
+    types: Text
+    description: 'Name of the stored procedure. Case sensitivity requirements are specific to each type of database. For Oracle and Db2 databases, enter the name in uppercase. For PostgreSQL databases, enter the name in lowercase.'
+  - keyword: inputs
+    types: List of Map
+    description: 'A list of names and values of the IN and INOUT parameters to the stored procedure created using a!storedProcedureInput(). An input must be provided for every IN and INOUT parameter. Case sensitivity requirements are specific to each type of database. For Oracle and Db2 databases, enter the parameter names in uppercase. For PostgreSQL databases, enter the parameter names in lowercase.'
+  - keyword: timeout
+    types: Integer
+    description: 'The amount of time (in seconds) until the stored procedure execution is cancelled. Default: 30 seconds.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the function executes successfully. Created with a!save() or a!httpResponse(). The result sets and parameters are available in the function variables fv!resultSets and fv!parameters, respectively.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse(). The error message is available in the function variable fv!errorMessage.
+permalink: Execute_Stored_Procedure_Smart_Service.html
+reftype: smart_service
+sscat: Data_Services
+ssicon: Execute_Stored_Procedure.png
+ssparentcat: Automation_Services
+
+Overview
+This page provides guidance on how to use the Execute Stored Procedure smart service in your process model. 
+Stored procedures are a set of SQL statements that you can save in your database and use to query or modify data over and over again. {{ page.excerpt }} 
+To execute a stored procedure you need to provide:
+
+A data source connected system constant. Or for Admin console data sources, the name of the data source.
+The name of the stored procedure.
+Inputs to the stored procedure which correspond to the IN and INOUT parameters. 
+
+More information about the parameters can be found in the configuration options and database specific behaviors sections.
+After a stored procedure is successfully executed, a map containing a list of result sets and a list of parameters corresponding to the OUT and INOUT values of the stored procedure is returned.
+Permissions needed
+If using a data source connected system, the user executing this activity must have Viewer permissions to the selected data source connected system in order to execute stored procedures.
+Properties
+
+
+Category: Data Services
+
+
+Icon: 
+
+
+Assignment Options - Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+| Name                | Data Type | Description                                                                                                                                                                                                                                                                                                              | Required | Multiple |
+|---------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|
+| Data Source         | Any Type  | The data source that contains the stored procedure. The value depends on how your data source is connected. For data source connected systems, enter the connected system constant. For data sources connected in the Admin Console, enter the name of the data source or a Text constant that stores the name. | Yes      | No       |
+| Procedure Name      | Text      | Name of the stored procedure. Case sensitivity requirements are specific to each type of database. For Oracle and Db2 databases, enter the name in uppercase. For PostgreSQL databases, enter the name in lowercase.                                                                                                     | Yes      | No       |
+| Pause Node On Error | Boolean   | If set to true, pauses the node if the stored procedure execution fails. Default: true.                                                                                                                                                                                                                                  | Yes      | No       |
+| Run Validation      | Boolean   | If set to true, runs validations on the stored procedure before execution. See the running without validations section below before setting to false.                                                                                                                                    | Yes      | No       |
+| Timeout             | Number    | The amount of time (in seconds) until the stored procedure execution is cancelled. Default: 30 seconds.                                                                                                                                                                                                                  | No       | No       |
+In addition to the parameters above, inputs with names corresponding to the IN and INOUT parameters of the stored procedure must be created manually. A custom input parameter must be provided for every IN and INOUT parameter in order to pass validations. IN and INOUT parameters can be configured to pass values into the stored procedure by setting the Value field. Remember, the name of each custom input must match the name of a corresponding stored procedure parameter.
+Example of passing custom stored procedure inputs
+Given a stored procedure with the following IN and INOUT parameters:
+
+IN parameter: customer_name
+INOUT parameter: customer_id
+
+You can pass customer_name and customer_id into the stored procedure from a process variable by configuring a custom input as you see in the image below.
+{% include zoompic.html url="images/execute_stored_procedure/execute_stored_procedure_custom_input.gif" border="-nb" style="width:67%;"%}
+Note that the output for the INOUT parameter customer_id will be available in an activity class parameter in the outputs tab.
+Running without validations
+It is strongly recommended to run validations when executing stored procedures unless severe performance degradations are observed as a result. 
+If you choose not to run validations, the following rules will apply:
+
+You must add an input for each IN, INOUT, and OUT parameter to the stored procedure in the same order that they are listed in the stored procedure’s signature. If OUT parameters are not added as inputs, they will not be available in the ac!parameters activity class parameter.
+For most databases, stored procedures must not contain parameters with data types outside of Integer, Double, Date, Time, Timestamp, Varchar, and Boolean. In addition, the type of each input must correspond to the SQL data type of the stored procedure parameter, as reflected in the table below.
+
+| Appian Data Type | Inferred SQL Data Type |
+|------------------|------------------------|
+| Number (Integer) | Integer                |
+| Number (Decimal) | Double                 |
+| Date             | Date                   |
+| Time             | Time                   |
+| Timestamp        | Timestamp              |
+| Text             | Varchar                |
+| Boolean          | Boolean                |
+Depending on the type of database you are using, exceptions to the data type mappings above may apply. See database specific behaviors for more details.
+Node outputs
+| Name          | System Data Type | Description                                                |
+|---------------|------------------|------------------------------------------------------------|
+| Error Occured | Boolean          | Whether the stored procedure has returned an error.        |
+| Error Message | Text             | The error message if an error occurred.                    |
+| Result Sets   | List of Map      | Result sets returned by the stored procedure.              |
+| Parameters    | Map              | OUT and INOUT parameters returned by the stored procedure. |
+In addition to the outputs above, custom outputs with names corresponding to the OUT, INOUT, and resultSets parameters of the stored procedures can be configured in the outputs tab.
+Parameters can be accessed using the ac!parameters activity class parameter. Similarly, result sets can be accessed using the ac!resultSets activity class parameter. By parsing these outputs in a custom output expression, you can save individual stored procedure parameters and result sets into process variables.
+Example of saving custom stored procedure outputs
+Given a stored procedure that returns two result sets and the following OUT parameters:
+
+OUT parameter: customer_name
+OUT parameter: customer_id
+
+You can save each result set and each OUT or INOUT parameter in its own process variable by using custom outputs with the following configurations.
+
+ac!parameters.customer_name is stored as pv!customer_name
+ac!parameters.customer_id is stored as pv!customer_id
+ac!resultSets[0] is stored as pv!first_result
+ac!resultSets[1] is stored as pv!second_result
+
+In the image below, you can see how these configurations can be applied in the outputs tab of the smart service node.
+{% include zoompic.html url="images/execute_stored_procedure/execute_stored_procedure_custom_output.gif" border="-nb" style="width:67%;"%}
+Usage considerations
+INCLUDE PAGE: stored-procedure-guardrails.md
+Data sync behavior for record types
+If you use this smart service to add, update, or delete data in a database table, and that table is the source of a record type with data sync enabled, those changes will not be automatically synced in Appian. 
+To sync changes made by this smart service, use the Sync Records smart service. Any data changed by this smart service will also be synced during the next scheduled sync or if you trigger a manual sync.
+{% include zoompic.html url="images/syncRecordsProcessModel.png" %}
+To automatically sync changes made to a database table, consider using the following smart services instead:
+- Write to Data Store Entity
+- Write to Multiple Data Store Entities
+- Delete from Data Store Entities
+INCLUDE PAGE: stored-procedure-database-specifics.md
+a!executeStoredProcedureOnSave()
+The Execute Stored Procedure smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API. 
+For information on how to execute a read-only stored procedure from anywhere in Appian, see the a!executeStoredProcedureForQuery() function. Unlike the smart service function, a!executeStoredProcedureForQuery() is not restricted to being called inside a saveInto. However, the a!executeStoredProcedureForQuery() function should not be used to execute stored procedures that modify data.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Example
+For the example below, we define a stored procedure that writes to a database and show how it can be executed using the a!executeStoredProcedureOnSave() function.
+Stored procedure details:
+
+Stored procedure name: add_or_update_customer_and_case
+INOUT parameters: customer_id, case_id
+IN parameters: name, status, description
+MariaDB stored procedure definition:
+DELIMITER //
+CREATE OR REPLACE PROCEDURE add_or_update_customer_and_case(
+    INOUT customer_id INT,
+    IN name VARCHAR(255),
+    INOUT case_id INT,
+    IN status VARCHAR(255),
+    IN description VARCHAR(255)
+)
+BEGIN
+IF(customer_id IS NULL) THEN
+    INSERT INTO customers(name, email, phone_number) VALUES (name, null, null);
+END IF;
+IF(case_id IS NULL) THEN 
+    INSERT INTO cases(status, description) VALUES (status, description);
+ELSE 
+    UPDATE cases SET status = status, description = description WHERE case_id = case_id;
+END IF;
+END //
+DELIMITER ;
+
+To call the stored procedure that we've defined, we can use the code below inside a saveInto.
+sail
+a!executeStoredProcedureOnSave(
+    dataSource: cons!MARIADB_POINTER,
+    procedureName: "add_or_update_customer_and_case",
+    inputs: {
+        a!storedProcedureInput(name: "customer_id", value: local!customerId),
+        a!storedProcedureInput(name: "name", value: local!name),
+        a!storedProcedureInput(name: "case_id", value: local!caseId),
+        a!storedProcedureInput(name: "status", value: local!status),
+        a!storedProcedureInput(name: "description", value: local!description),
+    },
+    onSuccess: {
+        a!save(local!customerId, fv!parameters.customer_id),
+        a!save(local!caseId, fv!parameters.case_id),
+    },
+    onError: {
+        a!save{local!errorMessage, fv!errorMessage}
+    }
+)
+After the stored procedure is successfully executed, you can see that the INOUT parameters customer_id and case_id will be loaded into local variables from the fv!parameters function variable. Note that for this stored procedure there are no queries, so the fv!resultSets function variable will contain an empty list.
+In the event that an error occurs, local!errorMessage will be populated with the error message from the function variable fv!errorMessage.

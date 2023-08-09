@@ -1,0 +1,62 @@
+
+layout: function
+title: Bulleted List
+category: function_page
+compatibility: -crf
+excerpt: Displays a bulleted list within a rich text component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!richTextBulletedList
+fncsubcat: Display
+parameters:
+  - keyword: items
+    name: Items
+    types: 'Text, Styled Text, and List'
+    description: |
+      Array of text to display as a bulleted list. Text can be further formatted using a!richTextItem(). Nested lists can be created using a!richTextListItem().
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Bulleted List
+scsubcat: Rich_Text_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a bulleted list within a rich text component.
+See also: Rich text style guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the items parameter
+
+Specific values within items can be further formatted using styled text.
+Bulleted lists cannot be nested within styled text.
+If items is null or contains an empty array, no list is displayed.
+If the items array contains one or more null values, those items in the list have no text displayed.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 530 %} 
+a!richTextDisplayField(
+  labelPosition: "COLLAPSED",
+  value: {
+    a!richTextBulletedList(
+      items: {
+        "A",
+        "B",
+        "C",
+        a!richTextItem(
+          text: "D",
+          style: "EMPHASIS"
+        ),
+        "E"
+      }
+    )
+  }
+)
+{% endsailbox %}

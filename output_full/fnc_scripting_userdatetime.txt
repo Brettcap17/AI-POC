@@ -1,0 +1,52 @@
+
+layout: function
+title: userdatetime() Function
+space: function_page
+excerpt: "Interprets the given date and time in the user preferred calendar and converts it into a serial number."
+category: function_page
+fncname: userdatetime
+fncexample: "datetext(userdatetime(1427, 8, 18, 1, 2, 0))"
+fncresult: "08/18/1427 01:02 AM"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: year
+    types: Number
+    description: |
+      The year of the datetime you would like to convert into a serial number.
+  - keyword: month
+    types: Number
+    description: |
+      The number of the month of the datetime.
+  - keyword: day
+    types: Number
+    description: |
+      The day of the datetime.
+  - keyword: hour
+    types: Number
+    description: |
+      The hour of the datetime.
+  - keyword: minute
+    types: Number
+    description: |
+      The minute of the datetime.
+  - keyword: second
+    types: Number
+    description: |
+      The seconds of the datetime.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: datetext()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DateTime
+Usage considerations
+To display the date, always wrap the output with datetext().
+For the month parameter, do not include leading zeroes for a month with one digit.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+datetext(userdatetime(1427,8,18,1,2,0)) returns 08/18/1427 01:02 AM

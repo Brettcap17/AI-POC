@@ -1,0 +1,33 @@
+
+layout: function
+title: stripHtml() Function
+category: function_page
+excerpt: 'Changes the provided HTML string into a plain text string by converting <br>, <p>, and <div> to line breaks, stripping all other tags, and converting escaped characters into their display values.'
+fnccat: Text
+fncexample: striphtml("Click Save.")
+fncname: stripHtml
+fncresult: Click Save.
+compatibility: +pe, +pr
+parameters:
+  - keyword: html
+    types: Text
+    description: |
+      the html text to be "stripped" of tags and converted to plain text.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Handling for classes and styles
+striphtml() will not convert <br>, <p>, and <div> tags to line breaks if they contain additional classes or styles. For example, <div class="test"> or <div style="align:center"> would not be converted to line breaks.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+=stripHtml("<p>Click <b>Save</b>.</p>") returns Click Save.

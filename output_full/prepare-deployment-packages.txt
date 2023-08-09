@@ -1,0 +1,360 @@
+
+layout: basic
+title: Prepare Deployment Packages
+topic-group: C
+weight: 300
+
+Overview
+This page is about the packages you can create and deploy in Appian. 
+A package is a collection of Appian application changes that a developer can deploy to another environment. Preparing a package is an important step in the deployment process and involves understanding what changes you need to deploy and how these changes will affect your target environment.
+We recommend that you use packages as a tool for building your applications and ensuring successful deployments. With packages, your development team can better organize the changes being introduced, collaborate effectively during development and peer reviews, and monitor the progress of each package periodically.
+Deploying a package is the goal of your packaging process. With packages, you can take advantage of direct deployments and external deployments. Alternately, you can download the package zip file and deploy it yourself by logging in to the target environment and manually importing it. Learn more about manual export and import of packages.
+Packages allow you to:
+- Deploy new and updated objects to improve an application that already exists in the target environment.
+- Deploy only application configurations, database scripts, and/or plug-ins to the target environment.
+Your package may require other files to successfully deploy in the target environment. Import customization files, database scripts, and plug-ins are common dependencies that can be directly deployed alongside your packages. Based on the type of changes you are making to the target environment, your list of dependencies and how you deploy them will vary.
+The packaging process includes the following steps:
+
+Create a package.
+Manage the package during development.
+Prepare the package for deployment.
+Deploy the package.
+Delete the package.
+
+
+appian-style-note
+Appian RPA customers need to package and deploy robotic processes separately from applications. Learn how to deploy robotic processes and apps.   
+
+Package properties
+You can configure the following properties for your package:
+| Property | Description |
+| - | - |
+| Name | The name of the package. This name must be unique within an individual application. |
+| Link to Ticket | (Optional) Add the URL of the related ticket in your project management tool (for example, Jira). This property enables better traceability between Appian and your project management tool. |
+| Description | (Optional) Add a clear, concise description of the application changes you're including in the package. This description helps you to quickly assess differences in packages. |
+Create a package {#create-package}
+To make your development life cycle more streamlined and efficient, Appian recommends creating packages before making changes to objects. Create a corresponding package once you have finalized requirements for building or enhancing an application.
+All packages created in an application will be visible to any user with Viewer permissions or above to the application. Within a package, users can only see the objects to which they have the required permissions.
+You can create up to 100 packages for an individual application.
+To create a package:
+1. In the Build view, click CREATE PACKAGE.
+   {:.screenshot}
+
+Configure the package properties.
+
+For example:
+{:.screenshot}
+
+Continue as appropriate:
+Click CREATE if this is the last or only package you want to create.
+Click CREATE AND ADD ANOTHER to create multiple packages, and repeat the previous steps again for each new package.
+In the package list, click the name of the package you just created.
+
+You'll notice the contents view for the package is empty right now. Most likely, you'll want to do one or more of the following actions next:
+
+Add objects to the package.
+Add objects from an existing package.
+Add application configurations to the package.
+Add an import customization file to the package.
+Add database scripts to the package.
+Add plug-ins to the package.
+
+Manage a package during development {#manage-package-during-dev}
+While building or improving your application, you'll commonly perform the actions described in this section.
+View the packages list
+To view the list of packages for an individual application, click VIEW PACKAGES in the Build view.
+From this list, you can:
+
+Create a package by clicking CREATE.
+View a package by clicking the package name.
+Edit package properties.
+Add objects to one package from another package.
+Export a package.
+Delete a package.
+
+View a package {#view-package}
+To view an individual package, select the package from the dropdown menu in the deployment actions bar of the Build view:
+{:.screenshot}
+For example:
+{% include zoompic.html url="images/package-view.png" alt="package-view" border="-nb" %}
+The package view includes:
+
+The contents grid, which contains a list of design objects included in the package. The contents grid allows you to focus only on the set of objects that you are working on as part of your current changes to the application. Learn how to add objects to a package.
+The PACKAGE DETAILS pane, which displays creation and last modified information for the package. Learn how to share a package.
+The APPLICATION CONFIGURATION pane, which specifies whether the package contains certain application-level settings. Learn how to add application configurations to a package.
+The IMPORT CUSTOMIZATION FILE pane, which displays the import customization file included in the package. Learn how to add an import customization file to a package.
+The DATABASE SCRIPTS pane, which lists the database scripts included in the package. Learn how to add database scripts to a package.
+The PLUG-INS pane, which lists the plug-ins included in the package. Learn how to add plug-ins to a package.
+
+Share a package
+You can easily share the link to a package for change reviews.
+To get the link:
+
+View the package. 
+In the PACKAGE DETAILS pane, click Copy Package Link. Appian copies the URL to your clipboard.
+
+Edit package properties
+To edit package properties:
+
+Open the edit dialog in either of the following ways:
+In the package list, select the checkbox next to the package name, then click EDIT.
+In the package view, click more options , then click Edit.
+Configure the package properties. 
+Click SAVE.
+
+Add objects to the package {#add-objects-to-package}
+Once you've created a package, you'll want to specify the design objects to include in the package.
+To add design objects to a package:
+
+View the package.
+Click ADD EXISTING.
+
+Continue as appropriate:
+
+
+Click Application Contents to add all design objects in the application.
+
+Click Add Folder Contents to add design objects from one or more folders.
+
+Click Existing Objects to select individual design objects to add.
+
+
+Make your selections:
+
+
+| Option | Action |
+   | - | - |
+   | Application Contents | Enter the name of the application, then select the application from the dropdown list. If you select an application other than (or in addition to) the current application, Appian first adds the objects from that other application to the current application, then adds the objects to the package. |
+   | Folder Contents | Enter the name of a folder, then select the folder from the dropdown list. You can select multiple folders. |
+   | Existing Objects | For each object category, enter the name of an object, then select the object from the dropdown list. Object categories include Record Types, Process Models, Reports, and Other (for example, a connected system. |
+
+(Optional) Click Check for missing precedents after adding objects to package.
+Click ADD TO PACKAGE. 
+
+(Optional) If checking for missing precedents:
+
+
+Review any missing precedents that Appian identifies.
+
+If you want to add a precedent object to the package:
+Select the object in the table.
+Click ADD TO PACKAGE.
+Click CHECK AGAIN. The previously missing precedent will disappear from the table.
+
+
+
+When you've reviewed or resolved all missing precedents, click Close. The package displays.
+
+
+Click CLOSE.
+
+
+Add contents from an existing package {#add-objects-from-existing-package}
+You can add contents of one package (source package) to another package (destination package). These contents include:
+- Design objects
+- Application configurations
+- Import customization files
+- Database scripts
+- Plug-ins
+If the destination package already contains an item from the package, Appian handles the contents as follows:
+| Package Item | Description |
+| - | - |
+| Application configurations | Adds application configurations to the destination package if the source package includes application configurations. If the destination package includes application configurations, and the source package does not, Appian keeps the original application configurations setting for the destination package.  |
+| Import customization files | Adds an import customization file (ICF) to the destination package if the source package includes an ICF. If both source and destination package include an ICF, Appian generates a file combining properties from both files, which it then includes in the destination package by default. This system-generated file is named for the destination package and appended with the text _combined. When creating this file, Appian simply combines existing properties; it does not eliminate duplicate properties. Alternatively, you can upload an import customization file to replace this system-generated file. |
+| Database scripts | Adds scripts from the source package to the destination package. By default, places the new scripts last in execution order. |
+| Plug-ins | Adds plug-ins from the source package to the destination package. |
+To add contents from one package to another: 
+
+View the packages list.
+Select the checkbox next to the source package.
+Click ADD CONTENTS TO PACKAGE.
+Select the destination package:
+To select an existing package, select the package from the dropdown list.
+To select a new package:
+Click Create New Package.
+Configure the new package properties.
+
+
+Click ADD. 
+(Import customization files only) If the destination package and any of the selected source packages include import customization files, select the file to replace the existing file in the destination package:
+To replace the existing file with a system-generated file, select Use generated file. The system-generated file combines properties from the files in both the source and destination packages.
+
+To replace the existing file with a new file:
+
+Select Upload new file.
+Click UPLOAD.
+Navigate to and select the file you want to use.
+Click OK.
+
+
+appian-style-tip
+The new file can be an edited version of the system-generated file. Just click the link for the combined file to download it, edit the file locally, then upload it as a new file.
+
+
+
+(Database scripts only) Review the combined scripts and make changes as necessary:
+
+Remove duplicate scripts by clicking  next to the script you want to remove.
+Change the execution order of the combined scripts by clicking ORDER ALPHABETICALLY to reorder the entire list or clicking order arrows to move individual scripts.
+Click DONE.  
+
+Modify package objects
+You can modify objects in the package view the same way you'd modify the objects in the applications view.
+You can:
+- Click on an object to edit it.
+- Click NEW to add a new object.
+- Click ADD EXISTING to add an existing object. 
+
+appian-style-tip
+In the package list, you can add objects from one package to another.
+
+Add application configurations {#prodlink-application-configurations}
+Application configurations are a category of settings that apply to the application on a global level. These configurations are not design objects, but may rely on design objects to function.
+Application configurations include:
+- Application properties
+- Missing precedent filters for the application
+- Application security
+- Application actions
+- Application documentation
+- Post-deployment process
+To deploy changes to these settings to a target environment, we recommend adding application configurations to your package.
+If your application is new to a target environment, the deployed package always includes application configurations.
+To deploy only application configurations to a target environment, create a package that leaves out all design objects except the objects needed by the configurations. This approach allows you to promote these changes to a higher environment without deploying in-progress work on design objects. 
+When adding application configurations to a package, make sure that the package includes any objects that the application configurations rely on to function. These precedents can include:
+| Configuration | Precedents |
+| - | - | 
+| Application properties | Default security groups |
+| Application security | Groups used in the application role map |
+| Application actions | Process models and supporting objects |
+| Application documentation | Document objects |
+| Post-deployment process | Process models and supporting objects |
+In preparation for deployment, Appian compares application configurations in packages to the corresponding configurations in the target environment, then reports the appropriate status. However, this comparison does not track whether supporting objects might have been deleted in the lower environment, so you will need to manually delete those objects in the higher environment. Learn more about package comparison.
+To add or remove application configurations to a package:
+
+View a package.
+Click Review Configurations . The Application Configurations dialog displays a read-only summary of configurations for the current application.
+
+For example:
+{:.screenshot}
+This summary includes sections for application properties, application security, application documentation, application actions, and the post-deployment process.
+
+In the Application Configurations dialog, do either of the following:
+Click ADD TO PACKAGE to add the configurations to the package.
+Click REMOVE FROM PACKAGE to remove the configurations from the package.
+Click CLOSE to close the dialog.
+
+Add an import customization file {#add-icf}
+You'll see a number of benefits when you add an import customization file to a package during development:
+- Developers can capture incremental changes during development. 
+- Your change reviews and deployments are simpler, because everything you need is in a single location.
+To add import customization files to a package, you'll need a basic user assigned the Designer user role and the appropriate permissions for the application:
+- With Viewer permissions for the application, you can add an import customization file to a package that you've created, but you won't be able to add or view any import customization file to packages created by other users.
+- With Administrator permissions for the application, you can add an import customization file to any package associated with the application.
+In the package view, Appian displays a message when you first add a design object to a package that requires an import customization file. This message clears when you add an import customization file. 
+After you've added an import customization file to a package, Appian also displays a message when you add a relevant design object, so that you can keep the import customization file up-to-date. This message clears when you upload a new import customization file.
+Appian doesn't display a message if you remove the relevant design object from the package. It's good housekeeping to remove the related property from the import customization file and upload the updated file to the prepared package, but keeping the out-of-date file won't impact deployment. Appian does not apply the property in the target environment unless the deployment includes the relevant design object.
+To add an import customization file to a package:
+
+View a package.
+In the IMPORT CUSTOMIZATION FILE pane, click UPLOAD.
+Navigate to and select the .properties file you want to upload. The selected file appears in the pane.
+
+{:.screenshot}
+After you've added a file, you can also do any of the following in the IMPORT CUSTOMIZATION FILE pane:
+- To remove an import customization file from a package, click the {:.screenshot} icon next to the file.
+- To update an existing import customization file in a package, remove the existing file from the pane, then add a new file.
+- To download the existing import customization file from the package, click the file link.
+- To download a template file, click Download Template. Appian reuses the package name as the template file name. This template file will include placeholder properties for any objects in the package that can be customized with an import customization file. If there are no objects of that type in the package, the template file contains instructions only.
+Add database scripts {#add-database-scripts}
+Improving an application sometimes requires changes in the structure of underlying data sources. To implement these changes in the data source in a higher environment, you can create database scripts.
+You can include these database scripts when you deploy a package. However, we recommend adding database scripts to the package during development. Adding scripts to packages lends itself to better maintainability and collaboration with your teammates throughout the development life cycle, because with packages you can track, add, reorder, and generally maintain the scripts as you develop.
+When you add contents from one package to another, the contents include the database scripts associated with the original package.
+To add a database script to a package:
+
+View a package.
+In the DATABASE SCRIPTS pane, click Manage Database Scripts . 
+Configure the following properties:
+
+
+
+
+Property
+Description
+
+
+
+
+Data Source
+Select the relational database that stores data for this application.
+
+
+Database Scripts
+For each database script you want to add:
+
+Click Upload.
+Browse to and select a script.
+
+
+The uploaded script displays in the scripts table. Appian executes the database scripts in the order in which they appear in this table.
+
+
+
+
+For example:
+{:.screenshot}
+
+(Optional) Change the order of script execution: 
+If you follow an alphabetical naming convention for your database scripts, click ORDER ALPHABETICALLY to reorder the entire table.
+Otherwise, click the order arrows to move individual scripts.
+Click SAVE. 
+
+To update database scripts in a package:
+
+Add the new version of the script, using the steps above.
+In the database script management dialog, click  next to the original version of the script.
+Click SAVE.
+
+To delete database scripts from a package:
+
+View the package.
+In the DATABASE SCRIPTS pane, click Manage Database Scripts .
+Click  next to the script you want to delete.
+Click SAVE. 
+
+Add plug-ins {#add-plug-ins}
+If objects in your application reference plug-ins, there are additional considerations when deploying the application.
+Plug-ins are maintained at the environment level, rather than the application level, which means a plug-in's affiliation with an application is dependent on objects within the application referencing the plug-ins. Plug-ins are not included in the application in the same way as objects. As a result, plug-ins won't appear on the application's missing precedents analysis. You must manually verify the presence of the plug-ins and supporting objects in the target environment.
+If the right versions of the referenced plug-ins are present in the target environment, no additional action is needed on your part to ensure successful deployment of the referencing objects.
+If the plug-ins are missing in the target environment or aren't the right version for your application, additional action on your part is needed. Your approach depends on the type of target environment and your deployment policies for each environment.
+If it's appropriate, you can install or update the plug-ins directly in the target environment:
+
+On Cloud sites, system administrators can deploy Cloud-approved plug-ins to an environment through the Admin Console. 
+On self-managed sites, plug-ins can be hot deployed by placing the JAR in the specified directory.
+
+Alternatively, you can add plug-ins to your package using the steps described in this section, then deploy the package using compare and deploy. You can also add plug-ins to your package from the PLUG-INS tab of the Build view and during the Prepare Deployment step of compare and deploy.
+When you add contents from one package to another, the contents include the plug-ins associated with the original package.
+To add plug-ins to a package:
+
+View a package.
+In the PLUG-INS pane, click Manage Plug-ins . 
+In the Manage Plug-ins dialog, click View plug-ins referenced by objects in this application.
+Select the plug-in(s) you want to add to the package.
+Click ADD TO PACKAGE.
+Click CLOSE to close the dialog. The PLUG-INS pane will now list the plug-ins you added.
+
+{:.screenshot}
+To remove plug-ins from a package:
+
+View a package.
+In the PLUG-INS pane, click Manage Plug-ins . 
+In the Manage Plug-ins dialog, click View plug-ins in package.
+Select the plug-in(s) you want to remove from the package.
+Click REMOVE FROM PACKAGE.
+Click CLOSE to close the dialog. The list in the PLUG-INS pane will no longer include the removed plug-ins.
+
+Prepare the package for deployment {#prepare-package-for-deployment}
+Before deploying changes to a target environment, we recommend that you validate your package in the source environment:
+- Review and resolve missing precedents to make sure that all necessary objects are in your package.
+- Review the security summary to make sure all your objects have the appropriate security set.
+The deployment process will further validate your package during package comparison and package inspection. However, validating your application before starting the deployment process significantly simplifies those steps.
+Now, your package is ready to deploy!

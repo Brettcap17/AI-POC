@@ -1,0 +1,46 @@
+
+layout: function
+title: Document Download Link
+category: function_page
+compatibility: -crf
+excerpt: Defines a link used to download a document.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!documentDownloadLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: document
+    name: Document
+    types: Document
+    description: The ID of the document that downloads when the user clicks the link.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Document Download Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Link
+Read-Only Grid
+Images
+Folder and Document Management
+Buttons and links design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using document links with the link field component
+
+To display a single link or array of links, use inside the Link Field component. To display a link in a grid, use inside a GridTextColumn. To add a link to an image, use inside a document or web image. To add a link to a chart series, use inside the a!chartSeries() function.

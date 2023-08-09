@@ -1,0 +1,144 @@
+
+layout: basic
+title: Modify Process Security Smart Service
+excerpt: The Modify Process Security Node allows you to specify the users or groups that can perform the following roles (for the active process instance).
+reftype: smart_service
+sscat: Process_Management
+ssicon: Modify_Process_Security.png
+ssparentcat: Automation_Services
+
+Overview
+Appian processes have a security model that determines which users have the right to perform a particular action or access a particular business object. The Modify Process Security Node allows you to specify the users or groups that can perform the following roles (for the active process instance).
+
+appian-style-note
+The user must log out and back in for any security changes to take effect.
+
+
+
+
+Role
+Permitted Actions
+
+
+
+
+Process Administrator
+
+Add attachments/notes to a process
+View process status
+View process report
+View node report
+View task reports
+Update process variables
+View and complete tasks assigned to other users in the system (as well as tasks assigned to you)
+Remove attachments/notes from a process
+Change process security roles for other users and groups
+Perform in-flight modifications to the process
+Stop or pause a process
+Delete a process
+
+
+
+Editor
+
+Add attachments/notes to a process
+View process status
+View process report
+View node report
+View task reports
+Update process variables
+View and complete tasks assigned to other users in the system (as well as tasks assigned to you)
+
+
+
+Manager
+
+Add attachments/notes to a process
+Update process variables
+View process status
+View process report
+View node report
+View task reports
+Remove attachments/notes from a process
+
+
+
+Viewer
+
+Add attachments/notes to a process
+View process status
+View process reports
+View node report
+View task reports
+
+
+
+Initiator
+No actions can be performed on a process. Initiators can upload attachments for a task that is assigned to them, but they cannot create attachments for the process.
+
+
+Deny
+If a user or group have been assigned the "Deny" role they will not be able to perform any action associated with the selected process.
+
+
+
+A process is created as a process model at design time. It is called a process instance at runtime. Each process instance inherits security from its process model, but process instance security can also be changed by this process activity or from the Process Details view.
+A process instance is very flexible. It can be monitored and changed while it is running. After it runs, its data is available for reporting and viewing from the process instance dashboard. Users with Initiator rights for a process, cannot view any reports generated from the process.
+Properties
+
+
+Category: Process Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+This tab displays the Node Inputs and Node Outputs for the service node. You can add additional inputs and outputs, if needed. 
+Node inputs
+The default inputs are:
+
+
+
+Input
+Data Type
+Required
+Multiple
+
+
+
+
+Administrators
+People
+No
+Yes
+
+
+Editors
+People
+No
+Yes
+
+
+Viewers
+People
+No
+Yes
+
+
+Explicit Non Viewers
+People
+No
+Yes
+
+
+
+If the node is run without being assigned to a user (or a group) you must specify values for each of the Node Inputs listed in the table above. You can either manually enter data into the text-field, or a value can be generated using the Expression Editor. When using the Expression Editor, you can reference and modify process variables, rules, constants, and other data. The expressions then populate your Node Input values.
+If the node is assigned, the Node Input values are typed by your assigned user(s) into a form.
+Node outputs
+This node does not return any values.

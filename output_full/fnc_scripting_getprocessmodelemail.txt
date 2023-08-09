@@ -1,0 +1,13 @@
+
+layout: function
+title: getprocessmodelemail Function [Deprecated]
+space: no_toc
+depver: 6.0
+category: function_page
+fncname: getprocessmodelemail
+fnccat: "一Deprecated一"
+reftype: function
+
+The getprocessmodelemail function has been deprecated and will be removed in a future release of Appian.  
+Appian recommends routing email through a single email account, and using key/value pairs in the subject or body to target specific processes, process models, or events.
+For information about the {{ page.title }}, see the Appian 16.2 documentation.

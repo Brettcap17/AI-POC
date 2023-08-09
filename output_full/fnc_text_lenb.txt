@@ -1,0 +1,30 @@
+
+layout: function
+title: lenb() Function
+space: function_page
+excerpt: "Returns the length in bytes of the text."
+category: function_page
+fncname: lenb
+fncexample: "lenb(\"Boston\")"
+fncresult: "6"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text, the length of which in bytes will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+lenb("boston") returns 6

@@ -1,0 +1,68 @@
+
+layout: function
+title: Process Task Link Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to a process task.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!processTaskLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: task
+    name: Task
+    types: Task
+    description: ID of the process task to use as the address of the link.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: openLinkIn
+    name: Open Link In
+    types: Text
+    description: |
+      (Browser-Only) Determines where the linked content should open. Valid values: "SAME_TAB" (default), "NEW_TAB".
+reftype: sailcomponent
+scdisplayname: Process Task Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Task
+Link
+Read-Only Grid
+Images
+Execute Process Report Smart Service
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Retrieving task IDs
+
+To retrieve task IDs, use the Execute Process Report Smart Service and pull from the column that returns the list of IDs.
+
+Using process tasks links with other components
+
+To display a single link or array of links, use the process task link inside of the link field component.
+To display a link in a grid, use the process task link inside of a grid text column.
+To add a link to an image, use the process task link inside of a document image or web image.
+To add a link to a chart series, use the process task link inside of the chart series component.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Basic process task link
+sail 
+a!processTaskLink(
+  label: "Approval Task",
+  task: 1
+)

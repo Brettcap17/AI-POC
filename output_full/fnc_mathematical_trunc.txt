@@ -1,0 +1,36 @@
+
+layout: function
+title: trunc() Function
+space: function_page
+excerpt: "Truncates a decimal number to the specified number of places after the decimal point."
+category: function_page
+fncname: trunc
+fncexample: "trunc(2.8888, 3)"
+fncresult: "2.888"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Decimal
+    description: |
+      A decimal number.
+  - keyword: numberOfDecimals
+    types: Number
+    description: |
+      The number of places after the decimal point to which the number should be truncated.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+If the numberOfDecimals parameter is not specified, a default value of 0 is used and the decimal number is truncated to just its integer value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+trunc(7.3675,2) returns 7.36 

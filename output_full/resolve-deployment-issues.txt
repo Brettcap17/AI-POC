@@ -1,0 +1,39 @@
+
+layout: basic
+title: Resolve Deployment Issues
+topic-group: C
+weight: 425
+
+Overview
+During deployment, you may encounter issues for various reasons. For example, an error may occur when you are not an administrator of the object, or if you attempt to deploy a group with the same name as another group.
+Deployment errors
+Object errors
+The deployment, including the export and import processes, does not stop when errors are encountered on specific objects.
+However, a problem during the import of an object may cause the import of related objects to also fail. For example, a failure to create a group type during an import would cause the import of any groups of that type to also fail (Appian does not attempt to import these groups in this case).
+If a group fails to be created during import, and the group exists in rolemaps for other objects---or is a member of another group---the other objects (or groups) will fail to import due to the missing precedent.
+Database script errors
+The deployment will completely stop when a database script cannot be executed. Executing subsequent database scripts and deploying objects will not be attempted.
+Reading deployment logs
+In each case an error occurs, Appian gathers and displays information on any problems after all objects in the package have been processed. Generally, you can do one of the following:
+
+Resolve the cause of the problem as identified by the log and try again.
+Retry with only those objects that failed due to the issue identified. You might prefer this option when the package is especially large.
+
+Deployment log
+When using compare and deploy, a deployment log is generated. The log details the stages of your deployment - such as the sending and receiving of the deployment request, executing database scripts, and importing the objects - and whether they succeeded. Errors that occur during database script execution or object import are included here. For more information on object import errors, see below.
+Import log
+When manually importing, an import log is generated. Objects with import issues are placed in one of two sections at the top of the import log:
+
+Problems: Lists the items that could not be imported and the reason why. Make sure to address the cause of the problem before attempting to import the application again.
+Cascading Problems: Lists the items that could not be imported because they reference an item that failed to import previously. They do not need to be addressed individually.
+
+The following example illustrates the log entries that may be generated when an object reference is not included in the package, and is not present in the target environment.
+{:.screenshot}
+In this instance, an imported process model listed an individual user for the assignment of an activity. We recommend using groups for assignments instead. Otherwise, ensure that the target environment has a user with the same username, prior to importing the application.
+Additional sections in the import log include:
+
+Success: Lists the items that were successfully created or updated by import.
+Not Changed: Lists the items that were skipped by import because they contained no updates.
+Version Synchronized: Lists the items were imported to synchronize the version histories. These items had different version histories but were otherwise identical.
+
+See the object comparison statuses for more information.

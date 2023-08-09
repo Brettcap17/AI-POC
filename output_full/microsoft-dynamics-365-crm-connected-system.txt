@@ -1,0 +1,62 @@
+
+layout: basic
+title: Microsoft Dynamics 365
+topic-group: A
+weight: 801
+
+Overview
+Create, retrieve, update, and delete entity records in Dynamics Version 9 and Dynamics 365.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+Two forms of authentication are available for Dynamics: Authorization Code (per user) and Client Credentials (single system login).
+Authorization Code authentication
+Each Appian user will be required to sign in to their Dynamics account to authenticate.  You must provide users a way to authenticate using OAuth 2.0.
+See Dynamics OAuth 2.0 Code Grant Flow for more details.
+The Dynamics Authorization Code authentication has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Instance URL     | Required. Instance URL will be used for authorization. This URL is used to configure your integration object and when executing your operations.  For example https://company-name.crm.dynamics.com |
+| Application (Client) ID | Required. In the Azure portal, navigate to Azure Active Directory, select App Registrations, and then select your application. The Application (client) ID will be listed on this page. |
+| Directory (Tenant) ID | Required. In the Azure portal, navigate to Azure Active Directory, select App Registrations, and then select your application. The Directory (tenant) ID will be listed on this page. |
+| Client Secret | Required/Sensitive. In the App registrations page, select your application from the list, select Certificates & secrets, and then navigate to Client secrets. Add a new client secret and click Add. The generated key value is the Client Secret and must be copied before leaving this page. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+Click AUTHORIZE to use the provided configuration information to authorize the designer in a new window.  See OAuth 2.0: Authorization Code Grant for more details.
+{:.screenshot}
+Client Credentials authentication
+Provide a single Dynamics user's credentials to authenticate.  All integrations will use a shared Dynamics service account. Individual Appian users do not need their own Dynamics accounts.
+See Dynamics OAuth 2.0 Client Credentials Flow for more details.   Microsoft community also provides a helpful Setup Guide. 
+The Dynamics Client Credentials authentication has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Instance URL     | Required. Instance URL will be used for authorization. This URL is used to configure your integration object and when executing your operations.  For example  https://company-name.crm.dynamics.com |
+| Application (Client) ID | Required. In the Azure portal, navigate to Azure Active Directory, select App Registrations, and then select your application. The Application (client) ID will be listed on this page. |
+| Directory (Tenant) ID | Required. In the Azure portal, navigate to Azure Active Directory, select App Registrations, and then select your application. The Directory (tenant) ID will be listed on this page. |
+| Client Secret | Required/Sensitive. From your application page in Azure portal, select Certificates & secrets, and then navigate to Client secrets. Add a new client secret and click Add. The generated key value is the Client Secret and must be copied before leaving this page. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|  Create an Entity Record       | Creates a new entity record in Dynamics| WRITE |
+|  Retrieve an Entity Record       | Retrieves the data for a given entity record from Dynamics| READ |
+|  List Entity Records       | Retrieves a collection of entity records from Dynamics that match the given query| READ |
+|  Update an Entity Record       | Updates an entity record in Dynamics| WRITE |
+|  Delete an Entity Record       | Deletes an entity record from Dynamics| WRITE |
+Create an Entity Record
+Creates a new entity record in Dynamics.
+The Create an Entity Record operation modifies data in Dynamics. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Retrieve an Entity Record
+Retrieves the data for a given entity record from Dynamics.
+{:.screenshot}
+List Entity Records
+Retrieves a collection of entity records from Dynamics that match the given query. See Microsoft documentation for ODATA examples.
+{:.screenshot}
+Update an Entity Record
+Updates an entity record in Dynamics.
+The Update an Entity Record operation modifies data in Dynamics. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Delete an Entity Record
+Deletes an entity record from Dynamics.
+The Delete an Entity Record operation modifies data in Dynamics. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}

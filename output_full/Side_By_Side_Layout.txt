@@ -1,0 +1,126 @@
+
+layout: function
+title: Side By Side Layout
+category: function_page
+compatibility: -crf
+excerpt: Displays components alongside each other.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!sideBySideLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: items
+    name: Items
+    types: Any Type
+    description: List of items that are displayed in the layout. Accepts a!sideBySideItem.
+  - keyword: alignVertical
+    name: Vertical Alignment
+    types: Text
+    description: |
+      Determines vertical alignment of all content within the layout. Valid values are "TOP" (default), "MIDDLE", and "BOTTOM".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: spacing
+    name: Item Spacing
+    types: Text
+    description: |
+      Determines the space between columns in the layout when they are not stacked. Valid values: "STANDARD" (default), "NONE", "DENSE", "SPARSE".
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+  - keyword: stackWhen
+    name: Stack When
+    types: List of Text
+    description: |
+      Determines the page width at which side by side items stack vertically. List all widths where items should stack. Valid values: "PHONE", "TABLET_PORTRAIT", "TABLET_LANDSCAPE", "DESKTOP_NARROW", "DESKTOP", "DESKTOP_WIDE", "NEVER" (default).
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE".
+reftype: sailcomponent
+scdisplayname: Side By Side Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+
+Side By Side Item
+Responsive Design
+Side By Side and Columns design guidance
+Side By Side design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Input fields with relative widths
+sail 
+a!sideBySideLayout(
+  items: {
+    a!sideBySideItem(
+      width: "4X",
+      item: a!textField(
+        label: "First Name"
+      )
+    ),
+    a!sideBySideItem(
+      item: a!textField(
+        label: "M.I."
+      )
+    ),
+    a!sideBySideItem(
+      width: "4X",
+      item: a!textField(
+        label: "Last Name"
+      )
+    )
+  }
+)
+Displays the following:
+{screenshot}
+Minimized width for icon and button
+sail 
+a!sideBySideLayout(
+  alignVertical: "MIDDLE",
+  spacing: "DENSE",
+  items: {
+    a!sideBySideItem(
+      width: "MINIMIZE",
+      item: a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: a!richTextIcon(
+          icon: "user",
+          size: "LARGE"
+        )
+      )
+    ),
+    a!sideBySideItem(
+      item: a!textField(
+        labelPosition: "COLLAPSED"
+      )
+    ),
+    a!sideBySideItem(
+      width: "MINIMIZE",
+      item: a!buttonArrayLayout(
+        marginBelow: "NONE",
+        buttons: {
+          a!buttonWidget(
+            label: "Check Availability",
+            size: "SMALL",
+            style: "SECONDARY"
+          )
+        }
+      )
+    )
+  }
+)
+Displays the following:
+{screenshot}

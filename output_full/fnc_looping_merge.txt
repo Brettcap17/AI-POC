@@ -1,0 +1,31 @@
+
+layout: function
+title: merge() Function
+space: function_page
+excerpt: "Takes a variable number of lists and merges them into a single list (or a list of lists) that is the size of the largest list provided."
+category: function_page
+fncname: merge
+fncexample: "merge({10, 20}, {30, 40})"
+fncresult: "{{10, 30}, {20, 40}}"
+fnccat: Looping
+reftype: function
+parameters:
+  - keyword: list
+    types: Any Type Array
+    description: Variable number of lists to merge into one list.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Use this function when you have a looping function referencing a rule or function that takes more than one argument. The order of the argument must match the order of your rule input parameters.
+Shorter lists are padded with null entries.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+merge({1, 2, 3}, {4, 5, 6}) returns 1, 4, 2, 5, 3, 6

@@ -1,0 +1,194 @@
+
+layout: function
+title: Record Action Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: 'Displays a list of record actions with a consistent style. A record action is an end-user action configured within a record type object, such as a related action or record list action.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!recordActionField
+fncsubcat: Action
+parameters:
+  - keyword: actions
+    name: Actions
+    types: Any Type
+    description: |
+      List of record action items to display in the field, configured using a!recordActionItem().
+  - keyword: style
+    name: Display Style
+    types: Text
+    description: |
+      Determines how the list of actions should be displayed on the interface. Valid values: "TOOLBAR" (default), "LINKS", "CARDS", "SIDEBAR", "CALL_TO_ACTION", "MENU", "MENU_ICON". See the documentation for guidance on how to use different styles effectively.
+  - keyword: display
+    name: Display
+    types: Text
+    description: |
+      Determines how the given action labels will be displayed in each item. Valid values: "LABEL_AND_ICON" (default), "LABEL", "ICON".
+  - keyword: openActionsIn
+    name: Action Behavior
+    types: Text
+    description: |
+      Determines how actions should open to the user. Valid values: "DIALOG" (default), "NEW_TAB", "SAME_TAB".
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of the action(s). Valid values: "START", "CENTER", "END".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Record Actions
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Record Action Item, Create record actions, Record action design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using dialog boxes with record actions
+
+When using a dialog box for the openActionsIn parameter, form submission will complete the chain and the current page state is retained.
+When the form submits and you close the dialog, this will cause all record actions in the record action field to refresh. This means any visibility conditions, labels, context, and descriptions will update as necessary. If you have multiple record action fields on your interface, the form submission will only refresh the record action field where the action was launched; it will not refresh all record action fields.
+Reference local variable refresh behavior to learn how to refresh specific variables after dialog submission.
+You can configure the size of the dialog box in the record type. The dialog box size is specific to each record action.
+Dialog boxes do not support Application Portal and non-SAIL forms.
+
+Using the record action component with multiple or older record types
+
+Actions from different record types may be used.
+Record types created before Appian 20.1 will need to be updated to use this component. A record type can be updated via the record type designer.
+
+Examples
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Record action field with no configurations
+sail 
+a!recordActionField(
+  actions: {
+    a!recordActionItem(
+   /* For the "action" parameter below, replace the record-action reference 
+    * (recordType!Department.actions.update) with a valid record-action reference in your environment.
+    */
+     action: recordType!Department.actions.update,
+     identifier: ri!departmentId
+    ),
+    a!recordActionItem(
+   /* For the "action" parameter below, replace the record-action reference 
+    * (recordType!Customer.actions.flag) with a valid record-action reference in your environment.
+    */
+     action: recordType!Customer.actions.flag,
+     identifier: ri!customerId
+    )
+  }
+)
+Displays the following:
+{:.screenshot}
+Record action field with refresh variables
+sail 
+a!localVariables(
+  /*
+  * The parameter 'refreshAfter' in a!refreshVariable() can be used to refresh data when
+  * record action dialogs are submitted. Do this to update data related to the record action.
+  */
+  local!case: a!refreshVariable(
+    value: a!queryRecordType(
+        /* Replace the recordType reference below (recordType!Case) with a valid   
+         * recordType reference in your environment.
+         */
+        recordType: recordType!Case,
+        fields: {
+            recordType!Case.fields.id,
+            recordType!Case.fields.priority,
+            recordType!Case.fields.status,
+            recordType!Case.fields.createdBy,
+            recordType!Case.fields.createdOn
+        },
+        filters: {
+            filter: a!queryFilter(recordType!Case.fields.id, "=", ri!CaseId)
+        },
+        pagingInfo: a!pagingInfo(1, 1)
+    ).data,
+    refreshAfter: "RECORD_ACTION"
+  ),
+  {
+    a!sideBySideLayout(
+      items: {
+        a!sideBySideItem(
+          item: a!richTextDisplayField(
+            labelPosition: "COLLAPSED",
+            value: {
+              a!richTextHeader(
+                text: "Case Details"
+              )
+            }
+          )
+        ),
+        a!sideBySideItem(
+          item: a!recordActionField(
+            actions: {
+              a!recordActionItem(
+              /* Replace the record action reference below, recordType!Case.actions.edit, 
+               * with a valid record action reference in your environment.
+               */
+                action: recordType!Case.actions.edit,
+                identifier: local!case[recordType!Case.fields.id]
+              )
+            },
+            openActionsIn: "DIALOG",
+            style: "LINKS",
+            display: "LABEL_AND_ICON",
+            showIcon: true,
+            align: "END"
+          )
+        )
+      },
+      alignvertical: "MIDDLE"
+    ),
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Priority",
+              labelPosition: "JUSTIFIED",
+              value: local!case[recordType!Case.fields.priority],
+              readonly: true
+            ),
+            a!textField(
+              label: "Status",
+              labelPosition: "JUSTIFIED",
+              value: local!case[recordType!Case.fields.status],
+              readonly: true
+            ),
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Created On",
+              labelPosition: "JUSTIFIED",
+              value: local!case[recordType!Case.fields.createdOn],
+              readonly: true
+            ),
+            a!textField(
+              label: "Created By",
+              labelPosition: "JUSTIFIED",
+              value: local!case[recordType!Case.fields.createdBy],
+              readonly: true
+            )
+          }
+        )
+      }
+    )
+  }
+)
+Displays the following:
+{:.screenshot}

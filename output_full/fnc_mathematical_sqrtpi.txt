@@ -1,0 +1,30 @@
+
+layout: function
+title: sqrtpi() Function
+space: function_page
+excerpt: "Multiplies the number by pi, then returns the square root of the product."
+category: function_page
+fncname: sqrtpi
+fncexample: "sqrtpi(25 / pi())"
+fncresult: "5"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      The number that will be multiplied by pi and have its square root taken.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+sqrtpi(2.25) returns 2.658681

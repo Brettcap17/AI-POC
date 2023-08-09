@@ -1,0 +1,29 @@
+
+layout: basic
+title: Microsoft Azure LUIS
+topic-group: A
+weight: 800
+
+Overview
+Easily connect to Microsoft Azure Language Understanding (LUIS) machine learning models to understand what your users want in their own words. Integrations using this connected system will allow you to provide a user's input and LUIS will extract the intent and associated entities represented by the text.
+See Microsoft documentation on getting predictions from an endpoint.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Microsoft Azure LUIS connected system has the following properties:
+| Field                             | Description       |
+|-----------------------------------|-----------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Subscription Key                 | Sensitive. Subscription keys can been found in your Azure portal or in the "Publish" tab of the LUIS application. In the "Publish" tab, any key that is NOT labeled "Starter_Key" is a subscription key.               |
+| Subscription Key Region          | Region for LUIS Endpoint API.  The region in which you publish your LUIS app corresponds to the region or location you specify in the Azure portal when you create an Azure LUIS endpoint key. When you publish an app, LUIS automatically generates an endpoint URL for the region associated with the key.                                                         |
+| Starter Key                      | Sensitive. This key can be found in the "Publish" tab of the LUIS portal for any of your LUIS apps and is called "Starter_Key". This key is also referred to as the "Programmatic Key" in the Microsoft documentation. |
+| Starter Key Region               | Region for LUIS Programmatic API. The authoring region app can only be published to a corresponding publish region.                                             |
+| Bing Spell Check Subscription Key | Sensitive. Specifying this value allows you to run spell check on query text before sending it through the model. You can create a Bing Spell Check key in your Azure portal.                                          |
+| Use Staging?                     | When checked, Appian will query your staging model. Use this feature to validate changes to your model. You should always uncheck this box in production using import customization. |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operation
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|  Get Predictions from Endpoint       | Predict the intent and associated entities using an existing model | READ |
+{:.screenshot}

@@ -1,0 +1,9 @@
+
+title: Components Overview
+title_short: Components
+description: Learn about design best practices for our most popular components.
+type: Home
+
+Components are the building blocks of SAIL interfaces.
+This collection of documentation provides design best practices for our most popular components.
+For detailed reference information about these components, see the developer documentation.

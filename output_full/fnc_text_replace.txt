@@ -1,0 +1,44 @@
+
+layout: function
+title: replace() Function
+space: function_page
+excerpt: "Replaces a piece of the specified text with new text."
+category: function_page
+fncname: replace
+fncexample: "replace(\"oldtext\",1,3,\"new\")"
+fncresult: "newtext"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: old_text
+    types: Text
+    description: |
+      The original text before replacement.
+  - keyword: start_num
+    types: Number
+    description: |
+      The positional index of the first character of the substring to be replaced.
+  - keyword: num_chars
+    types: Number
+    description: |
+      The length in characters of the substring to be replaced.
+  - keyword: new_text
+    types: Text
+    description: |
+      The text that will be inserted into the old text in place of the extricated substring.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The first character of the entire text value is considered to have an index = 1.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+replace("oldtext",1,3,"new") returns newtext

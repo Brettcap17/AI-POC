@@ -1,0 +1,100 @@
+
+layout: pattern
+title: Aggregate Data and Conditionally Display in a Chart or Grid
+excerpt: 'Aggregate data and conditionally display it in a pie chart or grid. In this pattern, we will calculate the total number of employees in each department and display it in a pie chart and a read-only grid. Then, we''ll use a link field to conditionally display each component.'
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Reports
+  - Charts
+  - Query Data
+  - Grids
+  - Records
+
+{:.screenshot}
+{:.screenshot}
+This scenario demonstrates:
+
+How to use a link to switch between two different interface components.
+How to aggregate on two dimensions.
+
+Create this pattern
+This recipe uses references to record types and record fields. To use this recipe, you will need to update the references to record types and record fields in your application.
+sail
+a!localVariables(
+  /* This variable is set to true initially and is referenced in the showWhen parameters for
+     the pie chart and inversely in the grid. The dynamic link at the end reverses this value
+     on click. */
+  local!displayAsChart: true,
+  /* Since we want to pass the data to the pie chart and the grid, we query for the data in
+     a local variable. Otherwise, we would just query directly from the data parameter of
+     the gridField(). */
+  local!datasubset: a!queryRecordType(
+    recordType: recordType!Employee,
+    fields: a!aggregationFields(
+      groupings: a!grouping(
+        field: recordType!Employee.fields.department,
+        alias: "department"
+      ),
+      measures: a!measure(
+        field: recordType!Employee.fields.id,
+        function: "COUNT",
+        alias: "id_count"
+      )
+    ),
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5000)
+  ),
+  {
+    a!pieChartField(
+      series: {
+        a!forEach(
+          items: local!datasubset.data,
+          expression: a!chartSeries(
+            label: fv!item.department,
+            data: fv!item.id_count
+          )
+        )
+      },
+      colorScheme: "BERRY",
+      style: "DONUT",
+      seriesLabelStyle: "LEGEND",
+      /* Since the initial value is true, the pie chart displays on load. We could change
+         the initial value of local!displayAsChart to swap that behavior without having to
+         otherwise change the logic of this interface. */
+      showWhen: local!displayAsChart
+    ),
+    a!gridField(
+      data: local!datasubset.data,
+      columns: {
+        a!gridColumn(
+          label: "Department",
+          sortField: "department",
+          value: fv!row.department
+        ),
+        a!gridColumn(
+          label: "Total",
+          sortField: "id_count",
+          value: fv!row.id_count
+        )
+      },
+      /* Here the grid only shows when local!displayAsChart is not true. */
+      showWhen: not(local!displayAsChart),
+      rowHeader: 1
+    ),
+    a!linkField(
+      labelPosition: "COLLAPSED",
+      links: a!dynamicLink(
+        label: "Show as " & if(local!displayAsChart, "Grid", "Chart"),
+        /* The not() function simply converts a true to false, or false to true, which
+           simplifies the toggle behavior. */
+        value: not(local!displayAsChart),
+        saveInto: local!displayAsChart
+      ),
+      align: "CENTER"
+    )
+  }
+)
+Test it out
+
+Click the "Show as Grid" link. The chart will be replaced with a grid that displays the same data.
+Click the "Show as Chart" link. The grid will be replaced with the original chart.

@@ -1,0 +1,36 @@
+
+layout: function
+title: isnull() Function
+category: function_page
+excerpt: 'Returns true if value is null, false otherwise.'
+fnccat: Informational
+fncexample: isnull("")
+fncname: isnull
+fncresult: 'true'
+parameters:
+  - keyword: value
+    types: Any Type
+    description: Value to check for null.
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: a!defaultValue, length()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean 
+Usage considerations
+Empty arrays and parameters
+
+Empty arrays return false when passed to the isnull() function. 
+The function will not work without a parameter. It is typically used to test whether a Process Variable contains a null value. 
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+isnull(!userPV) returns true where userPV is a process variable of type User, which is null.

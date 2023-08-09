@@ -1,0 +1,38 @@
+
+layout: function
+title: extract() Function
+space: function_page
+excerpt: "Returns the value (or values, if the text contains multiple delimited values) between the delimiters from the given text."
+category: function_page
+fncname: extract
+fncexample: "extract( \"name: Bob, name: Karen, name: Sam\", \":\", \",\" )"
+fncresult: "{\"Bob\", \"Karen\"}"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text from which to extract the delimited string.
+  - keyword: startDelimiter
+    types: Text
+    description: |
+      String for the start delimiter.
+  - keyword: endDelimiter
+    types: Text
+    description: |
+      String for the end delimiter.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+extract("start function /\*extract this\*/ end function","/\*","\*/") returns extract this

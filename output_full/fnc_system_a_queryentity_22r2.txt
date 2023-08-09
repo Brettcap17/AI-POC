@@ -1,0 +1,74 @@
+
+layout: function
+title: a!queryEntity_22r2() Function
+category: function_page
+excerpt: Executes a query on a given data store entity and returns the result.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryEntity_22r2
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: entity
+    types: Data Store Entity
+    description: |
+      The Data Store Entity to query.
+  - keyword: query
+    types: Query
+    description: |
+      The query definition of the report including grouping, aggregation, filtering, paging, and sorting configurations, created with a!query().
+  - keyword: fetchTotalCount
+    types: Boolean
+    description: |
+      If set to false, avoids running the query that retrieves the total number of rows in the totalCount parameter of the resulting datasubset. In cases where you don't need the total count, skipping this query can improve the performance of a!queryEntity(). Default: false.
+reftype: function
+space: function_page
+evolved_fncname: a!queryEntity
+evolved_reason: "Fixed an incorrect sorting behavior so that a sort is now automatically applied on the primary key field when there is no other sort applied. In previous versions of this function, a sort was applied on the last field in the query when there was no sort or selection specified, or when there was no sort and at least one a!queryColumn() specified as a selection."
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Data Store Entity, Query Data Type, a!query()
+
+appian-style-tip
+You can use the Query Editor to quickly create and modify queries created with the a!queryEntity() function.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DataSubset
+Usage considerations
+Using a!queryEntity
+
+
+The DataSubset returned by this function is used to generate report grids or graphs based on the data in a data store entity. If you have a record type that reference a database, consider using a!queryRecordType() instead to easily reference the record type, or using a records-powered chart or a records-powered grid.
+
+
+If called multiple times in the same expression with the same parameters, only one query is made to the data store when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+
+
+This function allows a Query object with an array of SortInfo data type.
+
+
+Using the entity and query parameters
+
+
+The entity value should be given as a constant of type Data Store Entity. The query value must be entered using the a!query() system function.
+
+
+The logicalExpression|filter|search field of the query object can only be set to a LogicalExpression or a QueryFilter type. Search types are not supported.
+
+
+The expression will fail to evaluate and an error will occur if the entity reference is not provided, invalid, or null, the user does not have permission to view the entity, the query value is not provided, invalid, incomplete, or an inconsistent query object.
+
+
+Using the fetchTotalCount parameter
+If fetchTotalCount is set to false and the batchSize parameter in a!pagingInfo is set to -1, the totalCount parameter is populated with the number of rows after the filters are applied. This is because all of the data is already being retrieved, so the value of totalCount is already known without an additional query. 
+See the following table for more information:
+| Batch Size        | Fetch Total Count     | Scenario Description                                                                                                                                              | Value of totalCount                               |
+|---------------    |-------------------    |---------------------------------------------------------------------------------------------------------------------------------------------------------------    |------------------------------------------------   |
+| -1                | Any value             | The user wants to get all the rows. We know the total size and return it to the user.                                                                             | Total number of rows after filters are applied    |
+| 0 or positive     | true                | The user only wants a subset of rows, but also wants to know the total number of rows after filters are applied. We run an extra query to get the total size.     | Total number of rows after filters are applied    |
+| 0 or positive     | false               | The user only wants a subset of rows, and didn't ask for the total number of rows after filters are applied. We don't know the total size.                        | -1                                                |
+Examples
+See Query Recipes for examples of queries.

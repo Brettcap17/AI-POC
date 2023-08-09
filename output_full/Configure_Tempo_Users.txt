@@ -1,0 +1,255 @@
+
+layout: basic
+title: Modify the User Record Type
+permalink: Configure_Tempo_Users.html
+topic-group: E
+weight: 300
+
+Overview
+Each Appian environment has a directory of users available as a record type. The User record type can be added to a site page and referenced throughout your applications to display relevant user information in your queries, interfaces, or reports. End users can also access this directory by navigating to the User record type in Tempo and browsing or searching the record list. 
+Each user in Appian has a User record, which by default includes a Summary, News, and Related Actions view. In a site, the News view is available based on a site design configuration and can be turned off. 
+This page explains how to edit the User record type to meet the specific needs of your organization. For more information on user management in Tempo, refer to User Management.
+Update the User record type
+When you upgrade an Appian environment to version 22.4, the User record type displays an alert at the top of the page. This alert indicates that new features are available and that you need to update the User record type in order to take advantage of these features. 
+{:.screenshot}
+Updating the User record type will automatically enable data sync on the record type. This allows you to leverage additional low-code data features like record type relationships, custom record fields, and record-level security.
+
+appian-style-note
+Since you can seamlessly secure your user data using record-level security, any existing User Profile Visibility settings will be removed and should be replaced with security rules or a security expression. 
+
+To update the User record type:
+1. Go to the Objects view. 
+2. Filter the list to Record Type objects.
+3. Search for user to find the User record type. If you've changed the name of the User record type (for example, to Corporate Directory), search for the new name instead.
+4. Open the User record type. 
+5. Click UPDATE NOW in the banner located at the top of the record type.
+6. In the Update Record Type? dialog, click UPDATE. 
+7. Click SAVE CHANGES. This will trigger a full sync on the User record type.
+{:.screenshot}
+If you do not update the User record type, you cannot perform certain modifications listed in this page, like modifying relationships, modifying record-level security, or generating additional record views or record actions.
+Replace record field reference
+After you update the User record type, new record fields with new UUIDs will be created for your record type. Appian will automatically update any existing field references in your record type to reference the new record fields. However, you will need to manually replace existing references to the User record type that are used throughout your applications (like in expression rules or interfaces).
+To find and replace existing field references in your environment:
+1. Go to the Monitor view.
+2. In the Health Dashboard, review the Appian Design Guidance grid. This shows all objects that have active design guidance triggered.
+3. From the All Warnings dropdown, select Invalid Record Field Reference.
+4. Open each object and replace the record field reference with your new field reference.
+Modify the name and description
+You may need to modify the name and description of the User record type, especially if you need to translate it to a different language to fit the locale of your users. 
+To modify the record type's name and description:
+1. In the toolbar of the record type, click  > Properties. 
+2. Update the following properties:
+ |Property|Description|
+ |-|-|
+ |**Name**|The name of the record type. This is the name that developers see in your application.|
+ |**Display Name (Plural)**| The name that end users see as the search placeholder text in the record list and any records-powered grids. Also appears in the **Records** tab in Tempo.|
+ |**Description**| The description that displays on the record type list in Tempo.|
+
+
+Click OK.
+Click SAVE CHANGES.
+
+If your user base speaks multiple languages, consider populating the fields with all relevant languages. For example:
+
+Singular Record Type Name: User / Usuario
+Plural Record Type Name: Users / Usuarios
+Description: Directory of users / Directorio de usuarios
+
+
+appian-style-tip
+As you develop, keep in mind Appian design guidance is not available on the User record type.
+
+Modify fields
+By default, the User record type contains the following fields:
+|Field|Type|Description|
+|-|-|-|
+|uuid|Text|The unique ID associated with each user. This is the primary key field.|
+|active|Boolean|Indicates whether the user is active or not.|
+|username|User|The unique username with which the user logs into Appian.|
+|firstName|Text|The user's first name.|
+|middleName|Text|The user's middle name.|
+|lastName|Text|The user's last name.|
+|displayName|Text|The user's nickname.|
+|email|Text|The user's email address.|
+|address1|Text|The first line of the user's address.|
+|address2|Text|The second line of the user's address.|
+|address3|Text|The third line of the user's address.|
+|city|Text|The city of the user's location.|
+|state|Text|The state of the user's location.|
+|zipCode|Text|The zip code of the user's location.|
+|province|Text|The province of the user's location.|
+|country|Text|The country of the user's location.|
+|phoneHome|Text|The user's home phone number.|
+|phoneMobile|Text|The user's mobile phone number.|
+|phoneOffice|Text|The user's office phone number.|
+|supervisor|User|The user's supervisor.|
+|title|Text|The user's title.|
+|blurb|Text|The user's blurb as provided on their profile Summary view.|
+|isServiceAccount|Boolean|Determines whether the user is in the Service Accounts system group.|
+|firstAndLastName|Text|A custom record field that concatenates the firstName and lastName field.|
+You cannot edit or remove any Appian-configured record fields, but you can edit the firstAndLastName custom record field and create new custom record fields.
+Edit existing custom record fields
+By default, the User record type has the custom record field firstAndLastName, which displays a user's first and last name together. 
+However, you may decide that you want to show a user's displayName instead of their first name, or you may just want to update the name of the custom record field. 
+To edit the existing custom record field:
+1. In the User record type, go to Data Model.
+2. Click  next to  firstAndLastName.
+3. Update the following properties as needed:
+ |Property|Description|
+ |-|-|
+ |**Name**|The name of the custom record field. This is how you'll reference the field in the application.|
+ |**Type**|The data type of the field.|
+ |**Error Value**|The value to display if there is an error evaluating the custom record field. By default, this is set to **Null**.|
+ |**Expression**|The custom record field expression defined with record fields and [supported functions](custom-record-fields.md#prodlink-supported-functions). <br/><br/> This custom record field evaluates at [sync-time](custom-record-fields.md#prodlink-sync-time-evaluations), so you must reference a record field using `rv!record` followed by a record field reference in brackets. For example, `rv!record[recordType!User.fields.displayName]`.
+
+
+Click OK.
+Click SAVE CHANGES.
+
+Add new custom record fields
+To add a new custom record field:
+1. In the User record type, go to Data Model.
+2. Click NEW CUSTOM RECORD FIELD.
+3. Choose a template or write your own custom record field expression.
+4. Click CREATE when you're done.
+5. Click SAVE CHANGES.
+Delete custom record fields
+To delete a custom record field:
+1. In the User record type, go to Data Model.
+2. Click  next to the custom record field to delete.
+3. In the dependencies dialog, click DELETE.
+ >appian-style-note
+ > If you remove a custom record field, any references to the field will break.
+
+
+Click SAVE CHANGES.
+
+Modify relationships
+By default, the User record type has two relationships:
+
+A supervisorUser relationship, which allows you to reference a user's supervisor using a record type relationship.
+A directReportUsers relationship, which allows you to reference a supervisor's direct reports using a record type relationship.
+
+You can add, edit, and delete relationships just like you would in other record types.
+
+appian-style-tip
+To easily establish relationships to and from the User record type, Appian recommends using the username field as the common field.
+
+Modify the record list
+When you update the User record type, Appian will automatically update the record list to a default feed-style record list defined using the a!userRecordListViewItem() function. Any existing record list customizations will be removed upon update.
+The a!userRecordListViewItem() function returns a default list view only available for the User record type. The list will display the first and last name, email, office phone, and mobile phone for each user in the record type.
+{:.screenshot}
+You can replace the function with your own rule that defines a different list, or you can use a grid-style record list. 
+Modify the feed-style record list
+To modify the feed-style record list:
+1. In the User record type, go to List.
+2. For Style, keep the default selection Feed.
+3. Click EDIT LIST.
+4. In List View, replace the existing function with your own expression using the a!listViewItem function. 
+For example, you could create a rule with the following expression to display each user's city and state instead of email and phone numbers:
+
+```sail
+a!listViewItem(
+  title: rv!record[recordType!User.fields.firstName] & " " & rv!record[recordType!User.fields.lastName],
+  details: rv!record[recordType!User.fields.city] & ", " & rv!record[recordType!User.fields.state],
+  image: touser(rv!record[recordType!User.fields.username])
+)
+```
+
+
+In Sort Field, select a field to sort on and the sort order.
+
+Click OK. The record list now looks like this:
+{:.screenshot}
+
+
+Create a grid-style record list
+To create a grid-style record list:
+1. In the User record type, go to List.
+2. For Style, select Grid.
+3. Click EDIT LIST.
+4. In the Edit Record List dialog, add, remove, or modify columns as necessary to display the record data you want to appear in the grid.
+5. Click OK.
+Add user filters
+By default, the User record type uses the a!userRecordFilterList() function as a user filter. 
+This function contains a Status user filter with filter options Active and Inactive, with Active selected by default. As a result, users see only active users in the record list when it first loads. Inactive users are users whose accounts have been deactivated.
+{:.screenshot}
+Appian does not recommend removing the default user filter. Doing so will result in the record list displaying all inactive users, with no way for users to filter out the inactive users. 
+However, you can add your own user filters in addition to the default "Status" user filter. For example, if your users span multiple countries, you could add a "Country" user filter.
+Learn how to add more user filters and customize the search.
+Add record views
+By default, there is a Summary view for the User record type. You can edit the Summary view, and define additional record views to display more user information on user profiles. 
+Adding record views to the User record type is the same as adding record views to any other record type. Since the User record type has data sync enabled, you can also generate record views.
+Like other record types, you can also remove the News and Related Actions views. Learn how to remove default record views.
+Add record actions
+By default, the User record type does not have any record actions, but you can add record actions to this record type just as you would any other record type. Since the User record type has data sync enabled, you can also generate record actions.
+Modify record-level security
+By default, there are two security rules configured on the User record type:
+- Users found in the Designer group can view all users.
+- Users found in the Application Users group can only see users who are not in the Service Accounts system group.
+These security rules are automatically applied anywhere the User record type is referenced, including your interfaces and queries. You can add more security rules to meet your business needs, or manage the existing security rules.
+
+appian-style-note
+Record-level security will not impact objects that are secured by user profile visibility settings. It will only apply where there are references to the User record type.
+
+Sync the record type
+The User record type will automatically sync any data created or changed by the following smart services:
+
+Create User smart service
+Deactivate User smart service
+Reactivate User smart service
+Rename Users smart service
+Update User Profile smart service
+
+
+appian-style-note
+You cannot sync the User record type using a records-powered smart service, like Sync Records, Write Records, or Delete Records.
+
+The User record type will also automatically sync changes made in:
+- The Users, LDAP authentication, or SAML authentication page of the Admin Console.
+- The Users view of Appian Designer.
+Additionally, if you use the userService public Java API to create plug-ins that modify user information, those changes will also be automatically synced.
+Reference user data
+You can reference your user data throughout your applications using a record field reference. For example, you can easily query a user's name and title using the following query:
+sail
+a!queryRecordType(
+  recordType: recordType!User,
+  fields: {
+    recordType!User.fields.firstAndLastName,
+    recordType!User.fields.title
+  },
+  filters: a!queryFilter(
+    field: recordType!User.fields.username,
+    operator: "=",
+    value: ri!username
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 100)
+).data
+
+appian-style-tip
+By default, querying the User record type will always return the username field as the identifier.
+
+Additionally, when you build relationships between your record types and the User record type, you can seamlessly reference user data in the context of your other business data. 
+For example, if the Case record type has a relationship to the User record type, you could return all support engineers who are currently assigned to an open case using the following expression.
+sail
+a!queryRecordType(
+  recordType: recordType!Case,
+  fields: recordType!Case.relationships.User.fields.firstAndLastName,
+  filters: a!queryFilter(
+    field: recordType!Case.fields.status,
+    operator: "<>",
+    value: "Open"
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+).data
+There are also numerous interface components that allow you to pull data directly from the User record type:
+- User Image component
+- User Record Link component
+- User Picker component
+- User and Group Picker component
+- Records-powered read-only grid
+- Any records-powered chart
+Deploy changes
+Once you have made changes to the User record type in one environment, you may need to deploy those changes to other environments. For example, you might make changes in a development environment that you need to deploy in a test or production environment.
+The steps for deploying changes to the User record type are the same as those for deploying changes to any other record type. Simply create an application containing the User record type and any dependencies, export the application, and import it to the new environment.
+Learn more about deploying to a target environment.

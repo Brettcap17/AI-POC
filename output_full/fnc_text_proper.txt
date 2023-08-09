@@ -1,0 +1,30 @@
+
+layout: function
+title: proper() Function
+space: function_page
+excerpt: "Converts each character in the text into proper case, meaning it will capitalize the first first letter of every word and convert the rest into lowercase."
+category: function_page
+fncname: proper
+fncexample: "proper(\"coNvert eaCH cHaRacter iNTo ProPeR caSe\")"
+fncresult: "Convert Each Character Into Proper Case"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to convert into proper case.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+proper("coNvert eaCH cHaRacter iNTo ProPeR caSe") returns Convert Each Character Into Proper Case

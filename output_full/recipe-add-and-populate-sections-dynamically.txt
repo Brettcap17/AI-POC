@@ -1,0 +1,110 @@
+
+layout: pattern
+title: Add and Populate Sections Dynamically
+excerpt: 'Add and populate a dynamic number of sections, one for each item in a CDT array.'
+reftype: sailrecipe
+sr-tags:
+  - Looping
+
+
+Each section contains an input for each field of the CDT. A new entry is added to the CDT array as the user is editing the last section to allow the user to quickly add new entries without extra clicks. Sections can be independently removed by clicking on a "Remove" button. In the example below, attempting to remove the last section simply blanks out the inputs. Your own use case may involve removing the last section altogether.
+Expression
+sail
+a!localVariables(
+  /* A section will be created for every label value array present  */
+  local!records: {'type!{http://www.appian.com/ae/types/2009}LabelValue'()},
+  {
+    a!forEach(
+      items: local!records,
+      expression: a!sectionLayout(
+        label: "Section " & fv!index,
+        contents: {
+          a!textField(
+            label: "Label",
+            instructions: if(
+              fv!isLast,
+              "Value of local!records: "&local!records,
+              {}
+            ),
+            value: fv!item.label,
+            saveInto: {
+              fv!item.label,
+              if(
+                fv!isLast,
+                /*  This value appends a new section array to section*/
+                a!save(local!records, append(local!records, cast(typeof(local!records), null))),
+                {}
+              )
+            },
+            refreshAfter: "KEYPRESS"
+          ),
+          a!textField(
+            label: "Value",
+            value: fv!item.value,
+            saveInto: fv!item.value,
+            refreshAfter: "KEYPRESS"
+          ),
+          a!buttonArrayLayout(
+            a!buttonWidget(
+              label: "Remove",
+              value: fv!index,
+              saveInto: {
+                a!save(local!records, remove(local!records, fv!index))
+              },
+              showWhen:not( fv!isLast )
+            )
+          )
+        }
+      )
+    )
+  }
+)
+Test it out
+
+Fill in the first field and notice that a new section is added as you're typing.
+Add a few sections and click on the Remove button to remove items from the array.
+
+Notable Implementation Details
+
+fv!isLast is being used to populate the instructions of the last text field as well as prevent the remove button from appearing in the last section.
+
+Offline
+Since sections cannot be added dynamically when offline, you should include multiple sections initially in case they are needed. To support this use case for offline, we will create a different expression with a different supporting rule.
+sail
+a!localVariables(
+  /* A section will be created for every label value array present  */
+  local!records: { repeat(3, 'type!{http://www.appian.com/ae/types/2009}LabelValue'()) },
+  {
+    a!forEach(
+      items: local!records,
+      expression: a!sectionLayout(
+        label: "Section " & fv!index,
+        contents: {
+          a!textField(
+            label: "Label",
+            instructions: if(
+              fv!isLast,
+              "Value of local!records: "&local!records,
+              {}
+            ),
+            value: fv!item.label,
+            saveInto: {
+              fv!item.label,
+            },
+            refreshAfter: "KEYPRESS"
+          ),
+          a!textField(
+            label: "Value",
+            value: fv!item.value,
+            saveInto: fv!item.value,
+            refreshAfter: "KEYPRESS"
+          )
+        }
+      )
+    )
+  }
+)
+Test it out
+
+There are now 3 sections available to the user immediately.
+Fill out some of the sections but leave others blank and submit the form. Notice that null values are removed from the array and only non-null values are saved.

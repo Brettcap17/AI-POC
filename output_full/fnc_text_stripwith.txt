@@ -1,0 +1,39 @@
+
+layout: function
+title: stripwith() Function
+space: function_page
+excerpt: "The function returns the provided text, minus any characters on the list of invalid characters."
+category: function_page
+fncname: stripwith
+fncexample: "stripwith(\"text string\",\"xt\")"
+fncresult: "e sring"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be "stripped" for printing purposes.
+  - keyword: with
+    types: Text
+    description: |
+      The text disallowed in the "stripped" result.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: cleanwith()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Do not include a space between characters for the with value unless you want spaces "stripped" from the text value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+stripwith("text string","xt") returns e sring
+stripwith("text string","x t") returns esring
+stripwith("text string","xg t") returns esrin

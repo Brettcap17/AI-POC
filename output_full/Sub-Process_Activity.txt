@@ -1,0 +1,169 @@
+
+layout: basic
+title: Subprocess
+excerpt: 'The Subprocess Activity is used to launch child processes from within your parent process, allowing for data transfer between them. Subprocesses can be run either synchronously or asynchronously.'
+reftype: smart_service
+sscat: Activities
+ssicon: Sub_Process.png
+ssparentcat: Workflow
+weight: 280
+
+Overview
+
+
+
+
+
+Any process model you create can also be run as a subprocess of another process model. Appian recommends using subprocesses for any functionality common to your process models. 
+The subprocess node is used to launch subprocesses from within parent processes. It links the two published process models so that data can be transferred between them. Subprocesses that are launched with this node can be configured to run either synchronously (finishing before the parent process does) or asynchronously (completing at any time). 
+To speed up development, Appian can preconfigure this smart service for you. Search for your process model object, and drag and drop the process model object to the process model canvas. The Subprocess node is automatically created and configured to reference that process model object. Open the process node's properties to further configure its behavior.
+
+appian-style-tip
+Processes initiated with this node run on the same execution engine as their parent process. If you are starting a large number of processes, it's recommended to use the Start Process smart service instead. Learn more about the various ways you can start a process.
+
+Asynchronous subprocesses
+When an asynchronous subprocess is started, the parent process flow does not wait for the child process to complete. The flow continues without pausing.
+
+Process variable values can be transferred to the child process, but they cannot be passed back to the parent process.
+Asynchronous subprocesses are useful in situations when related activities do not need to communicate back to each other.
+They do not allow activity-chaining into a child process from the parent process.
+
+Synchronous subprocesses
+When a synchronous subprocess is started, the parent process flow waits for the child process to complete before continuing the flow.
+
+Synchronous subprocesses allow you to transfer data back and forth between parent and child processes.
+They do allow activity-chaining into a child process from the parent process.
+
+Example use case
+Ordering business cards is a process associated with a new employee joining the organization. 
+Let's say you configure a Business Card Ordering process as an asynchronous subprocess of a New Employee process. That way when a New Employee process starts, the Order Business Cards process automatically triggers. The parent process (New Employee) continues without needing to wait for the Business Card Ordering process to finish.
+Properties
+
+
+Category: Activities
+
+
+Icon:  
+
+
+Assignment Options - Unattended or Attended
+
+
+When a process model is started via the Subprocess Activity, the latest published version of the process model is always used. 
+
+This applies even if the process model was republished after the parent process started (regardless of activity-chaining) or if the Subprocess Activity is attended and the process model is republished after the user accepted the task but before the user submits it.
+This also applies if the process model is deleted. In that case, the latest published version that existed before the deletion is used. Any data types used by the process model will be frozen to the versions that were current at the time that the process model was deleted. Subsequent data type updates are not reflected in subprocesses that are started after the process model has been deleted.
+
+When a subprocess is edited, an alert is sent to all owners of parent process models that reference the edited subprocess informing them that the subprocess is updated.
+When a subprocess completes, delete it (or archive it) to minimize disk-space and memory consumption. 
+Linking a subprocess to a parent process
+The steps below describe how to set up a synchronous subprocess. An asynchronous subprocess setup follows the same steps, only you do not configure any output values since no data is returned to the parent process.
+
+Create and publish the process model you intend to use as a subprocess.
+Open the parent process model for editing, and drag the Subprocess Activity node onto the canvas. 
+Link to it within the process flow at the point you want the subprocess to start.
+Double-click the node to display the Configure Subprocess dialog. 
+Enter any necessary information on the General tab.
+Go to the Setup tab.
+Select whether to run this subprocess synchronously or asynchronously. 
+(Optional) Select the Enable Activity-Chaining checkbox to create a chain between the parent process and subprocess.
+Click Directory next to the Run this Process Model field. 
+Locate and select the process model you want to run as a subprocess. 
+The process variables configured for the subprocess appear on the node variable list. If they do not appear, click Refresh.
+(Optional) Clear the Reporting checkbox to exclude subprocess data from your parent-process reports.
+(Optional) Select the Security checkbox to apply the security settings of the parent process to the subprocess.
+    > appian-style-tip
+    > If this process is started using an email, leave this option cleared.
+In the Input Variables box, map a parent process variable to each listed subprocess variable so that when the node is executed, data passes from the parent process to your subprocess. 
+
+{:.screenshot}
+
+If any parameters in the subprocess do not receive values from your parent process, they are assigned null values. 
+Parent process variables mapped to subprocess variables that are no longer present in the subprocess are ignored. Process parameters should not be removed from the subprocess model if casting of complex PVs from the parent process to the subprocess is involved; otherwise, the subprocess node pauses by exception.
+To pass a variable directly, select the variable from the dropdown list.
+To pass a variable as a reference, select the variable from the dropdown list and select Pass as reference. See below:  Passing a Process Variable as a Reference
+To specify a value other than the available process variables, enter an expression or create one through the Expression Editor.
+
+
+In the Output Variables box, map the subprocess variables to process variables in your parent process: {:.screenshot}
+Click Add. A row is added to the Output Variable list with two dropdown menus. 
+In the first list, select a process variable to store output data from the subprocess.
+In the Pick a sub process variable... field, select a subprocess variable from the list provided. If your subprocess variable does not appear in the list, check to ensure that the process variable in your parent process has the same Type assigned to it.
+Go to the Assignment tab and select Run as whoever designed the process model.
+If you change the security settings in the parent process instance, the security settings in the subprocess instance are automatically updated.
+Modify settings on any additional tabs.
+Click OK to save the settings.
+
+
+appian-style-note
+If you change the Required value for a process parameter in a linked subprocess after you selected it for a Subprocess Activity, you need to search for and select the subprocess again in the Subprocess Activity and re-publish your parent process for the changes to take affect. If the Subprocess Activity is attended, make sure you export your form first, so you do not have to re-create it.
+
+Opening the subprocess from the parent process
+Appian allows you to easily move back and forth between a parent process model and a subprocess model. Each one can be displayed on a tab within the Process Modeler.
+
+Click + on the Subprocess Activity node in the parent process. The View Subprocess Model Window displays with the subprocess model as read-only.
+Click Open and Edit in New Canvas to open it in a separate tab of the Process Modeler and edit the subprocess.
+
+Passing a process variable as a reference
+When a process contains one or more subprocesses, the parent process variable values are commonly passed to the subprocess using Input Variable mappings. With this configuration, at runtime parent process variables are not immediately affected by changes made to a subprocess. The changes are only updated in the parent process when the two processes are synchronized, which occurs when the End Event of the subprocess activates.
+One way to avoid this lag in synchronization is to use a reference. By passing a reference to the actual parent process variable instead of its value, the data remains synchronized at all times. Any changes made to the a process variable in the parent process immediately update all referenced subprocess parameter values. Similarly, changes to the referenced value in the subprocess are concurrently reflected in the parent. 
+
+This synchronization is done by selecting the Pass as reference checkbox when mapping the parent process input variables to the subprocess variables on the Setup tab of the Subprocess Activity in the parent process model.
+
+Reference relationships also work for processes nested within each other. If there is a subprocess located within a subprocess of another process, a referenced process variable can be passed to each nested subprocess. 
+
+The synchronization of this data occurs in the same amount of time for multiple nested subprocesses as when there are only two processes acting on the same referenced value.
+
+Restrictions
+
+If a process referencing data in another process is archived, it can be saved with the current value of the data, however, the reference is lost. 
+If the process is unarchived, the Pass as Reference configuration is NOT restored.
+If multiple instances of a subprocess exist, mapping data as a reference still works. 
+The only exception is when your instances are spawned based on an array Process Variable. (Accessible by selecting the Other tab, then Run one instance for each item in [PV].)
+Spawned instances can take references to specific parent process variables, but they cannot take a reference to the array upon which the spawning is based.
+Due to the way that form default values are stored and evaluated, the Pass as Reference configuration cannot be used to set the default value for a form element. 
+If form designers wish to use values by reference, they can remove form fields mapped to subprocess parameters and use input mappings on the Setup tab instead.
+Any custom data types incorporated in a subprocess and mapped as a reference must exactly match the CDTs used in the parent process. 
+This is especially pertinent when a CDT is deleted. If only the parent process or only the child process includes a restored or updated version of a deleted CDT, but not both, the Pass as Reference configuration fails.
+
+See Also: Ways to Start a Process From a Process
+Activity-chaining into a subprocess activity
+When using a subprocess with an activity-chained series of forms, the user experience differs with linked versus synchronous subprocesses.
+
+
+
+
+appian-style-note
+If a subprocess contains a start form, the start form is skipped when following an activity-chain into the subprocess.
+
+
+
+Subprocesses allow activity-chaining to continue into the subprocess when the following settings are configured:
+
+The subprocess is synchronous.
+The subprocess is attended.
+The Enable activity-chaining into all initial nodes in the subprocess checkbox is selected on the Setup tab.
+
+
+
+It is not necessary to configure activity-chaining between the Start Event and the first attended activity in the subprocess with this setting. We recommend enabling activity-chaining for this flow, for the sake of design consistency. 
+Alternatively, you can keep the Enable activity-chaining into all initial nodes in the subprocess checkbox cleared, if you have a start form in the Subprocess.
+
+
+
+
+
+Asynchronous subprocesses do not allow activity-chaining. Such nodes are treated as unattended activities for activity-chaining.
+
+
+Configuring the subsequent activity
+
+You must select the Enable activity-chaining into all initial nodes in the subprocess checkbox if you want to display the first attended activity of the subprocess, and the process does not have a start form.
+
+Activity-chaining back into the parent process
+You can configure activity-chaining back into the parent process by enabling this option on all flows in your subprocess.
+
+In this manner, activity-chaining can be configured through a subprocess and continued in a parent process.
+Stepping back into an attended synchronous subprocess and re-submitting the form updates the original subprocess that was started when the form was first completed.
+When stepping back from a task in a chain in the parent process to an attended synchronous subprocess, submitting a start form in the subprocess does not start a new instance of the subprocess.
+When an activity-chain reaches an End Event in a subprocess that has a terminate trigger configured, the Please wait indicator is displayed until the process fully terminates.

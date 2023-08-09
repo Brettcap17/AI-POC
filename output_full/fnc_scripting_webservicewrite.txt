@@ -1,0 +1,37 @@
+
+layout: "basic"
+title: "webservicewrite() Function"
+category: "function_page"
+excerpt: "Returns a Writer that can be used as the setter of a variable created using the bind() function."
+fnccat: "Scripting"
+fncexample: "Click on the function name for examples."
+fncname: "webservicewrite"
+space: "function_page"
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: config
+    types: WsConfig
+    description: |
+      Defines the configuration details of the web service to invoke and any authentication configurations that are required by the service.  Use the a!wsConfig system function to construct the value for this argument.
+  - keyword: data
+    types: Dictionary
+    description: |
+      A dictionary of input objects that matches the message structure of the web service operation being invoked. The keys of the dictionary must correspond to the parameter names declared for the operation in the WSDL. The value of each key is itself a dictionary, with the keys based on the field names of the complex type defined as the input type in the WSDL. Keys are matched to parameter names case-sensitively. If the web service does not require an input, an empty dictionary should be passed, i.e. {}.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} When saving into the variable on an interface, the Writer will invoke the web service configured by a WsConfig object with the supplied input data.
+See also: bind()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+See also: Writer
+Usage considerations
+The notes section of the webservicequery function documentation apply to webservicewrite as well.
+The webservicewrite function can only be used as the set parameter of the bind function.
+An error during invocation of the web service (a soap fault or http error) causes the entire save to fail. if an error occurs while writing, other variables that are part of the same save directive are still updated.
+Client certificate/mutual SSL authentication can be enabled by uploading client certificates in the Admin Console.
+Services that use self-signed or internal SSL certificates can be enabled by uploading trusted server certificates in the Admin Console.
+See also: bind()

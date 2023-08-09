@@ -1,0 +1,257 @@
+
+layout: basic
+title: Build View
+topic: Designer
+topic-group: Designer Space
+type: Reference
+weight: 308
+
+Overview
+This page describes what you can do in the Build view in Appian Designer.
+To access this view, click Build in the navigation pane of an application.
+Purpose
+The Build view lets you create and configure design objects in an application. The majority of your work building an application will take place in the Build view. 
+Elements
+The following image highlights the elements that make up this view:
+{% include zoompic.html url="images/build-view-annotated.png" alt="screenshot of the Objects view in Appian Designer" border="-nb" style="width:67%;" %}
+
+
+
+#
+Element
+Available Actions
+
+
+
+
+1
+Header bar
+Learn more about the header bar.
+
+
+2
+Navigation pane
+Learn more about the navigation pane.
+
+
+3
+Deployment actions bar
+You can do the following actions:
+
+Filter for all application objects or an individual package using the objects dropdown.
+Create Packages.
+Export apps.
+Import packages.
+View packages.
+Compare and Deploy.
+
+Each tab features a filter pane and a grid.
+
+
+4
+Tabs
+Go to the following tabs:
+
+The ALL OBJECTS tab displays all design objects you have access to in this application.
+The PLUG-INS tab displays all the plug-ins that are referenced by objects in this application.
+The UNREFERENCED OBJECTStab displays design objects in this application that are not referenced by either design objects or application configurations.
+
+Each tab features a filter pane and a grid.
+
+
+5
+Filter pane
+Search and filter objects or plug-ins in the grid.
+
+
+6
+Toolbar
+You can add objects to the application using any of the following methods:
+
+Create a new object.
+Add an existing object.
+Duplicate an object.
+Import a package.
+
+You can also:
+
+Remove objects from the application.
+Delete objects.
+Configure object security.
+View object relationships.
+
+
+
+
+7
+Grid
+
+
+View the objects grid
+View referenced plug-ins.
+View unreferenced objects.
+
+
+
+
+
+View the objects grid
+To view the objects grid, click Build in the navigation pane of your application. The ALL OBJECTS tab is open by default.
+INCLUDE PAGE: objects-grid
+Add objects to the application
+To build your application, you can add objects in any of the following ways:
+
+Create a new object.
+Add an existing object.
+Duplicate an object.
+Import a package.
+
+Create a new object
+Objects created from the context of an application are automatically added to that application. If you add an object in the package view of the application, the object is automatically added to the package, too.
+System administrators can create any design objects. Basic users can create objects if they are in the Designer role. To create process models, basic users must also be in the Process Model Creators group.
+New objects have the following default security:
+
+If the object type supports security inheritance, the new object inherits security.
+For objects that don't inherit security, Appian prompts you to set security during creation. Note:
+If default security groups are configured for the application, those default security groups are assigned Viewer and Administrator permissions for the new object.
+If default security groups are not configured for the application, the creating user is added to the role map with Administrator permissions. However, the creating user is not added to the role map if that user is a system administrator.
+
+To create a new design object:
+
+In the Build view, go to the ALL OBJECTS or UNREFERENCED OBJECTS tab.
+In the toolbar, click NEW:
+
+{:.screenshot}
+
+Select an object type from the dropdown list.
+Configure the basic properties for the object type you selected.
+Click CREATE. 
+For objects that don't support security inheritance, set the object security, and click SAVE.
+
+The new object opens in a new tab or window for further configuration.
+
+appian-style-tip
+Newly-created objects may not immediately be visible in the objects grid if the current filter settings would hide the objects.
+
+Add an existing object
+Objects can exist in multiple applications, so adding objects this way does not remove them from other applications. 
+To add existing objects:
+
+In the Build view, go to the ALL OBJECTS tab.
+In the toolbar, click ADD EXISTING.
+Select the objects you want to add:
+To add all objects associated with another application:
+Select Application Contents.
+For Applications, select one or more applications.
+
+
+To add all objects from a folder, including subfolders and their contents:
+Select Folder Contents.
+For Folders, select one or more applications.
+
+
+To add selected objects:
+Select Existing Objects.
+In the object boxes, select one or more record types, process models, reports, or other type of objects. You can choose multiple objects of each type. Selecting folders this way does not add the contents of the folder, only the folder object itself.
+
+
+(Optional) To check the added objects for missing precedents, select Check for missing precedents after adding objects to this application. 
+Click ADD TO APPLICATION.
+If you're checking for missing precedents, review and resolve any issues in the Missing Precedents dialog, then click CLOSE.
+
+Duplicate an object
+INCLUDE PAGE: Duplicate Objects
+For constant duplication, the duplication dialog will appear similar to the edit dialog for the constant being duplicated. Simply alter the name and value fields as desired and create. The duplicated object will be added to the current application.
+Import a package
+When you import a package, you add all the objects from the package to the current application. If the package contains objects already present in the current environment, the imported version overwrites the existing version. Learn how to import a package.
+Manage objects in the application
+This section describes actions you can take to manage objects in an application.  
+Remove objects from the application
+Removing an object from the application removes the relationship between the object and the application. The object will no longer show up in this application's views. The object is not deleted and can still be found from the Objects view. Objects may belong to multiple applications, or none at all.
+To remove objects from the application:
+1. In the ALL OBJECTS or UNREFERENCED OBJECTS tab, select one or more objects from the grid.
+2. Click REMOVE FROM APP in the toolbar.
+Delete objects
+Basic users can delete one object at a time, while system administrators have the option to delete in bulk. When a single object is selected for deletion, the system automatically runs a dependency scan to determine if the object is still in use. 
+{:.screenshot}
+To avoid errors in dependent objects, remove all references to the selected object before continuing with a deletion. During bulk deletion, we recommend reviewing the dependents of each object before deleting them.
+Deleted objects are removed from the system and cannot be restored. Appian does not support the deletion of system objects.
+
+appian-style-note
+Only system administrators can delete data types, group types, and non-empty folders. Deleting a folder deletes all of its contents, too.
+
+To delete one or more objects:
+
+In the ALL OBJECTS or UNREFERENCED OBJECTS tab, select one or more objects from the grid.
+In the toolbar, click DELETE.
+Continue as appropriate:
+If Appian identifies dependents for the single object you're deleting, click CANCEL, remove references to the object, then attempt to delete the object again.
+If no dependencies are identified for the single object or if you're deleting multiple objects, click DELETE to confirm the deletion.
+
+Configure object security {#security}
+Developers with Administrator permissions to an object can edit its security from the Build view. It is a best practice to use only groups to configure security. To edit the security of multiple objects at once, use the Security Summary.
+View object relationships
+To understand how a design object is related to other objects, select an object in the Build view, then click DEPENDENTS or PRECEDENTS in the toolbar.
+Learn how to interpret and navigate the lists of dependents and precedents.
+View referenced plug-ins
+Plug-ins are maintained at the environment level, rather than the application level, so that you can use them in multiple applications in your environment.
+To use a plug-in in an individual application, add references to the plug-in in the application objects.
+To view plug-ins referenced by objects in an application, go to the PLUG-INS tab of the Build view.
+In that tab, you can also do the following:
+- Filter the list by plug-in module or version status, by selecting options in the filter pane.
+- Limit the list to plug-ins referenced by objects in an individual package, by using the package picker.
+- Add a referenced plug-in to a package.
+- View the objects that reference an individual plug-in, by selecting the plug-in in the grid, then clicking DEPENDENTS.
+- (System administrators only) Delete a plug-in.
+- (System administrators only) Update a plug-in to the latest AppMarket version.
+- (System administrators only) Revert a plug-in to the previous version installed in this environment.
+View unreferenced objects {#prodlink-unreferenced-objects-tab}
+Appian categorizes an object as unreferenced if the object is present in the application, but no other objects in the application reference that object.
+To view unreferenced objects in an application:
+
+In the Build view, go to the UNREFERENCED OBJECTS tab. The grid displays all unreferenced objects.
+In the filter pane, search by name or description and apply filters to find objects. 
+
+Prepare objects for deployment
+{:.screenshot}
+In the Build view, you can prepare your objects for deployment by adding the objects and plug-ins referenced by those objects to a deployment package. 
+In addition, you can:
+- Change to a package view that limits what you're seeing to only objects in an individual package and plug-ins referenced by objects in that package.
+- View the list of packages associated with the application.
+- Start the compare and deploy process for the application or the related packages. 
+View package contents
+{:.screenshot}
+In any tab of the Build view, you can also use the package picker (highlighted above) to limit the list to components of an individual package. For example, the ALL OBJECTS tab will list all the objects in the selected package, and the PLUG-INS tab will list all plug-ins referenced by objects in the package.
+Add an object or plug-in to a package {#add-to-package}
+The steps described in this section apply if you're viewing all application objects or a package view of the objects. The default All Application Objects option is selected in the dropdown menu. 
+
+appian-style-tip
+In addition to the functionality described in this section, the package view also offers an option for adding objects to a package in bulk and a Plug-ins pane in the sidebar that you can use to add plug-ins. Learn more about the package view.
+
+To add objects to a package:
+
+In the ALL OBJECTS or UNREFERENCED OBJECTS tab, select one or more objects from the grid.
+Click ADD TO PACKAGE.
+Select the destination package:
+To select an existing package, select the package from the dropdown list.
+To select a new package:
+Click Create New Package.
+Configure the new package properties.
+
+
+Click ADD. 
+
+To add referenced plug-ins to a package:
+
+Determine whether the right versions of the referenced plug-ins are present in the target environment. If the plug-ins are missing in the target environment or aren't the right version, continue to the next step.
+In the PLUG-INS tab, select one or more plug-ins from the grid.
+Click ADD TO PACKAGE.
+Select the destination package:
+To select an existing package, select the package from the dropdown list.
+To select a new package:
+Click Create New Package.
+Configure the new package properties.
+
+
+Click ADD. Appian adds the selected plug-ins to the package.
+(Optional) Verify that the objects referencing the plug-ins you added are present in the package. To do this, in the PLUG-INS tab, go to the package view. If the plug-ins list is empty, you still need to add the objects that reference the plug-ins to the package.

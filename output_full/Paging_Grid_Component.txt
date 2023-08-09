@@ -1,0 +1,318 @@
+
+layout: function
+title: Read-Only Grid Component
+category: function_page
+compatibility: -crf
+excerpt: 'Accepts a set of data and displays it as read-only text, links, images, or rich text in a grid that supports selecting, sorting, and paging.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridField
+fncsubcat: Grids
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the grid label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values:
+        - ABOVE (default) Displays the label above the component.
+        - ADJACENT Displays the label to the left of the component.
+        - COLLAPSED Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - JUSTIFIED Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this grid.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: emptyGridMessage
+    name: Empty Grid Message
+    types: Text
+    description: Text to display in the grid when no data is available. Default is "No items available".
+  - keyword: data
+    name: Data
+    types: 'recordType, List of Map and List of Dictionary, DataSubset, or PortalReportDataSubset'
+    description: |
+      The data to display in the grid. Use a record type reference or a!recordData() to source your data from records and utilize records functionality, such as user filters and export. For other cases, you can use a query, such as a!queryEntity() with pagingInfo set as fv!pagingInfo to have the grid automatically manage paging. The function a!queryProcessAnalytics(), a Data Subset, a list of Dictionary, or an array of data can also be used. When using a query that returns a datasubset, you must pass the total count (fetchTotalCount: true on the query).
+  - keyword: columns
+    name: Columns
+    types: List of a!gridColumn()
+    description: |
+      The columns to display in the grid, configured using a!gridColumn().
+  - keyword: pageSize
+    name: Rows to Display Per Page
+    types: Number (Integer)
+    description: |
+      The maximum number of rows to display at a time. Default: 10
+  - keyword: initialSorts
+    name: Initial Sorts
+    types: List of SortInfo
+    description: |
+      Sorts applied to the grid upon initial load only. Each sort is applied in the order listed. The first sort in the list will display an active-sort arrow indicator (either up or down for ascending or descending) in its corresponding grid column (if applicable).
+  - keyword: secondarySorts
+    name: Secondary Sorts
+    types: List of SortInfo
+    description: |
+      Sorts applied to the grid after every user interaction. If the user activates a sort on a column, these sorts will be applied to the other columns in the order they're listed. For example, adding a secondary sort on Month will keep them in order when the user sorts on Year. Secondary sorts do not display an active-sort indicator.
+  - keyword: pagingSaveInto
+    name: Paging Save Into
+    types: List of Save
+    description: |
+      One or more variables that are updated only when user invokes a paging action on the grid. You can reference the current paging of the grid using fv!pagingInfo.
+  - keyword: selectable
+    name: Selectable
+    types: Boolean
+    description: |
+      Determines if grid rows are selectable. When selection style is "CHECKBOX" (default), the selection column is displayed. Default: false.
+  - keyword: selectionStyle
+    name: Selection Style
+    types: Text
+    description: |
+      Determines the style when a row is selected. Valid values: "CHECKBOX" (default), "ROW_HIGHLIGHT".
+  - keyword: selectionValue
+    name: Selection Value
+    types: Text Array or Integer Array
+    description: |
+      Identifiers of the rows that should appear as selected. Can be set to have rows be pre-selected for the user. Supported types: Text Array and Integer Array.
+  - keyword: selectionSaveInto
+    name: Save Selection To
+    types: List of Save
+    description: |
+      One or more variables that are updated with the selected identifiers when the user changes selections. Use a!save() to save a modified or alternative value to a variable. You can reference the rows selected and deselected in the most recent user interaction (not all selected or deselected rows) using fv!selectedRows and fv!deselectedRows respectively.
+  - keyword: selectionRequired
+    name: Selection required
+    types: Boolean
+    description: |
+      Determines if a selection is required to submit the form. Default: false.
+  - keyword: selectionRequiredMessage
+    name: Selection Required Message
+    types: Text
+    description: |
+      Custom message to display when a selection is required and not provided.
+  - keyword: disableRowSelectionWhen
+    name: Disable Row Selection
+    types: Boolean
+    description: |
+      Determines for each row if selection is disabled. The condition defined in this parameter is evaluated once for each row. Reference fields from the source using dot notation, such as fv!row.status, or the identifier of the row using fv!identifier. Grids that use record data must use the recordType! domain to reference a record field or related record field. For example, fv!row[recordType!Case.fields.caseName]. Default: false.
+  - keyword: validations
+    name: Validations
+    types: List of Variant
+    description: |
+      Validation errors to display below the grid when the data is invalid, configured using a!validationMessage(). You can reference the current page of data using fv!currentPage.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: spacing
+    name: Spacing
+    types: Text
+    description: |
+      Determines the spacing within grid cells. Valid values: "STANDARD" (web default), "DENSE" (mobile default).
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines height of the grid. Valid values: "SHORT", "MEDIUM", "TALL", "AUTO" (default). When it is set to SHORT, MEDIUM, or TALL, the header is frozen.
+  - keyword: borderStyle
+    name: Border Style
+    types: Text
+    description: |
+      Determines the style of the grid border. Valid values: "STANDARD" (default), "LIGHT".
+  - keyword: shadeAlternateRows
+    name: Shade Alternate Rows
+    types: Boolean
+    description: |
+      Determines whether alternate rows are shaded. Default: true.
+  - keyword: rowHeader
+    name: Row Header
+    types: Number (Integer)
+    description: |
+      Index of the column to be used as the row header. Screen readers will announce the value in each row header when navigating to other cells within that row. Used only for accessibility; produces no visible change.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: refreshAlways
+    name: Refresh Always
+    types: Boolean
+    description: |
+      When true, grid data will be refreshed after each user interaction and each interval refresh. Default: false.
+  - keyword: refreshAfter
+    name: Refresh After
+    types: List of Text String
+    description: |
+      Refreshes grid data each time a specified event completes. Valid values: "RECORD_ACTION".
+  - keyword: refreshInterval
+    name: Refresh After an Interval of Time
+    types: Number (Decimal)
+    description: |
+      How often grid data gets refreshed in minutes. When null, grid data will not be refreshed on an interval. Valid values: "0.5", "1, 2", "3", "4", "5", "10", "30", and "60".
+  - keyword: refreshOnReferencedVarChange
+    name: Refresh on Reference Variable Change
+    types: Boolean
+    description: |
+      When true, grid data will be refreshed each time the value of any variable referenced in the data parameter is updated. To refresh grid data when another variable that is not used in the data parameter changes, use refreshOnVarChange. Default: true.
+  - keyword: refreshOnVarChange
+    name: Refresh on Variable Change
+    types: Any Type
+    description: |
+      Refreshes grid data each time any of these specific variables change. This allows you to refresh the grid data when a variable that is not referenced in the data parameter is updated. You can define a single variable (e.g. refreshOnVarChange: local!var1) or a list of variables (e.g. refreshOnVarChange: {local!var1, local!var2}).
+  - keyword: userFilters
+    name: User Filters
+    types: List of Variant
+    description: |
+      List of user filter references to display, configured using the recordType! domain. For example, recordType!Case.filters.status. You may only reference user filters defined on the source record type used for the grid data. This parameter only applies when a record type is used as the source in the data parameter.
+  - keyword: showSearchBox
+    name: Show search box
+    types: Boolean
+    description: |
+      Determines if the record search box should be shown. This parameter only applies when a record type is used as the source in the data parameter. Default: true.
+  - keyword: showRefreshButton
+    name: Show Refresh Button
+    types: Boolean
+    description: |
+      Determines if the grid should include a refresh button to manually refresh data. This parameter only applies when a record type is used as the source in the data parameter. Default: true.
+  - keyword: showExportButton
+    name: Show Export to Excel Button
+    types: Boolean
+    description: |
+      Determines if grid data can be exported. This parameter only applies when a record type is used as the source in the data parameter. Default: false.
+  - keyword: recordActions
+    name: Record Actions
+    types: List of Variant
+    description: |
+      List of record action items to display above the grid, configured using a!recordActionItem(). If you use fv!identifier in the identifier parameter of a!recordActionItem(), you will also need to configure selection for the grid. This parameter only applies when a record type is used as the source in the data parameter.
+  - keyword: openActionsIn
+    name: Open Actions In
+    types: Text
+    description: |
+      Determines how record actions should open to the user. Valid values: "DIALOG" (default), "NEW_TAB", "SAME_TAB".
+  - keyword: actionsDisplay
+    name: Actions Display
+    types: Text
+    description: |
+      Determines which details are shown for record actions, regardless of style. Valid values: "LABEL_AND_ICON" (default), "LABEL", "ICON".
+reftype: sailcomponent
+scdisplayname: Read-Only Grid
+space: sail_component
+
+
+appian-style-tip
+Eager to get started with the read-only grid? Check out the Grid Tutorial for the fastest and easiest way to create a read-only grid.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+The a!gridField() function allows you to create a read-only grid in your interface to display data as rich text, links, images, buttons, tags, record actions, and progress bars. This grid component also supports searching, filtering, selecting, sorting, and paging.
+From Design mode, you can quickly and easily set up a read-only grid by dragging and dropping the component into live view and selecting your grid's data source. You can choose from record type, query, variable, rule, or expression. When you choose a record type as your data source, you can reuse features configured on your record list such as user filters, record actions, and export to Excel. You can also use fields from related records to display data on the grid.
+Although, Design mode allows for a easier and faster setup for your read-only grid, you can still use the a!gridField() function in Expression mode to customize and configure your read-only grid.
+
+To learn how to work with the read-only grid, see Configuring the Read-Only Grid.
+To organize editable inputs in a tabular layout, use an editable grid.
+
+See also:
+
+a!recordData() Function
+a!queryEntity() Function
+Grids design guidance,
+Configuring the Read-Only Grid
+SAIL Design System: Grids
+Grid Tutorial
+
+Parameters
+
+appian-style-note
+Not all parameters are immediately available in Design Mode; some display only after enabling others. For example, after selecting Selectable, other selection-related parameters will be available.
+
+{%- comment -%} The following include is in the doc-generation repo. {%- endcomment -%}
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using read-only grids with record data
+
+In a portal, you can't use a record type as the data source for a read-only grid. Instead, use a query. See Working with Data in Portals to learn how to query data to display in your chart.
+When a record type is used as the data source for your read-only grid, Appian automatically generates grid columns based on the columns configured for the record list.
+You can add records-specific components like user filters, export to Excel, the out-of-the-box record list search, and record actions on your grid. When you add these components, the grid will automatically style the component header for you.
+If you use a record type with data sync enabled as the source of your grid, you can also reference related record fields in your grid. You can use related record fields in your columns, or to sort and filter the grid.
+If you reference a related record field from a one-to-many relationship as a column in the grid, the maximum number of related records returned for each base record is 10. To filter, limit, and sort the related record set returned from the one-to-many relationship, you can leverage the relatedRecordData parameter in a!recordData().
+
+
+appian-style-note
+To use an existing record type created with Appian 20.2 and earlier as the data source for your read-only grid, you will need to update the record type to the latest Appian version.
+
+Configuring grid display
+
+If the Value for a column is empty or null, the grid still renders the column with just the label.
+The selectionStyle of ROW_HIGHLIGHT does not have any visual indicator when selection is disabled through the disableRowSelectionWhen parameter.
+For accessibility purposes, every grid should have a row header configured. The first column containing text is usually the correct choice for row header. See the SAIL Design System for more information.
+
+Configuring grid paging
+
+To reduce clutter on smaller grids, the following happens:
+No paging controls are displayed when all rows are on one page.
+Paging controls to jump to the first or last page are not displayed when a grid has less than 3 pages.
+When a read-only grid is used offline, paging and sorting don't function and images won't render.
+If you are managing your own paging, you cannot pass a datasubset which has a  paging configuration that uses a batch size of -1.
+When entering a query in the data parameter (either directly, or indirectly from a rule reference), the query must return the total count (fetchTotalCount: true).
+
+Grid height and column width
+
+Grid heights behave as a fixed height on web but a maximum height on mobile.
+For columns using the "AUTO" width, each column's width is determined by the length of the longest value in that column. 
+See the read-only grid column component for more information on using the "AUTO" width.  
+For complete guidance on when and how to use column widths, see Column Widths.
+
+Design mode guidance
+The following guidance applies when configuring a read-only grid in Design Mode. This guidance does not apply to grids that use a record type as the data source: 
+
+The grid cannot use a query whose paging info contains a batch size of -1 from Design Mode.
+When setting up a grid, if you populate the data parameter from Design Mode, and let the grid manage the paging, the grid will automatically generate an initial set of columns in the order they appear.
+When you use a local variable as the data source for the read-only grid, grid columns are not automatically generated.
+After initial columns have been generated, Appian will automatically update the grid with new columns to match any new fields you added to the data source. To trigger this behavior when using an indirect data source (from an expression or a rule), go to the data parameter and click Edit, then click OK.
+If you have changed the arrangement of existing grid columns, new columns will not be automatically generated.
+Columns will not be removed if the corresponding fields are removed from the source data. You will need to manually delete these columns.
+The initial values for automatically-generated columns are:
+label : fv!row.<fieldname>, where the field name is converted to title case.
+If the field name is in camel case, it will be split and converted to title case.
+If the field name is too long, it will be truncated with elipses (...).
+
+
+value : fv!row.<fieldname>
+sortField : <fieldname> of the primary key
+If the data type for the column value is numerical or date-based, then it will set align : "END".
+If the data type for the column value is a decimal, then it will be wrapped in the fixed() function to two decimal places. Ex. value: fixed(fv!row.cost, 2).
+
+Query editor guidance
+The following notes apply when you use the query editor in Design Mode to configure a query and use it as the data source for your read-only grid:
+
+Appian will automatically use the value set for the query's batch size as the value for the grid's pageSize parameter.
+Appian will automatically use the value set for the query's sortInfo  as the value for the grid's initialSorts parameter.
+
+Converting your existing a!gridField_19r1 grid to a read-only grid {#converting-paging-grid}
+
+If you are still using a paging grid, we recommend that you convert or update it to a read-only grid. Updating your old paging grid (a!gridField_19r1) to a read-only grid will give you significant performance improvements. These improvements include: 
+Better UX (column widths, header tooltips, rich text).
+Native handling of common data errors when you use fv!pagingInfo.
+Deterministic sorting (from secondarySorts).
+Helpful function variables for passing selected row data (fv!selectedRows, fv!deselectedRows) that can be used to avoid requerying data.
+Records as a source.
+The easiest way to convert your 19r1 grid to a read-only grid is to recreate the grid using a read-only grid.
+Any query that provides the data for your grid can go directly into the data parameter of the grid, or into a reusable expression rule. 
+The read-only grid does not require local variables and it will automatically refresh when the data changes. 
+You can also define a!refreshVariable parameters, such as refreshInterval, directly in a!gridField.
+By default, the read-only grid's paging info is defined using fv!pagingInfo. To manually manage your grid's paging, define a!localVariables() outside of the grid's data parameter and then pass in the defined local variable into the data parameter.
+
+Examples
+You can find example configurations of the grid at Configuring the Read-Only Grid and Grid Tutorial.

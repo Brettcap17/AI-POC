@@ -1,0 +1,32 @@
+
+layout: "basic"
+title: "a!localVariables() Function"
+excerpt: "Lets you define one or more local variables for use within an expression. When used within an interface, the value of each variable can be refreshed under a variety of conditions, configured using a!refreshVariable(). When used outside of an interface, all refresh properties configured using a!refreshVariable() are ignored."
+fnccat: "Evaluation"
+fncexample: "Click on the function name for examples."
+fncname: "a!localVariables"
+parameters:
+  - keyword: localVar1
+    types: Any Type
+    description: |
+    The local variable to use when evaluating the given expression. Use the local! domain to define and reference individual variables. By default, a local variable will automatically update when any variables it references are changed. To change the way variables are updated in an interface, use the a!refreshVariable() function. Variables can be refreshed under the following conditions: after each reevaluation, periodically on an interval, or when other variables change.
+  - keyword: localVarN
+    types: Any Type
+    description: Any additional local variables, as needed.
+  - keyword: expression
+    types: Any Type
+    description: The expression to evaluate using the local variables values.
+space: function_page
+category: function_page
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+For more information about how to use a!localVariables and a!refreshVariable, including detailed examples, see the Local Variables page.
+This function replaces both the load and with functions. For information on how to update existing expressions that use load and with to use a!localVariables instead, see the Updating Expressions to Use a!localVariables.

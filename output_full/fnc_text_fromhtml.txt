@@ -1,0 +1,12 @@
+
+layout: function
+title: fromHtml() Function [Deprecated]
+space: no_toc
+depver: 6.7
+category: function_page
+fncname: fromHtml
+fnccat: "一Deprecated一"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. Instead, use stripHtml()
+For information about the fromHtml() function, see the Appian 16.3 documentation.

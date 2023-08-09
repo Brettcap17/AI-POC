@@ -1,0 +1,109 @@
+
+layout: function
+title: Chart Series Component
+category: function_page
+excerpt: 'Defines a series of data for a bar, column, line, area, or pie chart. This component is always used within a chart component.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!chartSeries
+fncsubcat: Charts
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Name that corresponds to the data value or data values to display in the legend.
+  - keyword: data
+    name: Data
+    types: Decimal Array
+    description: Value displayed for the related series.label.
+  - keyword: links
+    name: Links
+    types: Array of Links
+    description: |
+      Array of values that determine what occurs when a user clicks a data point in the chart. Create links with:       
+       - a!authorizationLink()
+        - a!documentDownloadLink()
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink()
+        - a!recordLink()
+        - a!reportLink()
+        - a!startProcessLink() 
+        - a!submitLink()
+        - a!userRecordLink()
+        - a!safeLink()
+  - keyword: color
+    name: Color
+    types: Text
+    description: |
+      Overrides the auto-assignment of series color with a specific value. Valid values: Any valid hex color or "ACCENT", "BLUEGRAY", "GREEN", "GOLD", "ORANGE", "PURPLE", "RED", "SKYBLUE", "LIMEGREEN", "YELLOW", "AMBER", "PINK", "VIOLETRED".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the series is displayed on the interface. When set to false, the series is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Chart Series
+scsubcat: Chart_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Bar Chart
+Column Chart
+Line Chart
+Pie Chart
+Area Chart
+UX Charts Best Practices
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Chart series color
+The color of chart series can be defined by an overall chart color scheme or it can be configured individually. If a user has selected or created a color scheme, they can swap out the color of any individual series. 
+Users can choose between the assigned color scheme color, the environment’s accent color, a color such as "SKYBLUE" or "BLUEGRAY", or a custom color defined by a hex code. Any series configurations will take precedence over the assigned color scheme colors.  
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Single series bar chart with label, Y-axis title, and no legend
+INCLUDE PAGE: SAIL intro
+{% sailbox 840 %} 
+a!barChartField(
+  categories: {"Baseball", "Hockey", "Soccer"},
+  series: {
+    a!chartSeries(label: "Points", data: {8.3, 3.02, 2.71})
+  },
+  colorScheme: "CLASSIC",
+  yAxisTitle: "Average Point per Professional Game",
+  showLegend: false,
+  showDataLabels: true
+)
+{% endsailbox %}
+Multiple series line chart with label, X-axis title, Y-axis title, and legend
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %} 
+a!lineChartField(
+  label: "Tempo Usage Trends",
+  categories: {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+  series: {
+    a!chartSeries(label: "IT", data: {92, 94, 93, 95, 96, 99, 98, 100, 99, 91, 98, 99}),
+    a!chartSeries(label: "Human Services", data: {84, 83, 85, 86, 87, 89, 91, 90, 89, 83, 93, 95}),
+    a!chartSeries(label: "Sales", data: {70, 63, 90, 72, 74, 74, 76, 89, 72, 65, 100, 85}),
+    a!chartSeries(label: "Marketing", data: {80, 80, 80, 90, 90, 90, 90, 90, 90, 70, 90, 90})
+  },
+  colorScheme: a!colorSchemeCustom(
+    colors: {
+      "#c27ba0",
+      "#93c47d",
+      "#8e7cc3",
+      "#ffd966",
+    }
+  ),
+  xAxisTitle: "Month",
+  yAxisTitle: "% Active",
+  yAxisMax: 100,
+  showLegend: true
+)
+{% endsailbox %}

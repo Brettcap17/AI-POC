@@ -1,0 +1,52 @@
+
+layout: function
+title: or() Function
+category: function_page
+excerpt: Returns true if any inputs are true; returns false if all inputs are false.
+fnccat: Logical
+fncexample: 'or(true(), false())'
+fncname: or
+fncresult: 'true'
+parameters:
+  - keyword: value
+    types: Boolean
+    description: A value or array of values that must be false for the function return false.
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean 
+Usage considerations
+Casting and returning boolean values
+
+Arguments are cast to Boolean before or() evaluates.
+As soon as the returned value of a value evaluation returns true, the function returns true. 
+
+Evaluation order and performance
+
+Multiple arguments are evaluated left-to-right.
+Keep common conditions on the left and complex edge cases on the right to improve function performance. If an earlier simple function returns true, the later edge cases don't need to be evaluated.
+
+Null and empty arrays
+
+Null values that are part of input arrays are filtered out before evaluation.
+Empty arrays evaluate to false.
+Empty text strings in a text array evaluate to false, but empty text strings in an array with multiple data types are considered null values and are filtered out before evaluation.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Use functions to Pass Multiple Logical Values:
+or(isleapyear(1996),isleapyear(1997)) returns true
+Pass an Empty Array:
+or({}) returns false
+Pass an Array of Numbers:
+or(1,2,"",3) returns true
+or(0,1,2,"",3) returns true

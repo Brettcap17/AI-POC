@@ -1,0 +1,82 @@
+
+layout: function
+title: a!keys Function
+category: function_page
+compatibility: -crf
+excerpt: 'Returns the keys of the provided map, dictionary, CDT, or record.'
+fnccat: Informational
+fncexample: 'a!keys(a!map(a: 1, b: 2))'
+fncname: a!keys
+fncresult:
+  a: null
+  b: null
+parameters:
+  - keyword: value
+    types: Any Type
+    description: 'The map, dictionary, CDT, or record whose keys should be returned.'
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+List
+Usage considerations
+
+a!keys cannot be used on lists or scalar values, such as text, integers, and dates. The value parameter must be a collection such as a map, dictionary, CDT, or record.
+
+Examples
+Retrieving keys of a map or dictionary
+
+a!keys(value: a!map(a: 1, b: 2) )
+
+Returns {"a", "b"}
+
+
+a!keys(value: a!map() )
+
+
+Returns {}
+
+
+a!keys(value: {c: 3, d: 4} )
+
+Returns {"c", "d"}
+
+Retrieving keys of a CDT
+In order to test the CDT examples, you will need to create a CDT with the same field names.
+In these examples, there is a CDT called "Customer" with 3 fields on it: id, name, and age.
+
+a!keys(value: type!Customer(id: 3, name: "John", age: 30))
+
+Returns {"id", "name", "age"}
+
+
+a!keys(value: type!Customer())
+
+Returns {"id", "name", "age"}
+Since CDTs always have all of the fields in the data type, even when no values are set, all the keys of the CDT are returned.
+
+Retrieving keys of a record
+In order to test the record examples, you will need to create a record type with the same field names. For record examples, use record field references instead of strings shown in the examples below.
+In these examples, there is a record type called "Customer" with 3 fields on it: id, name, and age.
+
+a!keys(value: recordType!Customer(id: 4, name: "Jane", age: 42))
+Returns {recordType!Customer.fields.id, recordType!Customer.fields.name, recordType!Customer.fields.age}
+
+Instead of returning a list of text keys like for maps, CDTs, or dictionaries, records will return a list of record field references.
+
+
+a!keys(value: recordType!Customer())
+
+Returns {}
+Since the record has no values defined, there are no keys present in the data type.
+
+In this example, the record type "Customer" now has a 1:1 relationship with the record type "Address" in addition to the existing fields: id, name, and age.
+
+a!keys(value: recordType!Customer(id: 4, name: "Jane", age: 42, Address: recordType!Address( zip: 12345 )))
+Returns {recordType!Customer.fields.id, recordType!Customer.fields.name, recordType!Customer.fields.age, recordType!Customer.relationships.Address}
+Since this record contains a record relationship, the resulting list of keys contains the record fields references and the record relationship reference.

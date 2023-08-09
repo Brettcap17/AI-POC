@@ -1,0 +1,29 @@
+
+layout: basic
+title: Google reCAPTCHA
+topic-group: A
+weight: 702
+
+Overview
+
+appian-style-note
+This connected system can only be used in a portal.
+
+Appian supports Google’s reCAPTCHA services for use in portals. The Google reCAPTCHA connected system helps protect your portals from malicious or fraudulent bot activity.
+To use this connected system, you must have a Google Cloud Account set up with the required Google Cloud service credentials.
+For information on how to set up the reCAPTCHA connected system, see Add Google reCAPTCHA to your portal and Configuring reCAPTCHA.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Google reCAPTCHA connected system has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Name | Required. Name of the connected system. Use a name that will clearly differentiate this connected system from others in your application. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views. |
+| reCAPTCHA Project ID      | Required. Found in your Google Cloud Console, referred to as project ID. The project ID is located in the Project Info section of your Google Cloud dashboard. If you need a project ID, see steps for creating a project.             |
+| reCAPTCHA Site Key  | Required. Found in your Google Cloud Console, referred to as reCAPTCHA keys. reCAPTCHA keys are located on the reCAPTCHA Enterprise page and are project-specific. If you need a reCAPTCHA site key, see steps for creating site keys.           |
+| reCAPTCHA API Key     | Required/Sensitive. Found in your Google Cloud Console, referred to as API keys. API keys are located in the APIs & Services section on the Credentials page. You need an API key with reCAPTCHA Enterprise API enabled. If you need an API key, see steps for creating API keys.           |
+{:.screenshot style="width:75%"}
+Test connection
+Click the TEST CONNECTION button to verify your credentials are valid for getting a reCAPTCHA score. 
+You will still need to configure the a!verifyRecaptcha() behavior in your interface flow. This button only checks to ensure your credentials are valid.
+The connection test only checks one credential at a time. If for example, both your project ID and site key are invalid, the error message will only mention the project ID. 

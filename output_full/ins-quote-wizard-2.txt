@@ -1,0 +1,4 @@
+
+title: Insurance Quote Wizard 2
+weight: 40
+image: ds-images/uxds_images/auto_insurance_quote_wizard_final_step.png

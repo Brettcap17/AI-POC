@@ -1,0 +1,125 @@
+
+layout: pattern
+title: Use the Gauge Fraction and Gauge Percentage Configurations
+excerpt: 'This recipe provides a common configuration of the Gauge Component using a!gaugeFraction() and a!gaugePercentage(), and includes a walkthrough that demonstrates the benefits of using design mode when configuring the gauge component.'
+reftype: sailrecipe
+sr-tags:
+  - Formatting
+  - Reports
+
+{:.screenshot}
+
+appian-style-tip
+If you already know about the assistive features for configuring the gauge component from design mode, and just want to see the resulting expression, you can skip to the end.
+
+Walkthrough
+In this scenario, we are creating a gauge to show that a user has completed 5 of their 11 tasks. When adapting this pattern for your application, you will likely either query for the number of tasks completed and total tasks, or use a rule input.
+Setup
+Let's start with a new interface where we'll set up our local variables and layout.
+
+Switch to EXPRESSION MODE, then enter the following expression:
+
+sail
+   a!localVariables(
+     local!tasksCompleted: 5,
+     local!totalTasks: 11,
+     {
+       a!sectionLayout(
+         label: "My Tasks",
+         contents: {}
+       )
+     }
+   )
+
+Switch back to DESIGN MODE.
+From the component PALETTE, drag a GAUGE component into the content section of the Section layout.
+From the COMPONENT CONFIGURATION, delete the value for Label (Gauge), and set Label Position to HIDDEN so it doesn't leave an empty space above the component.
+
+Using the Gauge Percentage
+When you add a Gauge component to your interface in design mode, the default configuration includes a!guagePercentage() as the Primary Text component with a default Fill Percentage value of 60.1.
+Let's change the percentage value to an expression that calculates a new value from our local variables.
+
+From the COMPONENT CONFIGURATION, hover over Fill Percentage until the Edit as Expression icon () appears, then click it.
+
+{:.screenshot}
+
+In the expression editor, replace the default value of 60.1 with the following expression: {% ihighlight sail %}local!tasksCompleted/local!totalTasks * 100{% endihighlight %}
+
+Your interface should now look like this:
+{:.screenshot}
+If you switch to EXPRESSION MODE, you should see this interface expression:
+sail
+a!localVariables(
+  local!tasksCompleted: 5,
+  local!totalTasks: 11,
+  {
+    a!sectionLayout(
+      label: "My Tasks",
+      contents: {
+        a!gaugeField(
+          label: "",
+          labelposition: "COLLAPSED",
+          percentage: local!tasksCompleted/local!totalTasks * 100,
+          primaryText: a!gaugePercentage()
+        )
+      }
+    )
+  }
+)
+Using the Gauge Fraction
+From Design Mode, we can easily switch to using a!gaugeFraction() to display the same value we entered for the percentage.
+
+From the COMPONENT CONFIGURATION, under Primary Text, select Fraction.
+
+Notice that by default, the fraction shows 45/100. This is the same percentage value calculated over a denominator of 100, which is the default value for a!gaugeFraction(). Let's change it so it correctly displays 5/11.
+
+Hover over Denominator until the Edit as Expression icon () appears, then click it.
+In the expression editor, enter the following expression: local!totalTasks
+For Secondary Text, enter Completed.
+
+Your interface should now look like this:
+{:.screenshot}
+Notice that the text automatically increased in size to better fit the gauge.
+Similar to a!gaugePercentage(), a!gaugeFraction() works by automatically calculating the numerator based on the fill percentage value and the denominator, rounded to the nearest integer. Because the configuration rounds to an integer, it only works well if you are calculating the percentage from a fractional value, as we did in this example.
+And that's it! We are able to configure a gauge with either the Gauge Percentage or Gauge Fraction configurations.
+Expression
+sail
+a!localVariables(
+  local!tasksCompleted: 5,
+  local!totalTasks: 11,
+  {
+    a!sectionLayout(
+      label: "My Tasks",
+      contents: {
+        a!columnsLayout(
+          columns: {
+              a!columnLayout(
+                contents: {
+                  a!gaugeField(
+                    label: "",
+                    labelposition: "COLLAPSED",
+                    percentage: local!tasksCompleted/local!totalTasks * 100,
+                    primaryText: a!gaugeFraction(
+                      denominator: 11
+                    ),
+                    secondarytext: "Completed"
+                  )
+                }
+            ),
+            a!columnLayout(
+              contents: {
+                a!gaugeField(
+                  label: "",
+                  labelposition: "COLLAPSED",
+                  percentage: local!tasksCompleted/local!totalTasks * 100,
+                  primaryText: a!gaugePercentage(),
+                  secondarytext: "Completed"
+                )
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+)

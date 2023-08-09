@@ -1,0 +1,34 @@
+
+layout: function
+title: edate() Function
+space: function_page
+excerpt: "Returns the date that is the number of months before or after the given starting date."
+category: function_page
+fncname: edate
+fncexample: "edate(date(2011, 12, 13), -6)"
+fncresult: "6/13/11"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: starting_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: months
+    types: Integer
+    description: |
+      The number of months to offset, where negative is before starting_date and positive is after starting_date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+edate(date(2011,12,13),-6) returns 6/13/11

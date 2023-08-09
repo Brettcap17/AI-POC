@@ -1,0 +1,58 @@
+
+layout: function
+title: Report Link Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to a report.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!reportLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text associated with this link.
+  - keyword: report
+    name: Report
+    types: Report or Task Report
+    description: The linked report or task report.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the link is displayed in the component. When set to false, the component is hidden and is not evaluated. Default: true.'
+  - keyword: openLinkIn
+    name: Open Link In
+    types: Text
+    description: '(Browser-Only) Determines where the linked content should open. Valid values: "SAME_TAB" (default), "NEW_TAB".'
+reftype: sailcomponent
+scdisplayname: Report Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Defines a link to a report. Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also: 
+- Report Type 
+- Task Report Type 
+- Link 
+- Buttons and link design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+
+appian-style-note 
+Since report constants are specific to each system, this example does not evaluate in your interface. Use it only as a reference.
+
+Basic report link
+sail 
+a!linkField(
+  links: {
+    a!reportLink(
+      label: "Department Summary",
+      report: cons!DEPARTMENT_SUMMARY_REPORT
+    )
+  }
+)

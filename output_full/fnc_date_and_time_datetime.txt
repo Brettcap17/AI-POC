@@ -1,0 +1,56 @@
+
+layout: function
+title: datetime() Function
+space: function_page
+excerpt: "Converts the given Date and Time into a serial number that holds the Date and Time data type."
+category: function_page
+fncname: datetime
+fncexample: "datetime(2011, 12, 13, 12, 0, 0)"
+fncresult: "12/13/2011 12:00 PM GMT"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: year
+    types: Integer
+    description: |
+      The year of the you would like to convert into a serial number.
+  - keyword: month
+    types: Integer
+    description: |
+      Only numbers are accepted, not month names. Do not include leading zeroes for a month with one digit.
+  - keyword: day
+    types: Integer
+    description: |
+      The day of the Date and Time.
+  - keyword: hour
+    types: Integer
+    description: |
+      The hour of the Date and Time.
+  - keyword: minute
+    types: Integer
+    description: |
+      The minute of the Date and Time.
+  - keyword: second
+    types: Integer
+    description: |
+      The seconds of the Date and Time.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date and Time
+Usage considerations
+The value is converted to GMT when stored.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+datetime(2011,2,28,12,0,0) returns 2/28/2011 7:00 AM EST
+Appending a Time to a Date:
+datetime(year(pv!yourDate), month(pv!yourdate), day(pv!yourDate), 23, 59, 00) returns 6/8/1984 7:59 PM EDT by adding the time 11:59 pm to a given date where pv!yourDate is 6/8/1984 and applying the timezone conversion.
+See Also
+userdatetime(): Use this function to return a Datetime value in the local time zone.

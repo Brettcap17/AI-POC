@@ -1,0 +1,144 @@
+
+layout: function
+title: Form Layout
+category: function_page
+compatibility: -crf
+excerpt: 'Displays any arrangement of layouts and components beneath a title and above buttons. Use this as the top-level layout for start and task forms.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!formLayout
+fncsubcat: Layouts
+reftype: sailcomponent
+scdisplayname: Form Layout
+space: sail_component
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Optional text to display as the interface's title.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Optional text displayed below the field's label.
+  - keyword: contents
+    name: Contents
+    types: Any Type Array
+    description: Components and layouts to display in the form body.
+  - keyword: buttons
+    name: Buttons
+    types: Button Layout
+    description: |
+      Buttons to display at the bottom of the form, arranged using a!buttonLayout().
+  - keyword: validations
+    name: Validations
+    types: Text or Validation Message
+    description: |
+      Validation errors displayed above the form buttons. Configured using a text array or an array with a mix of text and Validation Message using a!validationMessage(message, validateAfter).
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text or Validation Message Array
+    description: When present, the form is only validated when a button in the same validation group is clicked.
+  - keyword: skipAutoFocus
+    name: "Don’t automatically focus on first input"
+    types: Boolean
+    description: |
+      Determines whether the first input will receive focus when a form loads. Default is false.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Dashboard, Columns
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using a!formLayout()
+
+A button layout must be present for a back button to appear for activity-chained tasks.
+Use form validation messages for problems that are not specific to a single component.
+The component is cannot be either read-only or disabled.
+
+Initial behavior & focussing
+
+The component is not in an initially collapsed section.
+Focus will automatically be applied on initial load to the first component in a form that is one of the following:
+Checkbox
+Date
+Date and Time
+Decimal
+Dropdown
+Encrypted Text
+File-Upload
+Integer
+Multi-Dropdown
+Paragraph
+Picker Components
+Radio Button
+Text
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Two-column form
+sail
+a!formLayout(
+  label: "Customers for Review",
+  instructions: "Review the profiles for the customers below and contact as needed",
+  contents: {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Customer",
+              value: "John Smith",
+              readOnly: true
+            ),
+            a!textField(
+              label: "Status",
+              value: "Prospective",
+              readOnly: true
+            ),
+            a!textField(
+              label: "Priority",
+              value: "High",
+              readOnly: true
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!textField(
+              label: "Customer",
+              value: "Michael Johnson",
+              readOnly: true
+            ),
+            a!textField(
+              label: "Status",
+              value: "Prospective",
+              readOnly: true
+            ),
+            a!textField(
+              label: "Priority",
+              value: "Medium",
+              readOnly: true
+            )
+          }
+        )
+      }
+    )
+  },
+  buttons: a!buttonLayout(
+    primaryButtons: {
+      a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    }
+  )
+)
+Displays the following:
+{screenshot}

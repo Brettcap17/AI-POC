@@ -1,0 +1,39 @@
+
+layout: function
+title: numoverdueprocessesforprocessmodel() Function
+category: function_page
+excerpt: 'Returns the number of active and completed processes for the specified process model, which are past the deadline.'
+fnccat: Scripting
+fncexample: numoverdueprocessesforprocessmodel(processModelId)
+fncname: numoverdueprocessesforprocessmodel
+fncresult: '1'
+space: function_page
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: processModelId
+    types: Integer
+    description: |
+      The Id number of the process model.
+  - keyword: includeSubProcessData
+    types: Boolean
+    description: |
+      Controls whether data from subprocesses are included in the count.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+For active processes, processes whose deadlines have passed are counted.
+For completed processes, processes that were completed after their deadline are counted.
+The current user must hold at least viewer rights for the specified process model, in order to execute this function.
+Deleted and archived process instances are not counted.
+If you do not provide a value for the includeSubProcessData parameter, the default value is taken from the current context or set to false if no subprocesses available.
+For example, if the function is used on a Web Content with Process Details Channel and the channel's context includes subprocesses, these subprocesses are included by default.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+numoverdueprocessesforprocessmodel(processModelId) returns 1

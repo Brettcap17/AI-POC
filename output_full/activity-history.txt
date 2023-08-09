@@ -1,0 +1,168 @@
+
+layout: pattern
+title: Activity History Pattern
+excerpt: The Activity History pattern provides a common style and format for displaying an organization's activity measures.
+reftype: pattern
+sr-tags:
+  - Formatting
+
+{:.screenshot}
+Design structure
+The main components in this pattern are rich text display fields, side by side layouts, and stamp fields. These components are configured to stack based on the width of the page in which you're viewing the activity history. The image below shows the pattern with callouts for the main components. You can examine the entire expression or jump down to the subsections with referenced line numbers to see a detailed breakdown of the main components and explanations for how each component is used.
+{:.screenshot}
+Pattern expression
+When you drag and drop the activity history pattern onto your interface, 91 lines of expression will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!actionHistory: {
+      a!map(icon: "group",        title: "You updated your Jun 1 contacts.",          timestamp: now()           ),
+      a!map(icon: "qrcode",       title: "Your work pass was scanned.",               timestamp: now() - hour()  ),
+      a!map(icon: "check-circle", title: "You completed your Jun 1 check-in survey.", timestamp: now() - 2*hour())
+    },
+    {
+      if(
+        a!isPageWidth("PHONE"),
+        /* Show center-aligned activity history on phones */
+        {
+          a!forEach(
+            items: local!actionHistory,
+            expression: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!stampField(
+                      icon: fv!item.icon,
+                      backgroundColor: "#efefef",
+                      contentColor: "STANDARD",
+                      size: "TINY",
+                      align: "CENTER"
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      value: {
+                        fv!item.title,
+                        char(10),
+                        a!richTextItem(
+                          /* Update the second parameter in this text() function */
+                          /* to view the date in a different format */
+                          text: text(fv!item.timestamp, "DDDD MMM dd, yyyy HH:MM AM/PM"),
+                          color: "SECONDARY"
+                        )
+                      },
+                      align: "CENTER"
+                    )
+                  )
+                },
+                alignVertical: "MIDDLE",
+                marginBelow: "STANDARD",
+                stackWhen: "PHONE"
+              )
+            }
+          )
+        },
+        {
+          /* Show left-aligned activity history on desktops and tablets */
+          a!forEach(
+            items: local!actionHistory,
+            expression: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!stampField(
+                      icon: fv!item.icon,
+                      backgroundColor: "#efefef",
+                      contentColor: "STANDARD",
+                      size: "TINY"
+                    ),
+                    width: "MINIMIZE"
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      value: {
+                        fv!item.title,
+                        char(10),
+                        a!richTextItem(
+                          /* Update the second parameter in this text() function */
+                          /* to view the date in a different format */
+                          text: text(fv!item.timestamp, "DDDD MMM dd, yyyy HH:MM AM/PM"),
+                          color: "SECONDARY"
+                        )
+                      }
+                    )
+                  )
+                },
+                alignVertical: "MIDDLE",
+                marginBelow: "STANDARD",
+                stackWhen: "PHONE"
+              )
+            }
+          )
+        }
+      )
+    }
+  )
+}
+[Line 1-7] Define your action history
+At the top of the pattern, local variables set up a common icon and associated activity title, as well as the formula that will be used to display an activity's history.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!actionHistory: {
+      a!map(icon: "group",        title: "You updated your Jun 1 contacts.",          timestamp: now()           ),
+      a!map(icon: "qrcode",       title: "Your work pass was scanned.",               timestamp: now() - hour()  ),
+      a!map(icon: "check-circle", title: "You completed your Jun 1 check-in survey.", timestamp: now() - 2*hour())
+    },
+{% endhighlight %}
+[Line 8-11] Optimize your mobile layout
+We use an if() statement to determine the stacking behavior of the pattern based on the width of the page. The a!isPageWidth() function determines the width of the page. Here, the function will tell the components to stack if the page is about the width of a phone screen. This conditional styling is recommended to make configuration for multiple page widths easier and provide a better user experience.  
+{% highlight sail linenos start_line=8 %}
+    {
+      if(
+        a!isPageWidth("PHONE"),
+        / Show center-aligned activity history on phones /
+{% endhighlight %}
+[Line 12-49] Use stamp fields and rich text display fields in a side by side layout
+Before getting started, you'll notice that the entire pattern is wrapped in the a!forEach() looping function. We use this to iterate over every type of activity that's mapped out in the local variables section of the expression. Once we have the looping function, we then use the a!sideBySideLayout() function to set up the stamps and rich text we want to display in the activity history.  This conditional styling based on the data that's displayed makes it easy for the viewer to quickly see each activity's history. Once your side by side items are set up, you can configure how they will stack based on your page's width using the stackWhen parameter.
+{% highlight sail linenos start_line=12 %}
+        {
+          a!forEach(
+            items: local!actionHistory,
+            expression: {
+              a!sideBySideLayout(
+                items: {
+                  a!sideBySideItem(
+                    item: a!stampField(
+                      icon: fv!item.icon,
+                      backgroundColor: "#efefef",
+                      contentColor: "STANDARD",
+                      size: "TINY",
+                      align: "CENTER"
+                    )
+                  ),
+                  a!sideBySideItem(
+                    item: a!richTextDisplayField(
+                      value: {
+                        fv!item.title,
+                        char(10),
+                        a!richTextItem(
+                          / Update the second parameter in this text() function /
+                          / to view the date in a different format /
+                          text: text(fv!item.timestamp, "DDDD MMM dd, yyyy HH:MM AM/PM"),
+                          color: "SECONDARY"
+                        )
+                      },
+                      align: "CENTER"
+                    )
+                  )
+                },
+                alignVertical: "MIDDLE",
+                marginBelow: "STANDARD",
+                stackWhen: "PHONE"
+              )
+            }
+          )
+        },
+{% endhighlight %}
+The expression on lines 50-91 can be configured the same way as 12-49, but will be displayed for desktop and tablet page widths, rather than smart phones.

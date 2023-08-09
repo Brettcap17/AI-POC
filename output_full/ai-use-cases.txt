@@ -1,0 +1,29 @@
+
+layout: basic
+title: Common Use Cases
+topic: ai
+topic-group: A
+weight: 201
+
+Appian allows you to integrate modern AI capabilities like computer vision, document extraction, and natural language processing seamlessly into your application. To see all available AI features in Appian, see what's included in Appian AI. 
+Although you can leverage different AI services within minutes, it's important to consider practical AI adoption in your application.  
+Depending on the nature of your application, you could use AI to review files and extract key data points, gauge the happiness of your customer relationships, or collect and digitize handwritten information from contracts. Whatever your situation, it's best to consider how AI can improve or solve pain points in your existing process. Let's look at some industry examples.
+Customer support application
+Let's say your Appian application is built to manage a global customer support center. You receive support tickets from around the world in many different languages, and your support engineers need to be able to understand customer issues quickly in order to resolve them in a prompt manner. 
+To avoid slow resolution time and misinterpreting the customer's issue, you can incorporate AI translation into your application so each submitted issue is translated into the support engineer's native language. Using Appian, you can leverage the Google Cloud Translation connected system to create an integration that translates text in seconds. Add a rule input in the integration so you can dynamically translate any submitted text value. Then in your process model, you can call the integration so that after the original form is submitted, the text describing the customer issue is translated and appears in the support engineer's task in their native language.
+{:.screenshot}
+Customer support related applications are prime candidates for numerous types of AI since they are responsible for constant and reliable communication with customers. Using AI, you can easily detect customer sentiment with natural language processing, properly understand a customer's issue through fast AI translation, or leverage document extraction capabilities to review and audit customer contracts.
+Supply management application
+Now let's say you work for a company specialized in supply management. Every day, your Appian application receives several invoice forms that need to be audited and filed for processing. Since each form is structured in the same format and contains easily identified fields, you could delegate this task to a process that receives the document, extracts the data from each field, and then stores the results in a CDT. 
+Appian has made it simple so the entire document extraction process occurs in one place: the Intelligent Document Processing (IDP) application. Using IDP, the document extraction and classification process begins right when you upload a document. While extraction occurs behind the scenes, you can monitor the extraction progress and results from a grid in the application.
+{:.screenshot}
+But what if you want to confirm that the data extracted was correct before saving it to the database? IDP auto-generates a task for human-in-the-loop validation of automated extraction results. Not only can you verify the results, you are also training the extraction to get smarter over time. 
+{:.screenshot}
+A supply management application is just one example of using document extraction. You could apply this process to any type of application that requires a human to audit, review, or organize data from a document. Since document extraction focuses on fields, consider using this tool when processing forms like invoices, records, or applications. 
+Get started using IDP to collect data, or build and customize your own document extraction process using Appian's suite of document extraction features.
+Insurance claim application
+Lastly, let's look at the insurance industry. Say your application receives hundreds of insurance claims a day, and your team is overwhelmed by the amount of claim data, which is slowing down the process and increasing the possibility for inaccurate decision making. 
+With this example, AI can be used to improve the claim process. Instead of having all claims go to one team, you could delegate claims to different teams depending on where the damage occurred. Since each insurance claim is accompanied with an image, you could leverage computer vision to analyze it and determine where the damage occurred and then route the claim to the proper team.
+Using the Appian AI offering, you can incorporate computer vision capabilities into your application by configuring the Google Cloud Vision connected system and creating an integration from the system. Using the integration, you can select Label Detection as the type of analysis to perform on an image. Add a rule input in the integration so each image can be evaluated upon submission. Then in your process model, you can call the integration so that after the form is submitted, the associated image will be evaluated to determine where the damage occurred. Depending on the returned label, the claim will be sent to the proper team.
+{:.screenshot}
+This is just one way the insurance industry could incorporate AI into their daily processes. Using Appian, applications like this one can easily benefit from full stack automation by leveraging low-code workflows, robotic process automation (RPA), and AI. Appian's Connected Claims Application demonstrates this by using built-in intelligent document management to evaluate claims and system-recommended investigation paths for intelligent fraud analysis. Paired with RPA, the Connected Claims Application allows you to pass data easily between different systems and view data in a unified interface within Appian.

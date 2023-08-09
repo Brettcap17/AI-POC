@@ -1,0 +1,131 @@
+
+layout: function
+title: a!save() Function
+space: function_page
+excerpt: "In interface saveInto parameters, updates the target with the given value. Use a!save for each item that you want to modify or alter in a saveInto parameter. This function has no effect when called outside of a component's saveInto parameter."
+category: function_page
+fnccat: Evaluation
+fncname: "a!save"
+fncexample: "Click on the function name for examples."
+compatibility: -crf
+parameters:
+  - keyword: target
+    types: List of Save
+    description: |
+      A local variable, rule input, process variable, or node input in which to save the value. Local variables that refresh on an interval using "refreshInterval" or on every evaluation, either because they are using "refreshAlways" or because they are defined in the with() function, cannot be used as save targets.
+  - keyword: value
+    types: Any Type
+    description: |
+      The value to save. The component's updated value can be accessed using the special variable save!value.
+category: function_page
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Save
+Usage considerations
+a!save() can be called multiple times for a given component by passing them in a list to the component's saveInto parameter.
+If the component's updated value should be saved directly into a variable without modification, the a!save() function is not necessary (see first example below).
+Using a value parameter
+The target and value parameters are not evaluated until the user interacts with the component.
+The variable save!value is only available in the value parameter of a!save(). It cannot be used in the target parameter or outside of a!save().
+If the component's updated value should be saved directly into a variable without modification, the a!save() function is not necessary (see first example below).
+a!save() can be used in conjunction with a rule input of type Save to create reusable custom components.
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see how this works.
+Saving a variable without modification (doesn't need a!save function)
+sail 
+    =a!localVariables(
+      local!text,
+      a!textField(
+        value: local!text,
+        saveInto: local!text
+      )
+    )
+Upper-casing the typed text
+sail 
+    =a!localVariables(
+      local!text,
+      a!textField(
+        value: local!text,
+        saveInto: a!save(local!text, upper(save!value))
+      )
+    )
+Upper-casing and appending to the typed text
+sail 
+    =a!localVariables(
+      local!text,
+      a!textField(
+        value: local!text,
+        saveInto: a!save(local!text, "You just typed: " & upper(save!value))
+      )
+    )
+Upper-casing and appending to the typed text in one variable, saving unchanged to another
+sail 
+    =a!localVariables(
+      local!modifiedText,
+      local!unmodifiedText,
+      a!textField(
+        instructions: local!modifiedtext,
+        value: local!unmodifiedText,
+        saveInto: {
+          a!save(local!modifiedtext, "You just typed: " & upper(save!value)),
+          local!unmodifiedText
+        }
+      )
+    )
+Modifying two variables based on the same typed text
+sail 
+    =a!localVariables(
+      local!upperCaseText,
+      local!appendedText,
+      a!textField(
+        value: local!upperCaseText,
+        instructions: local!appendedText,
+        saveInto: {
+          a!save(local!upperCaseText, upper(save!value)),
+          a!save(local!appendedText, "You just typed: " & save!value)
+        }
+      )
+    )
+Modifying two variables, one based on the typed text and one with an arbitrary value
+sail 
+    =a!localVariables(
+      local!upperCaseText,
+      local!isModified: false,
+      a!textField(
+        value: local!upperCaseText,
+        instructions: if(local!isModified, "Modified", ""),
+        saveInto: {
+          a!save(local!upperCaseText, upper(save!value)),
+          a!save(local!isModified, true)
+        }
+      )
+    )
+Modifying two variables, one based on the typed text and one conditionally
+sail 
+    =a!localVariables(
+      local!text,
+      local!longText: "Short Text",
+      local!shortText: "Long Text",
+      a!textField(
+        label: local!shortText,
+        instructions: local!longText,
+        value: local!text,
+        saveInto: {
+          local!text,
+          a!save(
+            if(
+              len(local!text) > 5,
+              local!longText,
+              local!shortText
+            ),
+            save!value
+          )
+        }
+      )
+    )

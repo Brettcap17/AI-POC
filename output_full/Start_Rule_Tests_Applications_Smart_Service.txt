@@ -1,0 +1,153 @@
+
+layout: function
+title: Start Rule Tests (Applications)
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: Executes the test cases configured for all expression rules in the specified Appian application(s) from web APIs and interfaces.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!startRuleTestsApplications
+fncsubcat: Testing
+parameters:
+  - keyword: applications
+    types: Application or Application Array
+    description: 'The applications containing expression rules, whose test cases will be executed.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). The test-run ID of the executed test run is available in the function variable fv!testRunId. This can be used to query information about the test run with a!testRunStatusForId() and a!testRunResultForId().'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+space: function_page
+sscat: Test_Management
+ssicon: Start_Rules_Tests_Application.png
+ssparentcat: Automation_Services
+
+Overview
+The Start Rule Tests (Applications) Smart Service executes the test cases configured for all expression rules in the specified Appian application(s). To test all expression rules within Appian, see Start Rule Tests (All). 
+For additional context on how this smart service can be used to perform automated testing, see Automated Testing for Expression Rules.
+Activating this smart service in the process model starts an asynchronous test run in Appian, and immediately returns a test-run ID that can be used with the a!testRunResultForId() function to retrieve the results when the test run is finished. To check on the status of a test run, use the test-run ID with the a!testRunStatusForId() function.
+The screenshot below shows a simple workflow that starts a test run, then checks on the status of the test run until the test is completed. The Get Test Status script task, which calls the a!testRunStatusForId() function, starts on a scheduled delay of 1 minute. If the status of the test is not COMPLETE, the process model loops back to the Get Test Status script task, until the status is COMPLETE. At this point, the results of the test are retrieved by the Get Test Results script task, by calling the a!testRunResultForId() function. 
+
+To learn more about parsing test results, see Parsing Batch Test Results for Expression Rules. 
+
+appian-style-note
+The Start Rule Tests (Applications) smart service only executes the tests in the applications and expression rules to which the user has at least viewer rights. See Permissions Needed section for additional details.
+
+This smart service can also be executed from web APIs and interfaces. See a!startRuleTestsApplications().
+Permissions needed
+The test run initiated by this smart service only executes the tests in the applications and expression rules to which the user has at least viewer rights.
+When initiating this smart service from a process model, you can adjust the user context used to run the smart service from the Assignment tab. See Assignments for more information.
+When calling the a!startRuleTestsApplications() function from a web API, you can specify different credentials to be used by this function; see Web APIs for more information.
+Getting test status or test results via a!testRunStatusForId() or a!testRunResultForId() can only be performed by the user who initiated the test. In addition, users of type administrator can fetch test results for all users.
+Properties
+
+Category: Business Rules
+Icon:  
+Assignment Options: This smart service can be either attended or unattended (default)
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+Name
+Data Type
+Description
+Required
+Multiple
+
+
+applications
+Application
+The applications containing expression rules, whose test cases will be executed.
+Yes
+Yes
+
+
+See also: Application
+ Additional Details
+The following configurations and expected behavior apply when using this smart service from Process Modeler, expression rules, interfaces, or web APIs:
+
+If the applications input is null, a runtime error will be triggered, indicating that the input must not be null.
+If the applications input contains at least one application to which the user has no viewer rights, test results will be available for all but the applications to which the user has no viewer rights.
+If the applications input contains an application that was deleted after the input was originally set in the smart service, a runtime error will be triggered, indicating that one or more of the applications selected to start a test on don’t exist in the system.
+
+Data inputs
+To set the applications on which expression rule tests should be executed, complete the following:
+
+Select the Data tab.
+Select the Inputs tab.
+Click the Applications input on the left panel.
+On the right panel, either select the Applications Picker to select the application(s) to be tested, or Open the Expression Editor and select the rule or constant that determines the application(s) to be tested. 
+
+Node outputs
+
+Name
+Data Type
+Description
+
+Test-run ID
+Number (Integer)
+This unique id can be used by the a!testRunStatusForId and the a!testRunResultForId functions.
+
+
+See also: Number (Integer)
+a!startRuleTestsApplications()
+{{ page.excerpt }}
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Save
+Usage considerations
+
+If the applications parameter is set to an empty array, a test run takes place as though the startTestsAll smart service was called.
+If the applications parameter contains a null element as part of the array, a runtime error will be triggered, indicating that null arguments are invalid.
+
+Examples
+Create two constants of type Application, and set them to two different applications in your environment
+For example:
+cons!PURCHASE_REQUEST_APPLICATION - A constant for a Purchase Request application
+cons!CRM_APPLICATION - A constant for a CRM application
+Both examples below return an integer representing the test-run ID. For example: 1,2, 3, etc.
+Copy and paste any of these examples into a new writeable web API to see how this works.
+Example 1
+Starting test for one application.
+sail 
+a!startRuleTestsApplications(
+   applications: cons!PURCHASE_REQUEST_APPLICATION,
+   onSuccess: a!httpResponse(
+    statusCode: 200,
+    body: fv!testRunId
+  ),
+  onError: a!httpResponse(
+    statusCode: 500,
+    body: "Error calling a!startRuleTestsApplications"
+  )
+) 
+Example 2
+Starting test for multiple applications.
+sail 
+a!startRuleTestsApplications(
+   applications: { 
+      cons!PURCHASE_REQUEST_APPLICATION,
+      cons!CRM_APPLICATION
+   },
+   onSuccess: a!httpResponse(
+    statusCode: 200,
+    body: fv!testRunId
+  ),
+  onError: a!httpResponse(
+    statusCode: 500,
+    body: "Error calling a!startRuleTestsApplications"
+  )
+) 
+Related functions
+
+a!startRuleTestsAll()
+a!testRunStatusForId()
+a!testRunResultForId()

@@ -1,0 +1,36 @@
+
+layout: function
+title: power() Function
+space: function_page
+excerpt: "Returns the base number raised to the specified exponent."
+category: function_page
+fncname: power
+fncexample: "power(10, 2)"
+fncresult: "100"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: base
+    types: Decimal
+    description: |
+      The base for exponentiation.
+  - keyword: exponent
+    types: Decimal
+    description: |
+      The power that the base will be raised to.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+If all parameter values are integers, the function will return an integer.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+power(1.2,3) returns 1.728 

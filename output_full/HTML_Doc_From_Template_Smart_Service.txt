@@ -1,0 +1,82 @@
+
+layout: basic
+title: HTML Doc From Template Smart Service
+reftype: smart_service
+sscat: Document_Generation
+ssicon: HTML_Doc_From_Template.png
+ssparentcat: Automation_Services
+
+Overview
+The HTML Doc From Template smart service is used to generate an HTML document that is populated with process data. It is found under Appian Smart Services > Document Generation. Double-click the activity after dragging it onto the canvas in the desired location. The Configure HTML Doc From Template dialog is displayed. Select from the tabs in this dialog to configure the activity.
+Properties
+
+
+Category: Document Generation
+
+
+Icon: 
+
+
+Assignment Options: Always Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Setup tab
+The Setup Tab displays the primary property sheet used to configure the node.
+
+Template: Select your template HTML file from Appian Document Management. To browse through Appian Document Management, click the Directory button. The Choose a document dialog is displayed. Select a document. (Only documents that have an .html or .htm extension are listed.) You can also type the name of the document.
+
+The file encoding used is UTF-1. (Your HTML template files must be encoded in UTF-8, if Unicode is used for the file encoding.)
+Sample HTML Template:
+```html
+   HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+<HTML>
+  <BODY>
+    ###Name### joined ###Department### on ###Date of Joining###. The employee's position is ###Position### and their supervisor is ###Supervisor###.
+  </BODY>
+</HTML>
+
+```
+Once the template document is selected, the substitution grid is populated with the keys denoted with ### found within the template file.
+
+
+Runtime Template (Optional) An expression that selects a document using a variable or a Constant. (You can create Constants that contain each desired template.) The substitution fields in the runtime template(s) must match those in the base template.
+
+
+Destination: The place  the generated document should be stored. You can either create a new document or update an existing document.
+
+
+If the Create a new file option is selected, complete the following fields.
+
+New document name: Enter the name of the new document that is to be created by this smart service activity. You can type the name into the text-field or specify a name through an expression.
+New document description: Type a brief description of the of document. The expression editor can also be used to formulate a description.
+
+Save in folder: Specify the folder where the newly created document is to be stored. You can also use an expression or a rule to select a folder at runtime.
+
+
+If the Overwrite an existing document option is selected, the document that is replaced must be specified.
+
+Document to replace: In this field, specify the document to be updated. Click Directory to browse for a document. You can also look up the document using autocomplete by typing the document name in the text field.
+
+The substitution keys found in the template file are listed in the Find in template document column. In the Replace with column, enter the text to substitute in place of the key. You can type the value or use an expression. If the field is left blank, the key is removed (replaced with nothing).
+
+appian-style-note
+Substituting potentially malicious values into a HTML template can result in cross site scripting vulnerabilities in the resulting document.  If your substitution values are coming from an untrusted source (including your end users) you must escape or encode the substitution values before merging them with the template document.
+
+If you've made changes to the template document, click Rescan Template on the toolbar. The template is then rescanned for substitution keys. Whenever the template path is changed, the specified document is also parsed for substitution keys. The smart service activity supports Unicode (UTF-8) templates and generates Unicode documents.
+If the activity is run as a user who does not have adequate rights to the template document, the document that is to be replaced, or the folder where the new document is generated, an error message is sent to the process administrator and the task is paused.
+Data tab
+The Data tab displays the node inputs and outputs for the smart service. You can add additional inputs and outputs, if needed.
+Node outputs
+The ID of the document that was created or replaced is returned by the node.
+To retain the ID of the document so that it can be referenced elsewhere in the Process Model:
+
+Click the Outputs property sheet (tab).
+Select New Document Created on the Results list. The Result properties are displayed.
+Create a new Process Variable to store the result, or select an existing Process Variable with a Document data type from the available list.
+
+Forms tab
+This smart service is unattended. A form cannot be used.
+Assignment tab
+This smart service is always unattended. You can select whether this unattended activity runs as the user who initiated the process or as the person who published the Process Model.

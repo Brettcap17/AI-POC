@@ -1,0 +1,4 @@
+
+title: Insurance Claim Case Summary
+weight: 50
+image: ds-images/uxds_images/insurance_claim_case_summary.png

@@ -1,0 +1,8 @@
+
+layout: "basic"
+title: "Examples"
+topic-group: "Reference"
+weight: 400
+
+For complete examples that you can download and extend, use our GitHub repository:
+* https://github.com/appian/integration-sdk-examples

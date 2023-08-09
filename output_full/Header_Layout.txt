@@ -1,0 +1,677 @@
+
+layout: function
+title: Header Content Layout Component
+category: function_page
+compatibility: -crf
+excerpt: Displays any arrangement of layouts and components beneath a card or billboard flush with the edge of the page.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!headerContentLayout
+fncsubcat: Layouts
+parameters:
+  - keyword: header
+    name: Header
+    types: Any Type
+    description: Billboard, card, or list of billboards or cards to display at the top of the page. Configure using a!billboardLayout() or a!cardLayout().
+  - keyword: contents
+    name: Contents
+    types: Any Type Array
+    description: Components and layouts to display in the body of the interface.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true.
+  - keyword: backgroundColor
+    name: Background color
+    types: Text
+    description: |
+      Color to show behind the contents of the page. Valid values: Any valid hex color or "WHITE" (default), "TRANSPARENT", "CHARCOAL_SCHEME", "NAVY_SCHEME", "PLUM_SCHEME".
+  - keyword: contentsPadding
+    name: Contents Padding
+    types: Text
+    description: |
+      Determines the space surrounding the contents. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE".
+  - keyword: isHeaderFixed
+    name: Fix header when scrolling
+    types: Boolean
+    description: |
+      Determines whether the header remains at the top of the page when scrolling. Default: false.
+reftype: sailcomponent
+scdisplayname: Header Content Layout
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays any arrangement of layouts and components beneath a billboard or card header that is flush with the edge of the page. Similar to a form layout, this is a top-level layout and cannot be nested within other layouts. The header layout is ideal for landing pages and reports.
+To add a header content layout to your interface from Design Mode, drag out either a CARD HEADER or BILLBOARD HEADER from the interface palette.
+See also: Header Content Layout style guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Designing headers
+
+For configuring record views with a flush header, consider using a record header.
+If you are using a fixed header, be sure to view your interface on multiple screen sizes to make sure the content is accessible on all devices. See the header content layout design guidance for more information.
+If fixed header is selected in the header content layout, but it isn't selected for the record header, neither header will be fixed. See Design Record Views for more information.
+
+Using the backgroundColor parameter
+
+If you're using a predefined color scheme for your background, make sure that your header content layout and cards are using the same predefined color scheme.
+If you're using a dark custom background color for your header content layout, make your cards a lighter color. For more information on backgrounds, check out our header content layout design guidance. 
+When using predefined color schemes, cards are a lighter color than the background. If you're using a card header in combination with a predefined color scheme, you must manually set the card header's background color to use the same hex code as the header content layout's background. For more guidance on backgrounds, check out our design guidance for header content layouts.
+If you're using a predefined dark color scheme in a site, use the same color scheme for your site's navigation bar. 
+Dark color schemes shouldn't be applied to interfaces used on Tempo or across multiple sites with different color schemes.
+
+Using transparent backgrounds
+
+The header content layout's transparent background eliminates the page outline on an interface and shows the background color.
+For Tempo, the background color is light blue. 
+For Sites, the background color is gray.
+If you are using a billboard that contains an image with a transparent background, you'll be able to see the color specified in the billboard layout's backgroundColor parameter. For a clean look, make sure that the billboard's backgroundColor is the same hex code as the backgroundColor of the header content layout. See our header content layout design guidance for more information and examples.
+
+Report titles in Tempo and embedded interfaces
+
+This layout will not display the report title when viewed in Tempo and embedded interfaces.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Billboard layout
+This example uses a billboard layout within the header content layout. It displays the following interface.
+{:.screenshot}
+See the page on Billboard Layouts for more information on billboards and the SAIL Design System: Billboard Layout for guidance on when to use each overlay style.
+Copy and paste this example into an an interface object to experiment with it.
+sail
+a!headerContentLayout(
+  header: {
+    a!billboardLayout(
+      backgroundMedia: a!documentImage(
+        document: a!EXAMPLE_BILLBOARD_IMAGE()
+      ),
+      backgroundColor: "#f0f0f0",
+      height: "SHORT",
+      marginBelow: "NONE",
+      overlay: a!barOverlay(
+        position: "BOTTOM",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          "Finance Summary"
+                        },
+                        size: "LARGE"
+                      )
+                    }
+                  )
+                }
+              ),
+              a!columnLayout(
+                contents: {
+                  a!columnsLayout(
+                    columns: {
+                      a!columnLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            label: "Total Spending",
+                            value: {
+                              a!richTextItem(
+                                text: {
+                                  "$31,000.00"
+                                },
+                                size: "MEDIUM_PLUS"
+                              )
+                            }
+                          )
+                        }
+                      ),
+                      a!columnLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            label: "Remaining Budget",
+                            value: {
+                              a!richTextItem(
+                                text: {
+                                  "79%"
+                                },
+                                color: "POSITIVE",
+                                size: "MEDIUM_PLUS"
+                              )
+                            }
+                          )
+                        }
+                      ),
+                      a!columnLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            label: "Open Requests",
+                            value: {
+                              a!richTextItem(
+                                text: {
+                                  "36"
+                                },
+                                size: "MEDIUM_PLUS"
+                              )
+                            }
+                          )
+                        }
+                      )
+                    },
+                    alignVertical: "TOP"
+                  )
+                }
+              )
+            },
+            alignVertical: "MIDDLE"
+          )
+        },
+        style: "DARK"
+      )
+    )
+  },
+  contents: {
+    a!sectionLayout(
+      label: "Example Section",
+      contents: {
+        a!textField(
+          label: "YOUR CONTENT HERE",
+          readOnly: true()
+        )
+      }
+    )
+  }
+)
+Card layout
+This example uses a card layout within the header content layout. It displays the following interface.
+{:.screenshot}
+See the page on Card Layouts for more information on cards.
+Copy and paste this example into an an interface object to experiment with it.
+sail 
+a!headerContentLayout(
+  header: {
+    a!cardLayout(
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: {
+                        "Finance Summary"
+                      },
+                      size: "LARGE"
+                    )
+                  }
+                )
+              }
+            ),
+            a!columnLayout(
+              contents: {
+                a!columnsLayout(
+                  columns: {
+                    a!columnLayout(
+                      contents: {
+                        a!richTextDisplayField(
+                          label: "Total Spending",
+                          value: {
+                            a!richTextItem(
+                              text: {
+                                "$31,000.00"
+                              },
+                              size: "MEDIUM_PLUS"
+                            )
+                          }
+                        )
+                      }
+                    ),
+                    a!columnLayout(
+                      contents: {
+                        a!richTextDisplayField(
+                          label: "Remaining Budget",
+                          value: {
+                            a!richTextItem(
+                              text: {
+                                "79%"
+                              },
+                              color: "POSITIVE",
+                              size: "MEDIUM_PLUS"
+                            )
+                          }
+                        )
+                      }
+                    ),
+                    a!columnLayout(
+                      contents: {
+                        a!richTextDisplayField(
+                          label: "Open Requests",
+                          value: {
+                            a!richTextItem(
+                              text: {
+                                "36"
+                              },
+                              size: "MEDIUM_PLUS"
+                            )
+                          }
+                        )
+                      }
+                    )
+                  },
+                  alignVertical: "TOP"
+                )
+              }
+            )
+          },
+          alignVertical: "MIDDLE"
+        )
+      },
+      style: "STANDARD"
+    )
+  },
+  contents: {
+    a!sectionLayout(
+      label: "Example Section",
+      contents: {
+        a!textField(
+          label: "YOUR CONTENT HERE",
+          readOnly: true()
+        )
+      }
+    )
+  }
+) 
+Fixed header
+This example uses a fixed header within the header content layout. It displays the following interface.
+{:.screenshot}
+Note that this pattern contains two empty a!cardLayout() components to help you see the scrolling behavior with a fixed header. These components have no other purpose.
+See the SAIL Design System: Header Content Layout for more information on fixed headers.
+Copy and paste this example into an an interface object to experiment with it.
+sail
+a!headerContentLayout(
+  header: {
+    a!cardLayout(
+      contents: {
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: "Order" & " " & "#12345667",
+                        size: "LARGE",
+                        style: "STRONG"
+                      )
+                    }
+                  )
+              }
+            )
+          }
+        ),
+        a!columnsLayout(
+          columns: {
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: "Next Action",
+                      color: "SECONDARY"
+                    )
+                  }
+                ),
+                a!buttonArrayLayout(
+                  buttons: {
+                    a!buttonWidget(
+                      label: if(
+                        a!isPageWidth("TABLET_PORTRAIT"),
+                        "Create Label",
+                        "Create Shipping Label"
+                      ),
+                      style: "PRIMARY"
+                    )
+                  },
+                  align: "START",
+                  marginBelow: "NONE"
+                )
+              }
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: "Shipping Priority",
+                      color: "SECONDARY"
+                    )
+                  }
+                ),
+                a!sideBySideLayout(
+                  items: {
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "Normal",
+                            size: "MEDIUM",
+                            style: "STRONG"
+                          )
+                        }
+                      )
+                    ),
+                    a!sideBySideItem(
+                      item: a!buttonArrayLayout(
+                        buttons: {
+                          a!buttonWidget(
+                            label: "Expedite",
+                            size: "SMALL"
+                          )
+                        },
+                        align: "START",
+                        marginBelow: "NONE"
+                      ),
+                      width: "MINIMIZE"
+                    )
+                  },
+                  alignVertical: "MIDDLE",
+                  stackWhen: "TABLET_PORTRAIT"
+                )
+              }
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: "Days Since Order Received",
+                      color: "SECONDARY"
+                    )
+                  }
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: 6,
+                      size: "MEDIUM",
+                      style: "STRONG"
+                    )
+                  },
+                  marginBelow: "NONE"
+                ),
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: {
+                        "Received on",
+                        " ",
+                        text(today()- 6, "MMM D, YYYY")
+                      },
+                      size: "SMALL"
+                    )
+                  }
+                )
+              }
+            ),
+            a!columnLayout(
+              contents: {
+                a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      text: "Assignee",
+                      color: "SECONDARY"
+                    )
+                  }
+                ),
+                a!sideBySideLayout(
+                  items: {
+                    a!sideBySideItem(
+                      item: a!imageField(
+                        labelPosition: "COLLAPSED",
+                        images: a!userImage(),
+                        size: "TINY",
+                        style: "AVATAR"
+                      ),
+                      width: "MINIMIZE"
+                    ),
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        labelPosition: "COLLAPSED",
+                        value: {
+                          a!richTextItem(
+                            text: "Anthony Wu",
+                            link: a!userRecordLink(),
+                            linkStyle: "STANDALONE",
+                            size: "MEDIUM",
+                            style: "STRONG"
+                          )
+                        },
+                        preventWrapping: true
+                      )
+                    ),
+                    a!sideBySideItem(
+                      item: a!buttonArrayLayout(
+                        buttons: {
+                          a!buttonWidget(
+                            label: "Reassign",
+                            size: "SMALL"
+                          )
+                        },
+                        align: "START",
+                        marginBelow: "NONE"
+                      ),
+                      width: "MINIMIZE"
+                    )
+                  },
+                  alignVertical: "MIDDLE",
+                  stackWhen: "TABLET_PORTRAIT"
+                )
+              }
+            )
+          },
+          spacing: "SPARSE",
+          showDividers: true
+        )
+      },
+      padding: "STANDARD",
+      marginBelow: "MORE"
+    )
+  },
+    isHeaderFixed: if(a!isPageWidth("PHONE"),false,true),
+  contents: {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!sectionLayout(
+              label: "Example Section",
+              labelIcon: "box",
+              labelColor: "STANDARD",
+              contents: {
+                a!sectionLayout(
+                  label: upper("Your content here"),
+                  labelSize: "SMALL",
+                  labelColor: "SECONDARY"
+                ),
+                a!cardLayout(
+                  contents: {},
+                  height: "EXTRA_TALL",
+                  style: "NONE",
+                  marginBelow: "STANDARD",
+                  showBorder: false
+                ),
+                a!cardLayout(
+                  contents: {},
+                  height: "EXTRA_TALL",
+                  style: "NONE",
+                  marginBelow: "STANDARD",
+                  showBorder: false
+                )
+              }
+            )
+          }
+        )
+      },
+      spacing: "SPARSE",
+      stackWhen: {"TABLET_LANDSCAPE", "TABLET_PORTRAIT", "PHONE"
+      }
+    )
+  }
+)
+Header content layout with navy color scheme
+This example uses the navy color scheme within a header content layout. It displays the following interface.
+{:.screenshot}
+Copy and paste this example into an an interface object to experiment with it.
+sail
+a!localVariables(
+  local!universityAdmissionsMetricsSpring: {
+    a!map(name: "Applications", totalCount: 1753),
+    a!map(name: "Admitted",     totalCount: 367),
+    a!map(name: "Accepted",     totalCount: 200),
+    a!map(name: "Enrolled",     totalCount: 150)
+  },
+  local!universityAdmissionsMetricsFall: {
+    a!map(name: "Applications", totalCount: 3415),
+    a!map(name: "Admitted",     totalCount: 429),
+    a!map(name: "Accepted",     totalCount: 212),
+    a!map(name: "Enrolled",     totalCount: 199)
+  },
+  a!headerContentLayout(
+    header:{}, 
+    contents:{
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: 
+        {
+          a!richTextItem(
+            text: {
+              "2021 Admissions Dashboard"
+            },
+            size: "LARGE"
+          ),
+          char(10),
+          char(10)
+        }
+      ),
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!cardLayout(
+                contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: "2021 Spring Semester",
+                        size: "MEDIUM_PLUS"
+                      ),
+                      char(10),
+                      char(10)
+                    }
+                  ),
+                  a!columnsLayout(
+                    columns: {
+                      a!forEach(
+                        items: local!universityAdmissionsMetricsSpring,
+                        expression: a!columnLayout(
+                          contents: {
+                            a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.name,
+                                  color: "STANDARD"
+                                ),
+                                char(10),
+                                a!richTextItem(
+                                  text: fv!item.totalCount,
+                                  size: "LARGE",
+                                  style: "STRONG"
+                                )
+                              }
+                            )
+                          }
+                        )
+                      )
+                    },
+                    showDividers: true
+                  )
+                },
+                style: "NAVY_SCHEME",
+                padding: "STANDARD",
+                marginBelow: "STANDARD",
+                showBorder: false
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!cardLayout(
+                contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: "2021 Fall Semester",
+                        size: "MEDIUM_PLUS"
+                      ),
+                      char(10),
+                      char(10)
+                    }
+                  ),
+                  a!columnsLayout(
+                    columns: {
+                      a!forEach(
+                        items: local!universityAdmissionsMetricsFall,
+                        expression: a!columnLayout(
+                          contents: {
+                            a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: {
+                                a!richTextItem(
+                                  text: fv!item.name,
+                                  color: "STANDARD"
+                                ),
+                                char(10),
+                                a!richTextItem(
+                                  text: fv!item.totalCount,
+                                  size: "LARGE",
+                                  style: "STRONG"
+                                )
+                              }
+                            )
+                          }
+                        )
+                      )
+                    },
+                    showDividers: true
+                  )
+                },
+                style: "NAVY_SCHEME",
+                padding: "STANDARD",
+                marginBelow: "STANDARD",
+                showBorder: false
+              )
+            }
+          )
+        }
+      )
+    }, 
+    backgroundColor: "NAVY_SCHEME"  
+  )
+)

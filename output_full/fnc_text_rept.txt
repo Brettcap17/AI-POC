@@ -1,0 +1,34 @@
+
+layout: function
+title: rept() Function
+space: function_page
+excerpt: "Concatenates the text to itself a specified number of times and returns the result."
+category: function_page
+fncname: rept
+fncexample: "rept(\"do\",3)"
+fncresult: "dododo"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be repeated.
+  - keyword: repetitions
+    types: Number
+    description: |
+      The number of times the text will be repeated. The original text is not counted as a repetition.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+rept("do",3) returns dododo

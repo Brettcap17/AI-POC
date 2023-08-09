@@ -1,0 +1,113 @@
+
+layout: function
+title: a!groupsByType() Function
+space: function_page
+excerpt: "Returns a DataSubset of the groups of a given group type."
+category: function_page
+fncname: a!groupsByType
+fncexample: "Click on the function name for examples."
+fncresult:
+fnccat: People
+compatibility: -crf
+reftype: function
+parameters:
+  - keyword: groupType
+    types: Group Type
+    description: |
+       The group type of the groups to be retrieved.
+  - keyword: pagingInfo
+    types: PagingInfo
+    description: |
+       The paging and sorting configurations to apply when retrieving the groups. The minimum batchSize is 0 and the maximum is 10,000. If none is provided, a default batchSize of 1,000 will be used.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- Group Types
+- PagingInfo
+- DataSubset
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DataSubset
+Usage considerations
+The groupType value should be given as a constant of type Group Type.
+By default, the DataSubset is sorted by groupName, ascending. If there are multiple groups with the same groupName, a secondary sort is applied on id, ascending. 
+Designers can choose to sort on any of the following group attributes:
+
+created
+creator
+description
+groupName
+groupTypeName
+id
+lastModified
+memberPolicyName
+parentId
+parentName
+securityMapName
+viewingPolicyName
+
+If the user running the expression does not have permission to see a group, that group will not be returned in the result. If the user does not have permission to see any of the groups, the DataSubset returned will have an empty data value. See also: Group Visibility
+a!groupsByType() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Given a rule input ri!groupType of type Group Type with the following groups of this type: {[Group:7],[Group:8],[Group:9],[Group:10],[Group:11]}
+Return Maximum Batch Size
+a!groupsByType(groupType: ri!groupType) returns 
+DataSubset
+  startIndex: 1
+  batchSize: 1000 
+  sort: List of SortInfo
+    SortInfo
+      field: "groupName" 
+      ascending: true 
+  totalCount: 5
+  data: List of Group
+    7 - Group A (Group)
+    8 - Group B (Group)
+    9 - Group C (Group)
+    10 - Group D (Group)
+    11 - Group E (Group)
+  identifiers: List of Group
+    7 - Group A (Group)
+    8 - Group B (Group)
+    9 - Group C (Group)
+    10 - Group D (Group)
+    11 - Group E (Group)
+Return Batch Size of Two
+a!groupsByType(
+  groupType: ri!groupType, 
+  pagingInfo: a!pagingInfo(
+    startIndex: 1, 
+    batchSize: 2
+  )
+) 
+returns
+DataSubset
+  startIndex: 1 
+  batchSize: 2 
+  sort: List of SortInfo
+    SortInfo
+      field: "groupName"
+      ascending: true 
+  totalCount: 5
+  data: List of Group
+    7 - Group A (Group)
+    8 - Group B (Group)
+  identifiers:List of Group
+    7 - Group A (Group)
+    8 - Group B (Group)
+Only Return Data
+a!groupsByType(
+  groupType: ri!groupType, 
+  pagingInfo: a!pagingInfo(
+    startIndex: 1, 
+    batchSize: 2
+  )
+).data 
+returns
+List of Group
+  7 - Group A (Group)
+  8 - Group B (Group)

@@ -1,0 +1,125 @@
+
+layout: basic
+title: Design Considerations
+topic-group: B
+weight: 5
+
+Overview
+This page explains features, concepts, and considerations to use when building your connected system plug-in.
+Branding
+Good logos and descriptions will help users find and use your plug-in.
+
+Add logos to your Connected System to show custom branding
+Add a description that tells us how to use your system.  Why would I use it?  What is exciting about it?  
+For example, our Google Cloud Natural Language Connected System has the following description: Easily connect to Google Cloud Natural Language machine learning models. Extract structure and information from text, including both sentiment and key subjects such as people, places, and events. Integrations using this connected system will allow you to provide a text value and select which types of information to analyze.
+Check out Appian's Connected Systems for more examples.
+
+Authentication
+When authentication is required to send and receive information, fields can be configured to securely store credentials. Appian supports the use of the following authentication types for API requests:
+
+System username/password
+Basic authentication
+NTLM
+Digest
+Kerberos
+SOAP request body
+Prebuilt OAuth 2.0 (Authorization Code grant) - storage and retrieval of refresh and access tokens
+See How to work with OAuth
+Custom - you can configure many different kinds of auth.  Below are a few examples
+API Key
+AWS Authentication
+
+Known unsupported authentication mechanisms
+Currently, you cannot build a plug-in that authenticates using:
+
+Anything Involving Certificate-Based Signing
+OAuth 2.0 (JWT Bearer Token)
+Per use credentials for anything other than OAuth 2.0 (for example, per-user creds for Basic auth)
+Secure storage of Short-lived token authentication
+OAuth 2.0 (Client Credentials)
+Workaround: You can configure your Connected System Template to request a token on each request.  Be sure to review the policies and rate limits for the service you are connecting to.
+
+File transfer
+
+Sending files supported: How to send files
+
+System wide configurations
+Proxy support
+
+If an HTTP proxy has been enabled by an Appian administrator, you can build the plug-in to use the provided configuration data when making HTTP requests.
+
+
+appian-style-note
+Connected system plug-ins won't support using the configured proxy unless you specifically develop them to do so. For an example, see Configuring HttpClient when a proxy is enabled.
+
+SSL
+
+Not supported.  We do not currently provide trusted or client certificates.
+
+Give feedback on errors
+
+Validating credentials and connection information
+Validating a single input (for example, length of a text input)
+Indicating a failed execution
+
+Diagnostics
+
+Adding debugging information about the request
+Adding debugging information about the response
+
+Timing
+
+Adding timing information
+
+Import customizable fields
+
+Ensuring fields can change between environments
+
+Use sensitive values on connected systems
+
+Creating a secured input field
+
+Connected system plug-ins restrictions
+Connected systems
+
+Must not implement both TestableConnectedSystemTemplate and OAuthConnectedSystemTemplate.
+Fields must have a RefreshPolicy of NEVER.
+Fields must not be expressionable.
+Fields must not be LIST type.
+Fields must not have deeply nested Local Types.
+Don’t call setErrors(), as errors are ignored.
+
+Integrations
+
+isImportCustomizable should not be set to true.
+Fields must not be encrypted.
+Local Types must be expressionable.
+@TemplateId.majorVersion annotation is ignored.
+
+Choices
+
+Each Choice must have a name and value.
+
+PropertyDescriptors
+
+Fields that are DisplayHint.EXPRESSION must be expressionable.
+Required fields must not be hidden.
+
+EncryptedTextPropertyDescriptors
+
+isImportCustomizable should be set to true.
+
+DocumentPropertyDescriptors
+
+isImportCustomizable should not be set to true.
+
+ListTypePropertyDescriptors
+
+Must be expressionable.
+Must not have a placeholder.
+displayHint() must be set to DisplayHint.Expression.
+
+LocalTypePropertyDescriptor
+
+Must not have a null type 
+isImportCustomizable should not be set to true.

@@ -1,0 +1,310 @@
+
+layout: basic
+title: Create and Use a Configuration
+topic-group: C
+weight: 2
+
+Overview
+This page shows how to create various types of connected system plug-in configurations and how to use them to meet your use case.
+Creating input fields
+Fields are created by calling the setProperties(PropertyDescriptor...) method on the SimpleConfiguration object that has been passed to the getConfiguration method. In these examples you may see field properties (such as isExpressionable) not explicitly set when they are required. That is because these fields have defaults that result in valid configurations.
+Creating a text input field
+To create an input field for plain text, use the textProperty() method.
+java
+return simpleConfiguration.setProperties(
+    textProperty("username").label("Username").build()
+);
+{:.screenshot}
+Creating a secured input field
+To create an input field that will store sensitive data, use the encryptedTextProperty() method. Values gathered through an encrypted text field are encrypted before being stored, cleared on export, must be provided on import via the properties file, and cannot be retrieved by the client after save.
+
+appian-style-note 
+Encrypted text fields are only allowed in connected systems.
+
+java
+return simpleConfiguration.setProperties(
+    textProperty("username").label("Username").build(),
+    encryptedTextProperty("password").label("Password").build()
+);
+{:.screenshot}  
+Creating a dropdown field
+To create a dropdown field, create a text field and provide a list of choices that can be selected from the dropdown. The name method represents how the value is displayed to the user and the value method is how the value is stored in the SimpleConfiguration.  We have the dropdownProperty method to help accomplish this.
+java
+return integrationConfiguration.setProperties(
+    dropdownProperty("state", Arrays.asList(
+             choice().name("Maryland").value("MD").build(),
+             choice().name("Virginia").value("VA").build())
+        .label("State")
+        .build()
+);
+{:.screenshot}  
+Adding additional information to a field
+Additional information can be added to the field as an instruction, a tooltip (description) or placeholder text. This information helps a user understand how to interact with the field.
+java
+textProperty("username").label("Username")
+    .instructionText("This will be your work email")
+    .placeholder("fake.name@appian.com")
+    .build()
+{:.screenshot}  
+Creating a Boolean field
+To create a boolean field, use the booleanProperty() method. Boolean properties can render as a radio button or checkbox based on the provided displayMode().
+java
+return integrationConfiguration.setProperties(
+    booleanProperty("verbose-output").label("Verbose Output")
+        .displayMode(BooleanDisplayMode.RADIO_BUTTON) //Default display mode is checkbox
+        .description("Should the request return additional metadata?")
+        .build()
+);
+{:.screenshot}  
+Making fields required
+To mark a field as required use the isRequired() method on the property descriptor builder. The designer will be able to see which fields are required when configuring an integration or connected system.
+java
+textProperty("username").label("Username")
+    .instructionText("This will be your work email")
+    .placeholder("fake.name@appian.com")
+    .isRequired(true)
+    .build()
+
+appian-style-tip
+All template methods can be still executed with null values for required fields. Always have appropriate null handling for all fields, even required ones.  
+
+{:.screenshot}  
+Ensuring fields can change between environments
+If a field's values are likely to change between environments use the isImportCustomizeable(true) method on the property builder. 
+java
+return simpleConfiguration.setProperties(
+    textProperty("username").label("Username")
+        .instructionText("This will be your work email")
+        .placeholder("fake.name@appian.com")
+        .isRequired(true)
+        .isImportCustomizable(true)
+    .build(),
+    encryptedTextProperty("password").label("Password")
+        .isRequired(true)
+        .description("Make sure to keep this value a secret!")
+        .build()
+    );
+Import customizable fields can be set through the import customization file on import. Only connected systems can have importCustomizable fields.
+
+appian-style-note
+- Encrypted fields are import customizable by default.
+- Lists, nested types and document fields cannot be import customizable.    
+
+Dynamic fields
+If you want to have dynamic fields then you must create a field where the refresh policy is set to ALWAYS. This triggers a call to getConfiguration when the value of that field is changed. This example shows how to create a dynamic field, retrieve the user-entered value and use that value to determine behavior. Only integrations can have dynamic behavior.
+```java
+String state = integrationConfiguration.getValue("state");
+if(state == null) {
+    return integrationConfiguration.setProperties(
+        textProperty("state").label("State")
+            .choices(
+                Choice.builder().name("Maryland").value("MD").build(),
+                Choice.builder().name("Virginia").value("VA").build())
+            .refresh(RefreshPolicy.ALWAYS)
+            .build()
+    );
+}
+String stateFlower = null;
+if("VA".equals(state)) {
+    stateFlower = "American dogwood";
+} else if ("MD".equals(state)) {
+    stateFlower = "Black-Eyed Susan";
+}
+return integrationConfiguration.setProperties(
+    textProperty("state").label("State")
+        .choices(
+            Choice.builder().name("Maryland").value("MD").build(),
+            Choice.builder().name("Virginia").value("VA").build())
+        .refresh(RefreshPolicy.ALWAYS)
+        .build(),
+    textProperty("state-flower").label("State Flower")
+        .instructionText(String.format("The official flower of %s", state))
+            .isReadOnly(true)
+            .build()
+    ).setValue("state-flower", stateFlower);
+```
+{:.screenshot}  
+Sending documents
+To send a document, create a document input field using the documentProperty() method.
+java
+return integrationConfiguration.setProperties(
+    documentProperty("resume").label("Resume")
+        .instructionText("Upload your resume here.")
+        .build()
+    );
+This will allow the designer to provide a document from Appian to your plugin. The Document class then gives you access to an InputStream of the contents along with other metadata.
+
+appian-style-note
+- Only integrations can have document upload fields.
+- The document's contents will only be available on execute.
+- During getConfiguration the value for the document will be an integer id. 
+- Remember to close the InputStream after consuming the contents.
+
+{:.screenshot}  
+Dynamic input fields
+To allow designers to specify non-static values (SAIL expressions and rule inputs) in input fields, use the isExpressionable(true) method on the property builder.
+java
+return integrationConfiguration.setProperties(
+    integerProperty("sandwiches").label("Number of Sandwiches Remaining")
+        .instructionText("This value will be used to predict when there will be no remaining sandwiches")
+        .isExpressionable(true)
+        .build()
+    );
+
+appian-style-note
+- Do not mark a field expressionable when its value should be constant across invocations of the integration.
+- Connected systems cannot have expressionable fields.
+- Some fields are set to be expressionable by default.
+- If the display hint is set to EXPRESSION, then the field must also be marked as expressionable.
+- Be careful when accessing the value from an Expressionable field on configuration. The value may be an Expression object.
+
+{:.screenshot}  
+Display a field as an expression box
+To display a field as an expression box, use the displayHint(DisplayHint.EXPRESSION) on the field's builder. The field be marked as expressionable and Connected systems cannot have fields with DisplayHint.EXPRESSION.
+java
+    return integrationConfiguration.setProperties(
+        integerProperty("sandwiches").label("Number of Sandwiches Remaining")
+            .instructionText("This value will be used to predict when there will be no remaining sandwiches")
+            .displayHint(DisplayHint.EXPRESSION)
+            .isExpressionable(true)
+            .build()
+    );
+{:.screenshot}  
+Creating a complex type input
+Complex types are referred to as "local types" in the SDK. Local types are custom dynamic data structures that you can define to fit your specific needs. To create a local type input, use the localTypeProperty() method. To create the local type definition, use the localType() method. List types must have an itemType provided, and be expressionable with a DisplayHint type of expression. List types cannot have a placeholder.
+java
+LocalTypeDescriptor addressType = localType("address").properties(
+    textProperty("street").label("Street Name").build(),
+    integerProperty("zip").label("Zip Code").build(),
+    textProperty("state").label("State")
+        .choices(
+            Choice.builder().name("Maryland").value("MD").build(),
+            Choice.builder().name("Virginia").value("VA").build())
+        .build()
+    ).build();
+return integrationConfiguration.setProperties(
+    localTypeProperty(addressType).label("Address").isExpressionable(true).build()
+);
+{:.screenshot}
+Creating a list input
+To create a list input, use the listTypeProperty() method. To set the item type, call the itemType() method, and provide a SystemType or local type.
+java
+    return integrationConfiguration.setProperties(
+        listTypeProperty("testscores").label("Test Scores")
+            .itemType(SystemType.DOUBLE)
+            .build()
+    );
+Creating a list input of complex type
+In order to create a list input of complex type, you will first need to register the complex type using the localTypeProperty() method. Otherwise, you will not be able to reference the complex type in the definition of your list type input.
+```java
+LocalTypeDescriptor addressType = localType("address").properties(
+    textProperty("street").label("Street Name").build(),
+    integerProperty("zip").label("Zip Code").build(),
+    textProperty("state").label("State")
+        .choices(
+            Choice.builder().name("Maryland").value("MD").build(),
+            Choice.builder().name("Virginia").value("VA").build())
+        .build()
+    ).build();
+localTypeProperty(addressType, "neededToRegister");
+return integrationConfiguration.setProperties(
+  listTypeProperty("addresslist").label("Address List")
+      .itemType(TypeReference.from(addressType))
+      .isExpressionable(true)
+  .build()
+);
+```
+Accessing values entered by the user
+Values entered by the user are stored in the SimpleConfiguration object.
+To retrieve values use:
+
+getValue(String) - Gets a value at the top level (not in a local type property).
+getValue(PropertyPath) - Gets any value. getValue(new PropertyPath("key")) is equivalent to getValue("key")
+
+
+appian-style-note
+- The value returned by getValue() could be null, so don't store values in primitives
+- In the getConfiguration() method, values are not available for the following fields:
+  - Documents
+  - Any field that is currently an Expression. Expressions are evaluated at execution time.
+
+Accessing values
+Suppose you have a SimpleConfiguration defined as follows and all of the _KEY variables are defined as unique strings:
+```java
+LocalTypeDescriptor localTypeDescriptor = localType("localType")
+    .property(
+        textProperty(INNER + TEXT_PROP_KEY).build()
+    ).build();
+return simpleConfiguration.setProperties(
+    textProperty(TEXT_PROP_KEY).build(),
+    doubleProperty(DOUBLE_PROP_KEY).build(),
+    integerProperty(INTEGER_PROP_KEY).build(),
+    documentProperty(DOCUMENT_PROP_KEY).build(),
+    listTypeProperty(LIST_PROP_KEY).itemType(SystemType.INTEGER).build(),
+    localTypeProperty(localTypeDescriptor, LOCAL_TYPE_PROP_KEY).isExpressionable(true).build(),
+    booleanProperty(BOOL_PROP_KEY).build(),
+    encryptedTextProperty(ENC_PROP_KEY).build()
+);
+```
+Retrieving text value with key TEXT_PROP_KEY
+String value = simpleConfiguration.getValue(TEXT_PROP_KEY);
+Retrieving double value with key DOUBLE_PROP_KEY
+Double value = simpleConfiguration.getValue(DOUBLE_PROP_KEY);
+Retrieving integer value with key INTEGER_PROP_KEY
+Integer value = simpleConfiguration.getValue(INTEGER_PROP_KEY);
+Retrieving document value with key DOCUMENT_PROP_KEY during execution
+com.appian.connectedsystems.templateframework.sdk.configuration.Document value = simpleConfiguration.getValue(DOCUMENT_PROP_KEY);
+Retrieving integer list value with key LIST_PROP_KEY during execution 
+List<Integer> value = simpleConfiguration.getValue(LIST_PROP_KEY);
+Retrieving local type value with key LOCAL_TYPE_PROP_KEY during execution 
+Map<String, Object> value = simpleConfiguration.getValue(LOCAL_TYPE_PROP_KEY);
+Retrieving boolean value with key BOOL_PROP_KEY
+Boolean value = simpleConfiguration.getValue(BOOL_PROP_KEY);
+Retrieving EncryptedText value with key ENC_PROP_KEY
+String value = simpleConfiguration.getValue(ENC_PROP_KEY);
+Accessing nested values
+Suppose you have the following simpleConfiguration object:
+```java
+String TEXT_PROP_KEY = "textPropertyKey";
+String LOCAL_TYPE_KEY = "localTypePropertyKey";
+LocalTypeDescriptor localTypeDescriptor = localType("localType")
+    .property(
+        textProperty(TEXT_PROP_KEY).build()
+    ).build();
+simpleConfiguration.setProperties(
+    localTypeProperty(localTypeDescriptor)
+        .key(LOCAL_TYPE_KEY)
+        .build()
+);
+```
+To access the value in the text field:
+String text = simpleConfiguration.getValue(new PropertyPath(LOCAL_TYPE_KEY, TEXT_PROP_KEY));
+Accessing connected system data from integrations
+To access values from the connected system in an integration's getConfiguration method:
+java
+@Override
+protected SimpleConfiguration getConfiguration(
+    SimpleConfiguration integrationConfiguration,
+    SimpleConfiguration connectedSystemConfiguration,
+    PropertyPath propertyPath,
+    ExecutionContext executionContext) {
+    String apiKey = connectedSystemConfiguration.getValue("API_KEY_PROPERTY_KEY");
+    .....
+}
+To access values from the connected system in an integration's execute method:
+java
+@Override
+protected IntegrationResponse execute(
+    SimpleConfiguration integrationConfiguration,
+    SimpleConfiguration connectedSystemConfiguration,
+    ExecutionContext executionContext) {
+    String apiKey = connectedSystemConfiguration.getValue("API_KEY_PROPERTY_KEY");
+    ....
+}
+Setting values programmatically
+It can be useful to set values on read-only fields to display information to the designer. To set a value on a property use:
+* simpleConfiguration.setValue("propertyKey", object)
+* simpleConfiguration.setValue(new PropertyPath("localKey", "nestedKey", object)
+Values for expressible and document fields cannot be set, only cleared.
+* Set an expressionable field to Expression.emptyExpression() to clear it.
+* Set a Document field to Document.emptyDocument() to clear it.

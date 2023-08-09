@@ -1,0 +1,101 @@
+
+layout: function
+title: Record Link Component
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to a record view configured in the record type.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!recordLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: recordType
+    name: Record Type
+    types: RecordType
+    description: The record type of the linked record view. Use the recordType! domain to reference the record type.
+  - keyword: identifier
+    name: Identifier
+    types: Any Type
+    description: |
+      The record ID (identifier) identifies the individual record within the record type. 
+        - For entity-backed records, record ID is the primary key in the data store entity. 
+        - For process-backed records, record ID is the ID for the process. 
+        - For service-backed records, record ID is the value returned to the ID field of the DataSubset produced by the record's source expression.
+  - keyword: dashboard
+    name: Dashboard
+    types: Text
+    description: |
+      The URL of the dashboard to open for the record. Default is "summary". The URL Stub for each configured record view can be found on the record type object's Views page.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: openLinkIn
+    name: Open Link In
+    types: Text
+    description: |
+      (Browser-Only) Determines where the linked content should open. Valid values: "SAME_TAB" (default), "NEW_TAB".
+reftype: sailcomponent
+scdisplayname: Record Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in tags, charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Record Type
+Link
+Read-Only Grid
+Images
+Tag Item
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using record link with other components
+Record links can be used inside:
+
+links
+grid text columns
+document images
+user images
+web images
+chart series
+tag items
+rich text
+styled icons
+card layouts
+milestones
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Record link that links to the summary dashboard of an entity-backed record
+sail 
+  a!recordLink(
+  label: "Employee",
+  /* For the "recordType" parameter below, replace the record type reference (recordType!Employee) with a 
+   * valid record type reference in your environment. 
+   */
+   recordType: recordType!Employee,
+   identifier: "5"
+)
+Record link that links to the specific dashboard of a process-backed record
+sail 
+  a!recordLink(
+  label: "Employee",
+  /* For the "recordType" parameter below, replace the record type reference (recordType!Process) with a 
+   * valid record type reference in your environment. 
+   */
+   recordType: recordType!Process, 
+   identifier: "268435504",
+   dashboard: " _KcRefg"
+)

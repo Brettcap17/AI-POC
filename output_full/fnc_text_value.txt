@@ -1,0 +1,36 @@
+
+layout: function
+title: value() Function
+space: function_page
+excerpt: "Converts text representing a number into an actual number or datetime."
+category: function_page
+fncname: value
+compatibility: ~portal, -om, +pe, +pr
+fncexample: "value(\"1,2,3\",\",\")"
+fncresult: "1; 2; 3"
+fnccat: Text
+reftype: function
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The string of characters to be converted into a number or date.
+  - keyword: format
+    types: Text
+    description: |
+      The input format of the value, such as "mm/dd/yyyy".
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+The text value checks for decimal points, slashes, hyphens, and colons to determine whether you are trying to have the function return a date or a number.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+value("12/13/2005","mm/dd/yyyy") returns 12/13/05 12:00 AM GMT

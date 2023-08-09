@@ -1,0 +1,44 @@
+
+layout: function
+title: a!toRecordIdentifier() Function
+category: function_page
+excerpt: Matches record IDs with their record type to return a value of type Record Identifier for each record ID passed to the function.
+fnccat: System
+fncexample: 'a!toRecordIdentifier(recordType!, 1)'
+fncname: a!toRecordIdentifier
+fncresult: '0'
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: recordType
+    types: RecordType
+    description: |
+      The record type that contains the record.
+  - keyword: identifier
+    types: Any Type Array
+    description: |
+      Individual record IDs within the record type.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- Record Type
+- Record Identifier
+- Post Event to Feed Smart Service
+- Post System Event to Feed Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Record Identifier Array
+Usage considerations
+Record IDs for different source types
+
+For record types that use a database as the source, record ID is the primary key in the data store entity.
+For record types that use a web service as the source, record ID is the value returned to the ID field produced by the record's source expression.
+For record types that use a process model as the source, record ID is the ID for the process.
+
+Example
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+a!toRecordIdentifier(recordType: recordType!Employee, identifier: {"536870111", "536870555"}) returns an array of two Record Identifier values with the first pointing to the first record in the identifiers list and the second pointing to the second record.

@@ -1,0 +1,58 @@
+
+title: Testing Offline Actions and Tasks
+layout: basic
+weight: 600
+
+Introduction
+As you create and update your offline interfaces, you will need to test them on a mobile device to make sure that everything works without any errors.
+This document outlines how to test and troubleshoot offline actions and tasks after you have created them.
+Prerequisites
+In order to test offline interfaces, you need to:
+
+Test it on a mobile device.
+Use the Appian mobile application.
+Have an offline-enabled action or task.
+See Enabling Offline Actions and Tasks for instructions.
+
+Test the action or task on a mobile device
+You cannot test offline functionality on the desktop. You need to test offline forms on a mobile device using the Appian mobile application.
+
+appian-style-tip
+Offline mobile errors will not occur on the desktop. Additionally, if there are offline mobile errors, they will appear on mobile whether your device is online or offline.
+
+To test on a mobile device:
+
+Make sure your changes are saved.
+On a mobile device, open the Appian mobile application.
+Go to your site and open the site page with the action or the task list.
+appian-style-note
+IMPORTANT: You do not need to go offline to test the interface. The interface will behave the same way whether it is offline or not.
+
+
+Pull down to refresh the interface.
+
+{:.screenshot style="width:75%"}
+
+Fill out all of the fields, whether they are required or not. Go through every screen to the final submission.
+appian-style-note
+IMPORTANT: Test the entire action or task completely, including all fields, or users may run into issues at runtime that will cause them to lose their work.
+
+
+If an error like the following appears, troubleshoot it.
+
+{:screenshot}
+
+After troubleshooting the error, save changes and refresh the page.
+
+Troubleshoot offline mobile forms {#troubleshoot}
+If the offline mobile action or task returns an error, troubleshoot it using the following guidance.
+Make sure you are following the design best practices
+The error message contains the interface name and line number that caused the issue.
+Check the line number in the interface expression to see if there is:
+
+A component or function that is not compatible with offline reevaluations.
+A design best practice that is being broken.
+
+Try the steps on desktop
+If you don't see any issues in the interface expression, try performing the same steps on the desktop version of the interface.
+The desktop interface doesn't use the offline mobile evaluator. So if you get the same error on desktop, it may not be caused by offline mobile behavior. It may be caused by a general expression syntax error. Check around the line number in the interface expression to see if there is anything that could be causing the error. 

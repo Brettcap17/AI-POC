@@ -1,0 +1,233 @@
+
+layout: pattern
+title: Comments Patterns
+excerpt: 'Use this pattern when displaying a chronological list of messages from different users, such as comments on a topic or notes on a case.'
+reftype: pattern
+sr-tags:
+  - Comments
+  - Looping
+
+With user initials
+You can display a user's initials with their message by using a stamp with text for the initials and a user record link for the display name.
+Use the "Secondary" rich text color for the time field and align components using a side by side layout.
+{:.screenshot}
+Pattern expression
+sail 
+{
+  a!localVariables(
+    local!caseNotes: {
+      a!map(user: "Miriam Grant",  comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "2 hours ago",       document: null         ),
+      a!map(user: "Dave Harrison", comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "Yesterday 4:59PM",  document: null         ),
+      a!map(user: "Miriam Grant",  comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "Yesterday 11:20AM", document: "My Document")
+    },
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!sectionLayout(
+                contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextHeader(
+                        text: "Case Notes",
+                        size: "MEDIUM"
+                      )
+                    }
+                  )
+                }
+              ),
+              a!forEach(
+                items: local!caseNotes,
+                expression: a!sectionLayout(
+                  contents: {
+                    a!sideBySideLayout(
+                      items: {
+                        a!sideBySideItem(
+                          /* If the user does not have a profile picture,   *
+                           * you can show user initals in an a!stampField() */
+                          item: a!stampField(
+                            labelPosition: "COLLAPSED",
+                            text: initials(fv!item.user),
+                            backgroundColor: "SECONDARY",
+                            size: "SMALL"
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              a!richTextItem(
+                                text: fv!item.user,
+                                link: a!userRecordLink(),
+                                linkStyle: "STANDALONE",
+                                style: "STRONG"
+                              ),
+                              char(10),
+                              a!richTextItem(
+                                text: fv!item.created,
+                                color: "SECONDARY"
+                              )
+                            }
+                          )
+                        )
+                      },
+                      alignVertical: "MIDDLE"
+                    ),
+                    a!textField(
+                      labelPosition: "COLLAPSED",
+                      value: fv!item.comment,
+                      readOnly: true
+                    ),
+                    a!cardLayout(
+                      contents: {
+                        a!sideBySideLayout(
+                          items: {
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextIcon(
+                                    icon: "file-pdf-o",
+                                    altText: "PDF file",
+                                    color: "SECONDARY",
+                                    size: "LARGE"
+                                  )
+                                }
+                              ),
+                              width: "MINIMIZE"
+                            ),
+                            a!sideBySideItem(
+                              item: a!richTextDisplayField(
+                                labelPosition: "COLLAPSED",
+                                value: {
+                                  a!richTextItem(
+                                    text: fv!item.document,
+                                    style: "STRONG"
+                                  ),
+                                  char(10),
+                                  a!richTextItem(
+                                    text: "PDF",
+                                    color: "SECONDARY"
+                                  ),
+                                  " ",
+                                  a!richTextItem(
+                                    text: char(903),
+                                    color: "SECONDARY",
+                                    style: "STRONG"
+                                  ),
+                                  " ",
+                                  a!richTextItem(
+                                    text: "52KB"
+                                  )
+                                }
+                              )
+                            )
+                          }
+                        )
+                      },
+                      link: a!documentDownloadLink(
+                        label: "Document Link"
+                      ),
+                      showWhen: not(isnull(fv!item.document))
+                    )
+                  }
+                )
+              )
+            },
+            width: "WIDE"
+          ),
+          a!columnLayout()
+        }
+      )
+    }
+  )
+}
+Without user initials
+Omit the initials for a more compact message list.
+{:.screenshot}
+Pattern expression
+sail 
+{
+  a!localVariables(
+    local!lightweightCaseNotes: {
+      a!map(user: "Miriam Grant",  comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "2 hours ago",       document: null         ),
+      a!map(user: "Dave Harrison", comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "Yesterday 4:59PM",  document: null         ),
+      a!map(user: "Miriam Grant",  comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus posuere gravida. In hac habitasse platea dictumst. Praesent ornare nisi eu elit viverra, vel sodales neque cursus. Sed volutpat risus sapien, nec feugiat tellus facilisis et. Ut mauris dui, venenatis nec sagittis ac, mattis in justo.", created: "Yesterday 11:20AM", document: "My Document")
+    },
+    {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!sectionLayout(
+                contents: {
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextHeader(
+                        text: "Case Notes",
+                        size: "MEDIUM"
+                      )
+                    }
+                  )
+                }
+              ),
+              a!forEach(
+                items: local!lightweightCaseNotes,
+                expression: a!sectionLayout(
+                  contents: {
+                    a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: fv!item.user,
+                          link: a!userRecordLink(),
+                          linkStyle: "STANDALONE",
+                          style: "STRONG"
+                        ),
+                        "  ",
+                        a!richTextItem(
+                          text: fv!item.created,
+                          color: "SECONDARY"
+                        )
+                      }
+                    ),
+                    a!textField(
+                      labelPosition: "COLLAPSED",
+                      value: fv!item.comment,
+                      readOnly: true
+                    ),
+                    a!richTextDisplayField(
+                      labelPosition: "COLLAPSED",
+                      value: {
+                        a!richTextItem(
+                          text: {
+                            a!richTextIcon(
+                              icon: "file-pdf-o",
+                              altText: "PDF file"
+                            ),
+                            " ",
+                            fv!item.document,
+                            " (" & "PDF" & " " & "52KB" & ")"
+                          },
+                          link: a!documentDownloadLink(),
+                          linkStyle: "STANDALONE"
+                        )
+                      },
+                      showWhen: not(isnull(fv!item.document))
+                    )
+                  }
+                )
+              )
+            },
+            width: "WIDE"
+          ),
+          a!columnLayout()
+        }
+      )
+    }
+  )
+}

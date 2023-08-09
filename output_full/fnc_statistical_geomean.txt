@@ -1,0 +1,30 @@
+
+layout: function
+title: geomean() Function
+space: function_page
+excerpt: "Returns the geometric mean of the specified number(s)."
+category: function_page
+fncname: geomean
+fncexample: "geomean(4, 9)"
+fncresult: "6"
+fnccat: Statistical
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      One of the numbers or an array of numbers that will be exponentiated before being multiplied to calculate the geometric mean.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+geomean(4,9) returns 6

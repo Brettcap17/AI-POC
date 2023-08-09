@@ -1,0 +1,174 @@
+
+layout: function
+title: Encrypted Text Component
+category: function_page
+compatibility: -crf
+excerpt: Allows entry of a single line of text that is encrypted when saved into a variable. The value remains encrypted while on the server and is only decrypted when displayed in the component.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!encryptedTextField
+fncsubcat: Inputs
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+  - keyword: readOnly
+    name: Read-only
+    types: Boolean
+    description: |
+      Determines if the field should display as not editable. Default: false.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the field should display as potentially editable but grayed out. Default: false.
+  - keyword: value
+    name: Display Value
+    types: Decrypted Text
+    description: Text to display in the text field.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: One or more variables that are updated with the encrypted text when the user changes the field.
+  - keyword: refreshAfter
+    name: Refresh After
+    types: Text
+    description: |
+      Determines when the interface is refreshed with the saved value from the barcode field. Valid values are "KEYPRESS" to refresh after every character typed into the field and "UNFOCUS" (the default value) to refresh when the user deselects the field after changing its value.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of text value. Appian recommends this setting only be used inside the Grid Layout component. Valid values: "LEFT", "CENTER", "RIGHT".
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: placeholder
+    name: Placeholder
+    types: Text
+    description: Text to display in the field when it is empty. Does not show if the field is read only.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: masked
+    name: Masked
+    types: Boolean
+    description: |
+      Determines if the value is obscured from view. Default: false.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: inputPurpose
+    name: Input Purpose
+    types: Text
+    description: |
+      Indicates the intent of input for accessibility improvements, like autocomplete, used by browsers and assistive technologies. Valid values are "NAME", "EMAIL", "PHONE_NUMBER", "STREET_ADDRESS", "POSTAL_CODE", "CREDIT_CARD_NUMBER", and "OFF".
+reftype: sailcomponent
+scdisplayname: Encrypted Text
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+The entered value is encrypted before being stored in the variable specified by the Save Input To parameter. The Display Value parameter is decrypted just before being displayed. The value remains encrypted when stored on disk.
+See Also: Encrypted Text Data Type, Text
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using validations
+
+Since the value is encrypted before it can be acted upon by a validation expression, no validation beyond checking for requiredness is possible with this component. For example, it is not possible to write an expression that validates that an id number matches the form xxx-xx-xxxx, nor is it possible to compare to values of type Encrypted Text to determine if they are equal.
+
+Accessing rule input values
+
+When creating an interface that uses this component to save into an rule input of type Encrypted Text, the value of that input is not displayed inline in the Data pane. To access the value, click [Encrypted Text] in the value column.
+
+Appearance & placeholder text
+
+This component has the same appearance as the text component.
+Whether placeholder text clears on focus or input varies by device and browser. 
+
+Display values & data types
+
+The variable given as the value parameter and the saveInto parameter must be of type Encrypted Text.
+Variables declared as a!localVariables() are valid. 
+Literal values or variables of other types are not valid.
+The value given to the Display Value parameter cannot be modified by an expression that expects Text because Encrypted Text is a different data type. 
+No modification to the user input before storing it into the Save Input To variable is possible for the same reason.
+
+Using the inputPurpose parameter
+
+When using inputPurpose, there is no visible change in the form factor preview.
+If inputPurpose is set to "OFF", autocomplete may be disabled depending on your browser settings. The default behavior allows for autocomplete, but does not require you to specify inputs.
+inputPurpose is not supported if the masked parameter is set to true. 
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Encrypting and decrypting a value from a user
+{% sailbox 520 %}
+a!localVariables(
+  local!secret,
+  {
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!encryptedTextField(
+              label: "Input",
+              instructions: "Enter a secret here",
+              masked: true,
+              value: local!secret,
+              saveInto: local!secret,
+              refreshAfter: "KEYPRESS"
+            )
+          }
+        ),
+        a!columnLayout(
+          contents: {
+            a!encryptedTextField(
+              label: "Output",
+              instructions: "The value is displayed here",
+              value: local!secret,
+              readOnly: true
+            )
+          }
+        )
+      }
+    )
+  }
+)
+{% endsailbox %}

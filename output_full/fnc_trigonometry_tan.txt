@@ -1,0 +1,32 @@
+
+layout: function
+title: tan() Function
+space: function_page
+excerpt: "Returns the tangent(s) of the specified number(s)."
+category: function_page
+fncname: tan
+fncexample: "tan(pi()/4)"
+fncresult: "1"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      An angle measure or array of angle measures in radians, the tangent(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+This function can only be used for values between 0 and 2π (~6.286).
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tan(1) returns 1.5574077246549023

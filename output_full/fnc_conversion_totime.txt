@@ -1,0 +1,39 @@
+
+layout: function
+title: totime() Function
+category: function_page
+excerpt: Converts a value to Time.
+fnccat: Conversion
+fncexample: 'totime(datetime(2005, 12, 13, 12, 0, 0))'
+fncname: totime
+fncresult: '12:00 PM GMT'
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: time()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Time
+Usage considerations
+Using the value parameter
+The value parameter accepts Integer, Decimal (double precision floating point), and Datetime, and Array data types.
+Using totime() with arrays
+When operating on arrays, it is not necessary to use apply with totime. If multiple parameters are passed, or one parameter is an Array, totime will return a Time Array.
+Understanding results
+To return a localized time for a user, the local() function must be nested within the totime() function.
+For example, totime(local(pp!starttime)) returns the localized time when a given process started. Otherwise the time is returned in GMT. This is true unless the user happens to reside in the GMT timezone, then no localization is necessary.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+totime(datetime(2005,12,13,12,0,0)) returns 12:00 PM

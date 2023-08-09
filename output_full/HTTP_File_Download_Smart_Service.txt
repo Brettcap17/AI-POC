@@ -1,0 +1,13 @@
+
+layout: "basic"
+title: "HTTP File Download Smart Service [Deprecated]"
+depver: 19.2
+excerpt: "The HTTP File Download smart service allows you to make an HTTP request and store the result in Appian's Document management system."
+reftype: smart_service
+space: "no_toc"
+ssicon: "Deprecated.gif"
+ssparentcat: "一Deprecated一"
+
+This feature has been deprecated, and will be removed in a future release of Appian.
+Designers can use an Integration Object when they want to pull a document from an external system into Appian over HTTP.
+For information about the HTTP File Download Smart Service, see the Appian 18.4 documentation.

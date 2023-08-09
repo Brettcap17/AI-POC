@@ -1,0 +1,175 @@
+
+layout: "basic"
+title: "Develop Your First Component"
+topic-group: "Getting Started"
+weight: 200
+
+The page walks you through the development process for a sample plug-in that provides a Google Map component. Make sure you've already set up your developer instance.
+
+appian-style-note
+We review all component plug-ins to ensure they meet our standards for customer use. Check the review guidelines and get a pre-approval to make sure you're on the right track before starting your own component development.
+
+Get the sample code
+The code for this sample plug-in is hosted on our GitHub repository.
+
+Fork the repo and create a local clone.
+If you're not familiar with Git or don't care about maintaining your version history just download the repository to your development machine. Note: We highly recommend using a version control system for your own plug-ins, so it's better to use it from the start.
+The sample code is in the Component Plug-in (CP) Examples/mapField subfolder.
+
+Design
+Before getting into the code, let's review what this component should do and how Google's APIs make it possible:
+
+We want to show a map in an Appian interface.
+We'll be using the Google Maps JavaScript API to create the component.
+The Maps API uses an API key to track usage and billing. We'll need to specify the API key as an input to the component.
+Security Note: It might seem like the API key should be encrypted or secured in some way, but since it's visible in every user's browser it's not considered sensitive. Instead, Google provides ways to restrict the key to ensure you can control where it's used.
+We want to set the initial location displayed by the map
+We can use the google.maps.Geocoder class to translate designer input into a location, and pass that location into the google.maps.Map constructor to set the initial location.
+We want the set an initial pin location and allow the user to change the pin location by clicking on the map:
+The updated pin location will be available for developers to use in smart service functions or other components on the interface.
+User clicks can be captured using standard JavaScript event handlers (addListener) that provide a location of the click event.
+A pin can be created at that location using the google.maps.Marker class.
+
+There are many more features of the Google Maps API that you might find useful in a map component. Once you've mastered the basics we encourage you to experiment with your component to explore the possibilities!
+API key
+Since we're using Google Maps, you'll need to register an account and get an API key for the Maps JavaScript API:
+
+Follow the instructions on Google's documentation to get an API key for the Maps API.
+Restrict your key by adding your developer instance's dynamic content domain to the list of HTTP referrers (web sites) (For example: http://local.example-dynamic.com:8080)
+
+You'll use this API key later when using your component in an interface.
+Plug-in manifest
+The component design above provides all the detail necessary to define the component and its parameters in the appian-component-plugin.xml manifest file:
+
+A component called mapField with an initial 1.0.0 version.
+An input-only parameter named key for providing the API key
+An input-only parameter named location for setting the initial location.
+An input-output parameter named pin for placing the initial pin and for capturing user click events.
+
+You just need to update the sample manifest to match your organization:
+
+Change the plug-in key to a value that includes your organization's URN prefix (for example, com.example.map)
+Change the vendor name and url to appropriate values for your organization
+Decide whether your organization will provide formal support for this plug-in (since this is a sample, probably not!). Then update the support fields to reflect your choice and specify support contact options (phone, email, or website url).
+
+Code
+The sample is very simple, consisting of just one HTML and one CSS file. You won't need to update these files to get your component running, but we'll review how the code uses a few component plug-in concepts.
+map.css
+This stylesheet sets the height of the map element. A preset height makes this a good fit for the AUTO height option when configuring the component in an interface. If the designer selects one of the fixed height options this sample isn't designed to adjust and instead will scroll or leave unused white space. Adding height adjustment would make this a better component.
+css
+html, body, #map-container {
+  height: 400px;
+  margin: 0;
+  padding: 0;
+}
+index.html
+This HTML file serves as the html-entry-point for the component. All the HTML and JavaScript code for your component is in this file. In a more complicated example you'd probably want to use a separate JavaScript file or a JavaScript framework like React or jQuery.
+We start by loading the stylesheet and the component plug-in client library:
+```html
+
+
+
+
+
+```
+Later, we define a function to handle new parameter values from the interface. This function starts by extracting values for the individual component parameters:
+javascript
+Appian.Component.onNewValue(function (newValues) {
+  newKey = newValues.key;
+  newLocation = newValues.location;
+  newPin = newValues.pin;
+  ...
+If the designer tries to use the component without an API key we set a validation message:
+javascript
+if (!(currentKey || newKey)) {
+  Appian.Component.setValidations('The API Key provided is empty. Please update the parameter "Google API Key" with a valid key.');
+}
+When setting the pin location as a result of a user clicking on the map, we save the new value back to the interface:
+javascript
+if (save) {
+  Appian.Component.saveValue('pin', currentPin);
+}
+There's a lot more to see in the code, so feel free to review it further before moving on.
+Internationalization bundles
+The sample provides translations for the default en_US locale in mapField\_en\_US.properties. Note the three properties used to define friendly names and description for the pin parameter which uses the input-output category.
+
+Add support for a second language by copying mapField\_en\_US.properties to a new file named mapField_es.properties (es is the Appian locale code for Spanish (Mexico))
+Translate the properties in mapField_es.properties into Spanish. For example:
+Map --> Mapa
+Location --> Localización
+
+By adding this file your component will automatically use these translations when a viewed by a designer that has set their language to Spanish (Mexico).
+Logo
+Before wrapping up, personalize your component with a custom logo:
+
+Edit appian-component-plugin.xml
+Replace the <icon-file> element pointing to the Google Maps logo with a built in map icon <icon-name>map-o</icon-name>, or pick your own icon using either of the two icon-* elements
+
+Package and deploy
+
+Create a ZIP with the contents of your plug-in and name the file mapField-1.0.0.zip
+Make sure the root of the ZIP file contains appian-component-plugin.xml and the mapField component folder.
+Copy your plug-in ZIP into the <APPIAN_HOME>/_admin/plugins/ folder of your developer instance.
+Wait 60 seconds.
+Open the Plug-Ins page in the Admin Console (For example: http://myappiansite.com/suite/admin/page/plugins)
+Your plug-in should appear in the list of deployed plug-ins.
+
+If you don't see your plug-in listed after 60 seconds, review the output of tomcat-stdOut.log in <APPIAN_HOME>/logs. You should see a message confirming that the plug-in has been successfully installed:
+Successfully installed Component Plug-in 'Map Component Plug-in' (<your plug-in key>)
+Instead you may see an error message like this:
+Failed to load Component Plug-in '<your plug-in key>': mapField (1.0.0) - Could not read key "parameter.location.description" from properties file: mapField_en_US.properties
+If you see an error, use the log message to help resolve the problem and redeploy the plug-in.
+Test
+Once your plug-in is successfully deployed:
+
+Sign in to Appian Designer (For example: http://myappiansite.com/suite/design).
+Create a new interface.
+Find your component in the palette by searching or scrolling down to the Custom Components section.
+Click on the info icon next to your component and make sure the package details are correct (your organization information, support contacts, etc.).
+Drag your component onto the palette and use the design pane to configure it:
+Set the API key using the key you created earlier
+Set an initial location using an address, location, or coordinates. For example: the white house
+The map should render with the initial location
+Configure Pin Save Input To to populate a local variable, then display that value in a text field on the interface.
+Click around the map and see how the pin variable is updated each time.
+
+The following interface makes it easy to test the sample component. You'll need to update it if you make changes to the component design or parameters.
+sail
+load(
+  local!location: "the white house",
+  local!pin,
+  {
+    mapField(
+      label: "Map",
+      height: "AUTO",
+      key: "AIza...5vE4",
+      location: local!location,
+      pinValue: local!pin,
+      pinSaveInto: local!pin
+    ),
+    a!textField(
+      label: "Location",
+      value: local!location,
+      saveInto: local!location
+    ),
+    a!floatingPointField(
+      label: "Pin Latitude",
+      value: local!pin.lat,
+      saveInto: local!pin.lat
+    ),
+    a!floatingPointField(
+      label: "Pin Longitude",
+      value: local!pin.lng,
+      saveInto: local!pin.lng
+    )
+  }
+)
+Test all the configuration options like setting the initial pin location. Make sure to test edge cases and validations too! What happens if you provide a poorly formatted Pin Value?
+Debugging
+If you need to troubleshoot your component or just want to see what's happening behind the scenes, use the Chome Developer Tools console. More detail on how to use these tools is available from online tutorials.
+Next steps
+
+Experiment with the sample code to explore what you can create with a component plug-in. Use the How To topics for ideas or try your own.
+Read the Core Concepts documentation to get a more complete understanding how component plug-ins work.
+Understand the Review Process and the guidelines for what types of components will be approved.
+Create your own plug-in, submit it for review, and get it listed on the AppMarket.

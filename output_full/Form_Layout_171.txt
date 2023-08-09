@@ -1,0 +1,146 @@
+
+layout: function
+title: a!formLayout_17r1 Component
+space: sail_component
+reftype: sailcomponent
+excerpt: "Displays up to two columns of components beneath a title and above buttons. Use this as the top-level layout of start and task forms."
+category: function_page
+compatibility: -crf
+fncname: a!formLayout_17r1
+fncsubcat: Layouts
+fncexample: "Click on the function name for examples."
+fncsyntax: "a!formLayout_17r1( [label] , [instructions], [firstColumnContents], [secondColumnContents], [buttons], [validations], [validationGroup], [skipAutoFocus] )"
+fnccat: Interface_Component
+scdisplayname: Form Layout 17.1
+evolved_fncname: a!formLayout
+evolved_reason: "Replaced firstColumnContents and secondColumnContents with contents. Now supports greater than two-column layout."
+
+Form 17.1
+Displays up to two columns of components beneath a title and above buttons. Use this as the top-level layout of start and task forms.
+See Also: Dashboard
+Function: a!formLayout_17r1()
+Parameters
+
+
+ Name 
+ Keyword 
+ Type 
+ Description 
+
+
+ Label 
+ label 
+ Text 
+ Optional text to display as the interface's title. 
+
+
+ Instructions 
+ instructions 
+ Text 
+ Optional text displayed below the field's label. 
+
+
+ Column 1 Contents 
+ firstColumnContents 
+ Any Type Array 
+ Values that define the contents for the first column in the interface. 
+
+
+ Column 2 Contents 
+ secondColumnContents 
+ Any Type Array 
+ Values that define the contents for the second column in the interface. 
+
+
+ Buttons 
+ buttons 
+ Button Layout 
+ Buttons to display at the bottom of the form, arranged using a!buttonLayout(). 
+
+
+ Validations 
+ validations 
+ Text or Validation Message Array 
+ Validation errors displayed above the form buttons. Configured using a text array or an array with a mix of text and Validation Message using a!validationMessage(message, validateAfter). 
+
+
+ Validation Group 
+ validationGroup 
+ Text 
+ When present, the form is only validated when a button in the same validation group is clicked. 
+
+
+ Don’t automatically focus on first input 
+ skipAutoFocus 
+ Boolean 
+ Determines whether the first input will receive focus when a form loads. Default is false. 
+
+
+ Visibility 
+ showWhen 
+ Boolean 
+ Determines whether the layout is displayed on the interface. When set to false, the layout is hidden and is not evaluated. Default: true. 
+
+
+Notes
+
+A button layout must be present for a back button to appear for activity-chained tasks.
+If the Column 2 Contents parameter is null, the content for the first column displays as in a single-column layout with no space left for where the second column would display.
+Use form validation messages for problems that are not specific to a single component.
+Focus will automatically be applied on initial load to the first component in a form that meets the following conditions:
+The component is one of the following: checkbox, decimal, dropdown, encrypted text, integer, paragraph, radio button, text
+The component is neither read-only nor disabled
+The component is not in an initially collapsed section
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Two-Column Form
+sail 
+=a!formLayout_17r1(
+  label: "Customers for Review",
+  instructions: "Review the profiles for the customers below and contact as needed",
+  firstColumnContents: {
+    a!textField(
+      label: "Customer",
+      value: "John Smith",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Status",
+      value: "Prospective",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Priority",
+      value: "High",
+      readOnly: true
+    )
+  },
+  secondColumnContents: {
+    a!textField(
+      label: "Customer",
+      value: "Michael Johnson",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Status",
+      value: "Prospective",
+      readOnly: true
+    ),
+    a!textField(
+      label: "Priority",
+      value: "Medium",
+      readOnly: true
+    )
+  },
+  buttons: a!buttonLayout(
+    primaryButtons: {
+      a!buttonWidget(
+        label: "Submit",
+        submit: true()
+      )
+    }
+  )
+)
+Displays the following:
+{screenshot}

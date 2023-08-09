@@ -1,0 +1,26 @@
+
+layout: function
+title: a!querySelection() Function
+category: function_page
+excerpt: Returns a Selection object for use inside a Query object.
+fnccat: System
+fncexample: 'a!querySelection(columns: a!queryColumn(field: "name"))'
+fncname: a!querySelection
+fncresult: '[columns=[field=name, alias=name, visible=true]]'
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: columns
+    types: List of Column
+    description: |
+      A list of Columns that indicate which fields to retrieve, created with a!queryColumn().
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Column, Query, Selection
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Selection

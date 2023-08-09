@@ -1,0 +1,59 @@
+
+layout: function
+title: a!isNotNullOrEmpty() Function
+excerpt: 'Returns false if the value is null, an empty string, or an empty list. Otherwise returns true.'
+category: function_page
+space: function_page
+reftype: function
+fnccat: Informational
+fncname: a!isNotNullOrEmpty
+parameters:
+    - keyword: value
+      types: Any Type
+      description: Value to be checked.
+
+Function
+{{ page.fncsyntax }}
+{{ page.excerpt }}
+See also: 
+- if()
+- isnull()
+- not()
+- a!isNullOrEmpty()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Replace if() and isnull() expressions with a!isNotNullOrEmpty
+This function is similar to the behavior of using if() and isnull() in combination to check for the absence of a value or an empty string or list.
+For example, you could create an expression using if() and isnull():
+sail
+not( 
+    or( 
+        or(tostring(ri!input) = "", isnull(ri!input)), 
+        if(isnull(ri!input), 
+            true, 
+            length(a!flatten(ri!input)) = 0 
+            ) 
+        ) 
+    )
+Or you could use a!isNotNullOrEmpty(), which requires fewer lines of code:
+sail
+a!isNotNullOrEmpty(ri!input)
+Examples
+sail
+a!isNotNullOrEmpty(togroup(null))
+Returns false
+sail
+a!isNotNullOrEmpty("")
+Returns false
+sail
+a!isNotNullOrEmpty({1,2,3,4})
+Returns true
+sail
+a!isNotNullOrEmpty(cast(recordType!Address, null)
+Returns false
+sail
+a!isNotNullOrEmpty(recordType!Address)
+Returns true

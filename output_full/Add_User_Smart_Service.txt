@@ -1,0 +1,83 @@
+
+layout: function
+title: Create User Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Create User Node allows you to create new users on the system while executing your process application.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!createUser
+fncsubcat: Identity_Management
+parameters:
+  - keyword: username
+    types: Text
+    description: The username of the new user.
+  - keyword: firstName
+    types: Text
+    description: The first name of the new user.
+  - keyword: nickname
+    types: Text
+    description: The nickname of the new user.
+  - keyword: middleName
+    types: Text
+    description: The middle name of the new user.
+  - keyword: lastName
+    types: Text
+    description: The last name of the new user.
+  - keyword: email
+    types: Text
+    description: The email address of the new user.
+  - keyword: sendAccountCreationEmail
+    types: Boolean
+    description: 'If true (default), an email with a temporary password will be sent to the new user.'
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!user function variable (Any Type) is available to specify the user that was created. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Add_User.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} 
+A temporary password will be automatically generated and sent to the email address provided, unless the Send Account Creation Email input is set to false. The temporary password never expires and can only be used once. The user is forced to change the password when they log in for the first time. 
+The password parameter has been deprecated in favor of using auto-generated passwords. Existing processes which use the password parameter will continue to be supported.
+Permissions needed
+Only system administrators can run this smart service.
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+|Input |Data Type  |Description |Required |Multiple |
+|------|-----------|------------|---------|---------|
+|Username|Text|The username of the new user.  A username can only contain letters, numbers, and the following special characters: @ . _ -. It must not match an existing username regardless of case. For example, if john.doe already exists, you cannot enter JOHN.doe|Yes|No|
+|First Name |Text |The first name of the new user. |Yes|No|
+|Nickname |Text |The nickname of the new user. |No|No|
+|Middle Name |Text |The middle name of the new user. |No|No|
+|Last Name |Text |The last name of the new user.|Yes |No |
+|Email |Text |The email of the new user.|Yes |No |
+|Send Account Creation Email |Boolean |If true (default), an account creation email with a temporary password will be sent to the new user. If you are using external authentication, such as LDAP, we recommend setting this input to false. |Yes |No |
+See also: Creating a New User
+Node outputs
+The node returns a user object for the new user added to the system.
+a!createUser()
+The Create User smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

@@ -1,0 +1,41 @@
+
+layout: function
+title: calworkhours() Function
+space: function_page
+excerpt: "This returns the actual number of work hours between two given Date and Times (both inclusive), according to the calendar defined for the system."
+category: function_page
+fncname: calworkhours
+compatibility: -portal, -om, +pe, +pr
+fncexample: "calworkhours(datetime(2011, 12, 12, 12, 0, 0), datetime(2011, 12, 13, 12, 0, 0))"
+fncresult: "8"
+fnccat: Date_and_Time
+reftype: function
+parameters:
+  - keyword: start_datetime
+    types: Date and Time
+    description: |
+      The starting Date and Time.
+  - keyword: end_datetime
+    types: Date and Time
+    description: |
+      The ending Date and Time.
+  - keyword: calendar_name
+    types: Text
+    description: |
+      This optional parameter accepts the name of a system calendar; otherwise, the default calendar is used.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Usage considerations
+Passing a calendar name allows you to calculate working hours using an alternate system calendar, if you have multiple calendars configured.
+See also: Process Calendar Settings
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+calworkhours(datetime(2011,12,20,12,0,0),datetime(2011,12,21,12,0,0)) returns 8

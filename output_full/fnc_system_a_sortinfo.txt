@@ -1,0 +1,102 @@
+
+layout: function
+title: a!sortInfo() Function
+category: function_page
+excerpt: Creates a value of type SortInfo for use with grids and record queries.
+fnccat: System
+fncexample: 'a!sortInfo(field: "a", ascending: true())'
+fncname: a!sortInfo
+fncresult: '[field=a, ascending=true]'
+compatibility: -crf
+parameters:
+  - keyword: field
+    name: Field
+    types: Any Type
+    description: |
+      The name of the field used to sort by. When sorting record data, use the recordType! domain to reference a record field or related record field. For example, recordType!Case.fields.caseName. When sorting data from a data store entity, use the field name in quotations. For example, "department". When sorting on aggregate data, you must use the alias as the sort field if an alias is defined in the groupings or measures.
+  - keyword: ascending
+    name: Ascending
+    types: Boolean
+    description: |
+      Determines what order the data is sorted in. Sorted in ascending order when the value is true and descending order when the value is false. Default: false.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: 
+- SortInfo
+- a!queryRecordType()
+- a!queryEntity()
+- a!relatedRecordData()
+- a!pagingInfo()
+- Read-Only Grid
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+SortInfo
+Usage considerations
+Supported data types
+Sorting is only supported for complex data types and is not supported for a dictionary array.
+Sorting in a!queryRecordType vs a!queryEntity
+Depending on the type of query, the way you reference the sort field will vary.
+If you are sorting in a!queryRecordType(), you must use a record field reference. 
+For example:
+sail
+a!sortInfo(
+        field: recordType!Customer.fields.sumOfSales,
+        ascending: false
+      )
+If you are sorting in a!queryEntity(), you must reference the field by name in quotations.
+For example:
+sail
+a!sortInfo(
+        field: "lastName",
+        ascending: false
+      )
+Sorting on related record data from a one-to-many relationships
+When applying a sort to the a!relatedRecordData() function, you must reference record fields or related record fields from the related record type specified in the relationship parameter of the function.
+See Filtering and sorting the related record set for more information.
+Sorting on aggregated data in a query
+When an alias is defined in the grouping or measure of your query, you must use the alias instead of the record field reference as the sort field.
+For example:
+sail
+a!queryRecordType(
+  recordType: recordType!Case,
+  fields: a!aggregationFields(
+    groupings: a!grouping(
+      field: recordType!Case.fields.createdOn,
+      interval: "DATE_SHORT_TEXT"
+!     alias: "createdOn",
+    ),
+    measures: a!measure(
+      field: recordType!Case.fields.id,
+      function: "COUNT",
+      label: "# of cases",
+      alias: "caseCount"
+    )
+  ),
+  pagingInfo: a!pagingInfo(
+    startIndex: 1,
+    batchSize: 500,
+!   sort: a!sortInfo(field: "createdOn", ascending: true)
+  )
+).data
+Sorting on records-powered charts
+To sort your chart data, you can:
+- Use the alias of any groupings or measures to sort by fields referenced in the chart.
+- Use a record field or related record field reference to sort by fields that are not referenced in the chart. The field must be of type Number (Integer), Number (Decimal), Date, Date and Time, Time, or Boolean.
+You can add multiple sort fields on line, bar, and column charts that uses a record type as the source. 
+See Configure Charts Using Records for more information on sorting records-powered charts.
+Example
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+sail 
+    =a!sortInfo(
+      field: "name",
+      ascending: true()
+    )
+Returns
+[field=name,
+     ascending=true]
+For more examples, see Query Recipes

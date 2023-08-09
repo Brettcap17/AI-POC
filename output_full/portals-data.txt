@@ -1,0 +1,136 @@
+
+layout: basic
+title: Working with Data in a Portal
+weight: 800
+topic-group: C
+title_short: Working with Data
+
+Overview
+For your external users to complete their workflows and tasks with ease, they'll likely need to enter or view data within your portal. Writing and querying data in a portal allows you and your users to easily get and share more information than ever.
+There are two ways to write and query data within your portal:
+
+Use a web API and integration to write to or query a record type or data store.
+Directly write to or query from an external database (preview feature).
+
+This page will explain how to use the web API and integration method to work with data in your portal.
+Write data
+Writing data to your record types or data stores through a portal opens the door to new users and more information. Portal users can fill out a questionnaire, respond to an anonymous survey, request rebates or services, apply for grants, or kick-off their own onboarding process. But while you're reaching more information and a broader audience, you still need for your data to stay safe. Portals' isolated architecture gives you the best of both, by allowing you to write data safely and effectively from public forms.
+You can write data from your portal to an existing record type in Appian. To do so, you'll need to create a web API, an integration, and a few objects to go with them. Alternatively, you can write data from your portal to your data store by creating a custom data type (CDT), data store entity, as well as the other objects listed above.
+
+appian-style-tip
+You can only write data to an existing record type if it has data sync enabled. If your record type does not have data sync enabled, you will need to write to the data store.
+
+For information on writing data in your portal directly to an external database, see Connecting a portal to an external database.
+Create your web API
+You'll first need to create a web API that writes data directly to your record type or data store. To help you get started with creating your web API, use the Write Records or Write to Data Store web API template when you go to create a new web API. Included in this template, there is a section of code that casts the body of your integration first to a dictionary and then to the record type or CDT you're using for your data. This casting becomes relevant later on when you're setting up your integration.
+If you need help creating a web API that writes data, go through the Web API Tutorial Level II, which walks you through creating a web API that writes data to a record type.
+Create your API key and connected system to write data
+After creating your web API, we recommend that you set up an API key and service account in the Admin Console. Follow the steps for creating an API key, or you can use existing API keys and service accounts. Be aware that you need system administrator permissions in order to create an API key.
+You can use the same service account that you set up with your API key as the service account for your portal. For more information, see the Security and service accounts section below.
+Now you need to add your API key and credentials to a connected system for the integration. To create a connected system for authentication:
+
+Create a new HTTP connected system.
+For Authentication, select API.
+For Header, enter Appian-API-Key.
+For Value, provide the API key value pair from your API key setup.
+
+Create an integration
+Once you've created your API and authentication objects, create an integration that is set up to modify data using the connected system that you just created.
+To configure your integration:
+
+On the right side under RULE INPUTS, add the record type or CDT that you're using for your data as a rule input.
+In the Connection section, configure the following fields: 
+For URL, enter the web API URL as the endpoint for the integration.
+For Method, select POST.
+In the Request Body section, do the following: 
+For Content Type, select JSON.
+Call your rule input into the request body of your integration and convert to JSON. This value will then be converted to a dictionary and back into your record type or CDT when it's called into your web API.
+Example:
+ sail
+ a!toJson(ri!record)
+
+
+In the Automatic Output Parsing section, uncheck Automatically convert CDT, dictionary, or list to JSON since the record type is already being converted to JSON in the request body expression.
+
+When setting up test input values for your integration, you can use the record type constructor syntax to create an example record.
+For more help, see Create an Integration.
+Call your integration from your portal
+Finally, call your integration from the primary interface used for your portal. For examples on how and where to call your integration in the portal, check out Calling an Integration to Modify Data.
+Provide connection information in the import customization file
+When you deploy your portal object to a different environment, include an import customization file (ICF) with the application or in a deployment package. In the ICF, provide your API key as well as any other connected system credentials and information. For more information, see Deploying a portal.
+Query data
+Querying data from your Appian record types and data stores through a portal allows for more of your users to quickly and easily access information. While using your portal, users may need to check out the status of their in-flight processes, view information about your products or services, or search public records. We understand that allowing public access to some of your data may seem risky, but don't worry. Portals' isolated architecture gives you peace of mind while allowing you to query data from your data stores for public access safely and efficiently.
+You can query data in your portal from an existing record type in Appian. To do so, you'll need to create a web API, an integration, and a few objects to go with them. Alternatively, you can query data in your portal from your data store by creating a custom data type (CDT), data store entity, as well as the other objects listed above.
+For information on querying data in your portal directly from an external database, see Connecting a portal to an external database.
+Create your web API
+You'll first need to create a web API that queries your record type or data store. To help you get started with creating your web API, choose either the Query Record Type or Query Data Store template when creating a new web API. Using an API template automatically populates some common fields and selections to start you out. Both of these templates give query results formatted in JSON.
+For general help creating a web API, check out Creating web APIs. For specific help creating a web API that calls your record type, go through the web API Tutorial.
+Create your API key and connected system to query data
+After creating your web API, we recommend that you set up an API key and service account in the Admin Console. Follow the steps here for more information or you can use existing API keys and service accounts. Be aware that you need system administrator permissions in order to create an API key.
+You can use the same service account that you set up with your API key as the service account for your portal. For more information, see the Security and service accounts for working with data section below.
+Now you need to add your API key and credentials to a connected system for the integration. To create a connected system for authentication:
+
+Create a new HTTP connected system.
+For Authentication, select API.
+For Header, enter Appian-API-Key.
+For Value, provide the API key value pair from your API key setup.
+
+Create an integration
+Once you've created your API and authentication objects, create an integration that is set up to query data using the connected system that you just created.
+Make sure that you have the GET content type and Convert JSON to Appian value response body parsing selected. This casts the JSON query results returned by your web API back to a dictionary.
+For general help creating an integration, follow the steps here.
+Call the integration from your portal
+In the primary interface used for your portal, call your integration and cast the dictionary results returned by your integration into the record type that you're using for your data. This will let you easily reference your queried data throughout your portal without extra formatting.
+
+appian-style-tip
+Instead of casting your integration results from a dictionary to a record type directly within your interface, you have the option to create individual or reusable expression rules to cast your integration results. You would then call the integration from your interface and wrap it in the expression rule.
+
+Example: Cast integration results to record type in a portal
+Using local variables within an interface, you can cast your integration results from a dictionary to whichever record type you're using to work with your data.
+sail 
+a!localVariables(
+  local!data: cast(
+    recordType!MyRecord,
+    rule!myQueryIntegration().result.body
+  ),
+  a!gridField(
+    data: local!data
+  )
+)
+You can also cast your results to a CDT by referencing the CDT (e.g. type!myCDT) instead of the record type.
+For further examples, check out calling an integration to query data.
+Provide connection information in the import customization file
+When you deploy your portal object to a different environment, include an import customization file (ICF) in the app or deployment package. In the ICF, provide your API key as well as any other connected system credentials and information. For more information, see Deploying a portal.
+Example: query data that was previously submitted in your portal
+Your users may need to come back to your portal at different times to access data that they've previously submitted using your portal. They might need to check on the status of their application or filed claim. To give them access to this data, set up a workflow that allows them to enter a value that triggers a query to retrieve their data.
+Possible values could include:
+
+A unique code.
+A claim or application number.
+
+You can provide values like a code or number in a variety of ways, here are a couple of ideas:
+
+Send it in a follow-up email sent from a process.
+Show it in the confirmation step of a wizard within your portal.
+
+Be aware that this type of design should not be used to access information that a user would typically have to sign in to a user account to access. This workflow is different from a “sign in” experience and should not designed to imply or be referred to as such. Additionally, keep in mind that certain functionality such as automatic sign-outs or session time-outs are not supported.
+Security and service accounts
+In order for your portal users to be able to write and query data from your portal using a web API, they need to have permissions to your portal's web API, as well as its record type or data store. Since portal users are external and don't have individual Appian user accounts, grant them Viewer permissions to web APIs and data sources using a service account, an API key, and end-user groups.
+To give users access to your data sources:
+
+Create an API key and select a service account to be associated with it. You can use an existing service account or create a new one.
+Copy your API key and keep it in a secure place. You can't access the API key again.
+Add that same service account to your Users group in your application.
+Give the Users group Viewer permissions to your web API, as well as your data store or record type, or create new end-user groups with more granular permissions to your record type, data store, and application objects.
+When you create your HTTP connected system, add your API key.
+In your portal object, select your service account in the Service Account field.  
+When deploying a portal object to a different environment, add your API key to the import customization file and upload the file as a part of the app or deployment package containing your portal object.
+When deploying a portal object to a different environment, make sure that there is a service account of the same name in the target environment.
+
+For more information on setting up your web API and a service account, see the Create your API key and connected system section above.
+For more information about using service accounts with your portal, see Service Accounts in Portals.
+Which service accounts need to be added to the portal object?
+You can only link one service account to your portal in the portal object. If you're using both documents and external databases, use the same service account for both.
+When deploying a portal, be sure to add your API key to the import customization file and include the file as part of the application or package.
+Testing
+Be sure to fully test all parts of the connections to your portal with a production-level amount of data. This includes all web APIs, integrations, and connected systems. Test your primary interface before publishing. Then, test all aspects of your published portal to make sure your users can write and query data correctly. Some connections can't be tested until after publishing.

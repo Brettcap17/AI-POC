@@ -1,0 +1,32 @@
+
+layout: function
+title: offsetFromGMT() Function
+space: function_page
+excerpt: "Returns the offset (in minutes) from GMT of the given date and timezone."
+category: function_page
+fncname: offsetFromGMT
+fncexample: "offsetFromGMT(date(2005,12,13), \"America/Los_Angeles\")"
+fncresult: "-480"
+fnccat: Scripting
+reftype: function
+compatibility: ~portal
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date for which the offset should be returned.
+  - keyword: timezone
+    types: Text
+    description: |
+      The string Id of the timezone for which the offset should be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+offsetFromGMT(date(2005,12,13), "America/Los_Angeles") returns -480

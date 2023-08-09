@@ -1,0 +1,41 @@
+
+layout: function
+title: property() Function
+category: function_page
+excerpt: This function extracts a bean's property under a given key name (the nameOfProperty parameter).
+fnccat: Scripting
+fncexample: 'property(msg!properties, "name", "no name was sent")'
+fncname: property
+fncresult: no name was sent
+parameters:
+  - keyword: bean
+    types: Bean
+    description: |
+      Bean to retrieve the property from.
+  - keyword: nameOfProperty
+    types: Text
+    description: |
+      Property to retrieve from the bean.
+  - keyword: valueIfMissing
+    types: Any Type
+    description: |
+      Default value to return if the property is not present in the bean.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: index(): This function acts as an alias to the property() function especially when applied over custom data types.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+If the named property is not present, then the value for the valueIfMissing parameter is returned instead.
+The value type of the valueIfMissing parameter should be the same type as the expected property’s type.
+For example, property(msg!properties,"someStringProperty","Missing Text") returns "Missing Text" if someStringProperty does not exist.
+When the bean is a dictionary, if the nameOfProperty is not found in the dictionary, the valueIfMissing will be ignored and a null value will be returned. Consider using a map instead of a dictionary.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+property(msg!properties,"name","no name was sent") returns no name was sent when the name property is not received in a message.

@@ -1,0 +1,22 @@
+
+title: Offline Mobile Overview
+layout: basic
+weight: 100 
+proxy-topic: Interfaces
+type: Guidance
+
+In today's exceedingly connected world, it can be easy to forget that having access to the internet isn't always possible. However, Appian knows that many organizations face this struggle daily. Whether it is performing an inspection in a remote location or checking in at an off-the-grid site, we know how important it can be for users to retain a seamless Appian experience, even when offline.
+Offline mobile allows some of the most important functionality in Appian for mobile actions and tasks, whether the user is online or not. Powerful features such as cascading dropdown lists, wizards, conditional content, and validations are all possible with offline mobile.
+There are some very important design considerations you need to be aware of in order to ensure your offline actions and tasks work as expected.
+
+appian-style-note
+To use the newest offline mobile capabilities, make sure that your mobile application is on the same version as or newer than your server version.
+
+This documentation helps you design offline actions and tasks by explaining:
+
+How offline mobile works.
+How to enable offline mobile for actions and tasks.
+Best practices for designing offline mobile forms.
+How to test and troubleshoot offline mobile forms.
+
+To see which components and functions aren't compatible with Offline Mobile, go to the Appian functions table and change the compatibility to Incompatible or Partically Compatible with Offline Mobile.

@@ -1,0 +1,13 @@
+
+layout: function
+title: a!userRecordFacets() Function [Deprecated]
+category: function_page
+fncname: a!userRecordFacets
+fncsyntax: "a!userRecordFacets()"
+fnccat: System
+depver: 20.3
+fnccat: "一Deprecated一"
+reftype: function
+
+The a!userRecordFacets() function has been deprecated, and will be removed in a future release of Appian. Use the a!userRecordFilterList function instead.
+For information about the a!userRecordFacets() Function, see the Appian 20.3 documentation.

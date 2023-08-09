@@ -1,0 +1,344 @@
+
+layout: function
+title: Card Choices Component
+category: function_page
+compatibility: -crf
+excerpt: Displays a set of cards from which the user may select one or many cards and saves a value based on the selected choice.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!cardChoiceField
+fncsubcat: Selection
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: |
+      Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: "ABOVE" (default), "ADJACENT", "JUSTIFIED", "COLLAPSED".
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: |
+      Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: data
+    name: Data
+    types: List of Variant
+    description: |
+      The data to display in cards. Use a record type reference or a!recordData() to source your data from records. For other cases, you can use a query, such as a!queryEntity(), a Data Subset, a list of map or dictionary, or a list of data. When using a query that returns a DataSubset, you must specify fetchTotalCount as true.
+  - keyword: sort
+    name: Sort
+    types: List of SortInfo
+    description: |
+      Array of Sort Info configurations created with a!sortInfo().
+  - keyword: cardTemplate
+    name: Card Template
+    types: Any Type
+    description: |
+      Determines how a card should be displayed on the interface. Create using:
+      - a!cardTemplateTile()
+      - a!cardTemplateBarTextJustified()
+      - a!cardTemplateBarTextStacked()
+  Access data in cards by using `fv!data` with dot notation, such as `fv!data.id`, or other function variables:
+  - `fv!index` 
+  - `fv!identifier` 
+  - `fv!isFirst` 
+  - `fv!isLast`
+
+  Cards that use record data must use the recordType! domain to reference a record field or related record field. For example, `fv!data[recordType!Case.fields.caseName]`.
+
+
+keyword: value
+    name: Value
+    types: List of Variant
+    description: Value of choice card to display as selected.
+keyword: saveInto 
+    name: Save Value To 
+    types: List of Save
+    description: |
+      One or more variables that are updated when a card is selected. Use a!save() to save a modified or alternative value to a variable.
+keyword: maxSelections
+    name: Maximum Selections
+    types: Number (Integer)
+    description: |
+      Maximum number of allowed selections. For maximum selections greater than 1, a validation message will appear once the number is exceeded.
+keyword: align
+    name: Align
+    types: Text
+    description: |
+      Determines alignment of the card(s). Valid values: "START", "CENTER" (default), "END".
+keyword: showShadow
+    name: Show Shadow
+    types: Boolean
+    description: |
+      Determines whether cards have an outer shadow. Default: false.
+keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the cards should display as potentially selectable but grayed out. Default: false.
+keyword: validations
+    name: Validations
+    types: List of Text String
+    description: |
+      Validation errors to display below the field when the value is not null.
+keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See this recipe for more information about how to use validation groups.
+keyword: showWhen
+    name: Show When
+    types: Boolean
+    description: |
+      Determines whether the cards are displayed on the interface. When set to false, the cards are hidden and are not evaluated. Default: true.
+keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: |
+      Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+reftype: sailcomponent
+scdisplayname: Card Choices
+space: sail_component
+
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} The card choices component allows you to create a set of choices using data from records, entities, data subsets, a dictionary, a list of data, or a list of mappings.
+There are three card choices templates for you to choose from:
+
+Card Choices Tile Template
+Card Choices Bar Template
+Card Choices Bar (Text Stacked) Template
+
+See also: Cards Layout
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Unsupported capabilities
+
+The card choices component is not supported on mobile versions prior to 21.4.
+If using the card choices component in a portal, you cannot use a record type as the data source.
+
+Displaying data and card choices
+
+Use the sort parameter to change the display order of your card choices.
+If you're using a query or a data subset, any logic defined in the card choices's sort parameter will evaluate after the query or data subset sorting. Sorting for queries and data subsets happen when the data is initially retrieved.
+Card choices automatically arrange themselves to take up as many rows as needed to best fit the width of the screen. To control the number of cards in each row, put the card choices component in a columns layout with a specified width.
+
+Using icons and text
+
+Neither icons, primary text, nor secondary text are required. Templates will reallocate the space of any missing value.
+For a uniform interface, make sure that you have consistent values for the icon, primary text, and secondary text fields for all card choices on an interface. For example, all card choices should include primary text, or none of them should.
+If you're using data from records or entities as your source, you can add an icon field in your record type or CDT to easily display icons in your card choices.
+Both the primary and secondary texts will truncate after two lines each. The tooltip shows the full text.
+Spacing and truncation look different in the card choices bars template. To ensure that all your text has enough space to show properly, keep your secondary text short when using this template.
+
+Choosing your card choices component's data source
+The card choices component provides four options to easily access your data:
+
+A record type
+An expression
+A rule
+A variable
+
+These four options allow you to access your data wherever it is, using one of the following methods:
+
+A record type, accessing your data using type reference or a!recordData().
+Note: Unless you are designing a portal. You cannot use a record type for your data source in a portal.
+A query, using a!queryEntity().
+A data subset.
+A list of map or dictionary.
+A list of data.
+
+Data in a map, dictionary, data subset, or list of data
+To access your data in a map, dictionary, or list of data, you can select either Expression, Variable, or Rule as the data source for your card choices component.
+Using Expressions, you can create a map, dictionary, or list of data directly in the card choice field data parameter.
+Using Variable, you can create a map, dictionary, or list of data in a local variable or rule input and call it into the card choices data parameter.
+Using Rule, you can access a map, dictionary, data subset, or list of data that is stored in an expression rule and call the expression rule into the card choices data parameter.
+Examples
+Using record data as the card choices data source
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+sail 
+a!localVariables(
+  local!save,
+  {
+    a!sectionLayout(
+      label: "Select your company's industry",
+      labelSize: "LARGE",
+      contents: {
+        a!cardChoiceField(
+          label: "Select your company's industry",
+          labelPosition: "COLLAPSED",
+          instructions: "Don't see your company's industry listed? Contact our team to add your industry to our community!",
+          data: 'recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries',
+          sort: {
+            a!sortInfo(
+              field: 'recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{4edb6e00-5b39-469f-9527-a5c5019bc1a4}industrytype',
+              ascending: true
+            )
+          },
+          cardTemplate: a!cardTemplateBarTextStacked(
+            id: fv!data['recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{3cae152b-3f67-4736-91ef-569469ac657c}id'],
+            primaryText: fv!data['recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{4edb6e00-5b39-469f-9527-a5c5019bc1a4}industrytype'],
+            secondaryText: fv!data['recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{e30ac296-a285-4490-aab4-890fc4346e89}description'],
+            icon: fv!data['recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{0fcc2280-7bef-4205-8ed4-aee913b57b7a}icon'],
+            iconAltText: fv!data['recordType!{41134583-1730-42d9-a32f-be722d9b47b9}Industries.fields.{70404539-ab39-42cf-b380-197bb1ae3b73}iconalttext']
+          ),
+          value: local!save,
+          saveInto: local!save,
+          maxSelections: 1,
+          align: "START",
+          showShadow: false,
+          validations: {}
+        )
+      }
+    )
+  }
+)
+Displays the following:
+{:.screenshot}
+Using a query as the card choices data source
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+This example references specific fields in a CDT that you need to replace with your own fields. If you copy and paste this example into your interface, the fields won't evaluate. Use the example as a reference only.
+sail 
+a!localVariables(
+  local!save,
+  {
+    a!sectionLayout(
+      label: "Select your work location",
+      labelSize: "LARGE",
+      contents: {
+        a!cardChoiceField(
+          label: "Select your work location",
+          labelPosition: "COLLAPSED",
+          data: a!queryEntity(
+            entity: cons!WORK_INFO_ENTITY,
+            query: a!query(
+              selection: a!querySelection(
+                columns: {
+                  a!queryColumn(field: "id"),
+                  a!queryColumn(field: "workLocation"),
+                  a!queryColumn(field: "workLocationDescription"),
+                  a!queryColumn(field: "locationIcon"),
+                  a!queryColumn(field: "locationIconAltText")
+                }
+              ),
+              pagingInfo: a!pagingInfo(startIndex: 1, batchSize: - 1)
+            ),
+            fetchTotalCount: true
+          ),
+          cardTemplate: a!cardTemplateTile(
+            id: fv!data.id,
+            primaryText: fv!data.workLocation,
+            secondaryText: fv!data.workLocationDescription,
+            icon: fv!data.locationIcon,
+            iconAltText: fv!data.locationIconAltText
+          ),
+          value: local!save,
+          saveInto: local!save,
+          maxSelections: 1,
+          validations: {}
+        )
+      }
+    )
+  }
+)
+Displays the following:
+{:.screenshot}
+Using a map as the card choices data source
+INCLUDE PAGE: SAIL intro
+{% sailbox 580 %} 
+a!localVariables(
+  local!save, 
+  {
+    a!sectionLayout(
+      label: "Select up to four activities to participate in",
+      labelSize: "LARGE",
+      contents: {
+        a!cardChoiceField(
+        label: "Select up to four activities to participate in",
+          labelPosition: "COLLAPSED",
+        data: {
+          a!map(id: 1, icon: "birthday-cake", primaryText: "Baking", secondaryText: "Individual Activity", iconAltText: "birthday cake"),
+          a!map(id: 2, icon: "basketball", primaryText: "Basketball", secondaryText: "Group Activity", iconAltText: "basketball" ),
+          a!map(id: 3, icon: "bowling-ball", primaryText: "Bowling", secondaryText: "Individual Activity", iconAltText: "bowling ball"),
+          a!map(id: 4, icon: "chess-knight", primaryText: "Chess", secondaryText: "Individual Activity", iconAltText: "knight chess piece"),
+          a!map(id: 5, icon: "football", primaryText: "Football", secondaryText: "Group Activity", iconAltText: "football"),
+          a!map(id: 6, icon: "golf-ball", primaryText: "Golf", secondaryText: "Individual Activity", iconAltText: "golfball"),
+          a!map(id: 7, icon: "futbol-o", primaryText: "Soccer", secondaryText: "Group Activity", iconAltText: "soccer ball"),
+          a!map(id: 8, icon: "swimmer", primaryText: "Swimming", secondaryText: "Individual Activity", iconAltText: "person swimming")
+    },
+      sort: {
+        a!sortInfo(
+          field: "primaryText",
+          ascending: true
+        )
+      },
+    cardTemplate: a!cardTemplateBarTextJustified(
+      id: fv!data.id,
+      primaryText: fv!data.primaryText,
+      secondaryText: fv!data.secondaryText,
+      icon: fv!data.icon,
+      iconAltText: fv!data.iconAltText
+    ),
+      value: local!save,
+    saveInto: local!save,
+    maxSelections: 4,
+    validations: {}
+    )
+  }
+)
+
+}
+)
+{% endsailbox %}
+More map configurations
+The example above shows how to use a map of data in the card choices component data parameter. If you copy and paste the expression into an interface, you'll see that Expression is selected for the Data Source in Design Mode. If you're using Expression Mode, you can write your expression as you normally would without selecting a data source from Design Mode.
+You can achieve a similar result to the example above using either of the Variable or Rule data source configurations.
+If you want to use a map with a local variable:
+
+Drag and drop the card choices component onto your interface.
+From Expression Mode, create a local variable.
+Add a map of your data in the local variable.
+From Design Mode, go to Data Source and select Variable.
+Select your local variable from the dropdown.
+Configure the card choices parameters according to the fields present in your data.
+
+Go ahead and try out using a map with local variables in the interactive expression editor above.
+If you want to use a map with a rule input:
+
+Drag and drop the card choices component onto your interface.
+From Design Mode, add a rule input of type Map and click Array (multiple values).
+Click Test.
+In Expression, add a map of your data.
+Click Set as default test values, then click TEST INTERFACE.
+From Design Mode, go to Data Source and select Variable.
+Select your rule input from the dropdown.
+Configure the card choices parameters according to the fields present in your data.
+
+If you want to use a map with an expression rule:
+
+Drag and drop the card choices component onto your interface.
+From Design Mode in your interface, go to Data Source and select Rule.
+Select an expression rule that contains a map of your data.
+Configure the card choices parameters according to the fields present in your data.

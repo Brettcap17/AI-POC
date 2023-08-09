@@ -1,0 +1,104 @@
+
+layout: function
+title: Document Viewer Component
+category: function_page
+compatibility: -crf, -om
+excerpt: Displays a document from document management on an interface.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!documentViewerField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: "ABOVE" (default), "ADJACENT", "COLLAPSED", "JUSTIFIED".
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: document
+    name: Document
+    types: Document
+    description: The document to display.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the field height. Valid values: "SHORT", "MEDIUM" (default), "TALL".
+  - keyword: altText
+    name: Alternative Text
+    types: Text
+    description: Equivalent alternate text provided to assistive technology.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the user is prevented from interacting with the document. Default: false.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Document Viewer
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Displaying documents
+
+This component displays documents stored in Appian. To display documents from another system use the Web Content Field.
+Document not available will be displayed if the document is invalid, has been deleted, or the user does not have access to view it.
+This component is not intended for displaying images or videos. To display an image from a document in Appian use a Document Image. To display a video use a Video Field.
+
+Viewing documents on different devices
+
+Document viewing behavior differs depending on the document type and browser. Some browsers may render documents inline, while other browsers or file types may be downloaded. Browser plug-ins or extensions may impact this behavior. Consider the browsers that your users will be using to access your application.
+On Appian Mobile applications, the document viewer component appears as a document download link. The value provided in altText is used for the link label.
+
+Security
+
+For security purposes, documents are loaded using the static content URL. Missing system configuration will be displayed if this domain is not configured on your Appian instance. Refer to Post-Install Configurations for more details on this configuration.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Example displaying a blank document
+Replace the document field value with a valid document in your environment.
+sail
+{
+  a!documentViewerField(
+    label: "Appian Whitepaper",
+    document: 282578,
+    height: "TALL",
+    altText: "5 Digital Transformation Predictions for 2018 and Beyond"
+  )
+}

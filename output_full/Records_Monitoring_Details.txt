@@ -1,0 +1,206 @@
+
+layout: basic
+title: Troubleshoot Data Sync
+permalink: Records_Monitoring_Details.html
+topic-group: E
+weight: 200
+
+Overview
+When you enable data sync on a record type, your source data is cached in Appian. 
+To keep your synced data up-to-date with the source, we'll automatically sync any data changed by select smart services. If other systems or other smart services are writing to your data source, you can also sync those changes by configuring additional sync options.
+However, sometimes record types fail to sync to the source. When this happens, you can use the information in this page and in the error messages found in the Monitor view to resolve issues with sync.
+Types of sync errors
+When an error occurs during a sync, the record type will either have a sync status of Failed, Failed and Skipped, or Failed and Retrying. You can find the record type's status by viewing its Sync History.
+The type of error that occurs will determine the sync status on your record type, and whether or not the record type is available. It's important to understand which errors cause each status so you can determine how to address them.
+ Failed sync
+If you see a Failed sync status, this means that the sync failed and any references to the record type are currently unavailable. As a result, any queries to the record type will not return data, the record list will be unavailable, and any grids or charts that use the record type may return an error. 
+A failed sync may also impact queries or components that reference the record type through a record type relationship. For example, suppose a query returns data from the Customer record type, which is related to an Order record type. If the Order record type has a sync status of Failed and the query includes fields from Order, the query will also fail.
+Usually the best way to resolve failed syncs is to identify the problem and perform a full sync. When viewing the record type, failed syncs will display with a link to an error message with more details. See causes of sync errors to find methods to resolve common errors.
+ Failed and skipped sync
+In other cases, you may see a sync status of Failed and Skipped. This means that a full sync failed, but the record type is still available because it skipped the failed sync and instead uses data from the last successful full sync. As a result, any queries to the record type will succeed. However, since the sync was skipped, the data in your record type may be outdated.
+This sync status will only appear if you've configured a record type to skip failed syncs. By default, this setting is enabled on all new record types.
+ Failed and retrying
+There are some instances where a sync can be automatically retried if an error occurs. In this case, you'll see a sync status of Failed and Retrying. 
+When the sync is retrying, the sync is still considered in progress and the data for the record type is still available. There are two ways that a retry occurs: retrying the entire sync or only retrying a single batch. 
+Full retry
+When the entire sync is retried, the sync starts over from the first batch after a delay of a few minutes. A full retry can occur when some intermittent issues occur such as connection timeout with the source system. The retry occurs automatically.
+Batch retry
+When performing a full sync, data is queried in batches, all of which must finish for the sync to succeed.
+In some cases, an intermittent error occurs that only affects a single batch. For instance, a record type that uses a web service as the source could have a request time out for a single batch, even if prior batches succeeded. Appian will automatically retry the failing batch. If the automatic retry succeeds, Appian will continue with the remainder of the sync.
+The sync will fail or be skipped if either of the following occur:
+
+A single batch fails three times in a row. A failed batch is automatically retried after a brief delay, up to a maximum of two retries. If the second retry (the third total attempt) fails, the entire sync fails.
+More than 10 failures occur across the entire set of batches in the full sync. For example, say there are 30 batches in a full sync. If there are 10 total retries across any number of batches, then the entire sync fails.
+
+The Sync History only shows information about the last failed batch. However, any failure is logged in the application server log to aid with additional troubleshooting.
+Sync failure alerts
+When an error occurs that causes the sync to fail or skip, an email alert will be sent to system administrators, and any users with Administrator permissions for the record type. The email will contain a summary of the issue and a link to the record type so you can quickly resolve the issue. 
+
+appian-style-note
+Users will only receive email alerts if the sync fails during a scheduled full sync or when you use select smart services to update your source data.
+
+Causes of sync errors
+The following sections outline different sync errors and possible resolution steps.
+Mismatched schemas
+When you enable data sync for your record type and configure your record fields, Appian automatically creates a mapping between the source schema and record type schema. 
+The source schema includes the names, types, and uniqueness constraints of all the fields in your source. This schema must match the record type's schema in order for Appian to sync the source data.
+If a change is made to the source schema without making a corresponding change to the record type, the record type will fail to sync. There are three common causes for a mismatch between the two schemas:
+
+The data type of a source field was changed.
+The name of a source field was changed.
+A source field was deleted. 
+
+Resolution steps
+If your record type is backed by a database table or Salesforce, then you can easily remap your record fields to your source fields.
+To update the mappings for any of the above scenarios: 
+1. In the record type, go to Data Model. There will be a banner at the top of the page indicating the number of record fields that are not properly mapped to a source field.
+2. Click UPDATE MAPPINGS. An Update Mappings dialog will appear.
+3. In the Source Field column, choose a source field from the dropdown. If there is a matching source field name, the column will auto-suggest the source field for you. Note that a source field can only be mapped to one record field.
+4. The Record Field Type column will reflect the Appian data type of the source field. If the data type of the source field changed, the original data type will display with an arrow pointing to the updated data type of the new source field. 
+5. To remove a record field and its source field, click the delete  icon.
+>appian-style-tip
+> Removing a record field will cause any existing field references to break. To see which objects reference a record field, click ![record-field-dependents](images/record-field-dependents.png) next to the record field on the **Data Model** page of the record type.
+
+
+To remove all unmapped fields, click REMOVE ALL UNMAPPED FIELDS.
+Click OK. 
+Click SAVE CHANGES.
+
+If your record type is backed by a web service, then you will need to add the changed field as a new field in your record type. This means that you will also need to find and replace any broken links to the old record field.
+To do this:
+1. In the record type, go to Data Model.
+2. Click CONFIGURE FIELDS.
+3. Select the field that was changed.
+4. Click FINISH.
+5. Click SAVE CHANGES.
+6. Replace the broken field references with references to your new field:
+    - Go to the Monitor view.
+    - In the Health Dashboard, review the Appian Design Guidance grid. This shows all objects that have active design guidance triggered.
+    - Open each object and replace the record field reference with your new field reference.
+Invalid value in a source row field
+INCLUDE PAGE: Invalid Value Troubleshooting Sync
+This specific error message appears when the value of a date and time field in the source is outside of the range of date values that work with data sync. To resolve the error, find the field with the invalid date and time value, update the value so that it is within the valid range, and then resync the record type to the source.
+Resolution steps
+| Field Type | Range | Other Limits |
+| - | - | -|
+| Date & Time| Between  1707-09-22 00:12:43.145224193 and 2292-04-10 23:47:16.854775806 | Shouldn't contain the value of 00 for the day or month, or 0000 for the year. |
+Date and time value in a database
+To update the invalid date and time value in the database table:
+
+Copy the timestamp of the error.
+In your application, go to the Navigation menu and select System Logs. 
+Open Application Server Log and search for the timestamp. 
+Read the stack trace to determine which field and value caused the error.
+   Example error:
+      APNX-3-1100-007: marshal: unsupported timestamp 3000-01-01 00:00:00 +0000 UTC
+Open the SQL Workbench or phpMyAdmin for the database. 
+Run a SQL statement to find the date and time field with the invalid value. 
+   Example SQL statement: 
+      sql 
+      SELECT * FROM `< table name >` WHERE date(< field name >) = `< the invalid value > 
+Update the invalid field value so that it is within the valid range.
+Return to your application and go to the Monitor view. 
+Go to the RECORD SYNC STATUS tab.  
+Select your record type and click START SYNC.
+
+Date and time value in Salesforce
+To update the invalid date and time value in Salesforce:  
+
+Copy the timestamp of the error.
+In your application, go to the Navigation menu and select System Logs.  
+Open Application Server Log and search for the timestamp. 
+Read the stack trace to determine which field and value caused the error.
+   Example error:
+      APNX-3-1100-007: marshal: unsupported timestamp 3000-01-01 00:00:00 +0000 UTC
+Log in to Salesforce. 
+Update the invalid date and time field value so that it is within data sync's valid range. 
+Return to your application and go to the Monitor view. 
+Go to the RECORD SYNC STATUS tab. 
+Select your record type and click START SYNC.
+
+Invalid credentials
+When you set up your Salesforce object as the source for your record type, you have to provide login credentials in order to access Salesforce. 
+If the Salesforce object's credentials are determined to be invalid at the time of the sync, your sync will fail. It could simply be that the password has expired or that the credentials have changed. In order to successfully sync, you need to verify the credentials and re-sync the record type. 
+Resolution steps
+To check the credentials and re-sync:
+
+In your application, go to the Build view.
+Open your Salesforce object for your record type.
+Verify that the credentials use the username-password OAuth authentication and are correct.
+Click TEST CONNECTION. If the test fails, contact your system administrator for help. If the test passes, continue to step 4.
+Click SAVE.
+In your application, go to the Monitor view.
+In the gray bar menu, click RECORD SYNC STATUS.
+Select your record type and click START SYNC.
+
+For more information on authentication, credentials, and configuring a Salesforce object, see Salesforce Connected Systems.
+Data source exceeds the row limit
+With data sync, each record type object can sync up to 2,000,000 rows of data from a selected source. 
+If you try to sync more than 2,000,000 rows in your record type, the sync will fail and the record type will be unavailable. Record types within 10% of the limit (1,800,000 to 2,000,000 rows) will sync successfully, but a warning will let you know that the record type is approaching or has reached the row limit.  
+Mitigation steps
+To keep your record type from exceeding the row limit, apply one or more source filters to limit the number of rows synced in Appian. 
+If the record type is expected to regularly exceed 2,000,000 rows, you may choose to disable data sync. 
+Sync Records smart service exceeds record limit
+The Sync Records smart service allows you to specify which records to sync in Appian. You can sync up to 1,000 records at a time. 
+If you try to sync more than 1,000 records using this smart service, the sync will fail and the record type will be unavailable. 
+Mitigation steps
+To prevent the smart service from syncing more than 1,000 records at a time, you can create a loop in your process model to execute the Sync Records smart service multiple times.
+See Syncing more than 1,000 records for more information.
+Sync timeout
+If you're performing a full sync that takes longer than 4 hours, it's possible that the sync will time out and fail. When the sync fails, the record type will become unavailable and you'll see an alert message that says "The sync failed because it exceeded the 4 hour time limit." 
+A sync timeout can occur on any record type with data sync enabled, but may be more common on record types that use a web service as the source. 
+Mitigation steps
+To prevent a sync from timing out, consider:
+- Removing the rate limit to reduce the total sync time.
+- Allowing for larger batch sizes.
+- Adding a source filter to limit the number of rows synced in Appian.
+- Refactoring the source system to be more efficient.
+If you cannot modify the above configurations, or your record type uses a database table as the source, you may choose to disable data sync on your record types that take longer than 4 hours to sync. 
+Web service errors
+When you use a web service as the source of a record type, the web service itself could return an error. For instance, the web service could be temporarily unavailable or the request from Appian may not be structured correctly. 
+When these errors occur, the Monitor view can display the error received from the web service to help in troubleshooting. However, the source expression must be set up correctly to expose these error messages to the monitor.
+Configuring web services to expose error messages
+In the source expression rule, each batch result must return a list of dictionary, map, or CDT to perform a successful sync; any other result will cause the sync to fail.
+However, if the expression rule returns a result of type Integration Error in a batch, the batch will fail and the full details of the integration error will be displayed in the Monitor view for the record sync. 
+The Integration Error data type returns details on the error that occurred with any integration call. It is returned by default in any integration response using the error parameter. See below for an example on how to configure the source expression to return the integration error.
+Since the integration error typically contains the error received from the web service, it can help troubleshoot issues for the batch that failed.
+{:.screenshot}
+Example source expression with integration error
+To provide the integration error in a failed batch, make sure the source expression returns the appropriate integration error. 
+For example, the following source expression would return the results if the integration succeeds and the integration error if it fails.
+sail
+a!localVariables(
+  local!integration: rule!EX_IntegrationResult(batch: ri!batch),
+  if(
+    local!integration.success,
+    local!integration.result.body, /* Returns the result body when the request succeeds */
+    local!integration.error /* Returns the integration error when the request fails*/
+  )
+)
+Resolution steps
+Check the integration error against common HTTP errors and update the configuration of the integration object to resolve the error. For example, an error code of 401 typically means that the request did not have the correct authentication, so the credentials may need to be updated.
+In some cases, it may be necessary to contact the owner of the web service to troubleshoot further.
+Other sync errors
+Sometimes record types fail to sync to the source because of issues that require troubleshooting outside of Appian. When this happens, check the error message for information to help you troubleshoot the issue or contact your system administrator for further assistance. 
+Here are a few brief explanations of these issues and their possible causes: 
+| Issue | Error Message | Possible Cause |
+| - | - | - |
+| Problem connecting to the source. | Unable to sync because the data source did not respond. | The source didn't respond, VPN failed, or the API limit has been reached. |
+| Problem with the sync server. | Unable to sync due to a system issue. or Not enough disk space to complete sync. | The disk is full or the disk space is at or near 95% capacity. Alternatively, the sync server may be down. |
+| Problem with row size. | Unable to sync because a source row exceeds the size limit. | A source row exceeds 1 MB. | 
+| Problem with resource use. | Generic error: Unable to sync due to an error with the data source. | Too much competition for resources between syncs and other processes. |
+| Problem with invalid batches. | Unable to sync due to an error with the data source. The Record Data Source did not apply the batch number correctly. The first two responses returned the same data. | The sync expects that the data changes with each batch, but the first two batches returned the same data. |
+| Problem with invalid primary key data. | Unable to sync due to an error with the data source. The result batch contained multiple records with the same primary key. The primary key must be unique across all records in the same batch. | The data source has multiple records that have the same primary key value. |
+Disable data sync {#disable-sync-steps}
+There are some cases when you may want to disable data sync, like when your record type is expected to exceed the row limit, or if your syncs take longer than 4 hours. 
+If you choose to disable data sync, you will need to update the source configuration of your record type. This will create new record fields with new UUIDs, so you will also need to update any existing references to your record fields with the new record field references.
+To disable data sync:
+1. In the record type, go to Data Model.
+2. Next to SOURCE, click  > Change Source.
+3. Select your source type. 
+4. Click NEXT.
+5. For Data Sync, select Disable sync and related features.
+6. Click NEXT.
+7. Continue configuring your source and click FINISH.
+To find and replace existing field references in your environment:
+INCLUDE PAGE: Find record field references

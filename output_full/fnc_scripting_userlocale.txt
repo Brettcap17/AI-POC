@@ -1,0 +1,30 @@
+
+layout: function
+title: userlocale() Function
+space: function_page
+excerpt: "Returns the preferred locale of the given user or the site primary locale if the user doesn't have a preference set."
+category: function_page
+fncname: userlocale
+fncexample: "userlocale(\"john.doe\")"
+fncresult: "en_US"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: user
+    types: Text
+    description: |
+      The user (or the username of the user) for whom the locale should be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The locale is returned as a string, such as "es_MX".
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+userlocale("john.doe") returns en_US

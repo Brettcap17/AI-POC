@@ -1,0 +1,159 @@
+
+layout: function
+title: Start Process Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: 'The Start Process Smart Service allows you to initiate a process from another process, a web API, or an interface.'
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!startProcess
+fncsubcat: Process_Management
+parameters:
+  - keyword: processModel
+    types: Process Model
+    description: The process model to start asynchronously. You must provide a constant referencing the process model or a process model UUID.
+  - keyword: processParameters
+    types: Dictionary
+    description: A dictionary containing the parameters for the process and their values.
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!processInfo function variable (ProcessInfo) is available to specify process properties of the process that was started (such as fv!processInfo.pp.id), properties of the process model (such as fv!processInfo.pm.name), and the values of process variables (such as fv!processInfo.pv.employeeId) once all initial activity-chaining is complete. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Process_Management
+ssicon: Start_Process.png
+ssparentcat: Automation_Services
+
+Overview
+This page provides guidance on how to use the Start Process Smart Service to initiate processes in your process models, interfaces, and web APIs. Processes initiated using this smart service are run asynchronously, meaning that the current process flow will continue without waiting for these processes to complete.
+Learn more about other ways to start a process, and how they compare to this smart service, here.
+Permissions needed
+The behavior of the node depends on the permissions of the user running the smart service. The following table details the result of running the smart service given different permission levels.
+
+
+Permission Level
+Result of Executing Smart Service
+
+
+Deny or Not in Role Map
+The smart service errors, generating an error message for the process administrators and pausing the process
+
+
+Initiator
+The process is started, but only the process instance ID (processInfo.pp.id) is populated in the process info variable. All other process info values will be null
+
+
+Viewer and Above
+The process is started, and all process model properties, process instance properties, and process variable values are populated in the process info output value
+
+
+Properties
+
+
+Category: Process Management
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended - Note: When this smart service is attended, the form that the user sees is the form configured on the node, not the start form for the specified process model.
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+Input
+Data Type
+Description
+Required
+Multiple
+
+
+Process Model
+Process Model
+The process model to start asynchronously
+Yes
+No
+
+
+Process Parameters
+Dictionary
+A dictionary containing the parameters for the process and their values
+No
+No
+
+
+The Process Parameters property is a dictionary where the keys are process parameter names and the values are parmeters' values. If any required parameters are missing or if the dictionary contains any entries that do not match parameters of the selected process model, the process will not start.
+For example, if you have a process model that controls an employee review cycle, it might have a required parameter named employeeId and optional parameters named deadline and reasonCode.
+To successfully start this process, the Process Parameters input would look like one of the following:
+sail 
+{
+    employeeId: 12345
+}
+sail 
+{
+    employeeId: 12345,
+    deadline: today()+30
+}
+sail 
+{
+    employeeId: 12345,
+    deadline: today()+30,
+    reasonCode: "ANNUAL"
+}
+In the following examples, the process would not start.  For the first two cases, the reason is that the required process model parameter, employeeId, was not provided. For the third case the reason is that an entry in the Process Parameters input, supervisorId, did not match any of the parameters of the process model.
+```sail 
+{
+}
+```
+sail 
+{
+    deadline: today()+30
+}
+sail 
+{
+    employeeId: 12345,
+    supervisorId: 6789
+}
+Node outputs
+
+
+Output
+Data Type
+Description
+
+
+Process Info
+ProcessInfo
+Contains information about the process that was started, its model, and the values of its process variables
+
+
+a!startProcess()
+The Start Process smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API. To learn more about using this function in interfaces, see Starting Processes From an Interface.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Leveraging activity-chaining
+This smart service follows activity-chaining, completing only when the activity chain is complete or broken. The smart service then returns the process variables as of the completion of activity chaining through the processInfo.pv output. This means that the Start Process smart service can be used to complete multiple smart services and retrieve the results of the smart services from within an interface or web API. This can be a very powerful tool. Nonetheless, consider the following notes when using activity-chaining in conjunction with the Start Process smart service to ensure you use the smart service properly:
+
+The smart service may take a long time to complete if you have activity-chaining from the start node in your target process model. Ensure that only nodes whose execution is critical to your original process or form should be included in the initial chain on the target process. Per documentation on configuring activity-chaining, long activity chains are strongly discouraged.
+If a chained flow encounters an attended activity, the activity will be assigned to the user that the Start Process smart service was run as, but it will not open the associated form.
+The "onError" parameter will only evaluate if the process fails to start. It will not evaluate if a node in the started process pauses by exception.
+
+{% comment %}
+This section is commented out because it needs to be reworked or permanently removed
+Managing initiator security
+As stated in the Permissions Needed section of the document, the Start Process smart service will only return process info, other than the process ID, if the user that the smart runs as is at least a viewer of the process. Being a viewer of a process, however, gives the user the ability to see all processes' variables. This is often undesireable. There are two solutions to this problem:
+
+Change the first node of the process you need to start to a Modify Process Security node and in that node, give the initiator viewer privileges to only the one instance. Make sure you chain to this new node.
+
+If running the Start Process node from process, run the node as the user that designed the process, presuming the designer has viewer rights to the process that you want to start.
+
+In both cases, the Start Process smart service will return the full ProcessInfo variable, even if the initiator is only an initiator.
+{% endcomment %}

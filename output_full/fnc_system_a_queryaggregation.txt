@@ -1,0 +1,28 @@
+
+layout: function
+title: a!queryAggregation() Function
+category: function_page
+excerpt: Creates an Aggregation object for use inside a Query object.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryAggregation
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: aggregationColumns
+    types: List of AggregationColumn
+    description: |
+      A list of AggregationColumns that indicate which fields to group or aggregate, created with a!queryAggregationColumn.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Aggregation, AggregationColumn, Query
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Aggregation
+Usage consideration
+Required parameter
+The aggregationColumns parameter is required.

@@ -1,0 +1,36 @@
+
+layout: function
+title: a!groupsByName() Function
+space: function_page
+excerpt: "Returns an array of groups with the given name, or an empty array if no group exists."
+category: function_page
+fncname: a!groupsByName
+fncexample: "a!groupsByName(\"Purchase Request Viewers - \" & ri!prId)"
+fncresult: "{[Group:8]}"
+fnccat: People
+compatibility: -crf
+reftype: function
+parameters:
+  - keyword: groupName
+    types: Text
+    description: |
+       The case-insensitive name of the group to retrieve.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: group():
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Group Array
+Usage considerations
+If there are multiple groups that have the same name, a!groupsByName() will return all of the groups, sorted by id, ascending.
+a!groupsByName() always returns an array.
+If the user running the expression does not have permission to see a group, that group will not be returned in the result. If the user does not have permission to see any of the groups, an empty array will be returned. See also: Group Visibility
+System groups cannot be retrieved using a!groupsByName().
+a!groupsByName() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+Given there is one group named Case Viewers - 123 with id 7, a!groupsByName("Case Viewers - 123") returns {[Group:7]}
+Given there are no groups named Group Does Not Exist, a!groupsByName("Group Does Not Exist") returns {}

@@ -1,0 +1,348 @@
+
+layout: pattern
+title: Tabs Patterns
+excerpt: The tabs patterns provide an ideal style and design for creating tabbed interfaces.
+reftype: pattern
+sr-tags:
+  - Formatting
+  - Choice Components
+  - Buttons
+  - Rich Text
+  - Cards
+
+The tabs patterns is useful when you want to present different views of the same topic. This page explains how you can use the three types of tabs patterns available from the component palette, and walks you through the design structure of the regular tabs pattern in detail.
+Tabs should reflect the structured organization of a topic. For example, when looking at a page about a customer, there might be tabs for "Projects", "Opportunities", and "Invoices". Users should not see completely different tabs when looking at different customers (though it is acceptable to omit tabs that are not applicable to the context).
+{:.screenshot}
+Design structure
+The main components in the tabs pattern are rich text display fields and a button array layout. The tabs (lightweight) pattern is similar to the regular tabs pattern, but uses rich text links instead of buttons. The image below displays how the pattern looks on a blank interface with callouts of the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot}
+Pattern expression
+When you drag and drop the tabs pattern onto your interface, 58 lines of expressions will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  a!localVariables(
+    local!selectedTab: 1,
+    {
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Summary",
+            saveInto: if(local!selectedTab = 1, {}, a!save(local!selectedTab, 1)),
+            size: "SMALL",
+            style: if(local!selectedTab = 1, "PRIMARY", "LINK")
+          ),
+          a!buttonWidget(
+            label: "News",
+            saveInto: if(local!selectedTab = 2, {}, a!save(local!selectedTab, 2)),
+            size: "SMALL",
+            style: if(local!selectedTab = 2, "PRIMARY", "LINK")
+          ),
+          a!buttonWidget(
+            label: "Related Actions",
+            saveInto: if(local!selectedTab = 3, {}, a!save(local!selectedTab, 3)),
+            size: "SMALL",
+            style: if(local!selectedTab = 3, "PRIMARY", "LINK")
+          )
+        }
+      ),
+      {
+        choose(
+          local!selectedTab,
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the first tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the second tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the third tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          }
+        )
+      }
+    }
+  )
+}
+{% endsailbox %}
+[Line 1-26] Use a button array layout to display tabs
+At the top of the pattern, a local variable is used to set the default for the selected tab. Following the local variable is a button array layout with three button widgets representing each tab.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!selectedTab: 1,
+    {
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Summary",
+            saveInto: if(local!selectedTab = 1, {}, a!save(local!selectedTab, 1)),
+            size: "SMALL",
+            style: if(local!selectedTab = 1, "PRIMARY", "LINK")
+          ),
+          a!buttonWidget(
+            label: "News",
+            saveInto: if(local!selectedTab = 2, {}, a!save(local!selectedTab, 2)),
+            size: "SMALL",
+            style: if(local!selectedTab = 2, "PRIMARY", "LINK")
+          ),
+          a!buttonWidget(
+            label: "Related Actions",
+            saveInto: if(local!selectedTab = 3, {}, a!save(local!selectedTab, 3)),
+            size: "SMALL",
+            style: if(local!selectedTab = 3, "PRIMARY", "LINK")
+          )
+        }
+      ),
+{% endhighlight %}
+[Line 27-58] Use a choose function to allow users to change tab views
+After displaying the button components, we use the choose() function to allow users to change the tab views when clicking on them. The contents of each tab view are displayed in a rich text display field with placeholder text. You can easily replace it with a component or rule. 
+{% highlight sail linenos start_line=27 %}
+ {
+        choose(
+          local!selectedTab,
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the first tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the second tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the third tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          }
+        )
+      }
+    }
+  )
+}
+{% endhighlight %}
+Additional tabs patterns
+In addition to the Tabs pattern described above, the Tabs (Lightweight) and Tabs (Cards) patterns are also available in your interface. They're located in PALETTE, under the PATTERNS tab.
+Tabs (Lightweight)
+Use the Tabs (Lightweight) pattern to add a second level of navigation to a page, or to avoid adding buttons to a part of a page that already features other buttons.
+Pattern expression
+When you drag and drop the Tabs (Lightweight) pattern onto your interface, 67 lines of expressions will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  / This is a lighter style of tabs that works well when you are on a page with record views or some other /
+  / set of buttons right next to your custom tabs.                                                         /
+  a!localVariables(
+    local!selectedTab: 1,
+    {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(
+            text: "Summary",
+            link: if(local!selectedTab = 1, null, a!dynamicLink(saveInto: a!save(local!selectedTab, 1))),
+            linkStyle: "STANDALONE",
+            style: if(local!selectedTab = 1, "STRONG", "")
+          ),
+          a!richTextItem(
+            text: "    |    "
+          ),
+          a!richTextItem(
+            text: "News",
+            link: if(local!selectedTab = 2, null, a!dynamicLink(saveInto: a!save(local!selectedTab, 2))),
+            linkStyle: "STANDALONE",
+            style: if(local!selectedTab = 2, "STRONG", "")
+          ),
+          a!richTextItem(
+            text: "    |    "
+          ),
+          a!richTextItem(
+            text: "Related Actions",
+            link: if(local!selectedTab = 3, null, a!dynamicLink(saveInto: a!save(local!selectedTab, 3))),
+            linkStyle: "STANDALONE",
+            style: if(local!selectedTab = 3, "STRONG", "")
+          )
+        }
+      ),
+      {
+        choose(
+          local!selectedTab,
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the first tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the second tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          },
+          {
+            / Replace this rich text with the component or rule that should populate this tab /
+            a!richTextDisplayField(
+              labelPosition: "COLLAPSED",
+              value: {a!richTextItem(text: "The contents of the third tab would go here", style: "EMPHASIS")},
+              align: "CENTER"
+            )
+          }
+        )
+      }
+    }
+  )
+}
+{% endsailbox %}
+Tabs (Cards)
+Use Tabs (Cards) if you want a top level tab styling that is distinct from other links in the UI. The Tabs (Cards) pattern works best when used with a header content layout.
+Pattern expression
+When you drag and drop the Tabs (Cards) pattern onto your interface, 121 lines of expressions will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  / If using this tab style in a headerContentLayout,              *
+   * remove header, put expression below in the contents parameter, *
+   * and set backgroundColor to transparent. Then, on the parent    *
+   * cardLayout, set showBorder to false and showShadow to true.    /
+  a!localVariables(
+    local!tabs: { "Tab 1", "Tab 2", "Tab 3" },
+    local!activeTab: 1,
+    a!cardLayout(
+      contents: {
+        a!cardLayout(
+          contents: {
+            a!columnsLayout(
+              columns: {
+                a!forEach(
+                  local!tabs,
+                  a!columnLayout(
+                    contents: {
+                      a!cardLayout(
+                        contents: {
+                          a!richTextDisplayField(
+                            labelPosition: "COLLAPSED",
+                            value: {
+                              char(10),
+                              a!richTextItem(
+                                text: local!tabs[fv!index],
+                                color: if(
+                                  fv!index = local!activeTab,
+                                  "STANDARD",
+                                  "ACCENT"
+                                ),
+                                size: "STANDARD",
+                                style: if(
+                                  fv!index = local!activeTab,
+                                  "STRONG",
+                                  "PLAIN"
+                                )
+                              )
+                            },
+                            align: "CENTER"
+                          ),
+                          a!cardLayout(
+                            style: if(
+                              fv!index = local!activeTab,
+                              "ACCENT",
+                              "NONE"
+                            ),
+                            padding: "EVEN_LESS",
+                            showBorder: false
+                          )
+                        },
+                        link: a!dynamicLink(
+                          value: fv!index,
+                          saveInto: local!activeTab
+                        ),
+                        padding: "NONE",
+                        showBorder: false,
+                        accessibilityText: if(
+                          fv!index = local!activeTab,
+                          "Selected Tab.",
+                          "Unselected Tab. Press enter to select tab."
+                        )
+                      )
+                    },
+                    width: "NARROW"
+                  )
+                )
+              },
+              marginBelow: "NONE",
+              spacing: "NONE"
+            ),
+            a!cardLayout(padding: "NONE")
+          },
+          padding: "NONE",
+          showBorder: false
+        ),
+        a!cardLayout(
+          contents: choose(
+            local!activeTab,
+            {
+              / Replace this rich text with the component or rule that should populate this tab /
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: a!richTextItem(
+                  text: "The contents of the first tab would go here",
+                  style: "EMPHASIS"
+                ),
+                align: "CENTER"
+              )
+            },
+            {
+              / Replace this rich text with the component or rule that should populate this tab /
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: a!richTextItem(
+                  text: "The contents of the second tab would go here",
+                  style: "EMPHASIS"
+                ),
+                align: "CENTER"
+              )
+            },
+            {
+              / Replace this rich text with the component or rule that should populate this tab /
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: a!richTextItem(
+                  text: "The contents of the third tab would go here",
+                  style: "EMPHASIS"
+                ),
+                align: "CENTER"
+              )
+            }
+          ),
+          padding: "EVEN_MORE",
+          showBorder: false
+        )
+      },
+      padding: "NONE"
+    )
+  )
+}
+{% endsailbox %}

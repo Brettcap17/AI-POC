@@ -1,0 +1,57 @@
+
+layout: function
+title: a!cmiGetRepoInfo() Function
+space: function_page
+excerpt: "Retrieves information about the target CMIS target system repository."
+category: function_page
+fncname: a!cmiGetRepoInfo
+fncsubcat: "CMIS"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: atomPubUrl
+    types: Text
+    description: |
+      The Atom Pub URL of the CMIS target system.
+  - keyword: repositoryId
+    types: Text
+    description: |
+      The repository id on the CMIS target system.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+The function returns the standard connector result dictionary described in the main Connectors page.
+If successful, the result field contains the dictionary representation of the CMIS repository information.
+Usage considerations
+If called multiple times in the same expression with the same parameters, only one query is made when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Get CMIS repository information
+This example returns the CMIS object repository information. Otherwise, it returns a message with the error encountered.
+sail 
+=a!localVariables(
+  local!cmisResult: a!cmiGetRepoInfo(
+    scsExternalSystemKey: cons!CMIS_SCS_KEY,
+    usePerUserCredentials: true,
+    atomPubUrl: cons!CMIS_URL,
+    repositoryId: cons!CMIS_REPO_ID
+  ), 
+  if(local!cmisResult.success,
+    local!cmisResult.result,
+    local!cmisResult.error
+  )
+)

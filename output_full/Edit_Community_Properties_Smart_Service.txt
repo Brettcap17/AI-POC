@@ -1,0 +1,11 @@
+
+layout: basic
+title: Edit Community Properties Smart Service [Deprecated]
+space: no_toc
+depver: 16.3
+reftype: smart_service
+ssicon: Deprecated.gif
+ssparentcat: "一Deprecated一"
+
+INCLUDE PAGE: portal_dep_notice.md
+For information about the {{ page.title }}, see the Appian 16.2 documentation.

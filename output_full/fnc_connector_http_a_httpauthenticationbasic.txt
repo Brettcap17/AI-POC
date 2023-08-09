@@ -1,0 +1,32 @@
+
+layout: function
+title: a!httpAuthenticationBasic() Function
+space: function_page
+excerpt: "Creates an object that contains the information required to perform HTTP Basic authentication."
+category: function_page
+fncname: a!httpAuthenticationBasic
+fncsubcat: "Web Service Helper"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: username
+    types: Text
+    description: |
+      The username to use during the authentication. Created with a!scsField().
+  - keyword: password
+    types: Text
+    description: |  
+      The password to use during the authentication. Created with a!scsField().
+  - keyword: preemptive
+    types: Boolean
+    description: |
+      Determines whether or not authentication credentials are sent only after a 401 Not Authorized response or, when true, before the system has challenged. Default: false.
+
+Note: this function is used only for the HTTP Upload and HTTP Download smart services. Authentication for general HTTP requests is managed using integrations and HTTP or Open API connected systems.
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

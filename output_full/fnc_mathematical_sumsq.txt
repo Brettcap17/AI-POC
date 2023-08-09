@@ -1,0 +1,30 @@
+
+layout: function
+title: sumsq() Function
+space: function_page
+excerpt: "Squares each number and then returns the sum of the squares."
+category: function_page
+fncname: sumsq
+fncexample: "sumsq(2,3)"
+fncresult: "13"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A number or array of numbers that will be squared before being added into the final sum.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+sumsq(3,4) returns 25 

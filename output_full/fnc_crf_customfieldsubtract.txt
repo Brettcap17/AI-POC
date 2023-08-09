@@ -1,0 +1,52 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldSubtract() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function returns the difference between two numbers. You can subtract record fields, related record fields, or literal values of type Number (Integer) or Number (Decimal).
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldSubtract
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value1
+    types: Any Type
+    description: |
+      The record field, related record field, or literal value from which value2 is subtracted. Valid data types include Number (Integer) or Number (Decimal).
+  - keyword: value2
+    types: Any Type
+    description: |
+      The record field, related record field, or literal value to subtract. Valid data types include Number (Integer) or Number (Decimal).
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldSubtract() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Use with other Custom Field functions
+You can use the a!customFieldSubtract() function in conjunction with other Custom Field functions, like a!customFieldSum(), a!customFieldDivide(), or a!customFieldMultiply() to create the calculations you need.
+See the Real-time evaluation recipes for an example.
+Example
+Let's say you want calculate each employee's net salary. 
+The Employee record type has a grossSalary field, which contains each employee's salary amount. The Benefits record type has a deductions field, which determines the deduction amount based on the selected benefits plan.
+To calculate each employee's net salary, you could create a custom record field on the Employee record type that evaluates in real-time so you can reference the related record field from the Benefits record type in your calculation. 
+The expression would look something like this:
+sail
+a!customFieldSubtract( 
+  value1: recordType!Employee.fields.grossSalary,
+  value2: recordType!Employee.relationships.benefits.fields.deductions
+)
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you can reference any of the following supported functions in either parameter of a!customFieldSubtract():
+
+appian-style-note
+You must reference a record field, related record field, or another Custom Field function in at least one parameter.
+
+INCLUDE PAGE: Supported Custom Field Functions Table

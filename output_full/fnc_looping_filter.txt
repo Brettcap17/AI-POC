@@ -1,0 +1,39 @@
+
+layout: function
+title: filter() Function
+category: function_page
+excerpt: Calls a predicate for each item in a list and returns any items for which the returned value is true.
+fnccat: Looping
+fncexample: 'filter(fn!isleapyear, {2015, 2016, 2017})'
+fncname: filter
+fncresult: '{2016}'
+space: function_page
+reftype: function
+parameters:
+  - keyword: predicate
+    types: Function, Rule, or Data Type Constructor
+    description: Expression that returns a Boolean (true or false).
+  - keyword: list
+    types: Any Type Array
+    description: List of elements that the predicate iterates through.
+  - keyword: context
+    types: Any Type Array
+    description:  Variable number of parameters passed directly into each predicate evaluation.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Referencing expressions and rules
+Use fn!functionName to reference an expression function and rule!ruleName to reference a rule.
+Limitations
+a!forEach() cannot be used within rules used in this function.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+filter(fn!iseven,{-1,0,1,2},1) returns 0, 2

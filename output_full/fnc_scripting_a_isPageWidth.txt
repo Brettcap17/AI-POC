@@ -1,0 +1,226 @@
+
+layout: function
+title: a!isPageWidth() Function
+excerpt: Returns true if the interface is being viewed on a page that falls within the specified width ranges. Returns false otherwise. This function checks the width of the content area on the page, which may not be the width of the entire window.
+category: function_page
+fnccat: Scripting
+fncname: a!isPageWidth
+compatibility: -crf
+reftype: function
+space: function_page
+parameters:
+  - keyword: pageWidths
+    types: List of Text String
+    description: |
+      Valid values: "PHONE", "TABLET_PORTRAIT", "TABLET_LANDSCAPE", "DESKTOP_NARROW", "DESKTOP", "DESKTOP_WIDE".
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+a!isNativeMobile
+Responsive Design
+Columns Layout
+Side By Side Layout
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+
+a!isPageWidth() does not work when testing or editing expression rules, in the visual query editor, or in the Process Modeler.
+Resizing using a!isPageWidth() doesn't work with offline tablet forms.
+
+Examples
+The a!isPageWidth() function gives you greater control over the responsiveness and adaptability of your interface. It can be used to resize, reorient, and conditionally display components and layouts for interfaces that are expected to be viewed on pages of varying content widths. We will show two examples of how this function can work in an interface; one resizing components and one conditionally displaying components.
+Resize components
+The a!isPageWidth() function can make sure that your components aren't taking up too much or too little space when viewed at different page widths.
+For example, it might look good to display images in a grid style on a tablet or desktop, but on a phone it looks better to display one image per row. With a!isPageWidth(), you can conditionally set different sizes for the images so that your UI looks great at all page widths.
+Copy and paste this example into EXPRESSION MODE to test out the different image sizes.
+sail
+{
+  a!imageField(
+    labelPosition: "COLLAPSED",
+    images: a!forEach(
+      items: {
+        "https://source.unsplash.com/random/800x600/?architecture",
+        "https://source.unsplash.com/random/900x600/?architecture",
+        "https://source.unsplash.com/random/1024x768/?architecture",
+        "https://source.unsplash.com/random/1000x800/?architecture",
+        "https://source.unsplash.com/random/920x650/?architecture",
+        "https://source.unsplash.com/random/810x580/?architecture",
+        "https://source.unsplash.com/random/820x590/?architecture",
+        "https://source.unsplash.com/random/830x600/?architecture",
+        "https://source.unsplash.com/random/840x610/?architecture",
+        "https://source.unsplash.com/random/850x620/?architecture",
+        "https://source.unsplash.com/random/860x630/?architecture",
+        "https://source.unsplash.com/random/870x640/?architecture",
+        "https://source.unsplash.com/random/900x500/?architecture",
+        "https://source.unsplash.com/random/910x510/?architecture",
+        "https://source.unsplash.com/random/920x520/?architecture",
+        "https://source.unsplash.com/random/930x530/?architecture",
+        "https://source.unsplash.com/random/940x600/?architecture",
+        "https://source.unsplash.com/random/940x610/?architecture",
+        "https://source.unsplash.com/random/940x620/?architecture",
+        "https://source.unsplash.com/random/940x630/?architecture"
+      },
+      expression: a!webImage(
+        source: fv!item
+      )
+    ),
+    size: if(a!isPageWidth("PHONE"),"LARGE","MEDIUM"),
+    isThumbnail: true
+  )
+}
+Preview on the desktop narrow form factor:
+{:.screenshot}
+Preview on the phone form factor: 
+{:.screenshot}
+Conditionally display components
+If your interface is going to be viewed at different page widths, a!isPageWidth() allows you to conditionally show components or separate displays depending on the width.
+We'll look at the Stamp Steps (Icon) pattern as an example of this adaptability. In this pattern, the rich text dots in between each step don't appear on portrait tablet widths or narrower to avoid wrapping. The expression does this by using the if(), a!isPageWidth(), and a!forEach() functions to define two separate rich text displays depending on page width. The a!isPageWidth() function allows you to adaptively show a display with the dots and steps together on wider pages, and only show a display with the steps on narrow pages.
+Copy and paste this example into EXPRESSION MODE to test out the adaptive displays.
+sail 
+{
+  a!localVariables(
+    local!iconStampSteps: {
+      a!map(icon: "calendar",      name: "Enter Dates"), 
+      a!map(icon: "search",        name: "Search Deals"), 
+      a!map(icon: "shopping-cart", name: "Check Out")
+    },
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(),
+        a!columnLayout(
+          contents: {
+            if(
+              /* Display steps vertically for phone and tablet portrait page width */
+              a!isPageWidth({"PHONE", "TABLET_PORTRAIT"}),
+              a!forEach(
+                items: local!iconStampSteps,
+                expression: {
+                  a!stampField(
+                    icon: fv!item.icon,
+                    backgroundColor: "TRANSPARENT",
+                    contentColor: "ACCENT",
+                    size: "MEDIUM",
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: a!richTextItem(
+                      text: {
+                        a!richTextItem(
+                          text: fv!index & ". "
+                        ),
+                        fv!item.name
+                      },
+                      size: "MEDIUM"
+                    ),
+                    align: "CENTER"
+                  ),
+                  a!richTextDisplayField()
+                }
+              ),
+              /* Display steps horizontally for other page widths */
+              {
+                /* Display stamp and dots in sideBySideLayout */
+                a!sideBySideLayout(
+                  items: {
+                    a!sideBySideItem(),
+                    /* Extra spacing before first stamp */
+                    a!sideBySideItem(
+                      item: a!richTextDisplayField(
+                        value: a!richTextItem(
+                          text: " "
+                        )
+                      ),
+                      width: "MINIMIZE"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.icon,
+                      expression: {
+                        a!sideBySideItem(
+                          item: a!stampField(
+                            icon: fv!item,
+                            backgroundColor: "TRANSPARENT",
+                            contentColor: "ACCENT",
+                            align: "CENTER"
+                          ),
+                          width: "MINIMIZE"
+                        ),
+                        a!sideBySideItem(
+                          item: a!richTextDisplayField(
+                            value: a!richTextItem(
+                              text: repeat(13, " " & char(9679)),
+                              color: "SECONDARY",
+                              size: "SMALL"
+                            )
+                          ),
+                          width: "MINIMIZE",
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!sideBySideItem(
+                      width: "MINIMIZE"
+                    ),
+                    a!sideBySideItem()
+                  },
+                  alignVertical: "MIDDLE"
+                ),
+                /* Display step names in columnsLayout */
+                a!columnsLayout(
+                  columns: {
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    ),
+                    a!forEach(
+                      items: local!iconStampSteps.name,
+                      expression: {
+                        a!columnLayout(
+                          contents: {
+                            a!richTextDisplayField(
+                              labelPosition: "COLLAPSED",
+                              value: a!richTextItem(
+                                text: {
+                                  a!richTextItem(
+                                    text: fv!index & ". "
+                                  ),
+                                  fv!item
+                                },
+                                size: "MEDIUM"
+                              ),
+                              align: "CENTER"
+                            )
+                          },
+                          width: "NARROW"
+                        ),
+                        /* Display column for extra space between step names */
+                        a!columnLayout(
+                          showWhen: not(fv!isLast)
+                        )
+                      }
+                    ),
+                    a!columnLayout(
+                      width: "EXTRA_NARROW"
+                    )
+                  },
+                  spacing: "NONE"
+                )
+              }
+            )
+          },
+          width: "WIDE"
+        ),
+        a!columnLayout()
+      }
+    )
+  )
+}
+Preview on the fit form factor:
+
+Preview on the phone form factor:
+{:.screenshot}

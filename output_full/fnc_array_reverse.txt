@@ -1,0 +1,29 @@
+
+layout: function
+title: reverse() Function
+space: function_page
+excerpt: "Returns an array in reverse order."
+category: function_page
+fncname: reverse
+fncexample: "reverse({10, 20, 30})"
+fncresult: "{30, 20, 10}"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: The array to modify.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+reverse({10, 20, 30, 40}) returns 40, 30, 20, 10

@@ -1,0 +1,42 @@
+
+layout: "basic"
+title: "Disable Automatic Refresh After User Saves Into a Variable"
+excerpt: "Automatically update a variable when its dependencies change until the user saves their own value into that variable."
+reftype: "sailrecipe"
+sr-tags: ["Auto-Refresh"]
+offline_not_recommended: true
+
+This scenario demonstrates:
+
+How to disable the automatic recalculation of a variable's default value once a user has edited that variable directly.
+
+Expression
+sail
+a!localVariables(
+  local!startDate: today(),
+  local!endDateEdited: false,
+  local!endDate: a!refreshVariable(
+    value: local!startDate + 7,
+    refreshOnReferencedVarChange: not(local!endDateEdited)
+  ),
+  {
+    a!dateField(
+      label: "Start Date",
+      value: local!startDate,
+      saveInto: local!startDate
+    ),
+    a!dateField(
+      label: "End Date",
+      value: local!endDate,
+      saveInto: {
+        local!endDate,
+        a!save(local!endDateEdited, true)
+      }
+    )
+  }
+)
+Test it out
+
+Select a new value for Start Date. Notice that local!endDate is updated based on the new value for local!startDate.
+Select a value for End Date
+Select a new value for Start Date. Notice that local!endDate retains the user's input and does not automatically update.

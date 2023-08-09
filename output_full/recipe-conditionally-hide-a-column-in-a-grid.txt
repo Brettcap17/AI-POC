@@ -1,0 +1,141 @@
+
+layout: pattern
+title: Conditionally Hide a Column in a Grid
+excerpt: Conditionally hide a column in a read-only grid when all data for that column is a specific value.
+reftype: sailrecipe
+sr-tags:
+  - Grids
+  - Conditional Display
+
+{:.screenshot}
+Use Case
+You can configure a read-only grid to conditionally hide a grid column, show a grid column, or both when the user selects a filter. This interface expression pattern demonstrates how to use a!gridField() to configure a read-only grid that conditionally hides the Department column and makes the Phone Number column visible when the user selects a Department filter. It also shows you how to use a record type as the grid's data source and bring in additional features configured in the record type.
+{:.screenshot} 
+Use the pattern in this example as a template when you want to: 
+- Conditionally hide or show certain record data based on a user's interaction with the grid. 
+- Configure a user filter for a specific grid only. 
+Expression
+The expression pattern below shows you how to:
+
+Conditionally hide a column in a read-only grid based on the user's interaction.
+Use a!queryFilter() to query the record type to return a datasubset that matches the filter value selected. 
+Use record type field references, recordType!<record type name>.fields.<field name>, to reference record fields in the grid and fv!row with bracket notation to call the field values in a grid.  
+Use a!localVariables to store the filter value a user selects.
+Use a!dropdownField() to configure a filter dropdown for the grid.  
+
+```sail
+a!localVariables(
+  / In your application, replace the values defined by local!departments 
+   * with a constant that stores the filter values you want to use in your
+   * grid. Then use cons! to reference the constant in 
+   * local!departments. /
+  local!departments: { "Corporate", "Engineering", "Finance", "HR", "Professional Services", "Sales" },
+/ Use a local variable to hold the name of the department filter the 
+  * user selects in the filter dropdown. This example, uses
+  * local!selectedDepartment /
+  local!selectedDepartment,
+{
+    a!sectionLayout(
+      label: "",
+      contents: {
+        a!richTextDisplayField(
+          value: {
+            a!richTextItem(
+             / The department name is appended to Employees and displayed 
+              * only when the user selects a department filter in the 
+              * dropdown list. /
+              text: {"Employees"&if(isnull(local!selectedDepartment),null," in "&upper(local!selectedDepartment))},
+          size: "MEDIUM",
+          style: {
+            "STRONG"
+          }
+        )
+      }
+    ),
+    a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            /* We used the dropdownField() component to create an 
+             * adhoc user filter for the grid. It pulls in the 
+             * department names stored in local!departments as 
+             * choiceLabels and choiceValues and saves the filter 
+             * value selected by the user in local!selectedDepartment. */
+            a!dropdownField(
+              label: "Department ",
+              placeholder: "-- Filter By Department -- ",
+              choiceLabels: local!departments,
+              choiceValues: local!departments,
+              value: local!selectedDepartment,
+              saveInto: local!selectedDepartment
+            )
+          },
+          width: "NARROW_PLUS"
+        )
+
+      }
+    ),
+    a!gridField(
+      data: a!recordData(
+        recordType: recordType!Employee,
+        filters: a!queryLogicalExpression(
+          operator: "AND",                     
+          filters: {
+            a!queryFilter(
+              field: recordType!Employee.fields.department,
+              operator: "=",                     
+              value: local!selectedDepartment
+            )
+          },
+          ignoreFiltersWithEmptyValues: true
+        )
+      ),                     
+      columns: {
+        a!gridColumn(
+          label: "First Name",
+          sortField:recordType!Employee.fields.firstName,
+          value: fv!row[recordType!Employee.fields.firstName]
+        ),
+        a!gridColumn(
+          label: "Last Name",
+          sortField: recordType!mployee.fields.lastName,
+          value: fv!row[recordType!Employee.fields.lastName]
+        ),
+        a!gridColumn(
+          label: "Department",
+          sortField: recordType!Employee.fields.department,
+          value: fv!row[recordType!Employee.fields.department],
+          /* The Department column is shown only when the user has not 
+           * selected a department filter in the dropdown list. */
+          showWhen: isnull(local!selectedDepartment)
+        ),
+        a!gridColumn(
+          label: "Title",
+          sortField: recordType!Employee.fields.title,
+          value: fv!row[recordType!Employee.fields.title]
+        ),
+        /* The Phone Number column is shown when the user selects 
+         * a Department filter. */
+        a!gridColumn(
+          label: "Phone Number",
+          sortField: recordType!Employee.fields.phoneNumber,
+          value: fv!row[recordType!Employee.fields.phoneNumber],
+          showwhen: not(isnull(local!selectedDepartment))
+        )
+      }
+    )
+  }
+)
+
+}
+)
+```
+For more information on record type field references and referencing record types in expressions, see Record Type Object.
+Test the grid
+
+After entering the expression pattern in your interface, click SAVE CHANGES.
+Click TEST to refresh your interface and test the grid features. 
+To filter the grid, select a department filter from the dropdown. Notice that the department column is no longer visible and the phone number column becomes visible.
+Select "Filter By Department" from the dropdown. The Department column will shown in the grid and the Phone Number column will be hidden.
+
+{:.screenshot}

@@ -1,0 +1,263 @@
+
+layout: pattern
+title: Save a User's Report Filters to a Data Store Entity
+excerpt: Allow a user to save their preferred filter on a report and automatically load it when they revisit the report later.
+reftype: sailrecipe
+sr-tags:
+  - Grids
+  - Smart Services
+  - Filtering
+  - Reports
+
+
+This scenario demonstrates:
+
+How to use the Write to Data Store smart service from a report
+
+
+appian-style-tip
+Since users can save filters on a record list without any additional configuration, consider using the record list instead of using this recipe when displaying a grid of records.
+
+Setup
+For this recipe, you'll want to use a report with some actual data. If you haven't already set up the Update an Entity-Backed Record from its Summary View recipe, do that now you can use that recipe's entity-backed record.
+Now on to the report! Before you put in the expression, you'll first need to create a place to store user filters:
+
+
+From the Customer Support Request System application, click NEW > Data Type.
+Enter SupportRequestReportFilter in the Name field.
+Click Create. This displays the data type object.
+Click New Field three times.
+Enter username for the first field's name.
+Enter status for the second field's name.
+Enter priority for the third field's name.
+For the username field, click on the key icon and select Primary Key.
+Click OK.
+Click Save to create the data type.
+
+Now that you've created the data type, you'll need to make a data store entity so you can write the data to your database.
+
+Back in the Build view, filter by Data Stores and open the Support Requests data store.
+Click Add Entity.
+Enter SupportRequestReportFilter in the Name field.
+Select SupportRequestReportFilter in the Type field.
+Click Save.
+Click Verify.
+Click Save & Publish to save and publish the data store entity.
+
+Now you need to create a constant pointing at the data store entity so it can be used in an expression:
+
+Back in the Build view, click NEW > Constant.
+Enter CSRS_FILTER_ENTITY in the Name field.
+Select Data Store Entity for the Type field.
+Select Support Requests for the Data Store field.
+Select SupportRequestReportFilter for the Entity field.
+
+Enter CSRS Rules and Constants in the Save In field, then select the folder from the suggestions.
+
+
+Click Create to create the constant.
+
+
+Now you're ready to build the actual report.
+
+In the Build view, click NEW > Interface.
+Enter a name in the Name field.
+Enter CSRS Rules and Constants in the Save In field, then select the folder from the suggestions.
+Click Create.
+Switch to the expression view and paste in the following expression:
+
+Expression
+sail
+a!localVariables(
+  local!persistedFilterData: a!queryEntity(
+    entity: cons!CSRS_FILTER_ENTITY,
+    query: a!query(
+      filter: a!queryFilter(field: "username", operator: "=", value: loggedInUser()),
+      pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 1)
+    ),
+    fetchTotalCount: true
+  ),
+  local!persistedFilter: if(
+    local!persistedFilterData.totalCount = 0,
+    /* There's no existing filter for this user, so create a new one */
+    'type!{urn:com:appian:types}SupportRequestReportFilter'(username: loggedInUser()),
+    cast('type!{urn:com:appian:types}SupportRequestReportFilter', local!persistedFilterData.data[1])
+  ),
+  local!saveFilterError: false,
+  /* Store the current filter separate from the persisted filter so we know when they are the same */
+  local!filter: local!persistedFilter,
+  local!allPriorities: rule!CSRS_GetAllPriority().value,
+  local!allStatuses: rule!CSRS_GetAllStatus().value,
+  local!pagingInfo: a!pagingInfo(1, -1, a!sortInfo("createdOn", false)),
+  local!filterChanged: not(exact(local!persistedFilter, local!filter)),
+  /* Data that will be displayed in the grid given the *
+   * current search terms and applied filters          */
+  {
+    a!sectionLayout(
+      contents:{
+        a!columnsLayout(
+          columns:{
+            a!columnLayout(
+              contents:{
+                a!dropdownField(
+                  label: "Priority",
+                  labelPosition: "ADJACENT",
+                  placeholder: "All Priorities",
+                  choiceLabels: local!allPriorities,
+                  choiceValues: local!allPriorities,
+                  value: local!filter.priority,
+                  saveInto: local!filter.priority
+                ),
+                a!dropdownField(
+                  label: "Status",
+                  labelPosition: "ADJACENT",
+                  placeholder: "All Statuses",
+                  choiceLabels: local!allStatuses,
+                  choiceValues: local!allStatuses,
+                  value: local!filter.status,
+                  saveInto: local!filter.status
+                )
+              }
+            ),
+            a!columnLayout(
+              contents:{
+                a!buttonLayout(
+                  secondaryButtons: {
+                    if(
+                      local!saveFilterError,
+                      a!buttonWidget(
+                        label: "Could not save filters",
+                        disabled: true
+                      ),
+                      a!buttonWidget(
+                        label: "Save Filters",
+                        disabled: not(local!filterChanged),
+                        saveInto: a!writeToDataStoreEntity(
+                          dataStoreEntity: cons!CSRS_FILTER_ENTITY,
+                          valueToStore: local!filter,
+                          onSuccess: {
+                            a!save(local!persistedFilter, local!filter)
+                          },
+                          onError: {
+                            a!save(local!saveFilterError, true)
+                          }
+                        )
+                      )
+                    )
+                  }
+                )
+              }
+            )
+          }
+        )
+      }
+    ),
+    a!gridField(
+      emptyGridMessage: "No Support Requests available",
+      data: a!queryEntity(
+        entity: cons!CSRS_SUPPORT_REQUEST_DSE,
+        query: a!query(
+          selection: a!querySelection(
+            columns: {
+              a!queryColumn(field: "id"),
+              a!queryColumn(field: "title"),
+              a!queryColumn(field: "status"),
+              a!queryColumn(field: "priority")
+            }
+          ),
+          logicalExpression: a!queryLogicalExpression(
+            operator: "AND",
+            filters: {
+              a!queryFilter(
+                field: "status.value",
+                operator: "=",
+                value: local!filter.status
+              ),
+              a!queryFilter(
+                field: "priority.value",
+                operator: "=", value:
+                local!filter.priority
+              )
+            },
+            ignoreFiltersWithEmptyValues: true
+          ),
+          pagingInfo: fv!pagingInfo
+        ),
+        fetchTotalCount: true
+      ),
+      columns: {
+        a!gridColumn(
+          label: "Title",
+          sortField: "title",
+          value: fv!row.title
+        ),
+        a!gridColumn(
+          label: "Status",
+          sortField: "status.value",
+          value: index(fv!row.status, "value", {})
+        ),
+        a!gridColumn(
+          label: "Priority",
+          sortField: "priority.value",
+          value: a!imageField(
+            images: rule!CSRS_GetIconForPriority(index(fv!row.priority, "value", {}))
+          ),
+          width: "NARROW",
+          align: "CENTER"
+        ),
+        /*a!gridColumn(*/
+        /*label: "Priority",*/
+        /*sortField: "priority.value",*/
+        /*value: a!richTextDisplayField(*/
+        /*value: a!richTextIcon(*/
+        /*icon: displayvalue(*/
+        /*index(fv!row.priority, "value", {}),*/
+        /* Priority values */
+        /*{"Low", "Medium", "High", "Critical"},*/
+        /* Corresponding icons for each priority */
+        /*{"arrow-circle-down", "arrow-circle-right", "arrow-circle-up", "exclamation-circle"},*/
+        /*"circle"*/
+        /*),*/
+        /*size: "MEDIUM",*/
+        /*color: if(*/
+        /*contains(*/
+        /*{"High", "Critical"},*/
+        /*index(fv!row.priority, "value", {}),*/
+        /*),*/
+        /*"NEGATIVE",*/
+        /*"SECONDARY"*/
+        /*)*/
+        /*)*/
+        /*),*/
+        /*align: "CENTER",*/
+        /*width: "NARROW"*/
+        /*)*/
+      },
+      rowHeader: 1
+    )
+  }
+)
+Test it out
+
+Change the filters and notice how the Save Filters button becomes enabled.
+Click the Test button and notice how the filters are gone. This is equivalent to leaving and returning to the report.
+Use the Save Filters button to save a particular combination of filters.
+Change the filters again.
+Now click the Test button again and notice how the filters are put back to their previously saved values.
+Change the filters, then change them back. Notice how the Save Filters button becomes disabled when returning to the saved filters.
+Try logging in with a different user and trying the same expression (you'll have to give them access to the data store if they don't have it already). Notice how their filter is saved and loaded independently of your original user.
+
+To use as an actual report
+
+Save your interface if you haven't already.
+Open the settings menu , then click Save as.... This will display the Save Interface As form.
+Enter your desired report name and application.
+Click Save.
+
+Notable implementation details
+
+The currently selected filter and the persisted filters are kept in separate a!localVariables() variables so that they can be compared. Not only does this mean the user knows when they have changed the filter (because the button is enabled) but also provides feedback that the filters have been saved (when it becomes disabled).
+If there's an error writing the filters, the onError parameter is used to change the button label.
+For simple filters like these, notice they could be saved as soon as the dropdowns are changed (much like the dropdown in the Update an Entity-Backed Record from its Summary View recipe). This would save the user a click but depending on the situation you may need to alert the user to the fact their filter will be saved. If the user doesn't notice the filters were retained when they arrive back, they could be confused or think the report is broken.
+
+See also: Executing Smart Services

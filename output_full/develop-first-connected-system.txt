@@ -1,0 +1,205 @@
+
+layout: "basic"
+title: "Develop Your First Connected System"
+topic-group: "A"
+weight: 2
+
+Overview
+This page provides a follow-up to developer setup.  This page details how to  create a project, build it, and deploy it to your Appian site, all in about 30 minutes.
+Create a unique project from the Hello World example
+This section guides you through the process of creating a new IntelliJ project from our examples. You can refer back to this section whenever you are creating a new project from one of these examples.
+
+appian-style-tip
+Throughout the Quick Start, we change "Hello World" to "Hello Appian" to illustrate the idea of updating the project's artifact names. In your project, feel free to use any name. Just be sure to update all the same places we do!
+
+Download and unzip the examples
+
+Download the Hello World example here.
+Unzip the downloaded file into the directory you want the project to live in.
+
+Update project-specific IntelliJ and Gradle settings
+
+Rename the Hello World folder to Hello Appian.
+Open IntelliJ.
+Open the folder you renamed in step 1 (Hello Appian):
+Click File > Open.
+Navigate to the Hello Appian folder.
+Click Open.
+
+
+If additional dialogs appear, select gradle, and continue through the dialogs using default values.
+Open the settings.gradle file and change hello-world-csp to hello-appian-csp.
+Check the SDK version compatibility table for more details.
+
+
+
+Ensure your Project is using Java 8
+
+Click File > Project Structure.
+Click the Project tab.
+For Project SDK, if 1.8 is an option, ensure it is selected. If it is not an option, see the Set up IntelliJ section.
+
+Give plug-in artifacts unique names
+In this section, you will update the packages, classes, and annotations to make your project unique. 
+Start by opening the Project tool window (View > Tool Windows > Project). You will see two folders here: (1)Hello Appian and (2) External Libraries.
+
+Navigate to src/main/java in the Hello Appian [hello-appian-csp] project. 
+Within that project you should see a directory created with the name com.mycorp.helloworld.templates. Modify the following items: 
+Update packages
+
+
+In the Project tool window, navigate to src/main/java. You will see there is a package called com.mycorp.helloworld.templates.
+{:.screenshot}
+1.  Right-click (secondary click) on the com.mycorp.helloworld.templates, then click refactor > rename, and change mycorp.helloworld to example.helloappian. 
+1.  Click Refactor.
+{:.screenshot}
+1.  You will notice the old package mycorp.helloworld becomes empty in the project directory; delete the helloworld directory.
+
+
+Update template classes
+Navigate to the com.example.helloappian.templatesin the Project tool window. You will see two java classes: HelloWorldConnectedSystemTemplate and HelloWorldIntegrationTemplate.
+
+
+Update class names:
+
+Right-click on the class HelloWorldConnectedSystemTemplate.
+Click refactor > rename.
+
+Change the name to HelloAppianCSP and click Refactor
+{:.screenshot}
+*  If the Refactoring Preview pane appears, click Do Refactor.
+    1.  Right-click on the HelloWorldIntegrationTemplate.
+    1.  Click refactor > rename.
+    1.  Change name to HelloAppianIntegrationTemplate
+*  If the Refactoring Preview pane appears, click Do Refactor.
+{:.screenshot}
+1.  Update @TemplateId annotation:
+    *  Navigate to the java classes and change the name of the @TemplateId annotation.
+*  In HelloAppianCSP, change @TemplateId(name="HelloWorldConnectedSystemTemplate") annotation to @TemplateId(name="HelloAppianCSP")
+*  In HelloAppianIntegrationTemplate, change  @TemplateId(name="HelloWorldIntegrationTemplate") annotation to @TemplateId(name="HelloAppianIntegrationTemplate")
+
+
+
+appian-style-note
+TemplateId is the identifier for your template and all its versions. To ensure your ID does not unintentionally conflict with other templates, we recommend using package-structure-style naming, for example com.mycorp.template. 
+
+
+
+Ensure @IntegrationTemplateType annotation is correct.
+
+
+Integration template type indicates the request policy of your Integration Template. There are three types: READ, WRITE, and READ_AND_WRITE. READ indicates that the template retrieves data from an external service, WRITE indicates that the template modifies data on an external service such as HTTP POST or HTTP DELETE. If the template can modify or query data depending on the designer's intent, then annotate the template with READ_AND_WRITE. If a template is READ_AND_WRITE, the designer can indicate which type of operation they intend to perform.
+Since we are not modifying the request type of the HelloWorld template, we will leave the template type as is.
+After modifying the configuration of your classes, the class structure should match the following code.
+java
+@TemplateId(name="HelloAppianCSP")
+public class HelloAppianCSP extends SimpleConnectedSystemTemplate {...
+java
+@TemplateId(name="HelloAppianIntegrationTemplate")
+@IntegrationTemplateType(IntegrationTemplateRequestPolicy.READ)
+public class HelloAppianIntegrationTemplate extends SimpleIntegrationTemplate {...
+{:.screenshot}
+Update the Appian Plug-in XML
+
+Open to src.main.resources.appian-plugin.xmlin the Project tool window.
+Change appian-plugin's name from My Corp Connected System - Hello World to My Corp Connected System - Hello Appian, and the appian-plugin's key from hello-world to hello-appian.
+Under plugin-info, change the description to fit your template's description. 
+Change  vendor to your organization's name and url.
+Leave version as 1.0.0.0.
+Under connected-system-template, change the key and name to HelloAppianConnectedSystem.
+Under integration-template, change the key and name to HelloAppianIntegrationTemplate.
+
+This information should now look like the code below:
+<appian-plugin name="My Corp - Hello Appian" key="hello-appian">
+    <plugin-info>
+        <description>My Corp Connected System - Hello Appian</description>
+        <vendor name="Example Corp" url="http://www.example.com"/>
+        <version>1.0.0.0</version>
+        <application-version min="7.6.0.4"/>
+    </plugin-info>
+    <connected-system-template key="HelloAppianConnectedSystem"
+            name="HelloAppianConnectedSystem"
+            class="com.example.helloappian.templates.HelloAppianCSP">
+        <integration-template key="HelloAppianIntegrationTemplate"
+                name="HelloAppianIntegrationTemplate"
+                class="com.example.helloappian.templates.HelloAppianIntegrationTemplate" />
+    </connected-system-template>
+</appian-plugin>
+Update template name and description
+
+Open src/main/resources_en_US.properties.
+Change the resource keys to match the class names:
+Change HelloWorldConnectedSystemTemplate.name to HelloAppianCSP.name.
+
+
+
+This resource file should look like the code below:
+```
+Must have [class].name and [class].description for all connected system and integration templates
+HelloAppianCSP.name=Hello Appian Connected System
+HelloAppianCSP.description=Sample CS for learning how to use plug-in repo CSPs!
+HelloAppianIntegrationTemplate.name=Hello Appian Integration
+HelloAppianIntegrationTemplate.description=Sample CS for learning how to use plug-in repo CSPs!
+```
+Now that all of the configurations meet your template's requirements, the Connected System Template and Integration Template can be modified to contain the internal logic needed for your integration. 
+Build the JAR
+Now that you're done updating your template code and artifacts, you're ready to build and deploy the jar. 
+To create the jar from the command line: 
+
+Navigate to your project's root directory.
+Run the following command: ./gradlew jar.
+
+To create the jar from IntelliJ:
+
+Open the Gradle tool window in IntelliJ by clicking View > Tool Windows > Gradle 
+
+Expand Tasks > Build. You should see gradle job structure like this:
+{:.screenshot}
+
+
+Double-click the jar job.
+
+
+If everything is set up correctly, you will see a successful message in the console like this:
+{:.screenshot}
+You should see your JAR file created under /build/libs.
+{:.screenshot}
+Then, add the jar file to the <APPIAN_HOME>/_admin/plugins folder to deploy it.
+How to check if the CSP deployed successfully
+Look at the connected system in Appian Designer
+
+Open your browser and navigate to <Appian.instance>/design.
+Click New > Connected System and in the modal your new connected system type should appear.
+
+Look at the plug-in list in the Admin Console
+
+Open your browser and navigate to <Appian.instance>/admin.
+From the SYSTEM menu, go to plug-ins. The plug-in will appear in the Deployed plug-ins list.
+
+Look at the logs
+On Tomcat, go to <APPIAN_HOME>/logs. Then run:
+tail -f tomcat-stdOut.log.<date>
+You're looking for the following messages:
+Connected System Template
+[Appian Plugin Hot Deploy] INFO  com.appiancorp.connectedsystems.templateframework.osgi.ConnectedSystemTemplateModuleParser - Extracted com.appiancorp.connectedsystems.templateframework.sdk.ConnectedSystemTemplate classes for registration for the 'HelloAppianConnectedSystem' module in 0ms
+Integration Template
+[Appian Plugin Hot Deploy] INFO  com.appiancorp.connectedsystems.templateframework.osgi.ConnectedSystemTemplateModuleParser - Extracted com.appiancorp.connectedsystems.templateframework.sdk.IntegrationTemplate classes for registration for the 'HelloAppianConnectedSystem' module in 0ms
+Plug-in successfully installed
+[Appian Plugin Hot Deploy] INFO  com.appiancorp.plugins.osgi.AppianOsgiPlugin - Successfully installed Plug-in 'My Corp Connected System - Hello Appian (hello-appian) version 1.0.0.0.
+Congratulations! Your plug-in should now be deployed. Follow the steps below to test it out.
+
+Open an application in the Appian Designer.
+Click New > Connected System.
+In the Custom (BETA) category, choose your new template.
+In the Connected System designer, enter a name.
+Enter Hello in the Text Property field.
+Click Use in New Integration.
+Enter a name.
+Click Create.
+From the Integration Designer, enter Appian in the Text Property field.
+Click Test Request.
+
+Your two text properties should be concatenated and Hello Appian should display in the Results pane.
+Next steps
+Now you're ready develop your own Connected System Plug-in. You can start by reading through the Core Concepts section to learn important concepts about the SDK, or you can jump straight to the Examples, and go back to the over when you want to get a deeper understanding of what's going on.
+At any point, if you need help doing something in particular, check the How To section.

@@ -1,0 +1,32 @@
+
+layout: function
+title: concat() Function
+space: function_page
+excerpt: "Concatenates the specified strings into one string, without a separator."
+category: function_page
+fncname: concat
+fncexample: "concat( {\"a\", \"b\", \"c\"}, {\"d\", \"e\", \"f\"} )"
+fncresult: "abcdef"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text Array
+    description: |
+      One of the strings or a set of strings that will be concatenated.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+If an array is passed as a parameter, that array is converted to a string first and then concatenated. Parameters that don't hold a text data type are converted to string before being operated on.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+concat({"a","b","c"},{"d","e","f"}) returns abcdef

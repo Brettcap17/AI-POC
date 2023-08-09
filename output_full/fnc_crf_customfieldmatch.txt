@@ -1,0 +1,170 @@
+
+layout: function
+usesDataTable: narrow
+title: a!customFieldMatch() Function
+category: function_page
+excerpt: Used to create a real-time custom record field, this function evaluates the value parameter against multiple conditions and returns a value based on a match. If no match is found, the default parameter is returned. 
+fnccat: Custom_Fields
+fncexample: Click on the function name for examples.
+fncname: a!customFieldMatch
+compatibility: ~portal, -om, +rcrf, -crf
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      The value to match. This value can be a record field, related record field, or custom field function. This value can be accessed in other parameters using the function variable fv!value. This parameter is required.
+  - keyword: equals
+    types: Any Type
+    description: |
+      This value is considered a match if it equals the value parameter. This parameter is best to use when evaluating literal values (for example, 1 or "Red"). Text values are case sensitive, so the casing must match that of the value parameter.
+  - keyword: whenTrue
+    types: Any Type
+    description: |
+      The expression considered a match if it evaluates to true. Use a!customFieldCondition(), a!customFieldLogicalExpression(), or both to define your conditional logic.
+  - keyword: then
+    types: Any Type
+    description: |
+      A record field, related record field, custom field function, or literal value to return when the equals or whenTrue parameter matches the value parameter. If you use multiple condition pairs, only the first match will be returned. All then parameters must be the same data type or compatible data types. Compatible data types include Number (Integer)/Number (Decimal) and Date/Date and Time.
+  - keyword: default
+    types: Any Type
+    description: |
+      A record field, related record field, custom field function, or literal value to return if there are no equals or whenTrue parameters that match the value parameter. This parameter is required.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+{% comment %} This function does not include a ## Return section because we will not expose the return value to end users {% endcomment %}
+Usage considerations
+Where to use this function
+The a!customFieldMatch() function can only be used to create a custom record field that evaluates in real time. This means you can reference related record fields, constants, and other supported functions in your calculations.
+INCLUDE PAGE: Steps to create a real-time custom record field
+Using the equals or whenTrue parameters
+You can use a series of equals or whenTrue parameters to determine your conditional logic. To determine which parameter you should use, consider:
+- Using equals when you want to evaluate literals or null values.
+- Using whenTrue when your logic is more complex. 
+You can also use these parameters together, so a single a!customFieldMatch() expression can contain both equals and whenTrue parameters.
+Using the equals parameter
+For example, let's say you want to create the following logic: If a customer has a support level equal to 3, then display the value "Critical Customer Order". Otherwise, just display "Customer Order". Since the value to compare is an exact value (the number 3), you should use the equals parameter in a!customFieldMatch() to create this logic. The expression would look like this:
+sail
+a!customFieldMatch(
+  value: recordType!Order.relationships.customers.fields.supportLevel,
+  equals: 3,
+  then: "Critical Customer Order",
+  default: "Customer Order"
+)
+Using the whenTrue parameter
+Now let's say you want create this logic: If a case has been open for 5 or fewer days, then display "Between 1 and 5 days". If a case has been open between 6 and 10 days, then display "Between 6 and 10". If open more than 10, display "Over 10 days".
+Since you want to create more complex logic, comparing values greater than or less than other values, you would use the whenTrue parameter to create this logic. Whenever you use the whenTrue parameter, you must also use the a!customFieldCondition() function and/or the a!customFieldLogicalExpression(). 
+The expression for this example would look like this:
+
+appian-style-tip
+This example also uses the a!customFieldDateDiff() and a!customFieldDefaultValue() functions so the difference is calculated based on the open and closed date; however, if the close date is null, it will subtract from today's date.
+
+sail
+a!customFieldMatch(
+  /* Get the difference between today's date and the deadline date */
+  value: a!customFieldDateDiff(
+    startDate: recordType!Case.fields.submittedDate,
+    endDate: a!customFieldDefaultValue(
+        value: recordType!Case.fields.closedDate,
+        default: today()
+    ),
+    interval: "DAY"
+    ),
+  whenTrue: a!customFieldCondition(
+    field: fv!value, 
+    operator: "<=", 
+    value: 5
+  ),
+  then: "Between 1 and 5 days",
+  whenTrue: a!customFieldCondition(
+    field: fv!value, 
+    operator: "between", 
+    value: {6, 10}
+  ),  
+  then: "Between 6 and 10 days",
+  default: "Over 10 days"
+ )
+}
+Evaluation order
+The a!customFieldMatch() function evaluates conditions in order and stops once a condition matches the value parameter. If you use multiple condition pairs, meaning you use multiple instances of equals/then or whenTrue/then in your expression, the then parameter following the first matching condition is evaluated, and any remaining condition pairs will be ignored.
+For example, in the function below, there are three condition pairs:
+
+If a case has a priority of 3, then display "Low"
+If a case has a priority of 2, then display "Medium"
+If a case has a priority of 1, then display "High"
+
+sail
+a!customFieldMatch(
+  value: recordType!Case.relationships.priority.fields.Id,
+  equals: 3,
+  then: "Low",
+  equals: 2,
+  then: "Medium",
+  equals: 1,
+  then: "High",
+  default: "No selected priority"
+)
+Since a case can only have one priority level, this function uses the equals parameter to look for a matching value. For example, if a case has a priority value of 2, then the function will evaluate the first and second equals. Because the second equals is a match, the subsequent then value will be returned. The third condition pair and default parameter will be ignored.
+Evaluating multiple condition pairs
+In the whenTrue parameter of a!customFieldMatch(), you can use the a!customFieldLogicalExpression() function to determine how multiple conditions are evaluated. 
+For example, suppose you want to display an order's delivery status as either on time or late based on when the order was delivered and the status of the order:
+- If an order has a status of "Delivered" and it was delivered by the due date or before, display the value "On Time Delivery". 
+- If an order has a status of "Delivered" and it was delivered after the due date, then display the value "Late Delivery". 
+- Otherwise, display "Not delivered yet" when there is no delivery date.
+The expression would look like this:
+sail
+a!customFieldMatch(
+  /* Get the difference between the delivery date and the due date */
+  value: a!customFieldDateDiff(
+    startDate: recordType!Order.fields.deliveryDate,
+    endDate: recordType!Order.fields.dueDate,
+    interval: "DAY"
+  ),
+  whenTrue: a!customFieldLogicalExpression(
+    operator: "AND",
+    conditions: {
+      a!customFieldCondition(fv!value, ">=", 0),
+      a!customFieldCondition(
+        recordType!Order.relationships.status.fields.label,
+        "=",
+        "Delivered"
+      )
+    }
+  ),
+  then: "On Time Delivery",
+  whenTrue: a!customFieldLogicalExpression(
+    operator: "AND",
+    conditions: {
+      a!customFieldCondition(fv!value, "<", 0),
+      a!customFieldCondition(
+        recordType!Order.relationships.status.fields.label,
+        "=",
+        "Delivered"
+      )
+    }
+  ),
+  then: "Late Delivery",
+  default: "Not delivered yet"
+)
+Supported data types
+The value, then, and default parameters can accept any of the following data types:
+- Boolean
+- Date
+- Date and Time
+- Number (Integer)
+- Number (Decimal)
+- Text
+The then and default parameters must be the same data type or compatible data types. Compatible data types include Number (Integer)/Number (Decimal) and Date/Date and Time.
+For example, if you have a then parameter of type Text, then the default parameters should also be type Text. Or, if you have a then parameter of type Number (Integer), you could have default parameter of type Number (Decimal).
+Limitations
+You cannot use a custom record field defined using a!customFieldMatch() as a filter in a!measure(). This means that you cannot use this type of custom record field to filter measures in a!queryRecordType() or in any charts.
+Examples
+See the Real-time evaluation recipes for another example using a!customFieldMatch().
+Supported functions
+In addition to record fields, related record fields, and other custom record fields, you can reference any of the following supported functions in the parameters of a!customFieldMatch():
+INCLUDE PAGE: Supported Custom Field Functions Table

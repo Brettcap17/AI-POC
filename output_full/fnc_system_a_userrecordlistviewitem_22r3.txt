@@ -1,0 +1,30 @@
+
+layout: function
+title: a!userRecordListViewItem_22r3() Function
+category: function_page
+excerpt: Returns the default list view item for the User record type. For use on the User record type only.
+fnccat: System
+fncexample: '0'
+fncname: a!userRecordListViewItem_22r3
+fncresult: '0'
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: record
+    types: Any Type
+    description: |
+      The reference to the current User record, provided via rv!record.
+reftype: function
+space: function_page
+evolved_fncname: a!userRecordListViewItem
+evolved_reason: "The latest version of this function is compatible with the updated User record type, which has data sync enabled."
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Modify the User Record Type
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+ListViewItem
+Usage considerations
+This function defines a list view for the User record type that displays the following information for each user in the record list: first and last names, email, office and mobile phone numbers.

@@ -1,0 +1,12 @@
+
+layout: basic
+title: 'Upload Document Smart Service [Deprecated]'
+depver: 16.1
+reftype: smart_service
+space: no_toc
+ssicon: Deprecated.gif
+ssparentcat: 一Deprecated一
+
+INCLUDE PAGE: portal_dep_notice.md
+Files can be uploaded with the file upload component and managed with Appian's Folder and Document Management system. 
+For information about the {{ page.title }}, see the Appian 16.2 documentation.

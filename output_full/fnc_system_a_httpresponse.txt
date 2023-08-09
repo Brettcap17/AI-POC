@@ -1,0 +1,65 @@
+
+layout: function
+title: a!httpResponse() Function
+category: function_page
+excerpt: Returns an HTTP Response object for use in a Web API.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!httpResponse
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: statusCode
+    types: Number (Integer)
+    description: |
+      The status code of the response. Default is "200" meaning successful completion of the request.
+  - keyword: headers
+    types: List of HttpHeader
+    description: |
+      A list of headers for the response. Built with a!httpheader(). Header values set using a!scsField() will be ignored.
+  - keyword: body
+    types: Text
+    description: |
+      The body of the response. This value can be either text or a document. If a document is supplied, default headers will be set and the client browser will attempt to open the document. Some documents, such as images, sound files, and PDFs, can be effectively viewed within your browser window. Other documents, such as Microsoft Office files, may be downloaded for local viewing.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Web APIs, a!httpheader()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+HTTP Response
+Examples
+To test these examples, paste them into the expression editor of a Web API object. You can view the test results from within the designer by clicking the Test Request button. You can also view the runtime results in your browser by clicking the URL.
+Returning a JSON body
+sail 
+a!httpResponse(
+  statusCode: 200,
+  headers: {
+    a!httpHeader(name: "content-type", value: "application/json")
+  },
+  body:{
+    {
+      firstName: "Jane",
+      lastName: "Doe",
+      age: 35
+    },
+    {
+      firstName: "John",
+      lastName: "Smith",
+      age: 42
+    }
+  }
+)
+Returning a document as the body
+```sail 
+a!httpResponse(
+  statusCode: 200,
+  headers: {
+    a!httpHeader(name: "content-type", value: "application/json")
+  },
+  body: a!iconIndicator("STATUS_WARN")
+)
+```

@@ -1,0 +1,50 @@
+
+layout: function
+title: reduce() Function
+category: function_page
+excerpt: 'Calls a rule or function for each item in a list, passing the result of each call to the next one, and returns the value of the last computation.'
+fnccat: Looping
+fncexample: 'reduce(fn!sum, 1, {2, 3, 4})'
+fncname: reduce
+fncresult: '10'
+space: function_page
+reftype: function
+parameters:
+  - keyword: function
+    types: Rule or Function Reference
+    description: Rule or expression function.
+  - keyword: initial
+    types: Any Type
+    description: The accumulator's initial value.
+  - keyword: list
+    types: Any Type
+    description: Array of elements that the function iterates through.
+  - keyword: context
+    types: Any Type Array
+    description: Variable number of parameters passed directly into each function evaluation.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Referencing expressions and rules
+Use fn!functionName to reference an expression function and rule!ruleName to reference a rule.
+The initial accumulator value is given by initial.
+Using rules or functions with multiple arguments
+To use rules or functions that take more than two arguments, use the merge() function. For example, given a rule g(x, y, z), reduce(rule!g, i, merge({a, b, c}, {d, e, f})) returns g(g(g(i, a, d), b, e), c, f).
+Understanding results
+Null lists return a null list without executing the function.
+Returns a scalar value if the function called returns a scalar, and returns a list if the function called returns a list.
+Limitations and alternatives
+Best used when the computation of each operation needs to use the result from the previous operation such as when the result of each operation is an array that should be appended to each other in order. The result from the previous operation is then passed to the subsequent operation as the parameter initial.
+a!forEach() cannot be used within rules used in this function.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Given a function h(x, y), reduce(fn!h,initial, {a, b, c}, v) returns h(h(h(initial, a, v), b, v), c, v).
+reduce(fn!sum, 0, {1, 2, 3}) returns 6

@@ -1,0 +1,28 @@
+
+layout: function
+title: usermonth() Function
+space: function_page
+excerpt: "Returns the month from the specified date or datetime in the user preferred calendar."
+category: function_page
+fncname: usermonth
+fncexample: "usermonth(11/20/2006)"
+fncresult: "11"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date or datetime from which the month is to be extracted.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+usermonth(11/20/2006) returns 11

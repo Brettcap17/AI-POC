@@ -1,0 +1,12 @@
+
+layout: "basic"
+title: "a!shpCopyDocumentToAppian() Function [Deprecated]"
+category: "function_page"
+depver: 19.3
+fnccat: "一Deprecated一"
+fncname: "a!shpCopyDocumentToAppian"
+space: "function_page"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. Use the SharePoint connected system to integrate with SharePoint instead.
+For information about a!shpCopyDocumentToAppian(), see the Appian 19.2 documentation.

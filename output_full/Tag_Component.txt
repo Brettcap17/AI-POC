@@ -1,0 +1,121 @@
+
+layout: function
+title: Tag Component
+category: function_page
+compatibility: -crf
+excerpt: Displays a list of short text labels with colored background to highlight important attributes.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!tagField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: tags
+    name: Tags
+    types: List of Variant
+    description: |
+      List of tags to display. Configured using a!tagItem().
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of the image(s). Valid values: "START", "CENTER", "END".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the size of the tags. Valid values: "SMALL", "STANDARD" (default).
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Tag Component
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Tag Item, Tag design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the tag parameter with text values
+
+If the tags parameter is null, contains an empty array, or only contains tag items with no text value, then the label and instructions render with no tags displayed.
+If multiple tags are displayed in a narrow container, tags can wrap onto multiple lines. An individual tag will never be split onto two lines.
+
+Examples
+INCLUDE PAGE: SAIL intro
+Display tags with custom colors
+{% sailbox 600 %}
+a!tagField(
+  labelPosition: "COLLAPSED",
+  tags: {
+    a!tagItem(
+      text: "Silver Member",
+      backgroundColor: "#aaa9ad",
+      textColor: "#ffffff"
+    ),
+    a!tagItem(
+      text: "Corporate Partner",
+      backgroundColor: "#990099"
+    )
+  },
+  size: "STANDARD"
+)
+{% endsailbox %}
+Display multiple tags using looping
+{% sailbox 600 %} 
+a!localVariables(
+  local!skills: {"Problem-Solving", "Communication", "Creativity", "Project Management"},
+  a!tagField(
+    label: "Skills",
+    labelPosition: "ABOVE",
+    tags: a!forEach(
+      items: local!skills,
+      expression: a!tagItem(
+        text: fv!item,
+        backgroundColor: "ACCENT"
+      )
+    ),
+    size: "STANDARD"
+  )
+)
+{% endsailbox %}

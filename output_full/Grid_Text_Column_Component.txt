@@ -1,0 +1,39 @@
+
+layout: function
+title: Paging Grid Text Column Component [Deprecated]
+reftype: sailcomponent
+category: function_page
+compatibility: -crf
+fncname: a!gridTextColumn
+scdisplayname: Paging Grid Text Column
+evolved_fncname: a!gridColumn
+evolved_reason: "Now supports multiple interface components."
+depver: 19.2
+fnccat: "一Deprecated一"
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Name to display for the column heading.
+  - keyword: field 
+    name: Field
+    types: Text
+    description: 'Name of the field that populates the column. Stored into Paging and Selection Value when the user clicks on the column label. A sort indicator displays on the column when its Field argument matches pagingInfo.sort[1].field.'
+  - keyword: data
+    name: Data
+    types: Text Array
+    description: 'Array of valid text values to display in the column.'
+  - keyword: alignment 
+    name: Alignment
+    types: Text
+    description: 'Desired alignment for the label and data values within the column. Valid values are "LEFT", "CENTER", and "RIGHT".' 
+  - keyword: links 
+    name: Links
+    types: Array of Links
+    description: 'Array of values that determine the links to display. Create links with a!authorizationLink(), a!documentDownloadLink(), a!dynamicLink(), a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), a!startProcessLink(), a!submitLink(), a!userRecordLink(), and a!safeLink().' 
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.'
+
+The grid text column component has been deprecated, and will be removed in a future release of Appian. Instead, use a grid column. For information about the grid text column, see the Appian 19.4 documentation.

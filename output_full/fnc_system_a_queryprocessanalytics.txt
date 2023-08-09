@@ -1,0 +1,208 @@
+
+layout: function
+title: a!queryProcessAnalytics() Function
+category: function_page
+excerpt: Executes process reports and returns the resulting data.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!queryProcessAnalytics
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: report
+    types: Document
+    description: |
+      .arf document containing the report configuration.
+  - keyword: query
+    types: Query
+    description: |
+      An optional query object containing paging and extra filters, created with a!query(). If no query is provided, the default paging from the report is used.
+  - keyword: contextGroups
+    types: Group Array
+    description: |
+      One or more groups to pass to the report context.
+  - keyword: contextProcessIds
+    types: Integer Array
+    description: |
+      One or more process ids to pass to the report context.
+  - keyword: contextProcessModels
+    types: Process Model Array
+    description: |
+      One or more process models to pass to the report context.
+  - keyword: contextUsers
+    types: User Array
+    description: |
+      One or more users to pass to the report context.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Process Reports, Query
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+PortalReportDataSubset
+Usage considerations
+Querying process reports
+The user executing the function must be able to see the report configuration file. The report is executed using the same user security context that is running the expression.
+If called multiple times in the same expression with the same parameters, only one query is made to the data store when the expression is evaluated and the result is reused for each identical call. This caching only applies within a single expression evaluation. Return values are not cached in separate expressions, or in separate evaluations of the same expression.
+Using the query parameter
+When a query is passed, the query's pagingInfo overrides the report's configured sorting and paging. The first valid SortInfo object in the query paging field is used to sort the results; other SortInfo objects are ignored.
+If the passed query object has a filter or logical expression, these are applied in addition to the filters configured on the process report. Columns cannot be selected or aggregated via the query parameter but can be configured in the process report.
+Using the context parameters
+If any of the context parameters are populated with objects, those objects are provided to the report as its context. At most one context parameter type may be used.
+Using the contextProcessModels parameter
+contextProcessModels should be given using one or more constants of type Process Model.
+Using the contextUsers parameter
+If no users are passed to contextUsers and the report expects a user context, the report is provided the context of the user evaluating the expression. If contextUsers is populated, only that user or user array is used for the report context.
+Using returned data
+The portalreportdatasubset object returned by this function contains both the unformatted result data and the process report's display configuration. 
+The fields are as follows:
+- name (Text): Configured name of the process report.
+- description (Text): Configured description of the process report.
+- startIndex (Integer): Index of the first returned result.
+- batchSize (Integer): Number of items requested.
+- sort (SortInfo Array): Sort configurations used.
+- totalCount (Integer): Number of total results.
+- columnConfigs (Dictionary Array): Array of dictionaries, one for each column in the returned data. See the Examples section below for an example of the array. Each dictionary has the following fields:
+  - label (Text): Column name configured in the process report.
+  - field (Text): Unique column identifier used to access the column's data from row Dictionaries and to specify a column in a SortInfo configuration.
+  - drilldownField (Text): Unique column drilldown identifier used  to access the column's drilldown value from row Dictionaries.
+  - configuredFormatting (Text): Formatting configured in the process report. This formatting can be interpreted or ignored as the designer chooses.
+  - configuredDrilldown (Text): Drilldown configured in the process report. The drilldown type can be interpreted or ignored as the designer chooses.
+- data (Dictionary Array): Array of dictionaries, one for each returned row, containing the unformatted results of the report's column and drilldown expressions for that row. Use the columnConfigs.field and columnConfigs.drilldownField to get the keys to each column's data. See the Examples section below for an example of this format.
+- identifiers (Any Type): Array of unique row identifiers.
+- errorMessage (Text): The error message encountered executing the report, or null if no error occurred.
+
+appian-style-note
+Sorting on hidden columns is supported even though they are not returned.
+
+Examples
+NOTE: Since constants are specific to each system, these examples will not evaluate in your test rules interface. Use them only as a reference.
+Using only the report parameter
+In this example, we'll get the first page of the All Processes report by querying that report without providing any supplemental query configuration:
+sail
+=a!queryprocessanalytics(report: cons!all_processes)
+The following expression creates a Dictionary array that is equivalent to the returned columnConfigs for the All Processes report:
+sail
+{
+  {
+    label: "Name",
+    field: "c0",
+    drilldownField: "dp0",
+    configuredFormatting: "NORMAL_TEXT",
+    configuredDrilldown: "PROCESS_DASHBOARD"
+  },
+  {
+    label: "Priority",
+    field: "c7",
+    drilldownField: "dp7",
+    configuredFormatting: "PRIORITY",
+    configuredDrilldown: ""
+  },
+  {
+    label: "Status",
+    field: "c8",
+    drilldownField: "dp8",
+    configuredFormatting: "PROCESS_STATUS_ICON",
+    configuredDrilldown: ""
+  },
+  {
+    label: "Started by",
+    field: "c1",
+    drilldownField: "dp1",
+    configuredFormatting: "USER_NAME",
+    configuredDrilldown: ""
+  },
+  {
+    label: "Start Time",
+    field: "c2",
+    drilldownField: "dp2",
+    configuredFormatting: "DATE_TIME",
+    configuredDrilldown: ""
+  },
+  {
+    label: "Active Tasks",
+    field: "c9",
+    drilldownField: "dp9",
+    configuredFormatting: "NUMBER",
+    configuredDrilldown: ""
+  }
+}
+The following expression creates a Dictionary array that is equivalent to two example data rows for the All Processes report:
+sail 
+{
+  {
+    c1: fn!touser("initiating.user"),
+    c2: fn!datetime(2014, 12, 15, 6, 3, 8, 690),
+    c0: "Example Process #1",
+    c9: 0,
+    c8: 0,
+    c7: 1,
+    dp0: 268435502,
+    dp7: null,
+    dp8: null,
+    dp1: null,
+    dp2: null,
+    dp9: null
+  },
+  {
+    c1: fn!touser("intiating.user2"),
+    c2: fn!datetime(2014, 12, 15, 6, 2, 49, 960),
+    c0: "Example Process #2",
+    c9: 0,
+    c8: 0,
+    c7: 1,
+    dp0: 268435497,
+    dp7: null,
+    dp8: null,
+    dp1: null,
+    dp2: null,
+    dp9: null
+  }
+}
+When using supplemental query configurations, you can return specific information from your report. For example, by adding a the query parameter, we can override the default batch size of 25 with a larger value of 50:
+sail 
+=a!queryProcessAnalytics(
+  report: cons!ALL_PROCESSES,
+  query: a!query(
+    pagingInfo: a!pagingInfo(
+      startIndex: 1,
+      batchSize: 50
+    )
+  )
+)
+Using the contextProcessModels parameter
+Get the processes for a process model by passing a process model to the context:
+sail 
+a!queryProcessAnalytics(
+  report: cons!PROCESSES_FOR_PM,
+  contextProcessModels: cons!PURCHASE_REQUEST
+)
+Using the contextUsers parameter
+Get the tasks assigned to a specific user by passing a username to the context:
+sail 
+a!queryProcessAnalytics(report: cons!MY_TASKS, contextUsers: "user.name")
+Using the contextGroups and query parameters
+Get the expense approval tasks from a given region, greater than a given amount, and assigned to users in a given group by passing a group as context and a query with a logical expression:
+sail 
+a!queryProcessAnalytics(
+  report: cons!OPEN_REIMBURSEMENT_REQUESTS,
+  contextGroups: cons!EXPENSE_APPROVERS,
+  query: a!query(
+    pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 20),
+    logicalExpression: a!queryLogicalExpression(
+      operator: "AND",
+      filters: {
+        a!queryFilter(field: "c2", operator: "includes", value: "East"),
+        a!queryFilter(field: "c4", operator: ">", value: 10000)
+      }
+    )
+  )
+)
+{% include related_patterns.html 
+   content=page.fncname
+   heading="Related patterns"
+   intro="none"
+   %}

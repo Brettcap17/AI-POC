@@ -1,0 +1,63 @@
+
+layout: function
+title: toxml() Function
+space: function_page
+excerpt: "Converts a value to its equivalent XML form."
+category: function_page
+fncname: toxml
+fncexample: "Click on the function name to see examples."
+fncresult: ""
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      The value or variable (PV, ACP) to be converted to XML.
+  - keyword: format
+    types: Boolean
+    description: |
+      Whether or not to format the result. If true, the resultant XML is formatted with line breaks and indenting, otherwise it uses a compact notation. If not given, the result is unformatted XML.
+  - keyword: name
+    types: Text
+    description: |
+      The name to use as the root element name in the resultant XML. If not given, the name of the data type of the variable passed as the value parameter is used.
+  - keyword: namespace
+    types: Text
+    description: |
+      The namespace to use as the default namespace in the resultant XML. If not given, the namespace of the data type of the variable passed as the value parameter is used.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+This function supports primitive system data types, custom data types, and the following complex system data types: LabelValue, LabelValueTable, PagingInfo, SortInfo, and DataSubset.
+The XML structure for Complex System Data Types and Appian objects is not guaranteed to remain the same from release to release.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+sail
+toxml(a!paginginfo(startIndex: 1, batchSize: 10))
+returns
+xml
+<a:PagingInfo xmlns:a="http://www.appian.com/ae/types/2009">
+ <startIndex>1</startIndex>
+ <batchSize>10</batchSize>
+</a:PagingInfo>
+A well-formed XML document has a single root element. When you pass a list into toxml(), you get an XML snippet of multiple elements. To end up with a single-root XML document when passing in a list, use a parent-level xml element.
+By wrapping it with a root element, you end up with a well-formed single-root XML document.
+sail
+a!localVariables(
+  local!data:{{ id: 1, value: "First value"}, { id: 2, value: "Second Value"}},
+  "<root>" & toxml(local!data) & "</root>"
+)
+returns
+xml
+<root>
+  <a:Dictionary xmlns:a="http://www.appian.com/ae/types/2009" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><id xsi:type="xsd:int">1</id><value xsi:type="xsd:string">First value</value></a:Dictionary>
+  <a:Dictionary xmlns:a="http://www.appian.com/ae/types/2009" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><id xsi:type="xsd:int">2</id><value xsi:type="xsd:string">Second Value</value></a:Dictionary>
+</root>

@@ -1,0 +1,43 @@
+
+layout: function
+title: userweeknum() Function
+space: function_page
+excerpt: "Returns the week number within the year for the given date or datetime in the user preferred calendar, using a given methodology."
+category: function_page
+fncname: userweeknum
+fncexample: "userweeknum(02/06/2018, 1)"
+fncresult: "6"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date or datetime for which the week number is to be determined.
+  - keyword: methodology
+    types: Number
+    description: |
+      Controls what day the week begins on.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Usage considerations
+For the methodology parameter, use the following:
+
+1 if the week begins on Sunday (Default)
+2 if the week begins on Monday
+3 if the week begins on Tuesday
+4 if the week begins on Wednesday
+5 if the week begins on Thursday
+6 if the week begins on Friday
+7 if the week begins on Saturday
+
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+userweeknum(02/06/2006, 1) returns 6

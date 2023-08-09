@@ -1,0 +1,82 @@
+
+layout: function
+title: a!cmiDelete() Function
+space: function_page
+excerpt: "Deletes an object in the CMIS target system."
+category: function_page
+fncname: a!cmiDelete
+fncsubcat: "CMIS"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: atomPubUrl
+    types: Text
+    description: |
+      The Atom Pub URL of the CMIS target system.
+  - keyword: repositoryId
+    types: Text
+    description: |
+      The repository id on the CMIS target system.
+  - keyword: objectId
+    types: Text
+    description: |
+      The object id of the CMIS object to delete.
+  - keyword: allVersions
+    types: Boolean
+    description: |
+      Determines if all versions of the object should be deleted when applicable. Default: true.            
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Writer, bind().
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+This function returns a writer and must be used with the bind() function.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Delete an object in CMIS
+sail 
+=load(
+  local!cmisObjectId,
+  local!cmiDeleteWriter: bind(
+    null,
+    a!cmiDelete(
+      scsExternalSystemKey: cons!CMIS_SCS_KEY,
+      usePerUserCredentials: true,
+      atomPubUrl: cons!CMIS_URL,
+      repositoryId: cons!CMIS_REPO_ID,
+      objectId: _,
+      allVersions: true
+    )
+  ),
+  {
+      a!textField(
+        label: "CMIS Object Id to Delete",
+        value: local!cmisObjectId,
+        saveInto: local!cmisObjectId
+      ),
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Delete Object",
+            style: "DESTRUCTIVE",
+            value: local!cmisObjectId,
+            saveInto: local!cmiDeleteWriter
+          )
+        }
+      )
+  }
+)

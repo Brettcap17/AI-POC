@@ -1,0 +1,29 @@
+
+layout: function
+title: null() Function
+category: function_page
+excerpt: Returns a null value.
+fnccat: Informational
+fncexample: null()
+fncname: 'null'
+fncresult: 'null'
+parameters:
+  - keyword: value
+    types: Any Type
+    description: 'The value to be inquired for type. For example, typename(runtimetypeof(topeople(123))) might return "Group".'
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Null
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+null() returns null

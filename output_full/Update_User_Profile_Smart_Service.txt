@@ -1,0 +1,383 @@
+
+layout: function
+title: Update User Profile Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: 'The Update User Profile Service Node allows you to update a selected user''s personal data, including their name, address, phone number, supervisor and title.'
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!updateUserProfile
+fncsubcat: Identity_Management
+parameters:
+  - keyword: group
+    types: User
+    description: The user whose profile will be updated.
+  - keyword: overwriteAllFields
+    types: Boolean
+    description: |
+      Set to true to overwrite all fields with the specified values (or null when no value is specified). Set to false to only overwrite fields with specified value and keep the original values when no value is specified. By default, this value is false.
+  - keyword: firstName
+    types: Text
+    description: The new first name of the user.
+  - keyword: middleName
+    types: Text
+    description: The new middle name of the user.
+  - keyword: lastName
+    types: Text
+    description: The new last name of the user.
+  - keyword: nickname
+    types: Text
+    description: The new nickname of the user.
+  - keyword: supervisor
+    types: User
+    description: The new supervisor of the user.
+  - keyword: title
+    types: Text
+    description: The new title of the user.
+  - keyword: email
+    types: Text
+    description: The new email address of the user.
+  - keyword: officePhone
+    types: Text
+    description: The new office phone number of the user.
+  - keyword: mobilePhone
+    types: Text
+    description: The new mobile phone number of the user.
+  - keyword: homePhone
+    types: Text
+    description: The new home phone number of the user.
+  - keyword: address1
+    types: Text
+    description: The new address of the user.
+  - keyword: address2
+    types: Text
+    description: The new address of the user.
+  - keyword: address3
+    types: Text
+    description: The new address of the user.
+  - keyword: city
+    types: Text
+    description: The new city of the user.
+  - keyword: state
+    types: Text
+    description: The new state of the user.
+  - keyword: province
+    types: Text
+    description: The new province of the user.
+  - keyword: zipCode
+    types: Text
+    description: The new ZIP code of the user.
+  - keyword: country
+    types: Text
+    description: The new country of the user.
+  - keyword: locale
+    types: Text
+    description: |
+      The new locale code of the user, such as en_US or de. If not provided, defaults to the primary locale.
+  - keyword: timeZone
+    types: Text
+    description: |
+      The time zone ID of the user, such as America_New York or Europe/London. If not provided, defaults to the environment's primary time zone. To find the time zones available on your environment, view the Time Zone options in your User Settings or the Internationalization tab of the Admin Console.
+  - keyword: calendar
+    types: Text
+    description: |
+      The new calendar of the user. If not provided, defaults to the primary calendar. Valid values: gregorian, Epoch A T1, Epoch A T2, Epoch B T1, Epoch B T2, Umm Al Qura.
+  - keyword: customField1
+    types: Text
+    description: The new value of custom field 1 of the user.
+  - keyword: customField2
+    types: Text
+    description: The new value of custom field 2 of the user.
+  - keyword: customField3
+    types: Text
+    description: The new value of custom field 3 of the user.
+  - keyword: customField4
+    types: Text
+    description: The new value of custom field 4 of the user.
+  - keyword: customField5
+    types: Text
+    description: The new value of custom field 5 of the user.
+  - keyword: customField6
+    types: Text
+    description: The new value of custom field 6 of the user.
+  - keyword: customField7
+    types: Text
+    description: The new value of custom field 7 of the user.
+  - keyword: customField8
+    types: Text
+    description: The new value of custom field 8 of the user.
+  - keyword: customField9
+    types: Text
+    description: The new value of custom field 9 of the user.
+  - keyword: customField10
+    types: Text
+    description: The new value of custom field 10 of the user.
+  - keyword: onSuccess
+    types: Any Type
+    description: |
+      A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError*
+    types: Any Type
+    description: |
+      A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Change_User_Type.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} Any fields not modified will retain their previous information. If you do not select a user, any changes made are applied to the user running the node.
+
+appian-style-note
+The Update User Profile Service Node can only be executed by someone who is a System Administrator. Attempting to modify a user account other than your own, without sufficient user rights generates an error alert for the Process Administrator and pauses the process.
+
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+The Data tab displays all the node inputs and node outputs for the Smart Service node. You can add additional inputs and outputs, if needed. The default inputs generated for the Update User Profile node are:
+
+
+ Input
+ Data Type
+ Required
+ Multiple
+
+
+Choose User
+User
+Yes
+No
+
+
+Overwrite All Fields
+Boolean
+No
+No
+
+
+First Name
+Text
+Yes
+No
+
+
+Middle Name
+Text
+No
+No
+
+
+Last Name
+Text
+Yes
+No
+
+
+Nickname
+Text
+No
+No
+
+
+Supervisor*
+User
+No
+No
+
+
+Title
+Text
+No
+No
+
+
+E-mail
+Text
+Yes
+No
+
+
+Office Phone
+Text
+No
+No
+
+
+Mobile Phone
+Text
+No
+No
+
+
+Home Phone
+Text
+No
+No
+
+
+Address 1
+Text
+No
+No
+
+
+Address 2
+Text
+No
+No
+
+
+Address 3
+Text
+No
+No
+
+
+City
+Text
+No
+No
+
+
+State
+Text
+No
+No
+
+
+Province
+Text
+No
+No
+
+
+ZIP Code
+Text
+No
+No
+
+
+Country
+Text
+No
+No
+
+
+Locale*
+Text
+No
+No
+
+
+Time Zone*
+Text
+No
+No
+
+
+Calendar*
+Text
+No
+No
+
+
+Custom Field 1
+Text
+No
+No
+
+
+Custom Field 2
+Text
+No
+No
+
+
+Custom Field 3
+Text
+No
+No
+
+
+Custom Field 4
+Text
+No
+No
+
+
+Custom Field 5
+Text
+No
+No
+
+
+Custom Field 6
+Text
+No
+No
+
+
+Custom Field 7
+Text
+No
+No
+
+
+Custom Field 8
+Text
+No
+No
+
+
+Custom Field 9
+Text
+No
+No
+
+
+Custom Field 10
+Text
+No
+No
+
+
+* See specific usage considerations for additional information.
+Node outputs
+This node does not return any values.
+Usage considerations
+Consider the following when using this smart service.
+General considerations
+
+
+If the node is run without being assigned to a user (or a group), you must specify values for each of the node inputs. If you want to overwrite all fields, including setting some fields to null, set the Overwrite All Fields input to true. You can either manually enter data into the text field, or generate a value using the Expression Editor. When using the Expression Editor, you can reference and modify process variables, rules, constants, and other data. The expressions then populate your node input values. 
+
+
+If the node is assigned, the node input values are typed by your assigned user(s) into a form. 
+
+
+Specific considerations
+
+Supervisor: If the user selected for the Supervisor field has been deactivated since the profile was last updated, an error is thrown and the process pauses by exception until a valid user or no user is entered for the field. 
+Locale: The locale code of the user, such as en_US or de. If not provided, defaults to the environment's primary locale.
+Time Zone: The time zone ID of the user, such as America_New York or Europe/London. If not provided, defaults to the environment's primary time zone. To find the time zones available on your environment, view the Time Zone options in your User Settings or the Internationalization tab of the Admin Console.
+Calendar: The calendar of the user.  If not provided, defaults to the environment's primary calendar. Valid values: gregorian, Epoch A T1, Epoch A T2, Epoch B T1, Epoch B T2, Umm Al Qura.
+
+a!updateUserProfile()
+The Update User Profile smart service is available as an expression function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

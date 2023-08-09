@@ -1,0 +1,13 @@
+
+layout: function
+title: 'a!isNativeTablet() Function [Deprecated]'
+category: function_page
+depver: 20.4
+fnccat: 一Deprecated一
+fncname: isNativeTablet
+fncsyntax: 'isNativeTablet()'
+compatibility: -crf
+reftype: function
+
+The isNativeTablet() function has been deprecated, and will be removed in a future release of Appian. Instead, use the a!isPageWidth() function to more easily optimize responsive UIs for tablet width or the a!isNativeMobile() function to conditionally change a component's behavior based on if the user is on the Appian Mobile application.
+For information about the isNativeTablet() Function, see the Appian 20.3 documentation.

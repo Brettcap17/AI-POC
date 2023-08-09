@@ -1,0 +1,38 @@
+
+layout: function
+title: date() Function
+space: function_page
+excerpt: "Converts text into data accepted by the date data type and functions that require date parameters."
+category: function_page
+fncname: date
+fncexample: "date(2011, 12, 13)"
+fncresult: "12/13/2011"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: year
+    types: Integer
+    description: |
+      The year of the date you would like to convert into a serial number.
+  - keyword: month
+    types: Integer
+    description: |
+      It month of the date in number format without leading zeros for a month with one digit.
+  - keyword: day
+    types: Integer
+    description: |
+      The day component of the date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+date(2009,7,5) returns 7/5/2009

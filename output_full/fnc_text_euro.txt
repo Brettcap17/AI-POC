@@ -1,0 +1,42 @@
+
+layout: function
+title: euro() Function
+space: function_page
+excerpt: "Converts a decimal number into a euro value by effectively adding a euro symbol (€), a decimal point, and optional comma for every three digits preceding the decimal."
+category: function_page
+fncname: euro
+fncexample: "euro( 13213.43 )"
+fncresult: "€13,213.43"
+fnccat: Text
+compatibility: -crf, +pr, +pe
+reftype: function
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number of euros to be returned as text.
+  - keyword: decimals
+    types: Integer
+    description: |
+      The number of digits after the decimal to display.
+  - keyword: no_commas
+    types: Integer
+    description: |
+      An optional flag value indicating whether commas are used as number separators. It accepts 0 or 1. The default value is 0.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Understanding results
+If no arguments are passed, the Euro symbol itself is returned as text.
+If no decimals value is passed, the function uses 2 by default.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+euro(3213.43) returns €3,213.43

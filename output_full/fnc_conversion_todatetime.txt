@@ -1,0 +1,40 @@
+
+layout: function
+title: todatetime() Function
+space: function_page
+excerpt: "Converts a value to Date and Time."
+category: function_page
+fncname: todatetime
+fncexample: "todatetime(date(2005, 12, 13))"
+fncresult: "12/13/05 12:00 AM GMT"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: datetime()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Datetime
+Usage considerations
+Using todatetime() with arrays
+When operating on arrays, it is not necessary to use apply with todatetime. If multiple parameters are passed, or one parameter is an Array, todatetime will return a Datetime Array.
+Date formatting
+Text will be parsed in 'm/d/y' format to form a datetime.
+Time zones
+When datetime values are presented to users in the interface, they are localized to the current user's timezone. This can cause the expected output to vary significantly. Additionally, the acronym of the local timezone (such as EST) is appended to a displayed datetime value when it appears in a form, an alert, or in an email.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+todatetime(date(2005,12,13)) returns 12/13/05 12:00 AM GMT
+todatetime("12/13/2005") returns 12/13/05 12:00 AM GMT
+todatetime("12/13/2005","12/14/2005") and todatetime({"12/13/2005","12/14/2005"}) both return {12/13/05 12:00 AM GMT,12/14/05 12:00 AM GMT}

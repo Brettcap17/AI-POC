@@ -1,0 +1,38 @@
+
+layout: function
+title: a!doesGroupExist() Function
+category: function_page
+excerpt: Verifies whether a group with the specified group ID already exists in the environment.
+fnccat: People
+fncexample: a!doesGroupExist(6)
+fncname: a!doesGroupExist
+fncresult: true
+compatibility: -crf
+parameters:
+  - keyword: groupId
+    types: Number (Integer)
+    description: |
+      The ID of the group to be checked.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Usage considerations
+Returns true when the specified group exists on the system, regardless of security.
+This function is particularly useful to add error handling around group IDs that have been stored and then retrieved from a database. 
+a!doesGroupExist() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+a!doesGroupExist(6) returns true
+a!doesGroupExist(null) returns false
+sail
+if(a!doesGroupExist(ri!myGroup),
+  group(ri!myGroup, "groupName"),
+  "Unavailable"
+)

@@ -1,0 +1,152 @@
+
+layout: function
+title: Image Component
+category: function_page
+compatibility: -crf
+excerpt: Displays an image from document management or the web.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!imageField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: images
+    name: Images
+    types: Any Type
+    description: |
+      Array of images to display, created with a!webImage(), a!userImage(), or a!documentImage().
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines how the images are sized. Valid values: "ICON", "GALLERY", "TINY", "SMALL", "MEDIUM" (default), "LARGE", "FIT". See the documentation for guidance on how to use different image sizes effectively.
+  - keyword: isThumbnail
+    name: Image is a thumbnail
+    types: Boolean
+    description: |
+      Determines whether the images can be viewed at a larger size when clicked. Multiple images will be visible in a slideshow. Default: false.
+  - keyword: style
+    name: Style
+    types: Text
+    description: |
+      Determines how the images are rendered. Valid values: "STANDARD" (default), "AVATAR".
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of the image(s). Valid values: "START", "CENTER", "END". Image fields in grids are center-aligned by default. Image fields outside of grids are start-aligned by default.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Image
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Document Image.
+User Image.
+Web Image.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+The maximum display dimensions for each Size are listed below:
+
+"ICON": 20x20 pixels
+"TINY": 60x120 pixels
+"GALLERY": 240x80 pixels
+"SMALL": 100x200 pixels
+"MEDIUM": 200x400 pixels
+"LARGE": 400x600 pixels
+"FIT": natural dimensions
+
+Usage considerations
+Using the style parameter
+
+If style is set to "STANDARD", images are scaled down as necessary to fit the size limit, preserving their natural aspect ratio. Images will never be scaled up with this configuration, so they'll display at their natural size if they are smaller than the configured size.
+If style is set to "AVATAR", images are scaled down or up as necessary to fit the size limit, preserving their natural aspect ratio, and cropped in a circle.
+
+Using the size parameter
+
+If size is set to "FIT", images display at either their natural width or the width of the container, whichever is smaller.
+Images look best with the ICON size if they are 40 x 40 pixels and have a transparent background. The images display at 20 x 20 pixels but an original size of 40 x 40 pixels is recommend if any users view the images on high-definition screens, like an iPhone, iPad, or Mac.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Display a series of document images
+sail 
+a!imageField(
+  label: "Image Field Example",
+  images: {
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "HAMMER", color: "BLUE")
+    ),
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "GEARS", color: "GREY")
+    ),
+    a!documentImage(
+      document: a!iconNewsEvent(icon: "BRIEFCASE", color: "GREEN")
+    )
+  }
+)
+Displays the following:
+{:.screenshot}
+Display a series of user images with looping
+sail 
+a!imageField(
+  label: "Images",
+  size: "MEDIUM",
+  style: "AVATAR",
+  images: a!forEach(
+    /* 
+    * Usernames of users in your environment. 
+    * Please adjust usernames appropriately.
+    */
+    items: { "james.baker", "karen.anderson", "maria.lopez" },
+    expression: a!userImage(
+      user: fv!item
+    )
+  )
+)
+Displays the following:
+{:.screenshot}

@@ -1,0 +1,45 @@
+
+layout: function
+title: cast() Function
+category: function_page
+excerpt: Converts a value from its existing type to the specified type.
+fnccat: Informational
+fncexample: 'cast(type!Date,"01-01-2017")'
+fncname: cast
+fncresult: 1/1/2017
+compatibility: +pe, +pr
+parameters:
+  - keyword: typeNumber
+    types: Number (Integer)
+    description: |
+      The type to which the value should be cast. This may be retrieved by using typeof(x), where x is a value of the intended type, or referencing a type with 'type!{namespace}type-name' (within single quotes).
+  - keyword: value
+    types: Any Type
+    description: The value that should be cast to type typeNumber.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Casting, typeof(), Delete Data Types
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type 
+Usage considerations
+Referencing data types
+
+To retrieve the type number, use typeof(x), where x is a value of the intended type, or reference a type with type!{namespace}type-name (within single quotes).
+When referencing a data type, consider the impact that deleting the data type has on the expression that references it.
+
+Use in portals
+
+In portals, you cannot cast a value to a record type.
+
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+cast('type!{http://www.appian.com/ae/types/2009}Integer', 123.4) returns 123
+cast(1, 123.4) returns 123

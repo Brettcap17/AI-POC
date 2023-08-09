@@ -1,0 +1,105 @@
+
+layout: "basic"
+title: "Troubleshoot Common Issues"
+topic-group: "C"
+weight: 6
+
+Overview
+This page provides some recommendations on how to troubleshoot some common issues that arise when developing, deploying, designing, or executing your connected system plug-in.
+Development
+Issues that may arise during development of a connected system plug-in.
+Compilation fails
+
+Ensure the libraries are accessible from your development machine, this may require an internet connection to the Maven repository.
+Ensure Core and Client versions that are used for compilation match the SDK version compatibility table.
+For example, client is compiled with a minimum supported version of Core. If a lower version of Core is used then compilation may fail.
+
+Jar task fails
+
+Ensure no two packages have the same name.
+
+Deployment
+Issues that may arise during installation or deployment of a connected system plug-in.
+Registering Services error
+If you find the Registering Services error is logged, this is not an actual error that will affect the plug-in functionality
+
+Disable Spring Publish Context.
+See this example snippet as an example.
+
+Plug-in fails to deploy
+
+Ensure Java compiler version is 1.8
+Ensure Core and Client versions that are used for compilation match the SDK version compatibility table for the targeted Appian environment.
+
+Design
+Issues that may arise while configuring applications and objects within the Appian Designer:
+Values are not persisted when loading a connected system or integration
+
+If you are using the Client library and creating a new SimpleConfiguration object in getConfiguration(), please ensure to call setValue() with the old values from the SimpleConfiguration parameters.
+If you are using the Core library, please ensure the State object is being reused in getConfigurationDescriptor().
+
+The getConfiguration Methods are not Called when Values Change in the UI
+
+Ensure PropertyDescriptor.refresh() is set to RefreshPolicy.ALWAYS.
+
+Can not find class error message on load of connected system
+
+Ensure Core and Client versions that are used for compilation match the SDK version compatibility table for the targeted Appian environment.
+
+Name and description labels are showing as ???myKey???
+
+Ensure the resource file is present, in the correct location, and the keys are correct.
+Ensure setProperties is called in each call to getConfiguration using the correct locale.
+
+Labels are not showing as internationalized
+
+Ensure that you have provided a corresponding resource file for the new Locale.
+Ensure you are building a SimpleConfiguration or ConfigurationDescriptor using ExecutionContext.getDesignerLocale().
+Ensure setProperties is called in each call to getConfiguration using the correct locale.
+
+Connected System, integration, or client API objects are not appearing in UI
+
+Ensure the objects have the @TemplateId annotation.
+Ensure the objects are registered in the appian-plugin.xml.
+Ensure integration-template and client-api elements are nested within their parent connected-system-template in the appian-plugin.xml.
+
+Logos are not appearing in UI
+
+Ensure the image type is one of the following: .svg, .jpg, .jpeg, or .png
+Ensure the images have the correct paths and are named correctly.
+See how to add logos for more details.
+
+500 box with No Value Present message
+
+If you are using the Client library and creating new LocalTypeDescriptor, ensure that the LocalTypeDescriptor is registered by calling localTypeProperty on your instance of the SimpleIntegrationTemplate class
+If you are using the Core library, ensure that all Local Types that are used in the ConfigurationDescriptor are passed to the StateGenerator constructor
+
+Properties within LocalType are not appearing
+
+Ensure the LocalTypeDescriptor.properties() is not null
+If you are using the Client library and creating new LocalTypeDescriptor, ensure that the LocalTypeDescriptor is registered by calling localTypeProperty on your instance of the SimpleIntegrationTemplate class
+If you are using the Core library, ensure that all Local Types that are used in the ConfigurationDescriptor are passed to the ConfigurationDescriptorBuilder.withTypes() method
+
+Error box with a status code of 500 when opening a integration SDK object
+
+Ensure that the Integration SDK object is still installed in a plug-in.
+Ensure the Integration SDK object is abiding by the restrictions.
+
+Execution
+Issues that may arise when the user is using the Integration SDK objects from within Appian:
+Failures are showing for plug-in objects
+
+Check the status and settings of all required 3rd party dependencies
+Check proxy, OAuth, keys, credentials, and VPN
+For example, a Process Modeler throws a 500 internal error indicating that it fails when communicating with the external system.
+Ensure all configurations to 3rd party systems are set appropriately.
+For example, connection strings or credentials.
+
+Integration executes multiple times
+
+If the template executes a WRITE action (such as sending a document or inserting data), then the SimpleIntegrationTemplate/IntegrationTemplate class should be annotated with @IntegrationTemplateType(IntegrationTemplateRequestPolicy.WRITE).
+
+Null pointer exception on a required field
+
+The required property only enforces requiredness in the integration designer.
+Ensure the integration execute method contains handling for null values, even the required values.

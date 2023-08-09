@@ -1,0 +1,21 @@
+
+layout: basic
+title: OpenAPI Connected System
+topic-group: A
+weight: 101
+
+Overview
+OpenAPI connected systems are HTTP connected systems that leverage an OpenAPI document to inherit a base URL and authentication options. Additionally, they can use that OpenAPI document to display the list of included operations and generate integrations from them. These generated integrations will already include the path, rule inputs, query parameters, and  HTTP headers specified by the OpenAPI document.
+Appian automatically generates an expression for the URL with rule inputs for any path parameters. It also generates required headers and query parameters.
+For more information about the Authentication types that may be available from the Authentication dropdown list, see Authentication Types
+Properties
+OpenAPI connected systems have the following properties:
+|Field|Description|
+|-|-|
+| Name | The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+|System Logo|An image document used to visually represent the external system or service being connected to. The logo is displayed in the integration designer and in the Process Modeler on integrations that connect to this system (using the Call Integration Smart Service). If no document is selected a default logo will be used instead.|
+|OpenAPI/Swagger Document|An OpenAPI documents (formerly known as a Swagger document) defines a standard interface to a RESTful API.  They can be read by a human or computer to understand the capabilities of a web service without access to source code/documentation. By uploading these to your connected system, Appian can inherit base URLs, authentication details, and a list of operations.|
+|Base URL |A consistent prefix for the URLs of this connected system's integrations. This value can be selected from the list of base URLs that are inherited from the attached OpenAPI document.  This value is included in import customization files so that you can specify a different value for each environment.|
+|Authentication|The type of authentication that integrations leveraging this connected system will use. For authentication options, see Authentication Types.|
+{:.screenshot}

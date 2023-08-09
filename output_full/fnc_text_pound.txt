@@ -1,0 +1,42 @@
+
+layout: function
+title: pound() Function
+space: function_page
+excerpt: "Converts the number into pounds by effectively adding a pound symbol (£), a decimal point, and one comma for every three digits preceding the decimal."
+category: function_page
+fncname: pound
+fncexample: "pound(3213.43,2)"
+fncresult: "£3,213.43"
+fnccat: Text
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number of pounds to be returned as text.
+  - keyword: decimals
+    types: Decimal
+    description: |
+      The number of digits after the decimal to display.
+  - keyword: no_commas
+    types: Integer
+    description: |
+      An optional flag value indicating whether commas are used as number separators. It accepts 0 or 1. The default value is 0.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Understanding results
+If no arguments are passed, the pound symbol itself is returned as text.
+If no decimals value is passed, the function uses 2 by default.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+pound(3213.43,2) returns £3,213.43

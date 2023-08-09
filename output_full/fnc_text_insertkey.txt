@@ -1,0 +1,38 @@
+
+layout: function
+title: insertkey() Function
+space: function_page
+excerpt: "Returns the provided text, wrapped with the specified delimiters."
+category: function_page
+fncname: insertkey
+fncexample: "insertKey( \"hello\", \"[\", \"]\" )"
+fncresult: "[hello]"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: key
+    types: Text
+    description: |
+      A key or array of keys.
+  - keyword: startDelimiter
+    types: Text
+    description: |
+      String for the start delimiter.
+  - keyword: endDelimiter
+    types: Text
+    description: |
+      String for the end delimiter.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+insertKey("hello", "[", "]") returns [hello]

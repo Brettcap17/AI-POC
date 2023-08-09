@@ -1,0 +1,112 @@
+
+layout: function
+title: user() Function
+category: function_page
+compatibility: '-crf, ~portal, ~om, +pe, +pr'
+excerpt: Returns information for a user. 
+fnccat: People
+fncexample: 'user("jane.smith", "created")'
+fncname: user
+fncresult: '12/20/22 10:36 PM GMT'
+parameters:
+  - keyword: username
+    types: Text
+    description: |
+      The username or user object of the user whose information should be retrieved.
+  - keyword: property
+    types: Text
+    description: |
+      The information to retrieve for this user. See Usage considerations.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the property parameter
+The property parameter accepts the following (case-sensitive) values:
+
+firstName
+middleName
+lastName
+displayName (the user's nickname)
+supervisorName
+titleName
+email
+phoneOffice
+phoneMobile
+phoneHome
+address1
+address2
+address3
+city
+state
+province
+zipCode
+country
+locale
+timeZone
+customField1
+customField2
+customField3
+customField4
+customField5
+customField6
+customField7
+customField8
+customField9
+customField10
+uuid
+created
+status
+userTypeId
+userTypeName
+
+
+appian-style-note
+locale and timeZone return the user's preference or null if not set.
+
+Querying multiple users
+The user() function can only return information about a single user. If you need to return information about multiple users, you should use the a!queryRecordType() function to query the User record type. 
+For example, you could use the user() function to display a user's first and last name. But, if you want to display the first and last name of all active users, you would use the following expression:
+sail
+a!queryRecordType(
+  recordType: recordType!User,
+  fields: recordType!User.fields.firstAndLastName,
+  filters: a!queryFilter(
+    field: recordType!User.fields.active,
+    operator: "=",
+    value: true
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 500)
+).data
+Returns
+sail
+Jane Doe
+John Smith
+Sam Jones
+William Doe
+Learn more about referencing data from the User record type
+Examples
+The following examples use a sample record type called Employee. These expressions illustrate how to display data in a record list, which is why they uses the fv! domain prefix.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Return a user's first and last name
+sail
+user(username: fv!row[recordType!Employee.fields.username], property: "firstName") & " " & user(username: fv!row[recordType!Employee.fields.username], property: "lastName")
+Returns
+Jane Doe
+Return the timestamp when a user was created
+sail
+user(username: fv!row[recordType!Employee.fields.username], property: "created")
+Returns
+12/20/22 10:36 PM GMT
+Return a user's email
+sail
+user(username: fv!row[recordType!Employee.fields.username], property: "email")
+Returns 
+jane.doe@example.com

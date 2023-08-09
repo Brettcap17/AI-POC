@@ -1,0 +1,181 @@
+
+layout: video
+title: Generate a Source for Your Record Type
+permalink: create-record-data-source.html
+title_short: Generate a Source
+topic-group: B
+weight: 101
+videodesc: |
+   This video from Academy Online walks you through creating a database table with codeless data modeling.
+videolink: 'https://www.youtube.com/embed/5Y5d5t2cKoM'
+videotitle: How to Structure and Manage Data Easily with Codeless Data Modeling
+
+This page describes how to generate a database table at the same time that you're creating your record type.
+
+appian-style-tip
+Already have a source configured? Learn how to choose an existing data source for your record type.
+
+Overview
+Creating relational database tables usually involves specialized knowledge of SQL commands and best data practices. With codeless data modeling in Appian, however, it's not just database administrators who can create and configure database tables. In this streamlined process, any developer can build and structure data perfectly for an application while configuring a record type.
+Using our guided experience, you can quickly define the fields you want to add to your record type. We'll provide default fields like a primary ID field, and we'll suggest other commonly-used fields like a start date field. We'll also walk you through adding relationships to the record type and save you time by generating the common field that enforces that each relationship. 
+Then, we'll use the fields you've defined for your record type to automatically generate a database script to create the corresponding fields in a database table. Then we'll execute that script in your selected MariaDB data source. We'll use the same names you give the record fields, but we'll change them to meet the naming requirements of the database. For example, for the record field startDate, we'll create a START_DATE field in the database table. Then we'll execute that database script to create the table in your selected data source and give you the opportunity to download the auto-generated database script for future deployments.
+Once you finish, your new data model will be reflected in your record type, and the database table will be synced in Appian.
+
+appian-style-note
+To take full advantage of codeless data modeling, you'll need permissions to create a table in your selected database. If you don't have those permissions, you can still use the guided experience to generate a database script, which you'll then need to run in the database yourself.
+
+To generate a database table from a record type:
+
+Start the guided experience
+Select a database. 
+Configure your data structure.
+Add record type relationships.
+Review and edit your data model.
+(Optional) Prevent table creation. 
+Save your changes.
+(Optional) Download the auto-generated database script.
+Click FINISH.
+
+Start the guided experience
+
+In your application, create a new record type.
+On the Data Model page, click TELL US ABOUT YOUR DATA. The Configure Data Source dialog opens.
+Select New Data Model. 
+
+{:.screenshot}
+
+Click NEXT.
+
+Select a database
+In this step, you'll select the relational database where Appian will create your table.
+{:.screenshot}
+For Data Source, you can choose any MariaDB database connected to your Appian environment. 
+If your environment contains a single relational database, that database is selected and cannot be unselected.
+When you've selected a database, click NEXT.
+Configure your data structure
+In this step, you'll add and configure the fields you want to include in your record type. 
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-configure-structure.png" alt="data structure configuration in the Create Data Model dialog" %}
+You can:
+- Review the default fields.
+- Add commonly used fields.
+- Add a choice list field.
+- Add a field.
+- Add multiple fields.
+- Configure field properties.
+- Reorder fields.
+- Remove a field.
+When you've finished configuring your data structure, click NEXT.
+Review the default fields
+For your new record type, we'll automatically provide fields like a primary ID field, so that you can follow data modeling best practices by default.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-review-default-fields.png" alt="default fields highlighted in the Create Data Model dialog" %}
+The default fields include the following:
+| Field | Type | Description |
+| - | - | - | 
+| id | Integer | The primary key for the record. Data sync requires a single primary key field per record type. |
+| createdBy | User | The user who created the record. |
+| createdOn | Date and Time |  The date on which the user created the record. |
+| modifiedBy | User | The user who last modified the record. |
+| modifiedOn | Date and Time | The date on which the user modified the record. |
+Add commonly used fields
+In the Commonly Used Fields pane, we provide a list of fields that are commonly used in data structures.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-add-suggested-field.png" alt="suggested fields highlighted in the Create Data Model dialog" %}
+The commonly used fields include:
+| Field | Type |
+| - | - |
+| name | Text |
+| description | Text |
+| startDate | Date | 
+| endDate | Date |
+| isActive | Boolean | 
+| assignee | User |
+To add a commonly used field to the data structure, click the field in the Commonly Used Fields pane. The system adds the commonly used field as follows:
+- If you've retained the default fields in default order, the system inserts the commonly used field before the createdBy field.
+- If you've changed the order of the default fields or modified the default fields, the system inserts the commonly used field as the last field of the table.
+Add a choice list field
+In the Choice List Fields pane, we provide some commonly-used categories of reference data (for example, "status"). This reference data represents a list of static values, which you can then allow your end users to select from as a list of choices. 
+When you select one of these categories, Appian creates a related record type to store the static values you define, and adds a common field to the current record type that links to the new related record type.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-add-choice-list-field.png" alt="Choice list fields highlighted in the Create Data Model dialog" %}
+INCLUDE PAGE: add-choice-list-field
+Add a field
+INCLUDE PAGE: add-single-source-field
+Add multiple fields
+INCLUDE PAGE: add-multiple-source-fields
+Configure field properties
+INCLUDE PAGE: configure-source-field-properties
+
+appian-style-note
+You cannot change the primary key designation for the id field in this confirmation dialog. To change it after exiting this dialog, you'll need to modify the data source, then sync the record type.
+
+Reorder fields
+INCLUDE PAGE: reorder-source-fields
+You cannot change the order of the primary key field. Following best practice, that field is always retained as the first field in the table.
+Keeping the other default fields as the last fields in the table also aligns with database maintenance best practices. However, you can change the order of those default fields as needed.
+Remove a field
+To remove a field from the data structure, click  in the field row.
+If you remove a common field (a field with ), you can choose to delete the corresponding relationship as well. 
+Add record type relationships
+In this step, you'll add relationships to your record type. Record type relationships allow you to reference related data from your record type, which makes development faster and easier.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-add-relationship-page.png" alt="options for adding a relationship in the Create Data Model dialog" %}
+
+appian-style-note
+If you added a choice list field, the relationship to your new related record type is already configured. In the image above, the status relationship appears because the status category was selected from the Choice List Fields pane.
+
+You can add relationships at any point in development, but defining a relationship here has many benefits. A relationship requires that your record type contains a common field that's used in both your record type and the related record type. If you add a relationship at this point, Appian can write that common field to the data source as part of the initial table creation. You can always add the relationship later, but depending on the method you use to make the change, you might have to manually add the common field to the data source. 
+What's more—when you add the relationship now, Appian can automatically generate a common field for you based on the relationship type you select.
+To add a relationship:
+
+Select the record type to which you want to establish a relationship:
+To select a record type in the current application, click a record type listed in the Suggested Record Types pane. For example, see Employee in the image above. If your application doesn't have any record types yet, this pane is blank.
+To select a record type in the current environment:
+Click NEW RELATIONSHIP in the Relationships pane.
+Search for and select a record type in the Related Record Type field.
+Click NEXT.
+   
+
+
+
+The Add Relationship to <Record Type> dialog displays. For example:
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-add-relationship.png" alt="Add Relationship to Project dialog" style="width:80%;" %}
+INCLUDE PAGE: add-relationship-source-field
+
+(Optional) Remove a relationship by clicking .
+Click NEXT.
+
+Review and edit your data model
+In this step, you'll review the data model you've configured and make changes as necessary.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-review-model.png" alt="data model review in Create Data Model dialog" %}
+The review page includes the following elements:
+
+Fields tab: Lists the fields you want to add to your record type and the new database table. In this tab, you can add fields, add a choice list, configure field properties, reorder fields, and remove fields the same way you would in the earlier step.
+Relationships tab: Lists the relationships you want to add to your record type. In this tab, you can add or remove relationships the same way you would in the earlier step.
+Relationship Diagram: Displays a diagram of the relationships you added in the earlier step.
+
+If you're experienced with database scripts, you might want to preview the auto-generated database script at this point. To do so, click Preview database script.
+
+appian-style-note
+If you used the Choice List Field option to generate a related record type, note that the table for the related record type is not included in this database script because it was already created in your database.
+
+Before you continue, verify whether you want Appian to create a database table at this time.
+Prevent table creation (Optional)
+By default, the system will use the auto-generated database script to create a table in the database you selected earlier. You'll just need to keep the Create Table option selected.
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-highlight-create-table.png" alt="Create Table option highlighted in the review step of the Create Data Model dialog" %}
+However, under certain conditions, you might want to prevent Appian from creating the table. For example, you might need to make modifications to the script like editing the field names to meet database administration requirements or adding foreign keys and constraints. 
+In that case, you can prevent the system from creating the table, while still taking advantage of the guided experience to generate the basic script.
+To prevent table creation, unselect the Create Table checkbox.
+Save your changes
+Click SAVE CHANGES to save your changes to the record type. 
+{% include zoompic.html url="images/Create_Record_Type/create-data-source-highlight-save-changes.png" alt="Save Changes button highlighted in the Create Data Model dialog" %}
+If the Create Table checkbox is selected, Appian will save the data model for the record type and create a new table in the database. 
+If the Create Table checkbox is unselected, Appian will save the data model for your record type, but make no changes to the database itself. Because the table does not yet exist in the database, the sync will fail for your record type. As a result, error indicators of the failed sync will display in the record type until you create the table in the database and trigger a full sync.
+Download the database script (Optional)
+After Appian successfully saves the changes to your record type, you have only one step left: deciding whether to download the auto-generated database script. 
+{:.screenshot}
+You can use the database script to:
+- Create the new table directly in the database if you prevented table creation earlier.
+- Deploy any application that uses the record type to another environment. To do this, you can include the script in a deployment package  or run the script in the target environment prior to a manual deployment.
+By default, the Download database script is selected, and the system will download the script when you click FINISH.
+If you do not want to download the script, unselect the Download database script checkbox before clicking FINISH. 
+When you unselect this checkbox, a banner will appear asking if you want to save your download preferences. You can choose to skip the database script download each time you update to the source, or return to the default download setting so the script is downloaded whenever you update the source.
+
+appian-style-caution
+The auto-generated database script is not saved in Appian, so we strongly recommend downloading the script now and storing it locally. 

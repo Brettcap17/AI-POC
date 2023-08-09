@@ -1,0 +1,36 @@
+
+layout: function
+title: toemailrecipient() Function
+space: function_page
+excerpt: "Converts a value to email recipient."
+category: function_page
+fncname: toemailrecipient
+fncexample: "toemailrecipient(togroup(1))"
+fncresult: "[Group:1]"
+fnccat: Conversion
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Send E-Mail Smart Service
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Email Recipient
+Usage considerations
+Acceptable input
+Accepts values of type email address, user, and group.
+Understanding results
+Output can be used in the To:, Cc:, or Bcc: fields in the Setup tab of the Send E-Mail Smart Service.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+toemailrecipient(togroup(1)) returns [Group:1] as an Email Recipient type.

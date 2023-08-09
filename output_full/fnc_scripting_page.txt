@@ -1,0 +1,11 @@
+
+layout: function
+title: page() Function
+space: no_toc
+depver: 16.3
+category: function_page
+fncname: page
+fnccat: "一Deprecated一"
+reftype: function
+
+INCLUDE PAGE: portal_dep_notice.md

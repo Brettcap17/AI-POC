@@ -1,0 +1,37 @@
+
+layout: function
+title: urlwithparameters() Function
+category: function_page
+excerpt: 'This function allows you to build a URL from an expression, using arrays of process and constant data.'
+fnccat: Scripting
+fncexample: '"View Payments"'
+fncname: urlwithparameters
+fncresult: View Payments
+compatibility: -crf, ~portal, ~om
+space: function_page
+reftype: function
+parameters:
+  - keyword: parameterNames
+    types: Text Array
+    description: |
+      The parameters to append to the URL.
+  - keyword: parameterValues
+    types: Text Array
+    description: |
+      The parameter values corresponding to the parameter names to append to the URL.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Textpath (Text)
+Usage considerations
+Only arrays are accepted for the 2nd and 3rd parameters.
+Arrays must be enclosed in curly brackets {}.
+Parameter names are encoded to form a valid URL. For example, spaces are replaced with "%20".
+The return value is a fully qualified or relative URL path that is not encoded or validated.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+"<a href=" & urlwithparameters("/tio/viewPayments.do", {"claimNumber"}, {pv!claimNumber}) & ">View Payments</a>" returns View Payments

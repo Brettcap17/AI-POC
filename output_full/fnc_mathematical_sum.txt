@@ -1,0 +1,32 @@
+
+layout: function
+title: sum() Function
+space: function_page
+excerpt: "Returns the sum of the specified numbers."
+category: function_page
+fncname: sum
+fncexample: "sum(1, 2, 3)"
+fncresult: "6"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: addend
+    types: Decimal Array
+    description: |
+      A number or array of numbers that will be added into the final sum.
+
+Functions
+{% include fncsyntax.html %}
+{{ page.excerpt }} Returns an integer if all parameters are integers.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+If the addend values are integers, the function will return an integer.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+sum(1,2,3,4) returns 10 

@@ -1,0 +1,60 @@
+
+layout: pattern
+title: Showing Validation Errors that Aren't Specific to One Component
+reftype: sailrecipe
+sr-tags: ["Validation"]
+excerpt: Alert the user about form problems that aren't specific to one component, showing the message only when the user clicks "Submit".
+
+In this case, there are two fields and although neither are required, at least one of them must be filled out to submit the form.
+
+Expression
+sail 
+a!localVariables(
+  local!phone,
+  local!email,
+  a!formLayout(
+    label: "Example: Showing Form Errors on Submission",
+    contents:{
+      a!textField(
+        label: "Phone Number",
+        value: local!phone,
+        saveInto: local!phone
+      ),
+      a!textField(
+        label: "Email Address",
+        value: local!email,
+        saveInto: local!email
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: a!buttonWidget(
+        label: "Submit",
+        submit: true
+      )
+    ),
+    /*
+    * This validation occurs at the form level and is useful when the form or
+    * section's validation checks are non-field specific.
+    */
+    validations: {
+      if(
+        and(isnull(local!phone), isnull(local!email)),
+        a!validationMessage(
+          message: "You must enter either a phone number or an email address!",
+          validateAfter: "SUBMIT"
+        ),
+        {}
+      )
+    }
+  )
+)
+Test it out
+
+Leave both text fields blank and click "Submit".
+When testing offline, the form queues for submission but returns the validation message when you go back online and the form attempts to submit.
+
+Notable implementation details
+
+The system function a!validationMessage() allows us to specify whether the validation message is shown right away (REFRESH) or when the user submits the form (SUBMIT). If the validation message should always be shown right away, we could just pass the message to a!formLayout()'s validations parameter as Text. To show multiple messages, we can pass a list of Text, a list of a!validationMessage(), or a mix of the two.
+You can also configure a!sectionLayout() to show validation messages:
+

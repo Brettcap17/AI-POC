@@ -1,0 +1,30 @@
+
+layout: function
+title: initials() Function
+space: function_page
+excerpt: "Returns only the uppercase characters from within the given text."
+category: function_page
+fncname: initials
+fncexample: "initials( \"John P. Smith\" )"
+fncresult: "JPS"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text containing uppercase to be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+initials("John Smith") returns JS

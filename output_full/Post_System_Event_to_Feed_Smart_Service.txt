@@ -1,0 +1,159 @@
+
+layout: basic
+title: Post System Event to Feed Smart Service
+reftype: smart_service
+sscat: Social
+ssicon: Post_System_Event_To_Feed.png
+ssparentcat: Automation_Services
+
+Overview
+The Post System Event to Feed Smart Service allows you to automatically publish system events from a designated source (such as your CRM or HR system) to the News feed.
+When publishing feed information from your process, you can have the information appear as being attributed to a given system or a specific user.  
+Use this activity when you want the information to show it was posted by the system or a specific application. 
+Use the Post Event to Feed Smart Service when you want the information to list that it was posted by a specific user. 
+You can specify the user context for the activity on the Assignment Tab.
+See also: Assignment Tab
+The user designated to run this activity will see the system event in his/her news feed only if he/she is specified in the Viewers input.
+
+appian-style-note
+Once posted, system events can only be deleted by system administrators.
+
+Permissions needed
+The user designated to run this smart service must have permission to post an entry to the specified feed.
+Attempting to complete this task without the proper user rights generates an error message for the process administrator and pauses the process. 
+Properties
+
+
+Category: Social
+
+
+Icon: 
+
+
+Assignment Options - Always Unattended
+
+
+See also:  Smart Services
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+Name 
+ System Data Type 
+ Required 
+ Multiple 
+ Description 
+
+Feed
+Feed
+Yes
+No
+Specifies a subscription feed to use when posting the event. 
+    
+  You must define at least one feed in the application before configuring this smart service.
+ See also: Feeds
+
+
+
+
+Message 
+Text 
+Yes
+No
+The message text of the feed entry for this event, either entered manually or determined by a process variable, rule, or constant entered through the Expression Editor. The maxiumum is 4,000 bytes. 
+    
+If you leave the message parameter blank or the input contains more than 4,000 bytes, the activity is cancelled by exception at runtime. 
+ See also: Tempo Best Practices regarding message content.
+
+
+
+Attachments 
+Document
+No
+Yes
+The file(s) to attach to the event.
+       If any viewer of the event does not have access to view a file or a file is deleted, the event displays with the files the viewer can access and a message indicating how many files he/she could not see. 
+ See also: Folder and Document Management
+
+
+Record Tags 
+Record Identifier 
+No
+Yes
+The records to tag to the event.
+       If any viewer of the event does not have access to view a record or a record is deleted, a record tag is not displayed for that record. 
+
+
+Icon
+Document
+No
+No
+The image or logo of the system that is posting the event.  
+    
+  See also: System Event Icons.
+
+
+
+
+Source
+Text 
+Yes
+No
+The name of the system that is publishing the event (such as your CRM system).
+    
+
+
+Viewers 
+Users and Groups 
+No
+Yes
+The selected users and members of the selected groups who can see the feed entry for this event.  
+        You can enter the value as an expression.
+  When the input is left unspecified, all users can view the entry. 
+  If you specify a user/group that cannot be found at runtime, the activity is cancelled by exception.
+  If you select a personal group for targeting, the group name is hidden from non-administrators.
+
+
+Personalization Group
+Group 
+No
+No
+A group to be associated with the event for use in subscription personalization. 
+        If the value of the Personalization Group that you specify can't be found at runtime (such as when the group is deleted or when an invalid expression is used) the activity is canceled by exception. 
+
+
+Action Process 
+Process Model
+No
+No
+An action the users can start when they click the link called Open a Case on the feed entry when this input is configured. The link only displays if you configure this input. 
+        See also: Mobile Case Management.
+
+
+Action Instructions 
+Text 
+No
+No
+The instructions displayed as a tooltip when a user rests their pointer on the Open a Case link.
+
+
+Event Data
+LabelValue (CDT)
+No
+No
+Additional details regarding the posted event. 
+        The list of label value entries must be mapped from a multiple-value process variable that is populated by other activities in your process model.
+See also: Populating Event Data Inputs
+
+
+Node outputs
+
+ Name 
+ System Data Type 
+ Description 
+
+Entry Id 
+Text 
+The ID of the newly created feed entry
+

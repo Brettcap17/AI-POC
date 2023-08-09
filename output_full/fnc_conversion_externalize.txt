@@ -1,0 +1,37 @@
+
+layout: function
+title: externalize() Function
+space: function_page
+excerpt: "Converts the given value to a string representation so that it can be saved externally."
+category: function_page
+fncname: externalize
+fncexample: "externalize(todocument(1))"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to externalize.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} The externalized string must only be used in conjunction with internalize() and must be internalized on the same server. Moreover, the type id of the value is embedded in the externalized string.
+See also: internalize()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Convert back to original value
+The returned value can later be converted back to the original value using internalize(). For example, the text returned by externalize(pv!myUserPv) could be stored in an external database and later assigned back to a user PV by passing the externalized representation of the value to internalize().
+Externalize record data
+This function cannot be used with record data. Instead, you can use a!toJson() to create a text representation of record data to be stored outside Appian. The JSON can then be cast to a record data type with a!fromJson().
+INCLUDE PAGE: Cast JSON example
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Serialize a process variable of type User
+externalize(!pv2) returns 0100000020000000000000000200000004000000 75736572330000017C36F9010100000004000000 where !pv2 is User Mike Smith with a username of user3

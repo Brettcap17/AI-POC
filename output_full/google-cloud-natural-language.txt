@@ -1,0 +1,28 @@
+
+layout: basic
+title: Google Cloud Natural Language
+topic-group: A
+weight: 600
+
+Overview
+Appian supports the integration of Google AI services in your application. You can use the Google Cloud Natural Language connected system to perform entity and sentiment analysis to collect information from HTML or plain text. Using these capabilities on elements of text allows you to identify key subjects such as people, places, and events, determine a user's opinion or conveyed emotion, and even classify the contents of the text into predefined categories.
+To use this connected system, you must have a Google Service Account. Ensure you have set up the required Google Cloud service credentials
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Google Cloud Natural Language connected system has the following properties:
+| Field           | Description     |
+|-----------------|-----------------|
+| Name | The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Project ID      | Found in your Google Service Account file.             |
+| Private Key ID  | Found in your Google Service Account file.             |
+| Private Key     | Found in your Google Service Account file.             |
+| Client Email    | Found in your Google Service Account file.             |
+| Client ID       | Found in your Google Service Account file.             |
+{:.screenshot}
+Operation
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|  Run Analysis       | Run analysis on the provided text. | READ |
+This integration uses the REST Resource documents from the Google Cloud Natural Language API to categorize text and perform entity and sentiment analysis. Using the analysis options available, you can identify common entities, like proper names and common nouns, analyze sentiment in the text or associated with each entity, and categorize text into logical groupings for easier organization.
+{:.screenshot}

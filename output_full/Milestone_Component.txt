@@ -1,0 +1,182 @@
+
+layout: function
+title: Milestone Component
+category: function_page
+compatibility: '-crf'
+excerpt: 'Displays the completed, current, and future steps of a process or sequence.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!milestoneField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: steps
+    name: Steps
+    types: List of Text String
+    description: Array of labels describing the sequence of steps.
+  - keyword: links
+    name: Links
+    types: List of Variant
+    description: |
+      Array of links to apply to the steps. Create links with a!documentDownloadLink(), a!dynamicLink(), a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), a!safeLink(), a!startProcessLink(), a!submitLink(), a!userRecordLink(), or a!authorizationLink().
+  - keyword: active
+    name: Active
+    types: Number (Integer)
+    description: |
+      Index of the current step. When null, all steps are in the future. When -1, all steps are completed.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: orientation
+    name: Orientation
+    types: Text
+    description: |
+      Determines the layout of the milestone steps. Valid values: "HORIZONTAL" (default), "VERTICAL".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: color
+    name: Color
+    types: Text
+    description: |
+      Determines the fill color. Valid values: Any valid hex color or "ACCENT" (default), "POSITIVE", "NEGATIVE", "WARN".
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Milestone
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays the completed, current, and future steps of a process or sequence, such as a user's current step in a wizard or the current state of a business process.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the active and links parameters
+
+The active parameter can't be 0 or greater than the total number of items in the steps parameter. If it's null, all steps display as future steps. If it's -1, all steps display as completed.
+Each item in the links array renders the corresponding item in the steps array as a link. An item in the steps array for which there is a null value or no value in the links array will render as plain text. There is no need to pad the end of the steps array with null.
+
+Number and width of steps
+
+The steps parameter must contain at least two items. We recommend that steps contains no more than seven items.
+When viewed on a mobile device, the milestone component scrolls instead of shrinking the step width.
+
+Length of text values
+
+For an easy to read and professional looking interface, use concise text values of similar length. 
+The following will be trimmed:
+Indentations using tab.
+Leading or trailing spaces.
+Leading or trailing line breaks.
+Two spaces between words will be shortened to one.
+There is no maximum character limit for each item in the steps array; however, text is truncated based on the following:
+Vertical Orientation: The first three lines of the text displays. The number of characters allowed for each line is determined by the number of steps and the amount of horizontal space for the component.
+Horizontal Orientation: Text displays on a single line until it runs out of horizontal space.
+
+Milestone and step color
+
+By default, the milestone bar shows the accent color above completed and current steps and gray above future steps. You can select a custom color for your milestone in the color parameter.
+Text colors: 
+Active step: black. 
+Completed step with no link: light gray. 
+Future steps: dark gray. 
+Text with a link: accent color.
+
+Examples
+INCLUDE PAGE: SAIL intro
+Horizontal milestone
+{% sailbox 600 %}
+a!milestoneField(
+  label: "Home Repair Claim Process",
+  instructions: "Customer #2325691",
+  steps: {
+    "Submit Customer Request", 
+    "Set Up On-Site Appt", 
+    "File Assessment", 
+    "Submit Proposal", 
+    "Submit Agreement", 
+    "Finalize Repairs"
+  },
+  active: 3,
+  color: "ACCENT"
+)
+{% endsailbox %}
+Vertical milestone
+{% sailbox 600 %}
+a!milestoneField(
+  steps: {
+    "Review Cart", 
+    "Billing Information", 
+    "Shipping Information", 
+    "Confirm Order"
+  },
+  active: 2,
+  orientation: "VERTICAL",
+  color: "#674ea7"
+)
+{% endsailbox %}
+Milestone with conditional color changing
+{% sailbox 600 %}
+{
+  a!localVariables(
+    local!steps: {
+      a!map(id: 1, name: "Assigned", color: "NEGATIVE"),
+      a!map(id: 2, name: "In progress", color: "WARN"),
+      a!map(id: 3, name: "Completed", color: "POSITIVE")
+    },
+    local!activeStep: 1,
+    a!milestoneField(
+      label: "Midterm - Spring 2021",
+      labelPosition: "ABOVE",
+      steps: local!steps.name,
+      links: {
+        a!forEach(
+          items: local!steps,
+          expression: a!dynamicLink(
+            label: fv!item.name,
+            value: fv!item.id,
+            saveInto: local!activeStep
+          )
+        )
+      },
+      active: local!activeStep,
+      orientation: "HORIZONTAL",
+      color: local!steps.color[wherecontains(local!activeStep, local!steps.id)]
+    )
+)
+}
+{% endsailbox %}
+{:.screenshot}

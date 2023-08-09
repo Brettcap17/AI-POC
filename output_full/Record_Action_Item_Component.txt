@@ -1,0 +1,72 @@
+
+layout: function
+title: Record Action Item
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: 'Displays a record action defined within a record action field or a read-only grid that uses a record type as the data source. A record action is an end-user action configured within a record type object, such as a related action or a record list action.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!recordActionItem
+fncsubcat: Action
+parameters:
+  - keyword: action
+    name: Action
+    types: Record Action Reference
+    description: |
+      A record action reference associated with a record type, configured using the recordType! domain. For example, recordType!Case.actions.editCase, will use the display name, process model, icon, context, and visibility set in the action configured in the record type.
+  - keyword: identifier
+    name: Identifier
+    types: Any Type
+    description: |
+      Individual record ID within the record type. Only required for related actions.
+          - For record types that use a database as a data source, record ID is the primary key in the data store entity.
+          - For record types that use a process as the data source, record ID is the ID for the process.
+          - For record types that use a web service as the data source, record ID is the value returned to the ID field of the DataSubset produced by the record's source expression.
+reftype: sailcomponent
+scdisplayname: Record Action Item
+scsubcat: Action_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Record action field, Record action design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Icons and tooltips
+
+Record action items use the icon configured in the record type.
+Both the label and description for an action will appear as a tooltip.
+
+Displaying record actions
+When you configure a record action, follow the guidance below to ensure the record action displays in the component where it is referenced.
+
+Record action items are displayed based upon record type security, process model security, and the action visibility expression configured in the record type. 
+When configuring the recordActions parameter of a read-only grid, use fv!identifier as the identifier to call the selected row ID for a related action. Make sure the grid has values for the Selection parameters properly set up, including the selectable, selectionValue, and selectionSaveInto parameters.
+Record action items that reference a related action will not appear when the identifier parameter is null or invalid.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Record type object references are specific to each environment. If you copy and paste these examples into your interface, they will not evaluate. Use them as a references only.
+Record action item in the Employee record
+sail 
+a!recordActionField(
+  actions: {
+    a!recordActionItem(
+    /* For the "action" parameter below, replace the record-action reference 
+     * (recordType!Department.actions.create) with a valid record-action reference in your environment.
+     */
+     action: recordType!Department.actions.create
+    ),
+    a!recordActionItem(
+   /* For the "action" parameter below, replace the record-action reference 
+    * (recordType!Department.actions.update) with a valid record-action reference in your environment.
+    */
+     action: recordType!Department.actions.update,
+     identifier: rv!identifier
+    )
+  }
+)
+Displays the following:
+{:.screenshot}

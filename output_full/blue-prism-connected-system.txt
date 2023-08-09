@@ -1,0 +1,34 @@
+
+layout: basic
+title: Blue Prism
+topic-group: A
+weight: 400
+
+Overview
+Blue Prism Robotic Process Automation (RPA) connected system provides an easy way to integrate software robots into your business process, and eliminate repetitive and error-prone tasks that people perform. Automatic discovery of the available Blue Prism processes and their data inputs makes it quick and easy to set up.
+See Blue Prism documentation on exposing and calling web services.
+For information that pertains to all connected systems, see Connected System Object.
+Properties
+The Blue Prism connected system has the following properties:
+| Field             | Description                  |
+|-------------------|-----------------------------|
+| Name | Required. The name of the connected system. Use a name that will uniquely identify this connection to the external system. |
+| Description | Supplemental information about the connected system that is displayed in the objects grid of some Designer views and when selecting the system in an integration object. |
+| Username     | Required. Blue Prism account used to execute the Blue Prism process or object |
+| Password | Blue Prism account used to execute the Blue Prism process or object  |
+| Host URL       | Required*. The Host URL for your Blue Prism instance       |
+ _This value is included in an import customization file so that you can specify a different value for each environment. Sensitive values will not be exported in the import customization file and must be added manually. Required* fields must have a value upon import or else import will fail. For more information on import/export behavior, see the Connected Systems Object page._
+{:.screenshot}
+Operations
+| Name       | Description     | Type |
+|-----------------|-----------------|-----------------|
+|  Execute Blue Prism Process       | Calls a Blue Prism Process that was exposed as a web service| WRITE |
+| Execute Blue Prism Business Object | Calls an action defined in a Blue Prism business object | WRITE |
+Execute Blue Prism Process
+Calls a Blue Prism Process that was exposed as a web service.
+Execute Blue Prism Process is a WRITE type Integration. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}
+Execute Blue Prism business object
+Calls an action defined in a Blue Prism business object
+Execute Blue Prism Business Object is a WRITE type Integration. To prevent the integration from making the same update twice, it can only be used in the saveInto parameter of an interface component or in a Web API. See Call an Integration for more information.
+{:.screenshot}

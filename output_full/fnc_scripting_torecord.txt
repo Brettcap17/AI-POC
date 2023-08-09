@@ -1,0 +1,53 @@
+
+layout: function
+title: torecord() Function
+space: function_page
+excerpt: "Converts XML to a value of the given data type."
+category: function_page
+fncname: torecord
+fncexample: "Click on the function name for examples."
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: xml
+    types: Text
+    description: |
+      The XML text representing the Value to convert.
+  - keyword: type
+    types: Any Type
+    description: |
+      Enter a variable (process variable or activity class) that has the same data type that you want the XML to be converted into.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+The XML given for the xml parameter must be valid for the XSD that was used to create the target data type.
+Whether the input XML needs to have a defined namespace depends on whether an elementFormDefault attribute was set with a value of "qualified" in the schema tag of the XSD.  If no elementFormDefault attribute was given, the default is "unqualified" and the given XML does not need to have a defined namespace.  CDTs created using the Data Type Designer do not have an elementFormDefault attribute, and therefore do not require the namespace to be defined on the given XML.
+For example, if the pv!nameXMLData variable contains the following data, it will transform correctly into the CDT used as the data type for pv!PersonName:
+<PersonName>
+    <First>Edward</First>
+    <Last>Denton</Last>
+</PersonName>
+
+If the CDT used as the data type for pv!PersonName was created with the targetNamespace set to http://www.bpmbasics.com/Person and elementFormDefault set to "qualified", the following XML must be used:
+<PersonName xmlns="http://www.bpmbasics.com/Person">
+    <First>Edward</First>
+    <Last>Denton</Last>
+</PersonName>
+
+— OR —
+<p:PersonName xmlns:p="http://www.bpmbasics.com/Person">
+    <p:First>Edward</p:First>
+    <p:Last>Denton</p:Last>
+</p:PersonName>
+
+The result of this function is not automatically saved into the process variable passed in the type parameter.  You must store the result of this function into a process variable.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+torecord(pv!nameXMLData,pv!PersonName) converts pv!nameXMLData to the same data type as pv!PersonName

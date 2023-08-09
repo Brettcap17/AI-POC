@@ -1,0 +1,29 @@
+
+layout: "basic"
+title: "Add Logos"
+topic-group: "C"
+weight: 1
+
+This page explains how to brand your plug-in with an image representing your system.
+Your branding will be used and seen by the designer in three places:  
+
+When creating a new connected system (shown below)
+When creating a new integration from your plug-in
+When using an integration from your plug-in in a process model
+
+{:.screenshot}
+Using a single image
+To add a single logo for a connected system template add the image to the resources/ directory that is parallel to your template's package.
+For a template, src/main/java/com/appian/MyConnectedSystemTemplate.java, place the 80 pixel image at src/main/resources/com/appian/MyConnectedSystemTemplate_80px.<ext>. 
+
+Supported file types are .svg, .jpg, .jpeg, and .png.
+
+Using different images for each display location
+To add multiple logos designed for the different resolutions, add the images to the resources/ directory that is parallel to your template's package.
+For a template, src/main/java/com/appian/MyConnectedSystemTemplate.java, place the images in the folder, src/main/resources/com/appian/. 
+Images for this template must follow this naming convention MyConnectedSystemTemplate_<size>px.<ext>.
+
+Supported file types are: .svg, .jpg, .jpeg, and .png
+Supported image sizes are: 40, 50, and 80
+
+If you do not provide one of the optional sizes, the _80px image will be downsized to fit as appropriate.

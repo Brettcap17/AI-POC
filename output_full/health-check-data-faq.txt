@@ -1,0 +1,67 @@
+
+layout: basic
+title: Health Check Data FAQ
+permalink: health-check-data-faq.html
+topic-group: E
+weight: 200
+
+Overview
+This page explains the types of data that are collected by Health Check and how Appian stores and uses this data.
+Health Check provides insights into application design patterns and performance risks in your environment. See the summarized findings and analysis in the Analyze option on the Health tab in MyAppian.
+Health Check is a three step process made up of data collection, data review, and data analysis. During data collection, Health Check examines applications and objects in your Appian environment and collects system logs. This collected information is packaged together into a ZIP file that will be used for data review. During data review, system administrators have the opportunity to review the generated data collection ZIP file and remove any files that they do not want analyzed by Appian. The ZIP file is then sent to Appian Community for analysis. Support contacts can see the results in MyAppian.
+Collected data
+What data does Health Check collect?
+Health Check collects system logs and object information to provide you with meaningful feedback about your applications' design patterns and performance risks. During data collection, the logs collected include, but are not limited to:
+
+Audit.
+Data metrics.
+Performance.
+Troubleshooting (including application server).
+
+During data collection, a series of Health Check-specific logs are also generated and collected. These logs primarily contain information about applications and their objects.
+The types of data that Health Check can collect in log files may include, but are not limited to:
+
+Design object properties, including:
+Name.
+Description.
+Security.
+Visibility expressions.
+URLs and URL stubs.
+Usernames.
+User agents.
+Integration details.
+Systems being integrated with.
+Frequency of integration calls.
+Endpoints
+Error messages (which may include user-entered data).
+Design errors.
+K error logs.
+Server details, including hostnames, IP addresses, etc.
+
+How can this data be reviewed?
+System administrators are responsible for reviewing the generated ZIP file during the data review step of their Health Check runs. During data review, system administrators have the option to download and review the data collection ZIP file that Health Check has generated before the ZIP file is uploaded to Appian Community for analysis. Any files that system administrators do not want to share with Appian can be removed from the ZIP file during this step, and they can then optionally upload a new version of the ZIP file for analysis. Appian will use the ZIP file that has been submitted during data review to generate your Health Check report.
+System administrators can opt to auto-approve the data review step during Health Check runs. Enabling this option will skip over the data review step during Health Checks and directly upload the data collection ZIP file to Appian Community for analysis.  Learn more about how to enable autoapproval.
+Data storage and retention
+What data does Appian store?
+For each Health Check run, Appian stores metadata about the run, a copy of the data collection ZIP file (including the raw log files), and a copy of the generated Health Check report.
+Where is the data stored?
+All customer Health Check data is stored in Appian Cloud's Northern Virginia region and is subject to the same security controls as all production Appian Cloud environments.
+How long is the data stored?
+For production environments, data collection ZIP files are retained for one year after the date of the Health Check run. For non-production environments, Appian retains only the latest ZIP file for a maximum of one year.
+The metadata from the each Health Check analysis is stored indefinitely for both production and non-production environments.
+Data access and use
+Who at Appian has access to the data?
+Data collection ZIP files are only accessible by Professional Services Architects, and members of Appian Technical Support and Cloud Engineering.
+Health Check reports and run metadata are available for general use within Appian.  This includes the Engineering, Professional Services, Customer Success, and other departments.
+Is the data shared with third parties?
+Appian does not share any Health Check data externally with third parties. However, Appian may share a customer's Health Check analysis data with contractors previously approved to work on projects for that specific customer.
+How does Appian use the data?
+The data is used for several purposes within Appian including, but not limited to:
+
+To generate Health Check analysis for customers.
+To evaluate customer environment health.
+To aggregate Health Check metadata across customers and analyze usage and adoption.
+To inform business decisions and improve our product.
+
+Can I have my data removed?
+If you would like Appian to remove your Health Check data, contact Appian Technical Support.

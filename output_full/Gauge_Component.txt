@@ -1,0 +1,154 @@
+
+layout: function
+title: Gauge Component
+category: function_page
+compatibility: -crf
+excerpt: Displays completion percentage in a circular style with optional text.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gaugeField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: percentage
+    name: Percentage
+    types: Number (Decimal)
+    description: Number to display between 0 and 100.
+  - keyword: primaryText
+    name: Primary Text
+    types: Text
+    description: |
+      Optional text to display on the first line inside the gauge. Create using plain text, a!gaugeIcon(), a!gaugePercentage(), or a!gaugeFraction().
+  - keyword: secondaryText
+    name: Secondary Text
+    types: Text
+    description: Optional text to display on the second line inside the gauge.
+  - keyword: color
+    name: Color
+    types: Text
+    description: |
+      Determines the color. Access the percentage using fv!percentage. Valid values: Any valid hex color or "ACCENT" (default), "POSITIVE", "NEGATIVE", "WARN".
+  - keyword: size
+    name: Size
+    types: Text
+    description: |
+      Determines the size of the gauge. Valid values: SMALL, MEDIUM (default), LARGE.
+  - keyword: align
+    name: Align
+    types: Text
+    description: |
+      Determines alignment of the gauge. Valid values: START, CENTER (default), END.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: Text to display as a tooltip on the gauge.
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Gauge
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a completion percentage in a circular style similar to the Progress Bar. Best used for showing progress when there is a target value, such as the number of completed surveys out of 360 total surveys, or number of hired employees out of 20 total open positions.
+See also:
+
+Gauge Icon
+Gauge Percentage
+Gauge Fraction
+Gauge design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the percentage parameter
+
+If the percentage value is negative or null, the gauge shows with 0% of the circle complete.
+If the percentage value is greater than 100, the gauge shows with 100% of the circle complete.
+
+Editing the gauge primary text
+The gauge configuration pane contains a step-by-step designer to help you quickly try out all Primary Text formats. We recommend you use this designer to select the format that works best for your gauge.
+{:.screenshot}
+Formatting primary text width and color
+
+If custom primaryText or secondaryText does not fit within the gauge, it is truncated.
+If the primaryText is formatted using a!gaugeIcon(), a!gaugePercentage(), or a!gaugeFraction(), it will resize to fit within the circle.
+To conditionally set the color of the gauge, use fv!percentage as shown in the "Gauge Setting Color Based on Percentage" example below.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Gauge showing fraction complete
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+=a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primaryText: a!gaugeFraction(denominator: 26)
+)
+{% endsailbox %}
+Gauge showing percent complete
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primaryText: a!gaugePercentage()
+)
+{% endsailbox %}
+Gauge showing icon with secondary text
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primaryText: a!gaugeIcon(icon: "PENCIL"),
+  secondaryText: "25 of 26"
+)
+{% endsailbox %}
+Gauge setting color based on percentage
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %} 
+a!gaugeField(
+  label: "Evaluations Completed",
+  percentage: (25 / 26) * 100,
+  primaryText: a!gaugepercentage(),
+  color: if(fv!percentage > 50, "POSITIVE", "NEGATIVE")
+  )
+{% endsailbox %}

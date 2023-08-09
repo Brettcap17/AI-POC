@@ -1,0 +1,166 @@
+
+layout: function
+title: Rich Text Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays text in variety of styles, including bold, italics, underline, links, headers, and numbered and bulleted lists.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!richTextDisplayField
+fncsubcat: Display
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: align
+    name: Alignment
+    types: Text
+    description: |
+      Determines alignment of the text value. Valid values: "LEFT", "CENTER", "RIGHT". Does not apply to lists.
+  - keyword: value
+    name: Display Value
+    types: Any Type
+    description: |
+      Array of rich text to display. Create rich text using a combination of text, a!richTextItem(), a!richTextHeader(), a!richTextImage(), a!richTextIcon(), a!richTextBulletedList(), or a!richTextNumberedList(). Example: {"Hello ", a!richTextItem(text: "World", style: "STRONG"), "!"}.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: preventWrapping
+    name: Prevent Wrapping
+    types: Boolean
+    description: |
+      Determines if wrapping to multiple lines will be prevented. When set to true, each header, paragraph, or list item will truncate to a single line. Default: false.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: Text to display on mouseover (web) or long press (mobile).
+  - keyword: marginAbove
+    name: Margin Above
+    types: Text
+    description: |
+      Determines how much space is added above the layout. Valid values: "NONE" (default), "EVEN_LESS", "LESS", "STANDARD", "MORE", "EVEN_MORE". 
+  - keyword: marginBelow
+    name: Margin Below
+    types: Text
+    description: |
+      Determines how much space is added below the layout. Valid values: "NONE", "EVEN_LESS", "LESS", "STANDARD" (default), "MORE", "EVEN_MORE". 
+reftype: sailcomponent
+scdisplayname: Rich Text
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+Bulleted List
+Header Text
+Inline Image
+List Item
+Numbered List
+Styled Icon
+Styled Text
+Rich text style guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Editing rich text
+The rich text configuration pane contains a rich text editor to help with designing your interfaces. It supports the following styles:
+
+Header size
+Bold
+Italic
+Underline
+Color
+Safe links
+Styled icons
+Web images
+
+If your rich text contains any of the following, it can only be edited in Configure items mode or as an expression:
+
+Non-Web Images
+Non-Safe Links
+Functions
+Variables
+
+{:.screenshot}
+
+appian-style-tip
+We recommend using the rich text editor to apply the supported styles, then switching to Configure items mode for additional configurations.
+
+Displaying values
+
+If value is null or contains an empty array, the label and instructions render with no rich text displayed.
+Multiple styles can be applied to text by nesting styled text within itself.
+
+Using the preventWrapping parameter
+
+Don't use the preventwrapping parameter in side-by-side layouts that use the "MINIMIZE" width.
+Don't use the preventWrapping parameter if your rich text display field contains nested list items.
+When using the preventwrapping parameter, the full text automatically appears in a tooltip when you hover over the truncated text.
+
+{:.screenshot}
+Reducing render time
+
+As with any interface, showing many components at once can increase server evaluation time, client rendering time, and network transmission time. The use of styled text, bulleted, and numbered lists all contribute to this. To provide a fast user experience, limit the number of components, including styled text, bulleted, and numbered lists, shown on a single interface. See also: Interface Evaluation Lifecycle.
+
+Examples
+INCLUDE PAGE: SAIL intro
+Rich text icons and styled text with multiple styles and colors
+{% sailbox 600 %}
+a!richTextDisplayField(
+  labelPosition: "COLLAPSED",
+  value: {
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "USER", caption: "Name"),
+        " Xavier Jones"
+      },
+      size: "MEDIUM",
+      style: { "STRONG" }
+    ),
+    char(10),
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "PHONE", caption: "Phone"),
+        " (555) 123-4567"
+      },
+      color: "SECONDARY"
+    ),
+    char(10),
+    a!richTextItem(
+      text: {
+        a!richTextIcon(icon: "BUILDING-O", caption: "Location"),
+        " Reston, VA"
+      },
+      color: "SECONDARY"
+    )
+  }
+)
+{% endsailbox %}

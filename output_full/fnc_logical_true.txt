@@ -1,0 +1,29 @@
+
+layout: function
+title: true() Function
+category: function_page
+excerpt: Returns the Boolean value true.
+fnccat: Logical
+fncexample: true()
+fncname: true
+fncresult: 'true'
+compatibility: +pe, +pr
+parameters:
+  - keyword: returns
+    types: Boolean
+    description: 'Returns the boolean value true.'
+space: function_page
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+true() returns true

@@ -1,0 +1,109 @@
+
+layout: function
+title: a!verifyRecaptcha
+category: function_page
+excerpt: Allows you to verify the reCAPTCHA connection was successful and access reCAPTCHA scores to help protect your Portal against potentially malicious activity.
+fnccat: Connector
+fncsubcat: "reCAPTCHA"
+fncexample: Click on the function name for examples.
+fncname: a!verifyRecaptcha
+compatibility: -crf, -om
+parameters:
+  - keyword: onSuccess
+    types: List of Saves
+    description: |
+      A list of saves to execute after reCAPTCHA executes successfully. Use fv!score to access the score returned by reCAPTCHA. Define conditional logic to protect your page based on whether the interaction is likely a bot or a human. A score of 1.0 is very likely a human while a score of 0.0 is very likely a bot.
+  - keyword: onError
+    types: List of Saves
+    description: |
+      A list of saves to execute after reCAPTCHA does not execute successfully. Use fv!error to access the returned error. 
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Use the onSuccess parameter to access the score returned by reCAPTCHA with fv!score and determine what to do based on the score result. Use the onError parameter to access any error messages with fv!error and determine what to do if reCAPTCHA isn't working properly. The a!verifyRecaptcha() function will only execute inside the recaptchaSaveInto parameter on a!buttonWidget() and can only be used in Portals.
+See also: reCAPTCHA Guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+List of Saves
+Usage considerations
+Using reCAPTCHA
+The Appian Portals reCAPTCHA functionality uses Google's reCAPTCHA services and works with the a!verifyRecaptcha() function within the recaptchaSaveInto parameter on the button component. Together, they provide a score from 0 to 1 to tell you if your Portal is likely being used by a bot or a human.
+If the score is returned successfully, you can access the score in the function's onSuccess parameter using fv!score and use it to define what happens based on whether your Portal is likely being used by a bot or a human. A score of 0.0 is very likely a bot and a score of 1.0 is very likely a human.
+Because you can define the behavior based on the score you're comfortable with, you have total control over how your Portal handles bots and form submissions.
+To use reCAPTCHA for your Portal, you must:
+
+Set up your own Google reCAPTCHA key credentials through Google.
+Use the a!verifyRecaptcha() function within the recaptchaSaveInto parameter on the button component.
+Access the score provided by reCAPTCHA using fv!score in the onSuccess parameter.
+Define logic using fv!scorein the onSuccess parameter to determine what happens based on whether a user is likely a bot or human.
+Access potential errors provided by reCAPTCHA using fv!error in the onError parameter.
+Define logic in the onError parameter to determine what happens if reCAPTCHA isn't working properly.
+
+
+appian-style-note
+reCAPTCHA only works in a published portal. In an interface object, it will always evaluate the onError parameter.
+See Google's unit testing for information on how to test your conditional logic and design. You can add unit testing keys to your Portal when you add your site key credentials in the reCAPTCHA connected system then republish your portal to help you test out your expressions and logic.
+
+For examples of conditional logic using the a!verifyRecaptcha() function within the recaptchaSaveInto parameter on the button component, see the Submit button with a!verifyRecaptcha() example below.
+For more information on reCAPTCHA, check out our reCAPTCHA guidance.
+Using the onSuccess and onError parameters
+The a!verifyRecaptcha() function has two parameters: onSuccess and onError. Write expressions for both parameters to determine what will happen if reCAPTCHA connects successfully (onSuccess) or if there is an error with reCAPTCHA (onError).
+Defining logic for the onSuccess parameter
+For the onSuccess parameter, define logic that determines what will happen when a!verifyRecaptcha successfully connects to reCAPTCHA and reCAPTCHA returns a score, accessed using fv!score.
+For example, you could define logic so that if the score is 0 to 0.5, the form cannot be submitted. Or you could define your logic so that if the score is below 0.7, the form is submitted but flagged for review.
+INCLUDE PAGE: reCAPTCHA scores reuse note
+Defining logic for the onError parameter
+For the onError parameter, define logic that determines what will happen when there is an error with the reCAPTCHA service, such as a connection error or incorrect keys. To access the error, use fv!error.
+For example, you may want to save the error message so that you can view it later or define a custom set of error messages to show to the user.
+sail
+onError: {
+a!save(local!displayErrorMessage, true),
+a!save(local!errorMessageDetails, fv!error)
+}
+Example
+a!verifyRecaptcha() {#recaptcha}
+The following example shows only the a!verifyRecaptcha() function. When you use it in a Portal, you must put this expression inside the recaptchaSaveInto parameter of a submit button on an interface. If you copy and paste the example into an expression editor, reCAPTCHA will not work. Use this example only as a reference.
+sail
+a!verifyRecaptcha(
+  onSuccess: {
+    if(
+      fv!score > .7,
+      {
+        a!save(local!submissionDetails.needsReview, false),
+        a!writeToDataStoreEntity(
+          dataStoreEntity: cons!PORTAL_ENTITY,
+          valueToStore: local!submissionDetails,
+          onSuccess: {
+            a!save(local!submissionStatus, "SUCCESS"),
+            a!save(local!confirmationMessage, "Your submission is confirmed.")                                                    
+          }
+        )
+      },
+      if(
+        fv!score > .3,
+        {
+          a!save(local!submissionDetails.needsReview, true),
+          a!writeToDataStoreEntity(
+            dataStoreEntity: cons!PORTAL_ENTITY,
+            valueToStore: local!submissionDetails,
+            onSuccess: {
+              a!save(local!submissionStatus, "WARN"),
+              a!save(local!confirmationMessage, "Your submission is processing. You will receive an email shortly with confirmation details. If you do not hear from us soon, please try again or give us a call.")                                                    
+            }
+          )
+        },
+        {
+          a!save(local!submissionStatus, "ERROR"),
+          a!save(local!confirmationMessage, "Your submission could not be confirmed. Please try again or contact us.")
+        }
+      )
+    )
+  },
+  onError: {
+    a!save(local!submissionStatus, "ERROR"),
+    a!save(local!confirmationMessage, "Your submission could not be confirmed. Please try again or contact us.")
+  }
+)

@@ -7,7 +7,7 @@ import time
 pd.set_option("display.max_columns", None)
 
 # global vars
-dir_path = "output"
+dir_path = "output_full"
 question = "How can I change my default search selection in Designer"
 
 # Build a dictionary mapping the filepath of each file to the contents

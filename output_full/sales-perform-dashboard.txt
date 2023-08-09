@@ -1,0 +1,4 @@
+
+title: Sales Performance Dashboard
+weight: 100
+image: ds-images/uxds_images/sales_dashboard_dark_theme.png

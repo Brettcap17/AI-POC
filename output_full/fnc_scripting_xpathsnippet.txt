@@ -1,0 +1,40 @@
+
+layout: function
+title: xpathsnippet() Function
+space: function_page
+excerpt: "This function finds information in an XML document provided as Text."
+category: function_page
+fncname: xpathsnippet
+fncexample: "xpathsnippet(\"72.3Cloudy\", \"//temp/text()\") & \" degrees today\""
+fncresult: "72.3 degrees today"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: snippet
+    types: Text
+    description: |
+      An XML Snippet or an XML Document URL.
+  - keyword: expression
+    types: Text
+    description: |
+      The XPath Expression to evaluate.
+  - keyword: prefix
+    types: Text
+    description: |
+      Prefix used if the XML document has a default namespace.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Usage considerations
+The prefix value must be in your XPath expression and has a default value of ns.
+The function supports XPath 1.0 queries.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+xpathsnippet(pv!theWeather, "//Temperature")&" degrees under "&xpathsnippet(pv!theWeather, "//SkyConditions")&" skies in "&pv!city returns 67 degrees under partly cloudy skies in Washington D.C.
+xpathsnippet("<name>John Smith</name>", "//name/text()") returns John Smith

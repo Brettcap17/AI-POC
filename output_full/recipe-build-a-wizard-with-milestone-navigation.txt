@@ -1,0 +1,142 @@
+
+layout: pattern
+title: Build a Wizard with Milestone Navigation
+excerpt: Use the milestone component to show steps in a wizard.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Wizards
+
+
+Configure links for each step in the milestone so that the user can move forward or return to any step.
+This scenario demonstrates:
+
+How to create a wizard using the showWhen parameter of an interface component
+How to use a milestone field to show the current step of the wizard
+How to show and change the style of buttons
+
+Expression
+sail 
+a!localVariables(
+  local!employee:a!map( firstName:null, lastName:null, department:null, title:null, phoneNumber:null, startDate:null ),
+  local!currentStep: 1,
+  local!steps: {"Step 1", "Step 2", "Review"},
+  a!formLayout(
+    label: "Example: Onboarding Wizard",
+    contents:{
+      a!sectionLayout(
+        contents:{
+          a!milestoneField(
+            steps: local!steps,
+            active: local!currentStep
+          )
+        }
+      ),
+      a!sectionLayout(
+        contents:{
+          a!columnsLayout(
+            columns:{
+              a!columnLayout(
+                contents:{
+                  a!textField(
+                    label: "First Name",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.firstName,
+                    saveInto: local!employee.firstName,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {1,3} )
+                  ),
+                  a!textField(
+                    label: "Last Name",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.lastName,
+                    saveInto: local!employee.lastName,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {1,3} )
+                  ),
+                  a!textField(
+                    label: "Phone Number",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.phoneNumber,
+                    saveInto: local!employee.phoneNumber,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {2,3} )
+                  )
+                }
+              ),
+              a!columnLayout(
+                contents:{
+                  a!textField(
+                    label: "Department",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.department,
+                    saveInto: local!employee.department,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {1,3} )
+                  ),
+                  a!textField(
+                    label: "Title",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.title,
+                    saveInto: local!employee.title,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {1,3} )
+                  ),
+                  a!dateField(
+                    label: "Start Date",
+                    labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                    value: local!employee.startDate,
+                    saveInto: local!employee.startDate,
+                    readOnly: local!currentStep = 3,
+                    required: not(local!currentStep = 3),
+                    showWhen: or( local!currentStep = {2,3} )
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Go Back",
+          value: local!currentStep - 1,
+          saveInto: local!currentStep,
+          showWhen: or( local!currentStep = {2,3} )
+        ),
+        a!buttonWidget(
+          label: if( local!currentStep = 1, "Next", "Go to Review"),
+          value: local!currentStep + 1,
+          saveInto: local!currentStep,
+          validate: true,
+          showWhen: or( local!currentStep = {1,2} )
+        ),
+        a!buttonWidget(
+          label: "Onboard Employee",
+          style: "PRIMARY",
+          submit: true,
+          showWhen: local!currentStep = 3
+        )
+      }
+    )
+  )
+)
+Test it out
+
+Click Next without entering a value in any of the fields. The user will stay on step 1 until all fields are entered.
+Enter values for all the field. Click Next. Notice the milestone progress will move to step 2  
+Enter values for all required fields in step 2. Click Go to Review. Notice that all values entered will appear as a set of read only data and the milestone field progresses to 'Review'
+
+Notable Implementation Details
+
+The showWhen parameter is used extensively to conditionally show particular fields as well as set requiredness & read only setting.
+Each "Next" button is configured to increment local!currentStep. Validate is set to true, which ensures all fields are required before continuing on to the next step.
+Each "Go Back" button is not configured to enforce validation. This allows the user to go to a previous step even if the current step has null required fields and other invalid fields. This button also decrements local!currentStep by one.
+The milestone field is configured without links, however links could be added that navigate a user back to a particular step.

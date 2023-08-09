@@ -1,0 +1,11 @@
+
+layout: "basic"
+title: a!facetOption() Function [Deprecated]
+depver: 19.2
+fncname: a!facetOption
+category: function_page
+fnccat: "一Deprecated一"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. To implement the same functionality, see the
+a!recordFilterList() and a!recordFilterListOption() functions. 

@@ -1,0 +1,44 @@
+
+layout: function
+title: remove() Function
+space: function_page
+excerpt: "Removes the value at a given index from an array, and returns the resulting array."
+category: function_page
+fncname: remove
+fncexample: "remove({10, 20, 30}, 2)"
+fncresult: "{10, 30}"
+fnccat: Array
+parameters:
+  - keyword: array
+    types: Any Type Array
+    description: The array to modify.
+  - keyword: index
+    types: Integer or Integer Array
+    description: The one-based index or array of indices whose values should be removed.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+Using the index parameter
+The index value must be greater than or equal to 1.
+Understanding results
+Passing an empty array to the array parameter returns an empty array.
+Passing an empty array to the index parameter returns the original array value.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Remove one value from an array
+remove({10, 20, 30, 40}, 4) returns 10, 20, 30
+Remove multiple values from an array
+remove({10, 20, 30, 40},{2, 4}) returns 10, 30
+Pass an empty array of indices
+remove({10, 20, 30, 40}, {}) returns 10, 20, 30, 40
+remove(null, {}) returns null

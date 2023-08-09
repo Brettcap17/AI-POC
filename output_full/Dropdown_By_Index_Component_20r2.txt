@@ -1,0 +1,96 @@
+
+layout: function
+title: a!dropdownFieldByIndex_20r2 Component 
+space: sail_component 
+reftype: sailcomponent 
+excerpt: Displays a limited set of choices from which the user must select one item and saves the index of the selected choice.
+category: function_page 
+compatibility: -crf
+fncname: a!dropdownFieldByIndex_20r2 
+fncsubcat: Selection 
+fncexample: Click on the function name for examples. 
+fnccat: Interface_Component 
+scdisplayname: Dropdown By Index
+evolved_fncname: a!dropdownFieldByIndex
+evolved_reason: 'Added an optional search box and renamed the placeholderLabel parameter to placeholder.'
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: 'Text to display as the field label.'
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: 'Supplemental text about this field.'
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: 'Determines if a value is required to submit the form. Default: false.'
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: 'Determines if the field should display as potentially editable but grayed out. Default: false.'
+  - keyword: choiceLabels
+    name: Choice Labels
+    types: List of Text String
+    description: 'Array of options for the user to select.'
+  - keyword: placeholderLabel
+    name: Placeholder Label
+    types: Text
+    description: 'Text to display when nothing is selected and the value is null.'
+  - keyword: value
+    name: Selected Index
+    types: Number (Integer)
+    description: 'Index of the choice to display as selected.'
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: 'Validation errors to display below the field when the value is not null.'
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: 'One or more variables that are updated with the choice index when the user changes the selection. Use a!save() to save a modified or alternative value to a variable.'
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: 'When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.'
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: 'Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".'
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: 'Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.'
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: 'Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.'
+
+Dropdown By Index
+Function: a!dropdownFieldByIndex_20r2()
+Displays a limited set of exclusive choices from which the user must select one item and saves the index of the selected choice.  To save a value instead of the index, use a dropdown. This component is not available from the interface component picker in the design view.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Notes
+
+If you set Label Position to "ADJACENT" or "ABOVE", but do not give a value for Label, a space still displays to the left-side or above, respectively, of the component as if there was a label displayed. To ensure the component appears to the far left when Label has no value, use "COLLAPSED" for Label Position.
+Choices display in the same order as defined in the Choice Labels parameter. The Choice Labels argument cannot be null.
+Passing a null value to the dropdown's Selected Index parameter causes the placeholder text to appear selected. The Placeholder Label and Selected Index arguments cannot both be null. If the placeholder is selected and Required is true when a validating button is clicked, the field prompts the user to select a value.
+The argument passed to the Placeholder Label parameter does not have an index.
+Choice index numbers start at 1. The index number for Selected Index cannot be null, empty, less than 1, or greater than the length of the Choice Labels array.
+The choice at the index passed to the Selected Index parameter displays as selected by default.

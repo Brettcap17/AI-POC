@@ -1,0 +1,39 @@
+
+layout: function
+title: Web Video
+category: function_page
+compatibility: '-crf, -om, -portal'
+excerpt: Displays a video from the web for use in a video field.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!webVideo
+fncsubcat: Display
+parameters:
+  - keyword: source
+    name: Source
+    types: SafeURI
+    description: |
+      Location of the video. See SafeURI.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: Optional text to display in the mouseover text for the video.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Web Video
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a video from the web for use in a video field.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the source parameter
+
+The source parameter must contain a URL that links directly to the source video. A URL to a website containing a video (for example, a Youtube link) will not work.
+Appian documents cannot be used as the source video.

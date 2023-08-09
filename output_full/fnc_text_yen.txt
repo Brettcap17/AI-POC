@@ -1,0 +1,36 @@
+
+layout: function
+title: yen() Function
+space: function_page
+excerpt: "Converts the number into yen by effectively adding a yen symbol (¥), a decimal point, and one comma for every three digits preceding the decimal."
+category: function_page
+fncname: yen
+fncexample: "yen(3213.43)"
+fncresult: "¥3,213.43"
+fnccat: Text
+compatibility: -crf, ~portal, -om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number of yen to be returned as text.
+  - keyword: decimals
+    types: Decimal
+    description: |
+      The number of digits after the decimal to display. 2 by default.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+If no arguments are passed, the yen symbol itself is returned as text.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+yen(3213.43) returns ¥3,213.43

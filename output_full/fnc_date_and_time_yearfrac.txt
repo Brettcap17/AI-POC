@@ -1,0 +1,38 @@
+
+layout: function
+title: yearfrac() Function
+space: function_page
+excerpt: "Determine the fraction of the year."
+category: function_page
+fncname: yearfrac
+fncexample: "yearfrac(today(), today() + 270, 3)"
+fncresult: "0.739726"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: start_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: end_date
+    types: Date
+    description: |
+      The endng date.
+  - keyword: method
+    types: Date
+    description: |
+      The methodology, where 0 or omitted is US(NASD) 30/360, 1 is Actual/Actual, 2 is Actual/360, 3 is Actual/365, 4 is European 30/360.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+yearfrac(today(), today() + 270, 3) returns 0.739726

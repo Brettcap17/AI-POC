@@ -1,0 +1,44 @@
+
+layout: function
+title: dollar() Function
+space: function_page
+excerpt: "Converts a decimal number into a dollar value by effectively adding a dollar sign ($), a decimal point, and optional comma for every three digits preceding the decimal."
+category: function_page
+fncname: dollar
+fncexample: "dollar( 13213.43 )"
+fncresult: "$13,213.43"
+fnccat: Text
+compatibility: -crf, +pr, +pe
+reftype: function
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number of dollars to be returned as text decimals.
+  - keyword: decimals
+    types: Decimal
+    description: |
+      The number of digits after the decimal to display, 2 by default. Optional.
+  - keyword: no_commas
+    types: Integer
+    description: |
+      An optional flag value indicating whether commas are used as number separators. It accepts 0 or 1. The default value is 0.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text number
+Usage considerations
+Using the no_commas parameter
+When the value for no_commas is 0, the dollar value displays a comma separator between every three and four digits that precede the decimal, when the number contains four or more digits before the decimal.
+When the value for no_commas is 1, the dollar value is not separated by commas.
+Formatting results
+When displaying this value, you must use text formatting.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+dollar(3213.43) returns $3,213.43

@@ -1,0 +1,55 @@
+
+layout: basic
+title: Deployment API - Inspect Package
+title_short: Inspect Package API
+topic: deploymentapis
+weight: 900
+
+Overview
+This endpoint runs an inspection on a package. Appian will return any deployment errors or warnings for a given package and import customization file.
+
+HTTP Request Method: POST
+Endpoint: /inspections
+
+Request
+When performing a POST request, you must define a request body using the multipart/form-data content type. Form data allows you to send key-value pairs and upload files, such as your package.
+Each POST request’s body must include a JSON object (application/json content type) and form parameters (uploaded files). The JSON object is a list of key-value pairs, as listed below.
+JSON object parameters
+
+packageFileName - File name of the deployment package (.zip).
+customizationFileName - File name of the import customization file (.properties).
+
+Request example
+In addition to the JSON object below, the request should have the referenced files attached.
+Request
+POST /inspections
+JSON object example
+json
+{
+   "packageFileName": "Fraud Investigation Management.zip",
+   "customizationFileName": "Fraud Investigation Management.properties"
+}
+cURL example
+If you’re calling the API from a command line interface, you can use cURL to make a request. The cURL command with the above JSON object and its corresponding files looks like:
+curl --location --request
+POST 'https://mysite.appiancloud.com/suite/deployment-management/v1/inspections' \
+--header 'Appian-API-Key: <API key>' \
+--form 'json="{
+      \"packageFileName\": \"Fraud Investigation Management.zip\",
+      \"customizationFileName\": \"Fraud Investigation Management.properties\"
+   }"' \
+--form 'zipFile=@"Fraud Investigation Management.zip"' \
+--form 'ICF=@"Fraud Investigation Management.properties"'
+Each form parameter requires a key name, as indicated by randomKey1, but these can be arbitrarily named and do not need to match anything in the JSON object.
+Response
+Successful response
+
+uuid - UUID of the inspection. This can be used to retrieve details of the inspection.
+url - The URL to use to retrieve the details of the inspection.
+
+Response example
+json
+{
+   "uuid": "378271a6-ca0d-4466-bac9-385e4fcb951a",
+   "url": "https://mysite.appiancloud.com/suite/deployment-management/v1/inspections/378271a6-ca0d-4466-bac9-385e4fcb951a/"
+}

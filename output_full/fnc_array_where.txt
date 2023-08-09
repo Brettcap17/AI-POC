@@ -1,0 +1,56 @@
+
+layout: function
+title: where() Function
+space: function_page
+excerpt: "Returns the indices where the values in the input array are true."
+category: function_page
+fncname: where
+fncexample: "where({true, false, true})"
+fncresult: "{1, 3}"
+fnccat: Array
+parameters:
+  - keyword: booleanArray
+    types: Boolean Array
+    description: The array of Boolean values to test.
+  - keyword: default
+    types: Integer or Integer Array
+    description: The integer number or array of integer numbers to return if none of the values in the array are true.
+reftype: function 
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+
+wherecontains(): Use this function to return indices of an array that match a user-defined value, instead of items that evaluate to true.
+index(): Use this function to return the values of an array at the indices you gathered with the where() function.
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Integer Array
+Usage considerations
+When to use where()
+This function can be useful for finding the value of one field of a CDT in an array of CDT values where each item in the array has a given value for another field.  The default parameter can be used to return a value that is not a valid index in order to cause the index() function to return its default value if none of the values in the input to the where() function are true.
+Understanding results
+If a default value is not specified and none of the values in the input array are true, an empty list will be returned.
+A null or empty array given as the array parameter is considered false.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+where({true, false, true}) returns 1, 3
+where(mod({13, 24, 35, 46, 57, 68}, 2)=0) returns 2, 4, 6
+Use with comparison operators
+where(pv!scores<50) returns 8, 10, 12 where pv!scores = {68, 89, 82, 90, 93, 99, 59, 49, 88, 27, 56, 49, 100}
+where(pv!scores>avg(pv!scores)) returns 2, 3, 4, 5, 6, 9, 13 where pv!scores = {68, 89, 82, 90, 93, 99, 59, 49, 88, 27, 56, 49, 100}
+where({pv!scores}<average({pv!scores})-3*stdevp({pv!scores}),-1) returns -1 where pv!scores = {68, 89, 82, 90, 93, 99, 59, 49, 88, 27, 56, 49, 100} because no scores are 3 standard deviations less than the mean and -1 is given as the default value to return if none of the items in the array are true
+Use with the index() function
+index(pv!employees.firstName, where(like(pv!employees.department, "Finance"), -1), "None") returns all of the first names of employees in the Finance department, or "None" if none of the employees have their department field set to Finance.
+Use with a null or empty array
+where(null, 1000) returns 1000
+where(null) returns an empty list
+where({}, -1) returns -1
+where({}) returns an empty list
+where({true, false, null, true}) returns 1, 4

@@ -1,0 +1,40 @@
+
+layout: function
+title: searchb() Function
+space: function_page
+excerpt: "Searches the text for a particular substring, returning the positional index of the first byte of the first match."
+category: function_page
+fncname: searchb
+fncexample: "searchb(\"to\",\"Boston\",1)"
+fncresult: "4"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: search_text
+    types: Text
+    description: |
+      The text that will be searched for.
+  - keyword: within_text
+    types: Text
+    description: |
+      The text within which the search text will be searched for.
+  - keyword: start_num
+    types: Number
+    description: |
+      The positional index in bytes of the first byte of the substring to be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Usage considerations
+Text index
+The first byte of the entire text value is considered to have an index = 1.
+Understanding the search_text parameter
+The search_text parameter only supports ? as a wildcard character.
+Examples
+searchb("to","boston",1) returns 4

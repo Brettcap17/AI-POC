@@ -1,0 +1,48 @@
+
+layout: function
+title: a!listViewItem() Function
+category: function_page
+excerpt: Creates a value of type ListViewItem for use with record type definitions.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!listViewItem
+compatibility: -crf, ~portal, ~om
+parameters:
+  - keyword: title
+    types: Text
+    description: |
+      The name or short text description of the item.
+  - keyword: details
+    types: Text
+    description: |
+      A longer text description of the item.
+  - keyword: image
+    types: Document or User
+    description: |
+      The image to appear in the record list next to each item. Value must be entered as an expression. If left null or empty, the first two letters of the record title display. For image file types, a thumbnail of the document displays. For user values, the user's avatar displays.
+  - keyword: timestamp
+    types: Date and Time
+    description: |
+      The creation or modification timestamp of the item.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Create a Feed-Style Record List, ListViewItem
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+ListViewItem
+Examples
+NOTE: This examples use the Employee record type for the purpose of illustration only. If you copy and paste the expression below into the Expression Rule Interface, it will not evaluate in your Test Rules interface. Use it as a reference only.
+sail 
+a!listViewItem(
+  title: rv!record[recordType!Customer.fields.firstname] & " " & rv!record[recordType!Customer.fields.lastname],
+  details: rv!record[recordType!Customer.fields.title] & " | " & rv!record[recordType!Customer.fields.department] & " | " & rv!record[recordType!Customer.fields.phonenumber],
+    image: rule!getCustomerImage(rv!record[recordType!Customer.fields.imageId]),
+  timestamp: "Start date: " & rv!record[recordType!Customer.fields.startdate],
+)
+When this function is used in a feed-style record list, it appears like this:
+{:.screenshot}

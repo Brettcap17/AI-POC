@@ -1,0 +1,56 @@
+
+layout: basic
+title: PDF Doc From Template Smart Service
+reftype: smart_service
+sscat: Document_Generation
+ssicon: PDF_Doc_From_Template.png
+ssparentcat: Automation_Services
+
+Overview
+The PDF Doc From Template smart service is used to populate an Adobe Acrobat form with process data and save the result as an Adobe Acrobat document. To use the smart service in your Process Model, click and drag it onto the canvas.
+This smart service uses a PDF form template, and allows you to populate the form with process data.
+You cannot use a standard document in Acrobat format as a template. The selected PDF template must be a PDF Form. When scanned, the PDF form fields are listed numerically, according to the order in which they appear on the form. No substitution keys are required in the form fields.
+At runtime, a task exception is thrown if the template document cannot be retrieved, either because the run-as user does not have rights to it, or if the document is missing.
+Properties
+
+
+Category: Document Generation
+
+
+Icon: 
+
+
+Assignment Options: Always Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Setup tab
+To configure this node, perform the following steps.
+
+In the Template field, type the name of your PDF template, which must exist within Appian Document Management. — or — Click the Directory button to browse for the document (you can only select documents with a .PDF file extension). The PDF file must be an Adobe Acrobat form, not a document. Once the template document is selected, the substitution grid is populated with the form fields found within the template file.
+(Optional) In the Runtime Template field, type an expression that selects a document using a variable or a constant. The substitution fields in the runtime template(s) must match those in the base template.
+You can create a process variable or a constant that contains a similar template that is selected at runtime.
+If all of the fields in the runtime template remain the same (with the same field name and properties), uploading a new template version updates it in all active processes.
+If any of the fields in the a new template version are different, the changed field mappings must be remapped to node inputs, and the process model must be republished. All active processes must be edited to use the new template.
+
+
+For the Destination options, select an existing document to replace, or output a new file by selecting Create a new document.
+If you selected Create a new document: enter a name in the expressionable New document name field. Take care when forming a filename to avoid characters that are disallowed in Appian Document Management filenames (such as / \ : ; \< > " * ' ? ).
+(Optional) Enter a brief description of the of document in the New document description field.
+Enter a destination directory in the Save in folder field. Once you have selected a folder, click  to validate the name of the folder specified. You can also use an expression or a rule to select a folder at runtime.
+If you selected Overwrite an existing document specify the document to be replaced.
+All form fields found in the template file appear in the Find in template document column in the substitution grid.Any variable length fields that exist in the PDF template are not displayed. Variable length fields are not supported.Under the Replace with column, enter the text to substitute in the form field. If you type a value enclosed with quotation marks, the quotation marks appear on the form. You can also use the Expression Editor to formulate a substitution value. If you use an expression that includes literal text enclosed with quotation marks, the quotation marks do not appear on your form. (If the field is left blank, the field is replaced with a blank.)
+(Optional) Reorder the substitution list using the Sort buttons in the footer. Sort alphabetically by clicking . Sort the list in reverse alphabetical order by clicking . Revert back to the order in which they appear in the template by clicking .
+(Optional) Refresh the list of substitution fields (when changes have been made to the template document) by clicking . Whenever the template path is changed, the specified document is re-parsed for substitution fields. If so, preexisting fields are retained in the grid, with their corresponding mappings. This activity also supports Unicode (UTF-8) templates and generates Unicode documents.
+
+If the node is run as a user who does not have adequate rights to the template document, the document that is replaced, or to the folder where the new document should be generated, an error message is sent to the Process Administrator and the process is paused. This also occurs if a file or folder no longer exists.
+Data tab
+The data tab displays the node inputs and node outputs for the smart service activity. These inputs and outputs are initially configured using the Setup Tab. The Data tab allows you to perform additional data processing, if needed.
+Node outputs
+The ID of the document that was created or replaced is returned by the activity.
+To retain the ID of the document so that it can be referenced elsewhere in the Process Model:
+
+Click the Outputs property sheet (tab).
+Select New Document Created on the Results list. The Result properties are displayed.
+Create a new Process Variable to store the result, or select an existing Process Variable with a Document data type from the available list.

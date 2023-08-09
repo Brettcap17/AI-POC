@@ -1,0 +1,91 @@
+
+layout: function
+title: a!aggregationFields() Function
+category: function_page
+compatibility: '-crf'
+excerpt: Used to define a query against record data that performs an aggregation in a!queryRecordType(). Uses a!grouping() and a!measure() to define aggregate fields.
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!aggregationFields
+parameters:
+  - keyword: groupings
+    name: Groupings
+    types: Any Type
+    description: |
+      Fields to group by using a list of a!grouping(). 
+  - keyword: measures
+    name: Measures
+    types: Any Type
+    description: |
+      Calculations to perform using a list of a!measure().
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: a!queryRecordType, Measure Component, Grouping Component
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Aggregation Fields
+Usage considerations
+Supported use case
+
+This configuration should always be used within the fields parameter of a!queryRecordType() to define the fields returned when aggregating data.
+
+Using the grouping and measure parameters
+
+a!grouping() and a!measure() must be used to define the groupings and calculations.
+You can provide both groupings and measures, or you can choose to include only measures or groupings.
+For each grouping or measure provided, the alias is required.
+
+Examples
+This expression uses the record type Cases for the purpose of illustration only. If you copy and paste the expression below into an expression, it will not evaluate in your interface. Use it as a reference only. This is an example of using one grouping and one measure to return the total number of cases for each month.
+sail
+a!queryRecordType(
+  recordType: recordType!Case,
+  fields: a!aggregationFields(
+    groupings: { 
+      a!grouping(
+        field: recordType!Case.fields.dateSubmitted,
+        interval: "MONTH",
+        alias: "month_submitted"
+    )
+   },
+    measures: {
+      a!measure(
+      field: recordType!Case.fields.id,
+      function: "COUNT",
+      alias: "count_id"
+    )
+   }
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5000)
+This expression uses the record type Cases for the purpose of illustration only. If you copy and paste the expression below into an expression, it will not evaluate in your interface. Use it as a reference only. This is an example of using no groupings and one measure to return the total number of cases.
+sail
+a!queryRecordType(
+  recordType: recordType!Case,
+  fields: a!aggregationFields(
+    measures: {
+      a!measure(
+        field: recordType!Case.fields.id,
+        function: "COUNT",
+        alias: "count_id"
+    )
+   }
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5000)
+This expression uses the record type Cases for the purpose of illustration only. If you copy and paste the expression below into an expression, it will not evaluate in your interface. Use it as a reference only. This is an example of using one grouping and no measures to return the distinct status values for each case.
+sail
+a!queryRecordType(
+  recordType: recordType!Case,
+  fields: a!aggregationFields(
+    groupings: {
+      a!grouping(
+        field: recordType!Case.fields.status,
+        alias: "case_status"
+    )
+   }
+  ),
+  pagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5000)

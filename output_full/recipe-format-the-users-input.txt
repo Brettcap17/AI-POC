@@ -1,0 +1,32 @@
+
+layout: pattern
+title: Format the User's Input
+excerpt: 'Format the user''s input as a telephone number in the US and save the formatted value, not the user''s input.'
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Formatting
+
+
+This expression uses the text() function to format the telephone number. You may choose to format using your own rule, so you would create the supporting rule first, and then create an interface with the main expression.
+This scenario demonstrates:
+
+How to configure a field to format a user's input
+
+Expression
+sail 
+a!localVariables(
+  local!telephone,
+  a!textField(
+    label: "Employee Telephone Number",
+    instructions: "Value saved: " & local!telephone,
+    value: local!telephone,
+    saveInto: a!save(
+      local!telephone,
+      text(save!value, "###-###-####;###-###-####")
+    )
+  )
+)
+Test it out
+
+Enter 1234567890 then click somewhere else on the form. Notice that the phone number is now formatted.

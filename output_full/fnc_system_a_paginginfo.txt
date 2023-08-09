@@ -1,0 +1,66 @@
+
+layout: function
+title: a!pagingInfo() Function
+category: function_page
+compatibility: '-crf'
+excerpt: 'Creates a value of type PagingInfo for use with grids, queries, and todatasubset().'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!pagingInfo
+parameters:
+  - keyword: startIndex
+    types: Integer
+    description: |
+      Index of the array in which to start returning values for the subset. Valid values include those greater than zero.
+  - keyword: batchSize
+    types: Integer
+    description: |
+      The number of items to return. When used with records, valid values are 0 to 5,000. When used with an entity, valid values include those greater than or equal to -1. See Using the batchSize parameter for more information about the allowed values.
+  - keyword: sort
+    types: SortInfo Array
+    description: |
+      Valid values include null, an empty array of SortInfo, or an array of SortInfo where <SortInfo>.field is the name of a field on the input array elements or "dot" notation for a nested field.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: PagingInfo, Read-Only Grid, a!sortInfo(), a!queryRecordType()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+PagingInfo
+Usage considerations
+Using the startIndex parameter
+If the startIndex value is greater than the total number of items in the list the PagingInfo value is applied to, a null array is returned as the data.
+Using the batchSize parameter
+The batchSize parameter determines the number of items to return. Depending on the data you are querying, the valid values for a batchSize may vary.
+| batchSize value | Returns                                                                                                                                           |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| -1              | All items are returned. This value is only supported in a!queryEntity().                                           |
+| 0 or null       | Only the totalCount and startIndex of the array are returned (no data). This value is only supported in a!queryEntity() and a!queryRecordType where the source is a database or Salesforce. |
+| >1 | Returns the specified number of results, starting at the startIndex. |
+If the batchSize is 0, the total count of records will be returned, but no data. 
+If the batchSize value is -1, all items are returned. When People Functions contain PagingInfo, the batchSize parameter must be greater than or equal to zero; -1 is not a valid option.
+A batch size of 0 cannot be used for the following record types:
+
+Service-backed record types that have data sync disabled
+Process-backed record types
+Legacy record types
+
+Using the sort parameter
+If the sort value is not null or empty, the function your PagingInfo is applied to returns a subset of the input sorted by the field value of the SortInfo. If the value is null or empty, it returns an unsorted subset of the input.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+sail
+a!pagingInfo(
+  startIndex: 1,
+  batchSize: 4,
+  sort: a!sortInfo(
+    field: "name",
+    ascending: true()
+  )
+)
+returns
+[startIndex=1, batchSize=4, sort=[field=name, ascending=true]]

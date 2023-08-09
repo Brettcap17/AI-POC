@@ -1,0 +1,520 @@
+
+layout: basic
+title: Service-Backed Record Type Tutorial
+topic-group: A
+type: Tutorial
+desc: Advanced tutorial that walks you through the process of creating a record type with an expression as its source.
+proxy-topic: Integrations
+permalink: Service-Backed_Record_Tutorial.html
+weight: 219
+
+Introduction
+Your enterprise data may be spread across a number of different systems. If your data sources provide access with a REST API, you can bring all of your data together by creating a service-backed record type, which is a record type that uses a web service as its data source.
+This tutorial guides you through the steps for creating a service-backed record type that powers a fictional SpaceX Launch application that manages rocket launch data. We'll use the r/SpaceX API as the data source of our record type. To enable Appian's powerful data modeling features, we'll also enable data sync for the record type.
+Most APIs require applications to send authentication credentials with each request. The r/SpaceX API is a free, public, open-source API that doesn't require authentication. This makes it ideal for this tutorial because we don't need credentials in order to connect to it. Specifically, we will use the Launches resource of the r/SpaceX API that supports paging, searching, and filtering.
+
+appian-style-note
+Appian is not a maintainer of the r/SpaceX API, and the API is used in this tutorial for example purposes only. In the event the API changes, is deprecated, or is made unavailable, this tutorial will continue to be available as a reference, but there is no guarantee that the tutorial can be used to create working application code.
+
+Objectives
+You'll learn how to use a web service integration to create a record type. Although this tutorial focuses more on the specifics of configuring the record type's data source and record list view, you'll also have an opportunity to create other Appian design objects required to build the record type and SpaceX Launch application.
+You'll create the following design objects:
+
+Groups
+Folders
+Record types
+Connected systems
+Integrations
+Expression rules
+Interfaces
+
+After you complete this tutorial, you will understand how to use your own API to create a service-backed record type. The final configurations of your record type will change based on the field names and data types of your source.
+
+appian-style-note
+Record type field references are specific to each record type and environment. This means that you need to reference the record type fields from your own environment whenever you copy and paste a record type reference from outside the application.
+
+Requirements
+To successfully complete this tutorial, you need to have basic familiarity with building applications and interfaces, as well as an understanding of REST APIs and how to use them. To gain practice designing Appian interfaces, walk through the Interface Tutorial and Process-Backed and Entity-Backed Record Tutorial.
+Setup
+Before we create the record type, we need to set up our application and user groups.
+Create the application and user groups
+Let's start by creating our SpaceX Launch application:
+
+Sign in to Appian Designer.
+Click NEW APPLICATION.
+In the Create New Application dialog, configure the following properties:
+
+| Property | Description |
+   | - | - |
+   | Name | Enter SpaceX Launch. |
+   | Prefix | Replace the default prefix with SpaceX. This prefix departs a bit from the recommended naming standard, but it's within the character limits allowed, it meets our needs for this tutorial, and it's more fun. We'll be using this short, unique prefix whenever we name an object in this application. |
+   | Description | Enter Container for components of the SpaceX Launch application. |
+   | Generate groups and folders to secure and organize objects | Keep this checkbox selected, so that Appian will automatically generate standard groups and folders and assign default security groups for this application. |
+
+Click CREATE.
+In the Review Application Security dialog, keep the default settings for the Default (All Other Users), SpaceX Administrators, and SpaceX Users groups.
+Click SAVE.
+
+
+appian-style-tip
+The security of the application object is unrelated to the security of each of the objects contained within the application. This means that you will need to set security permissions for every object in an application in addition to the application object itself. For more information about security permissions for the application object, see Application Security.
+
+Now let's create and configure our new record type.
+Create the record type
+We will create and configure the record type in steps. We'll start with creating the data source objects, followed by setting up filters and configuring the integrations and expressions, and finally creating the record list view and record type's Summary view.
+To begin:
+
+In your application, go to the Build view.
+Click NEW > Record Type.
+For Name, enter SpaceX Launch. Launches will automatically populate in the Display Name (Plural) field.
+For Description, enter Record type for the SpaceX Launch application.
+Click CREATE.
+In the Review Record Type Security dialog, keep the default security group settings.
+Click SAVE. The SpaceX Launch record type will open in a new tab.
+
+Configure the record data source
+When the SpaceX Launch record type opens in a new tab, the Data Model page opens by default. From this page, we'll select our data source as the first step in configuring the record type.
+
+On the Data Model page, click TELL US ABOUT YOUR DATA.
+For Choose Source Type, click Web Service.
+Click NEXT.
+For Data Sync, choose Build Apps Faster with Sync.
+Click NEXT.
+For Choose Record Data Source, click  Create Record Data Source to set up the connected system.
+
+Set up the connected system
+Now, we'll set up an HTTP connected system for the r/SpaceX API and the expression rule that calls that integration. This will allow us to use an integration to call the external data into the record type. The configuration wizard will guide us through the process of creating the Appian design objects you need to configure the record data source.
+To create an HTTP connected system:
+
+Keep the default option, Create a new integration, selected.
+Next to the Connected System field, click .
+In the Create Connected System dialog, select HTTP.
+appian-style-tip
+For more information about a specific connected system option, including a detailed description, hover over the connected system button to access the tool tip.
+
+
+For Name, enter r/SpaceX API.
+For Description, enter An API that returns data about SpaceX launches.
+For System Logo, upload a system logo image.
+For Base URL, enter https://api.spacexdata.com/v3.
+For Authentication, keep the default None selected since this is an unauthenticated API.
+Click CREATE. The new object is created and appears as the Connected System in the Create Record Data Source dialog.
+
+{:.screenshot style="width:60%"}
+Create the record data source integration
+Now we'll create an integration that connects to the r/SpaceX API connected system and calls the external data for the record type.
+
+For Name, enter SpaceX_getAllLaunches.
+For Description, enter Integration that gets all launch data for the SpaceX Launch record type.
+For Save In, select the SpaceX Rules & Constants folder.
+Click NEXT.
+
+{% include zoompic.html url="images/xbr-tutorial-create-integration.png" alt="Create integration for r/SpaceX API connected system" style="width:67%;" %}
+Create the record data source expression rule
+Next, we'll create the record data source expression.
+The record data source expression connects the integration to the record type, calls the integration, and returns the requested data. After we create the integration for the record data source, the configuration wizard automatically defines the property fields for our expression rule.
+In the CREATE EXPRESSION RULE step, verify that the following information is automatically populated in each field below:
+
+Name field - SpaceX_getAllLaunches_recordDataSource
+Description field - The Record Data Source for the SpaceX Launch Record Type
+Application field - SpaceX Launch
+Save In field (folder) - SpaceX Rules & Constants
+
+Click NEXT to continue on to configuring syncing in batches.
+Configure syncing in batches
+In the last step of the wizard, you'll specify whether you want to sync your record data in batches.
+The record data source can return a maximum of 1,000 records with each integration call, so Appian provides the option to sync larger datasets in batches. The complete set of launch data is fewer than 200 records, so we don't need to make multiple calls to retrieve everything.
+To disable syncing in batches:
+
+Clear the Enable Syncing in Batches checkbox.
+Click CREATE.
+
+Two generated objects are listed on the confirmation page: the record data source expression and the integration to get all launch data.
+{% include zoompic.html url="images/xbr-tutorial-created-record-data-source-objects.png" alt="Created record data source objects" style="width:67%;" %}
+Before you close the Create Record Data Source wizard, we need to edit the generated objects so they return data in the correct format. If you click OK now, you will see an error on the Choose Record Data Source dialog.
+Configure the integration path
+First, we'll set the integration object's relative path.
+The relative path is appended to the base URL of the connected system to form a URL exposed by the API as an endpoint. The data returned by the endpoint allows the integration to populate the record list and return a list of the objects that will map to the record type. We'll use the launches endpoint to return an array of SpaceX launches. The rule inputs for this integration will be passed into the corresponding expression rule for the record data source.
+
+On the Create Record Data Source dialog, click the SpaceX_getAllLaunches integration object to open it.
+For Relative Path, enter /launches. This will be appended to the Base URL of the connected system to form a URL of https://api.spacexdata.com/v3/launches.
+
+{:.screenshot style="width:70%"}
+
+Click TEST REQUEST. This should return a success message:
+
+{:.screenshot style="width:70%"}
+
+Under the success message, click Convert JSON to Appian value to convert this response body to an Appian dictionary.
+Click TEST REQUEST again to ensure the test results successfully converted from JSON to the Appian format.
+Expand the Query Parameters section of the integration.
+Click  Add Query Parameter.
+For Name, enter limit.
+For Value, enter 100.
+Click TEST REQUEST again and verify that the result.body contains 100 items.
+Click SAVE CHANGES and close the integration tab.
+
+Configure the record data source expression
+By default, the integration's response includes a result.body that is a generic List of Dictionary with many properties describing each launch. Because we only need a few of the returned data points for our application, we will map the needed data to fields that will make up the record type.
+Let's update the Record Data Source expression with these changes:
+
+On the Create Record Data Source dialog, click the SpaceX_getAllLaunches_recordDataSource expression rule.
+On line 11, replace the default value of local!integrationResponse.result.body with the following expression:
+  sail
+   a!forEach(local!integrationResponse.result.body,
+     a!map(
+       flight_number: fv!item.flight_number,
+       details: fv!item.details,
+       launch_date_utc: fv!item.launch_date_utc,
+       launch_success: fv!item.launch_success,
+       launch_year: fv!item.launch_year,
+       mission_name: fv!item.mission_name,
+       rocket_name: fv!item.rocket.rocket_name
+     )
+   ),
+Click TEST RULE. The output should be a 100 Lists of Map, each with the fields set in the a!map() of the expression.
+Click SAVE CHANGES and close the expression rule tab.
+On the Create Record Data Source dialog, click OK.
+
+Verify data in the preview
+Once you've configured the integration, you can confirm that the record data source expression is working by examining the data preview shown on the Configure Data Source dialog. After you've verified the preview data, click Next.
+{:.screenshot style="width:70%"}
+Configure record type fields
+Appian automatically maps your source data fields to record fields and then lets you pick a primary key field and order the fields as you want.
+To select and configure the record type fields:
+
+For Primary Key, select flight_number.
+Click FINISH.
+
+{:.screenshot style="width:70%"}
+
+In the record type, click SAVE CHANGES.
+
+Saving the record type starts a full sync of your record data. Click Sync History to see details of the sync operation and confirm that it completed successfully.
+{% include zoompic.html url="images/xbr-tutorial-data-sync.png" alt="Successful full sync of record data" style="width:67%;" %}
+Configure query parameters for an integration
+Next, we'll copy the data source integration and modify the copy to enable searching and filtering with query parameters. Specifically, we'll set up offset, limit, sort, and order query parameters to enable searching, filtering, and paging.
+Paging is often the most complicated parameter to configure. This is because REST APIs don't understand Appian's PagingInfo data type, and different APIs handle paging in different ways. See the r/SpaceX API documentation for details on its pagination parameters.
+We'll also configure the rocket_name, launch_year, and launch_success parameters to enable filtering by rocket, the launch year, and whether the launch was successful. All of these query parameters have dynamic values and should be configured as expressions. We will populate their values using rule inputs.
+Let's begin:
+
+From the Build view, select the checkbox next to the SpaceX_getAllLaunches integration.
+Click DUPLICATE.
+For Name, enter SpaceX_getFilteredLaunches.
+For Description, enter Integration that gets user-specified launch data for the SpaceX Launch record type.
+Click CREATE.
+In the RULE INPUTS pane, click  New Rule Input and add the following rule inputs:
+pagingInfo with the type PagingInfo.
+searchText with the type Text.
+launchYear with the type Number (Decimal).
+launchSuccess with the type Boolean.
+For the limit query parameter, use the expression editor to enter ri!pagingInfo.batchSize as the parameter value.
+Click  Add Query Parameter to configure each query parameter and value listed below. Make sure to click the  icon next to each query Value field to configure each Query Parameter value as an expression.
+Add the offset parameter and use the expression editor to enter ri!pagingInfo.startIndex - 1 as the parameter value.
+Add the sort parameter and use the expression editor to enter index(ri!pagingInfo.sort, "field", null) as the parameter value.
+Add the order parameter and use the expression editor to enter if(index(ri!pagingInfo.sort, "ascending", null), "asc", "desc") as the parameter value.
+Add the rocket_name parameter to enable searching by name and use the expression editor to enter ri!searchText as the parameter value.
+Add the launch_year parameter to enable filtering by launch year and use the expression editor to enter ri!launchYear as the parameter value.
+
+Add the launch_success parameter to enable filtering by launch success and use the expression editor to enter ri!launchSuccess as the parameter value.
+{:.screenshot style="width:50%"}
+
+
+Click TEST REQUEST. The response should include all available launch data.
+
+To test the paging query parameters, add the following expression as the test value of the pagingInfo rule input.
+  sail
+   a!pagingInfo(
+     batchSize: 10,
+     startIndex: 12,
+     sort: a!sortInfo(
+       field: "flight_number",
+       ascending: false
+     )
+   )
+Click TEST REQUEST. The response should include 10 launches starting with flight number 100 and ending with flight number 91.
+To test the other query parameters, remove the pagingInfo test value and then update the test values with the following:
+For searchText, enter "Falcon 1".
+For launchYear, enter 2008.
+For launchSuccess, select True.
+Click TEST REQUEST. The response should include one launch: flight number 4 with the mission name "RatSat".
+Click SAVE CHANGES.
+Close the integration object.
+
+
+appian-style-note
+ri!searchText and any rule inputs being used for filtering can have null values. However, a configured service-backed record type will never have a null value for startIndex or batchSize. Therefore, you should test your expression with non-null values for ri!pagingInfo.startIndex and ri!pagingInfo.batchSize.
+
+Build a record data source expression rule with filtering
+The record data source expression calls the SpaceX_getAllLaunches integration to populate the record type with data. Since we enabled the filtering and sorting on the SpaceX_getFilteredLaunches integration, we need to create an expression rule with matching rule inputs and pass the rule input values as parameters to the integration.
+We'll build an expression rule for the data source that will let users search for specific data. This expression rule will return the integration response data for the record list view. The rule inputs for this expression rule are taken from the filtered data source's integration rule inputs.
+We've made this process easy for you by providing a SAIL template in the expression rule object. To build the expression rule, follow the instructions and comments provided in the template along with the steps below. Note that some sections of the SAIL code are preconfigured for you. As you go through each step in the template, verify that the preconfigured code matches the configurations defined in the steps below.
+Let's begin:
+
+From the Build view, select the checkbox next to the SpaceX_getAllLaunches_recordDataSource expression rule.
+Click DUPLICATE.
+For Name, enter SpaceX_getFilteredLaunches_recordDataSource.
+For Description, enter Filtered Data Source for the SpaceX_Rocket Record Type.
+Click CREATE. The expression rule will open in a new tab.
+In the RULE INPUTS pane, click  New Rule Input and add the following rule inputs:
+pagingInfo with the type PagingInfo.
+searchText with the type Text.
+launchYear with the type Number (Decimal).
+launchSuccess with the type Boolean.
+The expression rule is preconfigured to call the integration, but we need to add the rule inputs using keyword syntax.
+Change the initial value of local!integrationResponse to rule!SpaceX_getFilteredLaunches().
+In rule!SpaceX_getFilteredLaunches, add the following parameters:
+Set the pagingInfo parameter value to ri!pagingInfo.
+Set the searchText parameter value to ri!searchText.
+Set the launchYear parameter value to ri!launchYear.
+
+Set the launchSuccess parameter value to ri!launchSuccess.
+
+
+Now, test the expression rule to ensure that it correctly calls the integration and returns the data for a start index of 12 and a batch size of 5 as expected.
+
+From the Ad Hoc Test view, enter a!pagingInfo(12,5) in the expression value field for the pagingInfo rule input.
+
+Click TEST RULE. The test output should be five Maps starting with flight number 100 and descending to flight number 96.
+{% include zoompic.html url="images/Tutorial_XBR_RDS_Test_Expression_Results.png" alt="Tutorial XBR RDS Test Expression Results" style="width:67%;"%}
+
+
+Click SAVE CHANGES.
+
+Check your code with the expression below.
+  sail
+   a!localVariables(
+     /* Call the integration and store the response in a local variable */
+     local!integrationResponse: rule!SpaceX_getFilteredLaunches(
+       pagingInfo: ri!pagingInfo,
+       searchText: ri!searchText,
+       launchYear: ri!launchYear,
+       launchSuccess: ri!launchSuccess
+     ),
+     if(
+       /* This will return true if the integration succeeds */
+       local!integrationResponse.success,
+       /* If needed, modify the expression below to return a list of maps, dictionaries, or CDTs that map to your record data */
+       a!forEach(
+         local!integrationResponse.result.body,
+         a!map(
+           details: fv!item.details,
+           flight_number: fv!item.flight_number,
+           launch_date_utc: fv!item.launch_date_utc,
+           launch_success: fv!item.launch_success,
+           launch_year: fv!item.launch_year,
+           mission_name: fv!item.mission_name,
+           rocket_name: fv!item.rocket.rocket_name
+         )
+       ),
+       /* If the integration is unsuccessful, handle accordingly */
+       if(
+         /* Note: handling of out of bounds exceptions varies by web service */
+         tointeger(
+           index(
+             local!integrationResponse.result,
+             "statusCode",
+             0
+           )
+         ) = 416,
+         /* If this is an out of bounds error, return an empty list to finish syncing */
+         {},
+         /* If this is a different error, return the integration error. */
+         /* If you need additional logic to determine the error, use a!integrationError() in the integration to format the error displayed in the sync monitor */
+         local!integrationResponse.error
+       )
+     )
+   )
+Now that we've configured the data sources, let's verify that the data returned for your  data source expression matches the fields in our data type.
+
+Sync and preview record type data
+Once you save the record type, a full sync occurs to sync your data in Appian. When the sync is successful, that means that your Record Data Source expression is working correctly.
+Now you can see a preview of your synced data by going to the Data Preview tab on the Data Model page.
+Let's verify that the data results returned for our record data source expression matches the data we expect for the record type.
+
+Go back to the SpaceX Launch record type.
+Go to Sync Options.
+Click Start Sync. A success message should appear with the date and time of the sync.
+Go to Data Model.
+Click the Data Preview tab.
+
+{% include zoompic.html url="images/Tutorial_XBR_Test_Pane_Source_View.png" alt="Record Data Preview" style="width:67%;" %}
+
+appian-style-tip
+If you want to capture changes made to data exposed by the web service, you could configure a Sync Expression in order to leverage the Sync Records smart service. Learn more about syncing data changed by other systems.
+
+Configure the list view
+Now let's populate our record list with more meaningful data.
+
+In the record type, go to List.
+Leave the default Style option as Grid.
+Click Edit List to open the Edit Record List dialog.
+For Empty Grid Message, enter No launches exist with this criteria..
+For Rows to Display Per Page, enter 5. This controls the batchSize that is passed into the Paging Info input for your single record source.
+In the Columns section of the configuration pane, delete the Details column by hovering over the three dots and clicking the X.
+Delete the following columns in the same way:
+Launch Date Utc
+Launch Success
+Rocket Name
+Move the Mission Name column to the top of the list by hovering over the three dots and clicking the Move Up arrow.
+Click the Mission Name link. The grid configuration pane will show details about that column.
+Click  DISPLAY OPTIONS.
+From the list of options, click RECORD LINK.
+For Display Value, click Edit as Expression.
+Set the Display Value using the following expression:
+  sail
+   a!linkField(
+     links: {
+       a!recordLink(
+         label: fv!row[recordType!SpaceX Launch.fields.mission_name],
+         recordType: recordType!SpaceX Launch,
+         identifier: fv!identifier
+       )
+     }
+   )
+Click OK to save all changes and return to the record type.
+Click SAVE CHANGES.
+To test your record list configuration, click the link under URL.
+
+You should end up with a list view that looks like this:
+{:.screenshot}
+Create a user filter
+To make it easier for users to find information about specific launches, we can build user filters that compare user selections with the values of record fields and return the records that match. In this case, we'll create an expression-backed user filter that uses the launch_year field to see data for a selected calendar year.
+To create a user filter:
+1. In the record type, go to Search and User Filters.
+1. Click  New User Filter.
+1. On the Create New User Filter dialog, select the Expression option.
+1. For Name, enter Launch year.
+1. For the Filter Expression, paste the following expression:
+  sail
+   a!localVariables(
+     local!year: a!queryRecordType(
+      recordType: recordType!SpaceX Launch,
+      fields: a!aggregationFields(
+        groupings: a!grouping(
+          field: recordType!SpaceX Launch.fields.launch_year,
+          alias: "year"
+        )
+      ),
+      pagingInfo: a!pagingInfo(
+        startIndex: 1,
+        batchSize: 100
+      )
+     ),
+     a!recordFilterList(
+       name: "Launch year",
+       allowMultipleSelections: true,
+       options: a!forEach(
+         items: local!year.data,
+         expression: a!recordFilterListOption(
+           id: fv!index,
+           name: fv!item.year,
+           filter: a!queryFilter(
+             field: recordType!SpaceX Launch.fields.launch_year,
+             operator: "=",
+             value: fv!item.year
+           )
+         )
+       )
+     )
+   )
+1. Click OK.
+1. Click SAVE CHANGES.
+1. To test your filter configuration:
+   - In the record type, go to List.
+   - Click the URL to open the record list.
+   - Select 2015 from the LAUNCH YEAR dropdown and verify that the grid shows only the seven launches from 2015.
+  ![/xbr-tutorial-user-filter-preview](images/xbr-tutorial-user-filter-preview.png){:.screenshot}
+
+
+appian-style-note
+For more practice, configure a second User Filter for the launch_success parameter using the ri!launch_success rule input
+
+Create the Summary view
+The last step of this tutorial is to create the Summary view, a task made easier by using the record view generator. Structurally, a Summary view for a service-backed record type is no different from a Summary view for any other record type. What may be different, however, is how you acquire the data.
+
+In the record type, go to Views and Header.
+Click GENERATE RECORD VIEW.
+For Data Included in Your Record View, the Launch record type is already selected, so you can click NEXT.
+For View Name, use the default name Summary and then click NEXT.
+On the review page, you can see the new interface that will be generated (SpaceX_Launch_Summary). When you are ready to proceed, click GENERATE VIEW.
+Once the view is generated, click CLOSE.
+Click SAVE CHANGES.
+
+Update the generated Summary view
+Next, we'll customize our new Summary view with meaningful labels displayed on each record.
+
+Open the SpaceX_Launch_Summary interface.
+Copy the expression below and paste it into the interface in expression mode.
+  sail
+   a!boxLayout(
+     label: "Flight #" & ri!record[recordType!SpaceX Launch.fields.flight_number] & " Launch Info",
+     contents: {
+       a!sideBySideLayout(
+         items: {
+           a!sideBySideItem(
+             item: a!textField(
+               label: "Date",
+               labelPosition: "ADJACENT",
+               value: ri!record[recordType!SpaceX Launch.fields.launch_date_utc],
+               readOnly: true
+             )
+           ),
+           a!sideBySideItem(
+             item: a!textField(
+               label: "Name",
+               labelPosition: "ADJACENT",
+               value: ri!record[recordType!SpaceX Launch.fields.rocket_name],
+               readOnly: true
+             )
+           ),
+           a!sideBySideItem(
+             item: a!richTextDisplayField(
+               label: "Success",
+               labelPosition: "ADJACENT",
+               value: a!richTextIcon(
+                 icon: if(
+                   ri!record[recordType!SpaceX Launch.fields.launch_success],
+                   "check-circle",
+                   "times-circle"
+                 ),
+                 color: if(
+                   ri!record[recordType!SpaceX Launch.fields.launch_success],
+                   "POSITIVE",
+                   "NEGATIVE"
+                 )
+               )
+             )
+           )
+         }
+       ),
+       a!textField(
+         label: "Details",
+         labelPosition: "ADJACENT",
+         value: ri!record[recordType!SpaceX Launch.fields.details],
+         showWhen: not(
+           isnull(
+             ri!record[recordType!SpaceX Launch.fields.details]
+           )
+         ),
+         readOnly: true
+       )
+     },
+     iscollapsible: true
+   )
+Click SAVE CHANGES.
+
+Configure the record title
+The last step is to configure the record's title.
+
+In the record type, go to Views and Header.
+In the Header section, use the default Record Title option of Guided Configuration.
+For Record Title, clear the default selection and choose mission_name from the dropdown.
+Click SAVE CHANGES.
+To test the Summary view:
+In the record type, go to List.
+Click the URL to open the record list.
+Click a mission name to display the record's Summary view.
+
+{:.screenshot}
+Congratulations! You've configured your own service-backed record type. Check out the Records Tutorial to learn how to configure a database-backed record type.

@@ -1,0 +1,4 @@
+
+title: Insurance Quote Wizard 1
+weight: 30
+image: ds-images/uxds_images/auto_insurance_quote_wizard_step_1.png

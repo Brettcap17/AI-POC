@@ -1,0 +1,130 @@
+
+layout: pattern
+title: Build an Interface Wizard
+excerpt: Divide a big form into sections presented one step at a time with validation.
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Wizards
+
+Wizards should be used to break up a large form into smaller steps rather than activity-chaining. Users can step back and forth within a wizard without losing data in between steps.
+
+All the fields must be valid before the user is allowed to move to the next steps. However, the user is allowed to move to a previous step even if the fields in the current step aren't valid. The last step in the wizard is a confirmation screen.
+This scenario demonstrates:
+
+How to create a wizard using the showWhen parameter of an interface component
+How to conditionally set readOnly and required on an interface component
+How to show and change the style of buttons
+
+Expression
+sail 
+a!localVariables(
+  local!employee:a!map( firstName:null, lastName:null, department:null, title:null, phoneNumber:null, startDate:null ),
+  local!currentStep: 1,
+  a!formLayout(
+    label: "Example: Onboarding Wizard",
+    contents:{
+      a!columnsLayout(
+        columns:{
+          a!columnLayout(
+            contents:{
+              a!textField(
+                label: "First Name",
+                labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                value: local!employee.firstName,
+                saveInto: local!employee.firstName,
+                readOnly: local!currentStep = 3,
+                required: not( local!currentStep = 3),
+                showWhen: or( local!currentStep = {1,3} )
+              ),
+              a!textField(
+                label: "Last Name",
+                labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                value: local!employee.lastName,
+                saveInto: local!employee.lastName,
+                readOnly: local!currentStep = 3,
+                required: not( local!currentStep = 3),
+                showWhen: or( local!currentStep = {1,3} )
+              ),
+              a!textField(
+                label: "Phone Number",
+                labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+                value: local!employee.phoneNumber,
+                saveInto: local!employee.phoneNumber,
+                readOnly: local!currentStep = 3,
+                required: not( local!currentStep = 3),
+                showWhen: or( local!currentStep = {2,3} )
+              )
+            }
+          ),
+          a!columnLayout(
+            contents:{
+             a!textField(
+              label: "Department",
+              labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+              value: local!employee.department,
+              saveInto: local!employee.department,
+              readOnly: local!currentStep = 3,
+              required: not( local!currentStep = 3),
+              showWhen: or( local!currentStep = {1,3} )
+            ),
+            a!textField(
+              label: "Title",
+              labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+              value: local!employee.title,
+              saveInto: local!employee.title,
+              readOnly: local!currentStep = 3,
+              required: not( local!currentStep = 3),
+              showWhen: or( local!currentStep = {1,3} )
+            ),
+            a!dateField(
+              label: "Start Date",
+              labelPosition: if( local!currentStep = 3, "ADJACENT","ABOVE"),
+              value: local!employee.startDate,
+              saveInto: local!employee.startDate,
+              readOnly: local!currentStep = 3,
+              required: not( local!currentStep = 3),
+              showWhen: or( local!currentStep = {2,3} )
+            )
+            }
+          )
+        }
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Go Back",
+          value: local!currentStep - 1,
+          saveInto: local!currentStep,
+          showWhen: or( local!currentStep = {2,3} )
+        ),
+        a!buttonWidget(
+          label: if( local!currentStep = 1, "Next", "Go to Review"),
+          value: local!currentStep + 1,
+          saveInto: local!currentStep,
+          validate: true,
+          showWhen: or( local!currentStep = {1,2} )
+        ),
+        a!buttonWidget(
+          label: "Onboard Employee",
+          style: "PRIMARY",
+          submit: true,
+          showWhen: local!currentStep = 3
+        )
+      }
+    )
+  )
+)
+Test it out
+
+Click Next without entering a value in any of the fields. The user will stay on step 1 until all fields are entered.
+Enter values for all the field. Click Next. Notice part two of the form will appear.
+Click Go Back. Notice that you can go back to part 1.
+Enter values for all required fields in step 2. Click Go to Review. Notice that all values entered will appear as a set of read only data.
+
+Notable implementation details
+
+The showWhen parameter is used extensively to conditionally show particular fields as well as set requiredness & read only setting.
+Each "Next" button is configured to increment local!currentStep. Validate is set to true, which ensures all fields are required before continuing on to the next step.
+Each "Go Back" button is not configured to enforce validation. This allows the user to go to a previous step even if the current step has null required fields and other invalid fields. This button also decrements local!currentStep by one.

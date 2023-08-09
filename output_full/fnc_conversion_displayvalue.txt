@@ -1,0 +1,63 @@
+
+layout: function
+title: displayvalue() Function
+category: function_page
+excerpt: Tries to match a value in a given array with a value at the same index in a replacement array and returns either the value at the same index or a default value if the value is not found.
+fnccat: Conversion
+fncexample: 'displayvalue( 1, {0, 1, 2}, {"Low", "Medium", "High"}, "Unknown" )'
+fncname: displayvalue
+fncresult: Medium
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      The value to search for in the array. Will cast to the type of inArray.
+  - keyword: inArray
+    types: Any Type Array
+    description: |
+      The array to be searched.
+  - keyword: replacement
+    types: Any Type Array
+    description: |
+      The array of replacement values.
+  - keyword: default
+    types: Any Type
+    description: |
+      The default value to be returned if the search value is not found.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: resource()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Suggested uses
+It is typically used to return a text display value that corresponds to an ID value stored in a process variable and makes it easier to generate reports that show human-readable values instead of numeric IDs in process data.
+You can also use it to search a CDT array and return the CDT that has a field value matching a process variable value. Do this by creating an expression similar to the following: displayvalue(pv!departmentID, pv!departments.departmentID, pv!departments, "none")
+Using the value parameter
+The type of the argument passed to value must match the types in the replacement array, otherwise the default value will be returned.
+Using the replacement parameter
+If the length of the replacement array is shorter than the inArray array, the replacement array will be repeatedly extended until it is the same length as the longer inArray array.
+Using displayvalue() with arrays
+This function supports expressions or process variables for arrays. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Return a priority level based on the number in an array
+displayvalue(!priority,{0,1,2},{"Low","Medium","High"},"Unknown") returns High when !priority=2 and Unknown when !priority=3
+Use with the resource() function to display internationalized text
+In the custom_locale_en_US.properties file located in the <INSTALL_HOME>/server/_conf directory, define the following key value pairs:
+
+low=Low
+medium=Medium
+high=High
+
+Define a !priority process variable of type Number and set the current locale to en_US.
+displayvalue(!priority,{0,1,2},{resource("low"),resource("medium"),resource("high")},"Unknown") returns High when !priority=2 because the resource() function looked up the value corresponding to the key high.

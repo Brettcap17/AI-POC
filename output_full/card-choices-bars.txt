@@ -1,0 +1,102 @@
+
+layout: function
+title: Bars Template
+category: function_page
+compatibility: -crf
+excerpt: |
+   Displays a bar card template with an icon, primary text, and secondary text justified on either side of the card. For use in the Card Choice Field cardTemplate parameter.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!cardTemplateBarTextJustified
+fncsubcat: Selection
+parameters:
+  - keyword: id 
+    name: Id
+    types: Any Type
+    description: |
+       Value that identifies the card.
+  - keyword: primaryText
+    name: Primary Text
+    types: Text
+    description: |
+      Optional text to display on the first line inside the card.
+  - keyword: secondaryText
+    name: Secondary Text
+    types: Text
+    description: |
+      Optional text to display beneath the primary text inside the card.
+  - keyword: icon
+    name: Icon
+    types: Text
+    description: |
+      Icon to display inside the card.
+  - keyword: iconColor
+    name: Icon Color
+    types: Text
+    description: |
+      Determines the icon color. Valid values: Any hex color or "ACCENT" (default), "STANDARD", "SECONDARY", "POSITIVE", "NEGATIVE".
+  - keyword: iconAltText 
+    name: Icon Alternative Text
+    types: Text
+    description: |
+       Equivalent alternate text for use by screen readers.
+  - keyword: tooltip
+    name: Tooltip
+    types: Text
+    description: |
+       Text to display on mouseover (web) or tap (mobile).
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+       Determines whether the card is displayed in the set of card choices. When set to false, the card is hidden. Default: true.
+reftype: sailcomponent
+scdisplayname: Bars Template
+scsubcat: Card_Choices_Templates
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Text truncation
+
+Spacing and truncation look different in the bars template. To ensure that all your text has enough space to show properly, keep your secondary text short when using this template.
+
+Examples
+INCLUDE PAGE: SAIL intro
+{% sailbox 580 %} 
+a!localVariables(
+  local!save, 
+  {
+    a!cardChoiceField(
+      label: "When do you need your package?",
+      labelPosition: "ABOVE",
+      instructions: "Shipping times may vary depending of the time of year",
+      data: {
+        a!map(id: 1,primaryText: "Tomorrow", secondaryText: "+ $25" ),
+        a!map(id: 2,primaryText: "2-4 Days", secondaryText: "+ $15"),
+        a!map(id: 3,primaryText: "5-7 Days", secondaryText: "+ $8.50"),
+        a!map(id: 4, primaryText: "7+ Days", secondaryText: "Free")
+  },
+  sort: {
+    a!sortInfo(
+      field: "id",
+      ascending: true
+    )
+  },
+  cardTemplate: a!cardTemplateBarTextJustified(
+    id: fv!data.id,
+    primaryText: fv!data.primaryText,
+    secondaryText: fv!data.secondaryText
+  ),
+  value: local!save,
+  saveInto: local!save,
+  maxSelections: 1
+)
+
+}
+)
+{% endsailbox %}

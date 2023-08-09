@@ -1,0 +1,50 @@
+
+layout: function
+title: group() Function
+space: function_page
+excerpt: "Returns information for group."
+category: function_page
+fncname: group
+fncexample: "group(2, \"created\")"
+fncresult: "12/16/05 6:37 PM GMT"
+fnccat: People
+compatibility: -crf, ~portal, ~om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: groupId
+    types: Number
+    description: |
+      The Id of the group to be retrieved.
+  - keyword: property
+    types: Text
+    description: |
+      Information to retrieve for this group.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The property value accepts the following (case-sensitive) values:
+
+created
+creator
+groupName
+groupTypeName
+lastModified
+parentName
+delegatedCreation
+description
+id
+memberPolicyName
+parentId
+securityMapName
+viewingPolicyName
+
+group() cannot be used to define a column of process report data or in a process event.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+group(2, "created") returns 12/16/05 6:37 PM GMT

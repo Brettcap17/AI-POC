@@ -1,0 +1,32 @@
+
+layout: function
+title: acosh() Function
+space: function_page
+excerpt: "Returns the hyperbolic arccosine(s) of the specified number(s) in radians."
+category: function_page
+fncname: acosh
+fncexample: "acosh(2)"
+fncresult: "1.316958"
+fnccat: Trigonometry
+reftype: function
+compatibility: +pr, +pe
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      A number or array of numbers, the hyperbolic arccosine(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Usage considerations
+This function can be used with any value. 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+acosh(2) returns 1.3169578969248165

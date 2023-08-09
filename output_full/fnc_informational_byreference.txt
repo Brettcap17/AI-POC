@@ -1,0 +1,12 @@
+
+layout: function
+title: 'byReference() Function [Deprecated]'
+category: function_page
+depver: 6.7
+fnccat: 一Deprecated一
+fncname: byReference
+space: no_toc
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. To implement the same functionality, use the Pass as reference configuration setting in the Subprocess Activity.  See also: Subprocess Activity
+For information about the byreference() function, see the Appian 16.3 documentation.

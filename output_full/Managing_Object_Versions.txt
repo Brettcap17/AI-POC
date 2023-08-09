@@ -1,0 +1,83 @@
+
+layout: basic
+title: Managing Object Versions
+title_short: Object Versions
+topic: Designer
+topic-group: Design Objects
+type: How To
+weight: 200
+
+This page explains how to manage versions of supported design objects:
+
+Connected systems
+Constants
+Decisions
+Documents
+Expression rules
+Integrations
+Interfaces
+Process models
+Process reports
+Record types
+Web APIs
+
+Appian creates a new version of an object when you save the object or import the object. Appian saves all versions of an object until you manually delete older versions. Developers can view older versions and in some cases revert to a former object or delete an older version. 
+When an object is invoked, Appian always executes the latest version.
+View versions
+You can access object versions if you have Viewer permissions for the object. 
+To view a version:
+
+In the Build view, select the appropriate object.
+In the application toolbar, click MORE > Versions.
+
+{:.screenshot}
+
+Use the filters to find a version created by a specific user or during a period of time.
+Click the name of a version to view its definition. For constants and connected systems, this definition displays in a new dialog. For all other objects, this definition displays in a new tab.  
+
+Compare versions
+You can compare any version of any supported object type with another version in the same environment to understand and track changes in properties and definitions. To compare objects across environments, see compare and deploy.
+To compare an older version of an object with the another version: 
+
+View the object versions.
+In the COMPARE VERSIONS section, select the versions you want to compare. By default, Appian compares your selected version with the Latest version.
+Click COMPARE. 
+
+The version comparison opens in a new browser tab. Sections that do not contain any changes are collapsed by default. In addition to properties and definitions, comparisons for rule objects track changes made to test values and test cases. For information about rule testing, see Rule Testing with Appian.
+{:.screenshot}
+The changes made between the two versions are highlighted with the following colors:
+| Type of Change | Color |
+ |----------|:------:|
+ |Addition  | Green  |
+ |Modification| Yellow |
+ |Deletion  | Red |
+
+appian-style-tip
+You can compare published versions of process models only. You can also launch a version comparison from the Versions dialog in the Process Modeler.
+
+Revert to a previous version
+To revert to a previous version of an object:
+
+View the object versions.
+In the versions table, click the version you want to revert to. The properties dialog for that version displays.
+Click SAVE. 
+
+Reverting to a previous version will create a new version of the object with the definition of the version you selected. Modifying a previous version and saving it as the latest version does not affect the previous version. Remember to close tabs with previous versions.
+Delete versions
+If an object has more than one version, you can delete older versions if you have Editor permissions for the object.
+To delete a single version:
+
+View the object versions.
+In the versions table, click the X icon next to the version you want to delete.
+In the Delete Version dialog, click DELETE.
+
+
+appian-style-note
+Record types and web APIs do not support deleting versions.
+
+To delete multiple versions:
+
+View the object versions.
+Select filter criteria to return the versions you want to delete. A message will appear that prompts you to delete the filtered versions. 
+Click the delete message.
+In the Delete Version dialog, click DELETE. The Latest version will not be included in the bulk deletion, even if it is included in the filtered results.

@@ -1,0 +1,125 @@
+
+layout: function
+title: Custom Picker Component
+category: function_page
+compatibility: -crf
+excerpt: 'Displays an autocompleting input for the selection of one or more items from an arbitrary data set. For an example of how to configure the picker, see the Configure an Array Picker SAIL Recipe.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!pickerFieldCustom
+fncsubcat: Pickers
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: 'Determines if a value is required to submit the form. Default: false.'
+  - keyword: readOnly
+    name: Read-only
+    types: Boolean
+    description: 'Determines if the field should display as not editable. Default: false.'
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: 'Determines if the field should display as potentially editable but grayed out. Default: false.'
+  - keyword: maxSelections
+    name: Maximum Selections
+    types: Number (Integer)
+    description: 'Maximum number of allowed selections. Once this number is reached, further selections are blocked until a selection is removed.'
+  - keyword: suggestFunction
+    name: Suggestion Function
+    types: Any Type
+    description: |
+      A reference to a rule or function that populates the suggestion pane. The rule or function must take a single Text parameter and must return a DataSubset, created via a!dataSubset() or a plugin function, where "data" contains the labels to display and "identifiers" contains the values to save.
+  - keyword: selectedLabels
+    name: Selected Labels
+    types: List of Text String
+    description: Array of text display labels for the currently selected items.
+  - keyword: selectedTooltips
+    name: Selection Tooltips
+    types: List of Text String
+    description: Array of text tooltips for the currently selected items.
+  - keyword: value
+    name: Display Value
+    types: Any Type
+    description: Array of selected identifiers.
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: Validation errors to display below the field when the value is not null.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: One or more variables that are updated with the array of selected identifiers when the user adds or removes an item. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: placeholder
+    name: Placeholder
+    types: Text
+    description: Text to display in the field when it is empty. Does not show if the field is read only.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: selectedLinks
+    name: Selected Links
+    types: List of Variant
+    description: |
+      Array of links to apply to the selected tokens. Create links with a!authorizationLink(), a!documentDownloadLink(), a!dynamicLink(), a!newsEntryLink(), a!processTaskLink(), a!recordLink(), a!reportLink(), a!safeLink(), a!startProcessLink(), a!submitLink(), or a!userRecordLink().
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Custom Picker
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: DataSubset
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the suggestionFunction parameter
+
+When a user types in the picker's text box, the text they type is passed to the suggestionFunction parameter. The returned data-subset must have a text array as data. Each item in that array is a selectable suggestion in the pane. If a suggestion is picked, the component's value is updated with the object at the same index of the data-subset's identifiers array (in addition to any existing selected identifiers).
+
+Text lengths and placeholders
+
+selectedLabels, selectedValues, selectedLinks, and selectedTooltips must all be the same length.
+Whether placeholder text clears on focus or input varies by device and browser.
+
+Dropdowns vs. pickers
+
+If you are trying to decide whether to use a dropdown with search or a picker component, keep in mind that the dropdown search runs client-side and the performance cost of loading options happens on initial load whereas the picker search runs server-side and the performance cost of loading options happens while the user is searching. For small sets of options, we recommend using the dropdown component.

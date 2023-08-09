@@ -1,0 +1,301 @@
+
+layout: function
+title: Invoke SAP BAPI Smart Service
+category: function_page
+compatibility: '~portal, ~om, -crf'
+excerpt: The Invoke SAP BAPI Smart Service allows designers to safely invoke BAPIs with side effects in process.
+fnccat: Connector
+fncexample: Click on the function name for examples.
+fncname: a!sapInvokeWithCommit
+fncsubcat: SAP
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: The authentication credentials key from the Third Party Credentials admin console page.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: Determines if the current user’s credentials are used instead of system-wide credentials. Default is false.
+  - keyword: hostname
+    types: Text
+    description: The hostname of the SAP server.
+  - keyword: clientNumber
+    types: Text
+    description: The SAP client number used to access the system.
+  - keyword: systemNumber
+    types: Text
+    description: The system number of the SAP application server.
+  - keyword: bapi
+    types: Text
+    description: The name of the SAP BAPI function to invoke.
+  - keyword: importParameters
+    types: Any Type
+    description: 'The import parameters to send to the BAPI function, given as a dictionary.'
+  - keyword: tableParameters
+    types: Any Type
+    description: 'The table parameters to send to the BAPI function, given as a dictionary.'
+  - keyword: connectionProperties
+    types: Dictionary
+    description: 'The connection properties to use when creating the connection to the SAP instance, given as a dictionary. The dictionary fields are the camel-cased names of the properties with ’.’s removed, and the values are the properties values to use.'
+  - keyword: commitTransaction
+    types: Boolean
+    description: Flag indicating if a commit transaction should be automatically executed at the end.
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!result function variable (Any Type) is available to specify a dictionary or list of dictionaries by the SAP server. For more information, see Function Variables.'
+  - keyword: onError
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse(). When configuring this input, the fv!errorTitle function variable (Text) is available to specify the error title, and the fv!errorMessage function variable (Text) is available to specify the error message. For more information, see Function Variables.'
+reftype: smart_service
+sscat: Integrations_&_APIs
+ssicon: Invoke_SAP_BAPI.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} See Functions and Side Effects for more information.
+The two main benefits of using this smart service are:
+
+The ability to make unattended write calls to SAP.
+The ability to process return values from the BAPI. Return values allow you to verify that the invocation was successful.
+
+For making BAPI calls to SAP servers outside of a process (for example, on an interface), see:
+
+a!sapInvoke()
+a!sapInvokeWithCommit()
+a!sapBapiParameters()
+a!sapInvokeWriter()
+
+Properties
+
+
+Category: Integrations & APIs
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+Input
+Data Type
+Description
+Required
+Multiple
+
+
+Scs External System Key
+Text
+The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+Y
+N
+
+
+Use Per User Credentials
+Boolean
+If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+N
+N
+
+
+Hostname
+Text
+The application server host of the SAP server (ASHOST). The value can be an IP address, a fully-qualified domain name, or SAP's router string format. For example, "/H/sap_router/W/password/H/app_host/S/service_port".
+Y
+N
+
+
+Clientnumber
+Text
+The SAP client number.
+Y
+N
+
+
+System Number
+Text
+The SAP system number.
+Y
+N
+
+
+Bapi
+Text
+The name of the SAP BAPI to invoke.
+Y
+N
+
+
+Import Parameters
+Any Type
+
+        The import parameters to send to the BAPI function, given as a dictionary. The dictionary fields are the import parameter names, and the values are the parameter values to send.
+      
+Y
+N
+
+
+Table Parameters
+Any Type
+The table parameters to send to the BAPI function, given as a dictionary. The dictionary values can also be given as dictionaries, allowing for the requisite table structure to be defined.
+Y
+N
+
+
+Connection Properties
+Any Type
+
+        The connection properties to use when creating the connection to the SAP instance, given as a dictionary. The dictionary fields are the camel-cased names of the properties with '.'s removed, and the values are the properties values to use.
+      
+N
+N
+
+
+Commit Transaction
+Boolean
+Flag used to execute a standard BAPI Transaction Commit. Set to true (the default) to execute the commit. Set to false when implementing a BAPI with a built in commit.
+N
+N
+
+
+Node outputs
+
+
+Output
+Data Type
+Description
+
+
+Success
+Boolean
+A boolean set to true if the call was successful or false if it was unsuccessful
+
+
+Result
+Any Type
+If success was true, a dictionary or list of dictionaries containing the data returned by the BAPI, otherwise, null
+
+
+Error
+Any Type
+If success was false, a dictionary with the 'title' field and a 'message' field, otherwise null. The dictionary's fields contain the title and message of the error, respectively.
+
+
+Because the response from a SAP server instance is a dictionary or list of dictionaries, the result output must be stored into custom data type process variable or the data field of a DataSubset process variable using a!dataSubset(). If saving the values into a DataSubset, you will need to view the values from the "Variables" tab of the process details dialog.
+Once you understand the SAP return value's structure, you can access and manipulate the values in a custom output. For example, the BAPI return value may not map directly to your data types and may require some manipulation. Imagine the BAPI returns a value similar to this:
+sail 
+{
+  Customers: {
+    {id: 1, name: "Alliance Marketing", industry: "Marketing"},
+    {id: 2, name: "Global Firm", industry: "Insurance"
+  }
+}
+If you have a Customer data type and therefore want only the values contained in the "Customers" field, you could create a custom output that indexes the result of the BAPI call and saves it to a List of Customer process variable: index(ac!result, "Customers", {}).
+a!sapInvokeWithCommit()
+The Invoke SAP BAPI Smart Service is available as a smart service function that can be executed inside a saveInto on a Interface Component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+INCLUDE PAGE: sap_connection_properties.md
+Best Practices
+Example Interface Expression
+In this example, the BAPI_ACC_GL_POSTING_POST is called to create an accounting document on a SAP server from sales data in the Appian system. This BAPI requires the commit flag to be set to true().
+sail 
+=a!localVariables(
+  local!sapPostResult,
+  a!formLayout(
+    label: "Account Posting",
+    instructions: "BAPI_ACC_GL_POSTING_POST is a standard SAP function module that performs Accounting: General G/L Account Posting functionality. This is available within standard R/3 SAP systems depending on version and release level.",
+    contents: {
+      a!textField(
+        label: "Result",
+        value: local!sapPostResult,
+        readOnly: true()
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Post",
+          style: "PRIMARY",
+          saveInto: a!sapInvokeWithCommit(
+            scsExternalSystemKey: cons!SAP_SCS_KEY,
+            usePerUserCredentials: false(),
+            hostname: cons!SAP_HOSTNAME,
+            clientNumber: cons!SAP_CLIENT_NUMBER,
+            systemNumber: cons!SAP_SYSTEM_NUMBER,
+            bapi: "BAPI_ACC_GL_POSTING_POST",
+            importParameters:{
+              DOCUMENTHEADER:{
+                OBJ_TYPE:"BKPFF",
+                OBJ_KEY:"1",
+                OBJ_SYS:"T90CLNT090",
+                USERNAME:"SAPUSER",
+                HEADER_TXT:"BAPI TEST",
+                COMP_CODE:"3000",
+                DOC_DATE:date(2016, 11, 02),
+                FIS_PERIOD:"11"
+              }
+            },
+            tableParameters:{
+              ACCOUNTGL:{
+                {
+                  ITEMNO_ACC:"0000000003",
+                  GL_ACCOUNT:"474210",
+                  COMP_CODE:"3000",
+                  PSTNG_DATE:date(2016, 11, 02),
+                  DOC_TYPE:"SA",
+                  FISC_YEAR:"2016",
+                  FIS_PERIOD:"11",
+                },
+                {
+                  ITEMNO_ACC:"0000000002",
+                  GL_ACCOUNT:"113100",
+                  COMP_CODE:"3000",
+                  PSTNG_DATE:date(2016, 11, 02),
+                  DOC_TYPE:"SA",
+                  FISC_YEAR:"2016",
+                  FIS_PERIOD:"11"
+                }
+              },
+              CURRENCYAMOUNT:{
+                {
+                  ITEMNO_ACC:"0000000003",
+                  CURRENCY:"USD",
+                  AMT_DOCCUR:"5000",
+                  EXCH_RATE_V:"0"
+                },
+                {
+                 ITEMNO_ACC:"0000000002",
+                 CURRENCY:"USD",
+                 AMT_DOCCUR:"-5000",
+                 EXCH_RATE_V:"0"
+                }
+              }
+            },
+            commitTransaction: true(),
+            onSuccess: {
+              a!save(
+                local!sapPostResult,
+                fv!result
+              )
+            },
+            onError: {
+              a!save(
+                local!sapPostResult,
+                fv!errorTitle
+              )
+            }
+          ),
+          submit: true
+        )
+      }
+    )
+  )
+)

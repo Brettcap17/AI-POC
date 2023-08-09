@@ -1,0 +1,32 @@
+
+layout: function
+title: usereomonth() Function
+space: function_page
+excerpt: "Returns the date for the last day of the month that is the number of months before or after the given starting date in the user preferred calendar."
+category: function_page
+fncname: usereomonth
+fncexample: "usereomonth(11/27/06, -6)"
+fncresult: "5/31/06"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: starting_date
+    types: Date
+    description: |
+      The starting date.
+  - keyword: months
+    types: Number
+    description: |
+      The number of months to offset, where negative is before starting_date and positive is after start_date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+usereomonth(11/27/06, -6) returns 5/31/06

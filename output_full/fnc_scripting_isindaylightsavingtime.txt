@@ -1,0 +1,32 @@
+
+layout: function
+title: isInDaylightSavingTime() Function
+space: function_page
+excerpt: "Returns whether the given date and timezone are in daylight saving time."
+category: function_page
+fncname: isInDaylightSavingTime
+fncexample: "isInDaylightSavingTime(date(2005,12,13), \"America/Los_Angeles\")"
+fncresult: "false"
+fnccat: Scripting
+compatibility: -crf, ~portal
+reftype: function
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The date in which the expression should evaluate.
+  - keyword: timezone
+    types: Text
+    description: |
+      The string Id of a timezone.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+isInDaylightSavingTime(date(2005,12,13),"America/Los_Angeles") returns false

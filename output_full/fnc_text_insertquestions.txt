@@ -1,0 +1,31 @@
+
+layout: function
+title: insertquestions() Function
+space: function_page
+excerpt: "Returns an array of questions with a ==EOQ== at the end, returning a single string that can be parsed with extractanswers() function after it has been filled in by a user."
+category: function_page
+fncname: insertquestions
+fncexample: "insertquestions({\"What is your name?\", \"What is your age?\"})"
+fncresult: "1. What is your name? 2. What is your age?"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: questions
+    types: Text Array
+    description: |
+      Array of strings to be created as questions.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: extractanswers()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text Array
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+insertquestions({"What is your name?", "What is your age?"}) returns 1. What is your name? 2. What is your age? <<<===>>>

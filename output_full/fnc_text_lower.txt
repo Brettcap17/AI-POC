@@ -1,0 +1,27 @@
+
+layout: function
+title: lower() Function
+space: function_page
+excerpt: "Converts all characters in the text into lowercase (Unicode case folding)."
+category: function_page
+fncname: lower
+fncexample: "lower(\"BOSTON\")"
+fncresult: "boston"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be converted into lowercase (Unicode case folded).
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+lower("BOSTON") returns boston

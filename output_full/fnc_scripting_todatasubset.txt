@@ -1,0 +1,134 @@
+
+layout: function
+title: todatasubset() Function
+space: function_page
+excerpt: "The function takes an array of values as well as optional paging/sorting configurations and returns a DataSubset value with a subset of the array in a specified sort order and the total count of items in the initial array."
+category: function_page
+fncname: todatasubset
+fncexample: "todatasubset({1, 2, 3})"
+fncresult: "[startIndex=1, batchSize=-1, sort=, totalCount=3, data=1; 2; 3, identifiers=1; 2; 3]"
+fnccat: Scripting
+compatibility: -crf, ~portal, -om
+reftype: function
+parameters:
+  - keyword: arrayToPage
+    types: Any Type
+    description: |
+      The array of values to page and sort.
+  - keyword: pagingConfiguration
+    types: PagingInfo
+    description: |
+      The paging and sorting configuration.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also:
+- DataSubset
+- PagingInfo
+- Grid Tutorial
+- Array Functions
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+DataSubset
+Usage considerations
+This function should be used primarily as a method for configuring a Read-Only Grid form component or grid component, such as one that displays data on a task form for review before persisting the data to a database. You can also use it to sort an array for CDTs and then use the dot operator to extract the array from the returned data value.
+The arrayToPage value can include primitive system, complex system, and custom complex data types. See also: Data Types
+You can use also dictionary syntax to create a value for the arrayToPage parameter.
+If the array contains null or duplicate values, they are preserved unless removed through the pagingConfiguration value.
+If the startIndex value of pagingConfiguration is greater than the total number of items in the list, a null array is returned as the data field of the DataSubset return value.
+If the batchSize value of pagingConfiguration is greater than zero, the function returns a subset of the arrayToPage with at most the batchSize number of values starting at startIndex. If the batchSize value is -1, all items in the arrayToPage are returned. If the batchSize value is null or zero, the totalCount and startIndex of the array is returned, but no data.
+If the sort value of pagingConfiguration is not null or empty, the function returns a subset of the input sorted by the field value. If the value is null or empty, it returns an unsorted subset of the input. If the ascending field has a value of true, the sort is ascending - otherwise, descending.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+
+Return all items in an array starting at index 1:
+sail 
+todatasubset({1, 2, 3, 4, 5})
+returns
+[startIndex=1,
+ batchSize=-1,
+ sort=,
+ totalCount=5,
+ data=1; 2; 3; 4; 5,
+ identifiers=1; 2; 3; 4; 5]
+
+
+Return two items in an array starting at index 1:
+sail 
+todatasubset({1, 2, 3, 4, 5}, topaginginfo(1, 2))
+returns
+[startIndex=1,
+ batchSize=2,
+ sort=,
+ totalCount=5,
+ data=1; 2,
+ identifiers=1; 2]
+
+
+Access the subset of data returned using the dot operator:
+sail 
+todatasubset({1, 2, 3, 4, 5}, topaginginfo(1, 2)).data
+returns
+1,2
+
+
+Sort an array of Column values by a  field called "alias" in ascending order:
+sail 
+todatasubset({
+  type!Column(field: "username", alias: "un", visible: true),
+  type!Column(field: "firstName", alias: "first", visible: false),
+  type!Column(field: "lastName", alias: "last", visible: true)
+  },
+  a!pagingInfo(startIndex: 1, batchSize: 2, sort:{field: "alias", ascending: true})
+)
+returns
+[startIndex=1,
+ batchSize=2,
+ sort=[field=alias, ascending=true],
+ totalCount=3,
+ data=[field=firstName, alias=first, visible=false]; [field=lastName, alias=last, visible=true],
+ identifiers=2; 3]
+
+See also: Column Data Type
+
+Sort an array by a field called "alias" and then by a field called "nameType" using dictionary syntax:
+sail 
+todatasubset({
+  {nameType: "username", alias: "un", visible: true},
+  {nameType: "firstName", alias: "first", visible: false},
+  {nameType: "nickName", alias: "first", visible: false},
+  {nameType: "lastName", alias: "last", visible: true}
+  },
+  a!pagingInfo(startIndex: 1, batchSize: 2, sort: {
+    {field: "alias", ascending: true},
+    {field: "nameType", ascending: false}
+    }
+  )
+)
+returns
+[startIndex=1,
+ batchSize=2,
+ sort=[field=alias, ascending=true]; [field=nameType, ascending=false],
+ totalCount=4,
+ data=[nameType:nickName,alias:first,visible:false]; [nameType:firstName,alias:first,visible:false],
+ identifiers=3; 2]
+
+
+Return paging and sort configurations with no data values:
+sail 
+todatasubset({
+  type!Column(field: "username", alias: "un", visible: true),
+  type!Column(field: "firstName", alias: "first", visible: false),
+  type!Column(field: "lastName", alias: "last", visible: true)
+  },
+  a!pagingInfo(startIndex: 1, batchSize: 0, sort:{field: "alias", ascending: true})
+)
+returns
+[startIndex=1,
+ batchSize=0,
+ sort=[field=alias, ascending=true],
+ totalCount=3,
+ data=,
+ identifiers=]

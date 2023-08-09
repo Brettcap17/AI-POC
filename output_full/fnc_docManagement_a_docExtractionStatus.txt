@@ -1,0 +1,55 @@
+
+layout: "basic"
+title: "docExtractionStatus() Function"
+category: "function_page"
+excerpt: "Retrieves the status of a doc extraction run started by the Start Doc Extraction Smart Service."
+fnccat: "Smart_Service"
+fncexample: "a!docExtractionStatus(docExtractionId:5)"
+fncname: "a!docExtractionStatus"
+fncresult: "IN_PROGRESS"
+fncsubcat: "Document_Management"
+proxy-topic: document_extraction
+type: Reference
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: docExtractionId
+    types: Integer
+    description: |
+       ID of the doc extraction run. In order to check the status, a run must first be started by the Start Doc Extraction smart service.
+
+Doc extraction runs can only be queried by a user with access to the original document, started by the Start Doc Extraction Smart Service.
+The Appian Document Extraction page walks you through how to use document extraction functionality together in a process model. See the following list for the other smart services and functions you need to use with the Doc Extraction Status Function:
+- Start Doc Extraction Smart Service
+- a!docExtractionResult()
+- Reconcile Doc Extraction Smart Service
+- Admin Console > Document Extraction
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+The following statuses can be returned:
+
+COMPLETE: Analysis is done and Appian has downloaded the results, you can now proceed to extract results using a!docExtractionResult() or Reconcile Doc Extraction Smart Service.
+IN PROGRESS: Analysis is still in progress. Appian recommends checking again in 60 seconds.
+INVALID ID:
+The provided ID is invalid because:
+The ID provided does not match an active doc extraction run.
+The user lacks sufficient privileges to see the original document.
+The ID provided is a run that has been deleted. Appian will delete document extraction runs after 30 days, or when the total amount of data surpasses 10 GB.
+
+
+Next steps: Check that the provided ID is valid or start a new doc extraction run on the same document.
+ERROR: Internal evaluation error happened during processing.
+Next steps: This is the final state for a run, and you cannot access or make updates to the run. See the process model error and logs for details. You can start a new doc extraction run on the same document.
+
+Example
+a!docExtractionStatus(docExtractionId: 25)
+Where 25 is a valid docExtractionId.
+See the Appian Document Extraction page for a full end to end example.
+Usage considerations
+The doc extraction status can only be accessed by a user who has permissions to the original document.
+Appian will delete document extraction runs after 30 days, or when the total amount of data surpasses 10 GB.  If you attempt to access a run that has been deleted, you will see INVALID ID.

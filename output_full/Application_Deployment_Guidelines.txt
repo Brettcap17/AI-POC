@@ -1,0 +1,320 @@
+
+layout: basic
+title: Application Deployment Guidelines
+topic-group: C
+type: Guidance
+weight: 200
+
+Overview
+This page is about general rules about deploying packages and object-specific rules in Appian.
+To learn more about preparing deployment packages, see this page.
+To learn more about deploying packages to target environments, see this page.
+General rules
+
+During export, Appian processes the list of objects to be exported one-by-one and captures the state of the object when the export is initiated. If the contents of a container object change while you are creating the package, the package contents will reflect the objects at the time you initiated the export for that object. Subsequent changes will not be included.
+During a direct deployment, Appian waits to capture the state of the object until you choose to deploy or export as a final step. You can initiate the  compare and deploy process, update the package in the background, then refresh to evaluate those changes in the Prepare Package and Inspect Package steps of compare and deploy.
+You can import the same package multiple times.
+You cannot undo changes from an import.
+You can export, then import objects onto the same server for backup and restoration.
+You must separately deploy robotic processes in Appian RPA.
+When deploying objects to another environment, the universally unique identifier (UUID) is used to determine whether or not a certain object already exists in the target environment, regardless of the object's name or Local ID. If an existing object is found in the target environment, the deployment process updates the existing object, instead of creating a new object.
+
+Cautions
+
+Modifying the generated XML files and internal structure of the ZIP export package is not supported.
+You can deploy applications and packages from an earlier Appian version to a later Appian version. However, the reverse is not true: you cannot deploy from a later Appian version to an earlier Appian version. As long as the Appian version is the same, you can deploy between environments with different hotfix versions.
+Precedents of one application can impact another application. Importing a subprocess, group, folder, or other application component used by more than one application can have unintended side effects.
+Process models that are configured to run as their designer will fail to run if the designer user becomes deactivated. Appian recommends that applications be imported using a shared account of type System Administrator that will not be deactivated.
+
+Object-specific rules
+Appian supports direct deployment, external deployment, and export/import for the objects listed below, presented in alphabetical order.
+For the images displayed in the subsections below, the following key applies:
+{:.screenshot}
+Applications
+In Appian, you can deploy an entire application to a target environment, either directly, using programmatic APIs, or using manual export/import. 
+When you deploy the entire application, the deployed package includes:
+
+Application configurations
+All associated objects
+
+For example, a process model and a site might be associated with an application named Expense Tracking. If you deploy the entire Expense Tracking application, the deployed package includes the process model object and the site object.
+If an application already exists in a target environment, deploying the application into that environment overwrites the application configurations and the set of associated objects.
+You can deploy both published and unpublished applications. On deployment, the state of an application is the same as it was when deployed or exported.
+Connected systems
+A connected system export includes its properties, user rights, and a reference to its system logo.
+Duplicate names for connected systems are not allowed. On import, if the name of the importing connected system matches an existing connected system (with a different UUID) the import fails.
+For environment-specific values, see the page for each connected system.
+Deploying data source connected systems
+If you are deploying data source connected system objects to other environments, review the Data Source Connected System page for additional steps that you may need to take.
+Custom data types
+When an import package contains a custom data type (data type) with the same name and namespace as a data type that already exists in the destination environment, all objects excluding running processes will be updated to use the imported definition of the data type. Additionally, any dependent objects in the import package will reference the new version on import. Data types in the import package that are detected as Not Changed on inspection will not be updated unless they depend on a data type that is updated.
+When importing a package containing data types, the data types complete import first and then the rest of the design objects in the package import. If one data type fails to import, the other data types in the package and their dependent objects will also fail to import, in order to preserve the integrity of the data structure.
+Since data type references in the package are updated on import, ensure that all objects are referencing the latest versions of all data types on export. If outdated references are exported, unexpected behavior changes or errors can occur at runtime because references were updated on import. There could be a brief window of time when the data types in the package have imported but the updated design objects that depend on those data types have not yet imported, therefore it is recommended that you always make compatible changes to the data type.
+Data type metadata is not imported. Imported data types take the following properties:
+
+XSD Import is listed as its Source.
+The user who imports the application is listed as its Creator.
+The date the application is imported is listed as its Date Created.
+The visibility of a data type remains the same as on the source environment.
+
+There are special considerations when dealing with data types that are created from WSDLs configured in Call Web Service smart services or webservicequery() functions. If the data types are not included in the application, they will be created on the target environment at the time of import by calling the WSDL using the following process:
+
+Appian looks for the existence of the data type in the destination environment.
+When the data type doesn't already exist, Appian calls out to the WSDL to retrieve the data type definitions.
+Appian looks at the data type definitions in the import package.
+If the WSDL is available and the data type structure does not match what's included in the import package, a data type definition warning appears in the import log.
+Inspect the existing data type definition whenever a structural data type definition warning appears in the import log. It is important to determine whether the existing definition may or may not be compatible. If an incompatibility is found, the imported application should not be used until the process is updated to match the current WSDL.
+
+This can increase import time and could lead to data type structure mismatches if the WSDL has changed.
+
+appian-style-tip
+Always include data types created from WSDLs in the application created in the development environment before exporting it.
+
+See also: Call Web Service Smart Service and webservicequery()
+Data stores
+Data stores can be added to your application packages for export and import.
+{:.screenshot}
+Documents
+{:.screenshot}
+In Appian, a document (or file) resides in a folder, which resides in a Knowledge Center, which resides in a Community, which might reside within another Community. A document export includes the document, the document properties, and a reference to its parent object (such as the folder where the document resides). A Document, Folder, Knowledge Center, or Community might also be associated with a forum.
+The image above illustrates the relationships between Document Management objects. Items displayed in red indicate required objects. Dashed lines indicate object references. Objects and references fully contained within an object's border indicate items that are automatically included within an object when it is exported.
+The objects in the hierarchy must each be selected for inclusion in your application. An export of a document does not include the actual parent object of the document, only the awareness of the parent object. Imports fail if the necessary parent object is not present.
+If a document already exists on the server that you are importing onto, a new version of the document is created. For documents and document containers, any existing object properties are overwritten by an import.
+When exporting a content container (such as a Knowledge Center or Folder) only the selected container is exported. The contents are not exported.
+If you do not have the necessary user rights to add or update the object being imported, then the import fails. For example, if an import package contains a folder that resides under a given Knowledge Center, the user importing the folder must have the right to create a folder in that Knowledge Center.
+The ZIP file of Knowledge Center or Folder downloaded from the Document Management interface using the Download toolbar action is not importable from the Applications view. Instead, perform a bulk upload from the Documents tab.
+If you've created Document Management objects using Appian's Java API, be aware that the system flag is no longer used. It is ignored when importing documents and document containers.
+Feeds
+When exporting feeds, the feed properties and user rights are included.
+
+User subscriptions to feeds are not changed if a feed is updated.
+Individual feed postings and comments cannot be exported.
+When a feed is updated on import, its postings and comments are not updated or changed.
+
+{:.screenshot}
+Groups
+Groups can be exported then imported into another environment.
+An exported group retains all properties except individual users as members. The export retains groups as members, and group security retains references to both users and groups.
+Importing new or modified groups requires that the user have sufficient privileges in the target environment. To create new groups on import, the user must either be a system administrator or have Administrator permissions to the new group. For example, the user could be explicitly named in the role map or be a member of an existing group that is an Administrator of the new group. Appian recommends importing as a system administrator account.
+When importing a group, references to member groups that do not exist in the destination environment are discarded. To preserve the integrity of group properties and relationships, it's best to export all related group and group type objects together.
+Notes on overwriting existing objects
+When importing a group object into an environment where a group with the same UUID already exists, all properties of the inbound object overwrite the properties in the destination object except for group membership. Instead, the inbound group and the target group member lists are merged.
+This means references to users and member groups in the target environment cannot be deleted as a result of importing an object without those references.
+Common reasons a group will fail to import
+A group may fail to import when:
+
+It has the same name as an existing group, but a different UUID. Name uniqueness is enforced for groups with Public and Restricted visibility.
+The user lacks sufficient privileges to create or modify the group in the target environment.
+It references a parent that violates the parent/child relationship in the target environment.
+It references a group type that does not exist in the target environment or in the import package.
+It references a parent group that does not exist in the target environment or the import package.
+
+Group types
+{:.screenshot}
+Group types allow you to specify attributes (required or optional) for each group of that type. Required attributes must be input when each new group (of the type) is created. It is possible for these attributes to vary from environment to environment for the same group type. If the list of attributes of an imported group does not match the list of attributes of the group type in the destination environment - and the import package does not include a corresponding group type - the imported group's list of attributes is updated to match the group type in the destination environment. All groups of a group type must have the same set of attributes.
+Exporting a group type packages its properties (the list of attributes and attribute values associated with all groups in the group type) into a zip file for import on another environment.
+When an import package includes a group and its group type - but the list of attributes of the group do not match the destination environment - the import package attributes are applied to the destination environment. The group type is imported first, followed by the group.
+If you exclude the group type from the export package, and an imported group's attributes do not match those of the existing group, the result of the import preserves the values of the attributes in the destination environment.
+On import, if the same group type exists on the target server (identified by UUID), all group type properties and its list of attributes are overwritten by the imported group type, except the values of the attributes. Attribute values are not overwritten on import. You cannot update the default values of group type attributes.
+If a group type with an existing name (but different UUID) is imported, the import of the group type fails. Group type names must be unique within one installation (instance) of Appian.
+The names of system group types cannot be updated.
+If two or more attributes of a group type have the same name, only the first attribute is added to the group type. Group type attributes must have unique names.
+Integrations
+An integration export includes its properties, definition, user rights, and a reference to its parent folder. An integration definition can reference rules and constants. When exporting an integration, the latest version is exported. On import, a new version of the integration is created.
+Duplicate names for integrations are not allowed. On import, if the name of the importing integration matches an existing integration (with a different UUID) or any interface, rule, constant, or function, the import fails.
+Environment specific integration fields
+The following integration fields automatically support environment specific values:
+
+Username
+Password
+
+When exporting environment specific integration fields, their values are not included in the object's exported XML file. Instead, the value of an environment specific field can be preconfigured via an import customization file that will be set during the import.
+The rules that govern how environment-specific integration fields behave when imported are as follows:
+
+Environment specific behavior applies only to literal values, not those defined using expressions.
+Integration fields with encrypted values will not have an initial value in the import customization file. The values must be added manually.
+When importing an environment specific field onto an environment where it does not exist, an import customization file is required for it to be imported successfully.
+When importing the environment specific field onto a target environment where the field already exists, if an import customization file is not provided then the integration will still import successfully but the current field value will not be overwritten. All other fields will be updated.
+When importing the environment specific field onto a target environment where the field already exists and an import customization file is included, then the field's value will be updated to what is specified in the import customization file.
+
+For general guidance and best practices for creating, managing, and maintaining import customization files, see Managing Import Customization Files.
+Portals
+When deploying a portal, include the portal object, precedents, and credentials with an application or as part of a package.
+Portals and service accounts
+To avoid deployment issues, before you deploy a portal to a new environment:
+
+Deploy all groups that you are using in your source environment to grant your service account access to your portal and objects.
+Create a service account with the same name as the service account associated with your portal.
+Set up group membership and permissions for the service account that match those in the source environment.
+
+Portal web addresses and UUIDs
+The web addresses for portals in development and testing environments contain UUIDs by default. Each UUID is environment specific. When you deploy a portal to a target environment, the system assigns a new UUID to the portal web address that is specific the target environment.
+The web address for portals in production environments don't contain UUIDs by default. When you deploy your portal to a production environment, the UUID is removed.
+To learn more, check out the Administration Console.
+Deployments and publishing
+If the portal that you're deploying is published in the source environment, it will be published in the target environment. The same goes for unpublished portals (portals that were previously published, but are intentionally no longer available to users) or yet to be published portals.
+If your portal is published in the target environment and you deploy an updated precedent of the portal to that environment, the portal will automatically republish in the target environment to include the latest updates.
+For more information on publishing and deployments, see Manage a Portal.
+Processes
+Process models and process model folders can be exported for import onto another server. Process instances are not exported.
+{:.screenshot}
+Process model folders
+A process model folder export includes the folder's properties and user rights. The contents of a process model folder (any subfolders or process models) must be selected individually for export as well, and are not exported automatically with the folder.
+The My Models folder only exists on the server when it is used for the first time. This occurs when a subfolder is created within it, when a process model is placed in it (or if the folder is renamed for any reason). Only after the folder has been used is it exportable. For the sake of import and export, the My Models folder is treated as any other process model folder, and is created at the root level (in the left navigation of the Processes view) when imported.
+
+appian-style-note
+API DEVELOPERS ONLY: The ProcessModelFolder type and isSpecial attributes are not exported. On import, the type attribute is set to TYPE_COMMUNITY, if the folder has no parent. Process model folders that have a parent folder inherit the type of the parent folder.
+
+Process models
+A process model resides in a process model folder. A process model export includes its properties (name, description, etc), definition (process flow), user rights, a reference to the process model folder where it resides, and a reference to any custom dashboards. A process model can include references to many other object types. A referenced object must be present in the destination environment - or you must include it in the application package - to successfully import the process model.
+When exporting a process model, the latest published version is exported (if published).
+
+If no published version exists, the draft version is exported.
+References to other objects are determined based on the version of the process model that is exported.
+
+On import, process models are published as a new version.
+
+If you are reimporting an existing process model, draft versions you may be working on are overwritten when the imported process model is published.
+When importing process models (for the first time) that are linked recursively, the process models are published twice - resulting in two new versions.
+Subsequent imports (updates) publish the recursively linked process models one time per import, creating one new version.
+The user performing an import is listed as the owner of the process model.
+On import, if the process model references smart services that do not exist in the destination environment, the import of the process model fails.
+The import behaves in the same way for missing referenced objects, such as a missing data type.
+Process models that are exposed as a web service must be re-exposed after import in the destination environment (if the process model is expected to be hosted in the destination environment).
+
+If a process model contains a Send Message event that specifies another process model for its destination configuration, and if the model generally targets a process model, rather than a specific Receive Message event in the process model, the process model (with the Send Message event) can be imported - but not published.
+
+In such cases, you must edit the process model to specify the target of the send message event, before it can be published.
+See also: Messaging Best Practices
+
+If a process model contains a smart service that stores passwords, such as the Query Database and Call Web Service smart services, the passwords are not exported.
+
+On import, the process model is created but not published.
+
+If a process model contains an Escalation Task that uses rules and/or constants in an expression for the task recipient, the rules and/or constants are not exported.
+
+On import, the process model is created but may produce an error and fail to publish.
+In such cases, you must manually add the rule and/or constant, before the process model can be published. Make sure to the name of the rule/constant is the same as what the expression references.
+
+Exporting data stores
+When exporting a data store, the data source JNDI name is also exported.
+
+A data source with an identical JNDI name must exist in the destination environment, for successful import.
+If Data Stores use a different JNDI name in the destination environment, the imported data store must be edited to update the data source used.
+The latest version of a data store (at the time the application package is created) is the one that is included.
+Draft (unpublished) data stores can be exported, if they are not yet published.
+Once published, only the latest published version can be exported.
+While a data store's automatic-schema-updates property is exported with the object, it will have no effect in environments where automatic update have been globally disabled.
+
+Importing data stores
+
+Custom data types (data types) used by data store entities must be included in your application package or must already exist in the destination environment for the import to be successful.
+Ensure that automatic schema updates are configured correctly in the destination environment before import. Updates will only occur if automatic updates are enabled both in the Admin Console and on the imported data store.
+If automatic schema updates are enabled both globally in the Admin Console and locally on the data store, Appian attempts to fix any discrepancies between your database schema and data store definition by adding tables or columns to the database to match entity definitions. At the same time, Appian never removes unused tables or columns from the database or alters existing columns. This means:
+Columns and tables missing from the database, but present in the data type, are created.
+Columns and tables missing from the data type, but present in the database, remain untouched.
+Columns that are incorrectly configured to map to a data type field are not altered, so verification of the data store requires manual changes to the database. An example that requires manual changes is altering a database column of type text so that it maps to a data type field of type integer.
+If automatic schema updates are disabled, Appian does not address any discrepancies between your database schema and data store definition. This means:
+Tables missing from the database are not automatically created.
+Columns missing from tables are not added.
+If the data source or entity mappings aren't valid, the data store is created (or updated) as an unpublished new version or draft. This allows you to address any issues (such as updating the datasource) while retaining any references to other application components.
+Any validation errors are listed in the import log. The cause of the error is also listed.
+
+Expected results when importing published data stores
+The following results occur when importing an application package that contains a published data store.
+
+The import process attempts to publish a new version of the data store, when the package contains a published data store.
+If auto-update is enabled, Appian will attempt to update the database to match the data store before attempting to publish the data store.
+
+
+ Data Store Version on Destination System 
+ Result when Publishing Succeeds 
+ Result if Publishing Fails
+
+None 
+A new published version is created. 
+   A new draft version is created.    Imported objects that reference the data store retain their references. 
+
+
+Draft 
+A new published version is created. The draft version is discarded. 
+ The draft version in the destination environment is updated with the draft version in the application package.    Imported objects that reference the data store retain their references. 
+
+
+Published, without a subsequent draft version. 
+A new published version is created. 
+   A new draft version is created.  The published version is not affected.  Imported objects that reference the data store retain their references.
+
+
+Published, with a new draft version. 
+A new published version is created. The destination environment draft is discarded. 
+  The draft in the destination environment is updated with the draft in package.   Imported objects that reference the data store retain their references. 
+
+
+Expected results when importing draft data stores
+The following results occur when importing an application package that contains a draft (unpublished) data store.
+
+ Data Store Version on Destination System  Result on Import 
+
+None  A new draft version is created. 
+
+
+Draft  The draft in the destination environment is overwritten by the draft in the application package. 
+
+
+Published, without a subsequent draft version.  A new draft is created; the published version is not affected. 
+
+
+Published, with draft  The draft version in place is overwritten using the draft in the application package.
+
+
+Reports
+Process reports are managed as documents for export and import. References are retained by reports after export and import, except for certain contexts. Supported references are listed when using the Missing Precedents tool in the Appian Designer.
+See also: Missing Precedents
+{:.screenshot}
+The following references are retained on import when included in an application package.
+
+Report contexts that reference process models, groups, or users
+Rules and constants in column definitions and drilldown paths
+Drilldown paths to Appian objects such as another report or dashboard
+Filters
+Custom indicator icons
+Custom chart properties
+
+Process instance context
+When a report definition specifies a process instance context, the context will not be preserved after the report is exported. (Individual process instances cannot be exported or imported.) The report context must be reconfigured after import.  This does not impact reports without a context, or those that take a run-time context (from a dashboard when shown in a Report Channel, or by prompting the user to select a context).
+Rules
+Rule folders, interfaces, expression rules, decisions, and constants can be exported and imported onto another server.
+{:.screenshot}
+Rules folders
+The rule folder export includes its properties, user rights and a reference to any parent folder. The contents of a rules folder (subfolders, rules, and constants) are not exported automatically. The rule folder must be included in your application in order to import a rule or constant.
+Rules and constants
+An interface, expression rule, decision, or constant export includes its properties, definitions, user rights, and a reference to its parent folder. A rule definition can reference other rules and constants. A constant can reference most other object types.
+When exporting a rule or constant, the latest version is exported. On import, a new version of the rule or constant is created.
+Duplicate names for rules and constants are not allowed. On import, if the name of the importing rule or constant matches an existing rule or constant (with a different UUID) or any interface, integration, or function, the import fails.
+Environment specific constants
+Constants have the option of being configured so that their value is not overwritten when the object is imported. When exporting environment specific constants, their values are not included in the object's exported XML file. Instead, the value of an environment specific constant can be preconfigured via an import customization file that will be set during the import.
+The rules that govern how environment specific constants behave when imported are as follows:
+
+When importing an environment specific constant onto an environment where it does not exist, an import customization file is required for it to be imported successfully.
+When importing the environment specific constant onto a target environment where the constant already exists, if an import customization file is not provided then the constant will still import successfully but the current value will not be overwritten. All attributes besides its type and value (including whether or not it is environment specific) will be updated.
+When importing the environment specific constant onto a target environment where the constant already exists and an import customization file is included, then the constant's value will be updated to what is specified in the import customization file.
+Whether a constant should be treated as environment specific during import is based on the configuration of the constant in the import package, not on the target environment.
+
+For general guidance and best practices for creating, managing, and maintaining import customization files, see Managing Import Customization Files.
+System objects
+System objects are created automatically by Appian, and can be included in your application packages for export. Examples of system objects include system reports and the System Knowledge Center. 
+System objects can be exported and imported, but it is typically not necessary because they exist on every environment.
+The following system objects are not listed when viewing the missing precedents for an application:
+
+Group Type Custom
+System Knowledge Center
+Email Template Folder
+System Reports Folder
+System Reports
+User Pictures Folder
+Temporary Docs KC
+Temporary Docs Folder
+
+If you modify one of these system objects, and you want to include it in your application, you can select it in the same manner as other objects of that same category.
+See also: Build View

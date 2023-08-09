@@ -1,0 +1,844 @@
+
+layout: pattern
+title: Drilldown Report Pattern
+excerpt: 'The drilldown report pattern consists of a bar chart and column chart, which each drill down into a grid.'
+reftype: pattern
+sr-tags:
+  - Grids
+  - Charts
+  - Reports
+
+You can click on these graphs to drill down to detailed information about your data. This is a variation of the grid with detail pattern Use this pattern if you want to drill into a set of data that is displayed in a grid.
+{:.screenshot}
+Design structure
+The main components in this pattern are charts and read-only grids that are alternately visible.
+Pattern expression
+This pattern introduces a 408-line expression to the interface.
+```sail
+{
+  / NOTE: LIMITED SAMPLE DATA ONLY IN THIS PATTERN /
+  / Because only a limited set of sample data is included, selecting any drilldown in this Pattern   *
+   * will always show the same data. Replacing the sample data with queries that use the correct      *
+   * variables here as filters will make drilldowns work as expected.                                 /
+a!localVariables(
+    / ~~~ Top Accounts by Open Cases ~~~ /
+    / Sample data to filter queries for the Top 5 Accounts chart.                                    *
+     * Substitute with a query that aggregates the numbers of cases (count of IDs), and filters for   *
+     * cases that are not Resolved.                                                                   *
+     * Select a batch size of -1 and sort in descending order on the numerical field to get accounts  *
+     * with the most cases first.                                                                     /
+    local!topFiveAccts: todatasubset({
+      a!map(account_name: "Devbug", id_count: 20),
+      a!map(account_name: "Browsecat", id_count: 16),
+      a!map(account_name: "Aivee", id_count: 15),
+      a!map(account_name: "Dabjam", id_count: 14),
+      a!map(account_name: "Trilith", id_count: 14)
+    }),
+    / Sample data to display in the Top 5 Accounts chart.                                            *
+     * Substitute with a query that groups cases by status, and filters for accounts in the previous  *
+     * variable and for cases that are not Resolved.                                                  *
+     * Select a batch size of -1 and sort in descending order on the numerical field.                 /
+    local!topFiveAcctsOpenCases: todatasubset({
+        a!map(account_name: "Trilith", id_count: 10, status: "Assigned"),
+        a!map(account_name: "Browsecat", id_count: 9, status: "Assigned"),
+        a!map(account_name: "Devbug", id_count: 9, status: "Assigned"),
+        a!map(account_name: "Dabjam", id_count: 8, status: "Assigned"),
+        a!map(account_name: "Aivee", id_count: 7, status: "Assigned"),
+        a!map(account_name: "Devbug", id_count: 6, status: "In Queue"),
+        a!map(account_name: "Aivee", id_count: 5, status: "Customer Action"),
+        a!map(account_name: "Browsecat", id_count: 5, status: "In Queue"),
+        a!map(account_name: "Devbug", id_count: 5, status: "Customer Action"),
+        a!map(account_name: "Dabjam", id_count: 4, status: "In Queue"),
+        a!map(account_name: "Aivee", id_count: 3, status: "In Queue"),
+        a!map(account_name: "Browsecat", id_count: 2, status: "Customer Action"),
+        a!map(account_name: "Dabjam", id_count: 2, status: "Customer Action"),
+        a!map(account_name: "Trilith", id_count: 2, status: "Customer Action"),
+        a!map(account_name: "Trilith", id_count: 2, status: "In Queue")
+      },
+      a!pagingInfo(
+        startIndex: 1,
+        batchSize: -1,
+        sort: {
+          a!sortInfo(
+            field: "id_count",
+            ascending: false
+          ),
+          a!sortInfo(
+            field: "account_name",
+            ascending: true
+          ),
+          a!sortInfo(
+            field: "status",
+            ascending: true
+          )
+        }
+      )
+    ),
+/* Lists of all and unique accounts and statuses will be used across the components below. */
+local!accountNames: index(local!topFiveAcctsOpenCases.data, "account_name", {}),
+local!uniqueAccountNames: index(local!topFiveAccts.data, "account_name", {}),
+local!accountStatuses: index(local!topFiveAcctsOpenCases.data, "status", {}),
+local!uniqueAccountStatuses: union(local!accountStatuses, cast(typeof(local!accountStatuses), {})),
+
+/* Filter values that come from clicking on the chart, used in subsequent queries. */
+local!selectedAccount,
+local!selectedStatus,
+
+/* ~~~ Cases Open for Five Days or More ~~~ */
+/* Sample data to display in the Cases Open for 5 Days chart.                                *
+ * Substitute with a query that selects ID, account name, and days open, filtering for cases *
+ * that are not Resolved.
+
+ * Select a batch size of 20 or less and sort in descending order on the numerical field.    */
+local!casesOpenMoreThanFiveDays: todatasubset({
+    a!map(id: 535, account_name: "Twimbo", days_since_created: 9),
+    a!map(id: 297, account_name: "Thoughtworks", days_since_created: 8),
+    a!map(id: 290, account_name: "Ntag", days_since_created: 8),
+    a!map(id: 226, account_name: "Eire", days_since_created: 8),
+    a!map(id: 746, account_name: "Shufflebeat", days_since_created: 7),
+    a!map(id: 442, account_name: "Devbug", days_since_created: 7),
+    a!map(id: 265, account_name: "Roodel", days_since_created: 7),
+    a!map(id: 43, account_name: "Roodel", days_since_created: 6),
+    a!map(id: 722, account_name: "Innotype", days_since_created: 6),
+    a!map(id: 19, account_name: "Quimm", days_since_created: 6),
+    a!map(id: 345, account_name: "Zazio", days_since_created: 5),
+    a!map(id: 689, account_name: "Devbug", days_since_created: 5)
+  },
+  a!pagingInfo(
+    startIndex: 1,
+    batchSize: -1,
+    sort: {
+      a!sortInfo(
+        field: "days_since_created",
+        ascending: false
+      )
+    }
+  )
+),
+
+/* Filter value that comes from clicking on the chart, used in subsequent queries */
+local!caseId,
+/* If no case has been selected in the Cases Open for 5 Days chart, this value is null.          *
+ * Otherwise, query for the full value of the selected cases, to be used in the details section. */
+local!case: if(
+  isnull(local!caseId),
+  null,
+  a!map(
+    id: 535,
+    type: "Software Issues",
+    account_name: "Twimbo",
+    name: "Cloned leading edge strategy",
+    status: "Assigned",
+    priority: "Medium",
+    assigned_to: "Robby Convey",
+    created_by: "Davine Boor",
+    created_on: now()-9.3,
+    updated_on: now()-1.1,
+    days_since_created: 9
+  )
+),
+
+{
+  a!sectionLayout(
+    label: "Case Analysis Dashboard",
+    contents: {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              a!columnChartField(
+                label: "Top 5 Accounts by # of Open Cases",
+                instructions: "Click on a column to see additional details",
+                categories: local!uniqueAccountNames,
+                series: a!forEach(
+                  items: local!uniqueAccountStatuses,
+                  expression: a!localVariables(
+                    local!label: fv!item,
+                    a!chartSeries(
+                      label: local!label,
+                      /* Loops over list of categories to find each datapoint that matches  *
+                       * the series label and the category. This will ensure that the       *
+                       * datapoints are in the correct order to display in the chart.       */
+                      data: a!forEach(
+                        items: local!uniqueAccountNames,
+                        expression: a!localVariables(
+                          /* Find all datapoints that match both the category and chart series label. */
+                          local!intersection: intersection(
+                            where(
+                              local!accountNames = cast(typeof(local!accountNames), fv!item),
+                              0
+                            ),
+                            where(
+                              local!accountStatuses = cast(typeof(local!accountStatuses), local!label),
+                              0
+                            )
+                          ),
+                          if(
+                            length(local!intersection) = 0,
+                            /* If there is no datapoint for this category-label pair, return 0  *
+                             * so that all subsequent points are in the correct order with the  *
+                             * categories.                                                      */
+                            0,
+                            index(
+                              index(local!topFiveAcctsOpenCases.data, "id_count", {}),
+                              local!intersection,
+                              0
+                            )
+                          )
+                        )
+                      ),
+                      links: a!forEach(
+                        items: local!uniqueAccountNames,
+                        expression: a!dynamicLink(
+                          /* Since this is a stacked chart, each link saves both the account and *
+                           * the status that was clicked on, to filter the query in the grid.    */
+                          saveInto: {
+                            a!save(local!selectedAccount, fv!item),
+                            a!save(local!selectedStatus, local!label)
+                          }
+                        )
+                      )
+                    )
+                  )
+                ),
+                showWhen: isnull(local!selectedAccount),
+                xAxisTitle: "Account",
+                yAxisTitle: "# of Cases",
+                stacking: "NORMAL"
+              ),
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextItem(
+                    text: {
+                      a!richTextIcon(
+                        icon: "arrow-left"
+                      ),
+                      " ",
+                      a!richTextItem(
+                        text: "Back to chart"
+                      )
+                    },
+                    link: a!dynamicLink(saveInto: {
+                      a!save(local!selectedAccount, null),
+                      a!save(local!selectedStatus, null)
+                    }),
+                    linkStyle: "STANDALONE"
+                  )
+                },
+                showWhen: not(isnull(local!selectedAccount))
+              ),
+              a!gridField(
+                label: "Case Details",
+                labelPosition: "ABOVE",
+                /* Sample data to display in the Case Details grid.                                *
+                 * Substitute with a query that selects fields for every column in the grid,       *
+                 * filtering for cases where account matches local!selectedAccount and status      *
+                 * matches local!selectedStatus.                                                   */
+                data: {
+                  a!map(id:203, priority: "Medium", name: "Seamless motivating functionalities", account_name: "Devbug", assigned_to: "Jordain Nazair", status: "Assigned", created_on: now()-11.5, updated_on: now()-1.8, days_since_created: 171),
+                  a!map(id:311, priority: "Medium", name: "Adaptive logistical frame", account_name: "Devbug", assigned_to: "Skye Mahaddie", status: "Assigned", created_on: now()-10.61, updated_on: now()-1.1, days_since_created: 199),
+                  a!map(id:343, priority: "Medium", name: "Business-focused hybrid projection", account_name: "Devbug", assigned_to: "Giorgi Bazoge", status: "Assigned", created_on: now()-9.57, updated_on: now()-1.47, days_since_created: 23),
+                  a!map(id:373, priority: "Medium", name: "Adaptive background instruction set", account_name: "Devbug", assigned_to: "Hetti Castanares", status: "Assigned", created_on: now()-9.11, updated_on: now()-1.21, days_since_created: 276),
+                  a!map(id:384, priority: "Medium", name: "Universal real-time structure", account_name: "Devbug", assigned_to: "Corette Mordey", status: "Assigned", created_on: now()-7.44, updated_on: now()-1.39, days_since_created: 74),
+                  a!map(id:442, priority: "Medium", name: "Enterprise-wide 6th generation forecast", account_name: "Devbug", assigned_to: "Justin Ricci", status: "Assigned", created_on: now()-6.53, updated_on: now()-1.99, days_since_created: 7),
+                  a!map(id:540, priority: "Medium", name: "Implemented client-server open system", account_name: "Devbug", assigned_to: "Gifford Reames", status: "Assigned", created_on: now()-6.42, updated_on: now()-1.71, days_since_created: 126),
+                  a!map(id:541, priority: "Medium", name: "Enterprise-wide explicit projection", account_name: "Devbug", assigned_to: "Brittni Handley", status: "Assigned", created_on: now()-5.17, updated_on: now()-1.85, days_since_created: 157),
+                  a!map(id:558, priority: "Medium", name: "Horizontal scalable initiative", account_name: "Devbug", assigned_to: "Adah Crumby", status: "Assigned", created_on: now()-5, updated_on: now()-1.29, days_since_created: 364)
+                },
+                columns: {
+                  a!gridColumn(
+                    label: "Case#",
+                    sortField: "id",
+                    value: fv!row.id
+                  ),
+                  a!gridColumn(
+                    label: "Name",
+                    sortField: "name",
+                    value: fv!row.name
+                  ),
+                  a!gridColumn(
+                    label: "Account",
+                    sortField: "account_name",
+                    value: fv!row.account_name
+                  ),
+                  a!gridColumn(
+                    label: "Assignee",
+                    sortField: "assigned_to",
+                    value: fv!row.assigned_to
+                  ),
+                  a!gridColumn(
+                    label: "Status",
+                    sortField: "status",
+                    value: fv!row.status
+                  ),
+                  a!gridColumn(
+                    label: "Created",
+                    sortField: "created_on",
+                    value: datetext(fv!row.created_on, "default"),
+                    align: "END"
+                  ),
+                  a!gridColumn(
+                    label: "Updated",
+                    sortField: "updated_on",
+                    value: datetext(fv!row.updated_on, "default"),
+                    align: "END"
+                  )
+                },
+                pageSize: 10,
+                initialSorts: {
+                  a!sortInfo(
+                    field: "days_since_created",
+                    ascending: false
+                  )
+                },
+                pagingSaveInto: fv!pagingInfo,
+                showWhen: not(isnull(local!selectedAccount)),
+                validations: {},
+                spacing: "DENSE",
+                borderStyle: "LIGHT",
+                shadeAlternateRows: true
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!barChartField(
+                label: "Cases Open for 5 Days or More",
+                instructions: "Click on a bar to see additional details",
+                categories: a!forEach(
+                  items: local!casesOpenMoreThanFiveDays.data,
+                  expression: "Case#" & fv!item.id & " (" & fv!item.account_name & ")"
+                ),
+                series: {
+                  a!chartSeries(
+                    label: "# of Days Open",
+                    data: tointeger(local!casesOpenMoreThanFiveDays.data.days_since_created),
+                    links: a!forEach(
+                      items: tointeger(local!casesOpenMoreThanFiveDays.data.days_since_created),
+                      expression: a!dynamicLink(
+                        value: index(local!casesOpenMoreThanFiveDays.data, "id")[fv!index],
+                        saveInto: {local!caseId}
+                      )
+                    ),
+                    color: "SKYBLUE"
+                  )
+                },
+                showWhen: isnull(local!caseId),
+                yAxisTitle: "# of Days Open",
+                stacking: "NONE",
+                showLegend: false,
+                showDataLabels: true,
+                showTooltips: true
+              ),
+              a!richTextDisplayField(
+                labelPosition: "COLLAPSED",
+                value: {
+                  a!richTextItem(
+                    text: {
+                      a!richTextIcon(icon: "arrow-left"),
+                      " ",
+                      a!richTextItem(text: "Back to chart")
+                    },
+                    link: a!dynamicLink(saveInto: {a!save(local!caseId, null)}),
+                    linkStyle: "STANDALONE"
+                  )
+                },
+                showWhen: not(isnull(local!caseId))
+              ),
+              a!columnsLayout(
+                columns: {
+                  a!columnLayout(
+                    contents: {
+                      a!textField(
+                        label: "Name",
+                        value: local!case.name,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "ID",
+                        value: local!case.id,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "Assigned To",
+                        value: local!case.assigned_to,
+                        readOnly: true
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!textField(
+                        label: "Type",
+                        value: local!case.type,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "Status",
+                        value: local!case.status,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "Created By",
+                        value: local!case.created_by & " on " & datetext(local!case.created_on, "default"),
+                        readOnly: true
+                      )
+                    }
+                  ),
+                  a!columnLayout(
+                    contents: {
+                      a!textField(
+                        label: "Account",
+                        value: local!case.account_name,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "Priority",
+                        value: local!case.priority,
+                        readOnly: true
+                      ),
+                      a!textField(
+                        label: "Updated On",
+                        value: datetext(local!case.updated_on, "default") & " (open for " & local!case.days_since_created & " days)",
+                        readOnly: true
+                      )
+                    }
+                  )
+                },
+                showWhen: not(isnull(local!caseId))
+              )
+            }
+          )
+        },
+        stackWhen: {
+          "PHONE",
+          "TABLET_PORTRAIT"
+        }
+      )
+    }
+  )
+}
+
+)
+}
+```
+[Line 1-125] Set local variables
+There are some in-line comments that provide guidance for populating this report with your own data. Be sure to take note of the data structure of the sample data when replacing it with queries.
+{% highlight sail linenos start_line=1 %}
+{
+  / NOTE: LIMITED SAMPLE DATA ONLY IN THIS PATTERN /
+  / Because only a limited set of sample data is included, selecting any drilldown in this Pattern   *
+   * will always show the same data. Replacing the sample data with queries that use the correct      *
+   * variables here as filters will make drilldowns work as expected.                                 /
+a!localVariables(
+    / ~~~ Top Accounts by Open Cases ~~~ /
+    / Sample data to filter queries for the Top 5 Accounts chart.                                    *
+     * Substitute with a query that aggregates the numbers of cases (count of IDs), and filters for   *
+     * cases that are not Resolved.                                                                   *
+     * Select a batch size of -1 and sort in descending order on the numerical field to get accounts  *
+     * with the most cases first.                                                                     /
+    local!topFiveAccts: todatasubset({
+      a!map(account_name: "Devbug", id_count: 20),
+      a!map(account_name: "Browsecat", id_count: 16),
+      a!map(account_name: "Aivee", id_count: 15),
+      a!map(account_name: "Dabjam", id_count: 14),
+      a!map(account_name: "Trilith", id_count: 14)
+    }),
+    / Sample data to display in the Top 5 Accounts chart.                                            *
+     * Substitute with a query that groups cases by status, and filters for accounts in the previous  *
+     * variable and for cases that are not Resolved.                                                  *
+     * Select a batch size of -1 and sort in descending order on the numerical field.                 /
+    local!topFiveAcctsOpenCases: todatasubset({
+      a!map(account_name: "Trilith", id_count: 10, status: "Assigned"),
+      a!map(account_name: "Browsecat", id_count: 9, status: "Assigned"),
+      a!map(account_name: "Devbug", id_count: 9, status: "Assigned"),
+      a!map(account_name: "Dabjam", id_count: 8, status: "Assigned"),
+      a!map(account_name: "Aivee", id_count: 7, status: "Assigned"),
+      a!map(account_name: "Devbug", id_count: 6, status: "In Queue"),
+      a!map(account_name: "Aivee", id_count: 5, status: "Customer Action"),
+      a!map(account_name: "Browsecat", id_count: 5, status: "In Queue"),
+      a!map(account_name: "Devbug", id_count: 5, status: "Customer Action"),
+      a!map(account_name: "Dabjam", id_count: 4, status: "In Queue"),
+      a!map(account_name: "Aivee", id_count: 3, status: "In Queue"),
+      a!map(account_name: "Browsecat", id_count: 2, status: "Customer Action"),
+      a!map(account_name: "Dabjam", id_count: 2, status: "Customer Action"),
+      a!map(account_name: "Trilith", id_count: 2, status: "Customer Action"),
+      a!map(account_name: "Trilith", id_count: 2, status: "In Queue")
+    },
+    a!pagingInfo(
+      startIndex: 1,
+      batchSize: -1,
+      sort: {
+        a!sortInfo(
+          field: "id_count",
+          ascending: false
+        ),
+        a!sortInfo(
+          field: "account_name",
+          ascending: true
+        ),
+        a!sortInfo(
+          field: "status",
+          ascending: true
+        )
+      }
+    )
+    ),
+/* Lists of all and unique accounts and statuses will be used across the components below. */
+local!accountNames: index(local!topFiveAcctsOpenCases.data, "account_name", {}),
+local!uniqueAccountNames: index(local!topFiveAccts.data, "account_name", {}),
+local!accountStatuses: index(local!topFiveAcctsOpenCases.data, "status", {}),
+local!uniqueAccountStatuses: union(local!accountStatuses, cast(typeof(local!accountStatuses), {})),
+
+/* Filter values that come from clicking on the chart, used in subsequent queries. */
+local!selectedAccount,
+local!selectedStatus,
+
+/* ~~~ Cases Open for Five Days or More ~~~ */
+/* Sample data to display in the Cases Open for 5 Days chart.                                *
+ * Substitute with a query that selects ID, account name, and days open, filtering for cases *
+ * that are not Resolved.
+
+ * Select a batch size of 20 or less and sort in descending order on the numerical field.    */
+local!casesOpenMoreThanFiveDays: todatasubset({
+  a!map(id: 535, account_name: "Twimbo", days_since_created: 9),
+  a!map(id: 297, account_name: "Thoughtworks", days_since_created: 8),
+  a!map(id: 290, account_name: "Ntag", days_since_created: 8),
+  a!map(id: 226, account_name: "Eire", days_since_created: 8),
+  a!map(id: 746, account_name: "Shufflebeat", days_since_created: 7),
+  a!map(id: 442, account_name: "Devbug", days_since_created: 7),
+  a!map(id: 265, account_name: "Roodel", days_since_created: 7),
+  a!map(id: 43, account_name: "Roodel", days_since_created: 6),
+  a!map(id: 722, account_name: "Innotype", days_since_created: 6),
+  a!map(id: 19, account_name: "Quimm", days_since_created: 6),
+  a!map(id: 345, account_name: "Zazio", days_since_created: 5),
+  a!map(id: 689, account_name: "Devbug", days_since_created: 5)
+},
+a!pagingInfo(
+  startIndex: 1,
+  batchSize: -1,
+  sort: {
+    a!sortInfo(
+      field: "days_since_created",
+      ascending: false
+    )
+  }
+)
+),
+
+/* Filter value that comes from clicking on the chart, used in subsequent queries */
+local!caseId,
+/* If no case has been selected in the Cases Open for 5 Days chart, this value is null.          *
+ * Otherwise, query for the full value of the selected cases, to be used in the details section. */
+local!case: if(
+  isnull(local!caseId),
+  null,
+  a!map(
+    id: 535,
+    type: "Software Issues",
+    account_name: "Twimbo",
+    name: "Cloned leading edge strategy",
+    status: "Assigned",
+    priority: "Medium",
+    assigned_to: "Robby Convey",
+    created_by: "Davine Boor",
+    created_on: now()-9.3,
+    updated_on: now()-1.1,
+    days_since_created: 9
+  )
+),
+
+{% endhighlight %}
+[Line 126-288] First column chart
+Since chart series are arrays of values that map to the indices of the chart categories, nested looping is common. The first forEach() loops through the data values, and the second loops through the categories so each column contains only the data for that category.
+In this case, line 138, the forEach() function loops through all unique account status, and a subloop starting on line 147 then loops through each category (each account name), getting the corresponding value with the intersection() function. The intersection function is a popular tool for working with charts.
+{% highlight sail linenos start_line=125 %}
+    {
+      a!sectionLayout(
+        label: "Case Analysis Dashboard",
+        contents: {
+          a!columnsLayout(
+            columns: {
+              a!columnLayout(
+                contents: {
+                  a!columnChartField(
+                    label: "Top 5 Accounts by # of Open Cases",
+                    instructions: "Click on a column to see additional details",
+                    categories: local!uniqueAccountNames,
+                    series: a!forEach(
+                      items: local!uniqueAccountStatuses,
+                      expression: a!localVariables(
+                        local!label: fv!item,
+                        a!chartSeries(
+                          label: local!label,
+                          / Loops over list of categories to find each datapoint that matches  *
+                           * the series label and the category. This will ensure that the       *
+                           * datapoints are in the correct order to display in the chart.       /
+                          data: a!forEach(
+                            items: local!uniqueAccountNames,
+                            expression: a!localVariables(
+                              / Find all datapoints that match both the category and chart series label. /
+                              local!intersection: intersection(
+                                where(
+                                  local!accountNames = cast(typeof(local!accountNames), fv!item),
+                                  0
+                                ),
+                                where(
+                                  local!accountStatuses = cast(typeof(local!accountStatuses), local!label),
+                                  0
+                                )
+                              ),
+                              if(
+                                length(local!intersection) = 0,
+                                / If there is no datapoint for this category-label pair, return 0  *
+                                 * so that all subsequent points are in the correct order with the  *
+                                 * categories.                                                      /
+                                0,
+                                index(
+                                  index(local!topFiveAcctsOpenCases.data, "id_count", {}),
+                                  local!intersection,
+                                  0
+                                )
+                              )
+                            )
+                          ),
+                          links: a!forEach(
+                            items: local!uniqueAccountNames,
+                            expression: a!dynamicLink(
+                              / Since this is a stacked chart, each link saves both the account and *
+                               * the status that was clicked on, to filter the query in the grid.    /
+                              saveInto: {
+                                a!save(local!selectedAccount, fv!item),
+                                a!save(local!selectedStatus, local!label)
+                              }
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    showWhen: isnull(local!selectedAccount),
+                    xAxisTitle: "Account",
+                    yAxisTitle: "# of Cases",
+                    stacking: "NORMAL"
+                  ),
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          a!richTextIcon(
+                            icon: "arrow-left"
+                          ),
+                          " ",
+                          a!richTextItem(
+                            text: "Back to chart"
+                          )
+                        },
+                        link: a!dynamicLink(saveInto: {
+                          a!save(local!selectedAccount, null),
+                          a!save(local!selectedStatus, null)
+                        }),
+                        linkStyle: "STANDALONE"
+                      )
+                    },
+                    showWhen: not(isnull(local!selectedAccount))
+                  ),
+                  a!gridField(
+                    label: "Case Details",
+                    labelPosition: "ABOVE",
+                    / Sample data to display in the Case Details grid.                                *
+                     * Substitute with a query that selects fields for every column in the grid,       *
+                     * filtering for cases where account matches local!selectedAccount and status      *
+                     * matches local!selectedStatus.                                                   /
+                    data: {
+                      a!map(id:203, priority: "Medium", name: "Seamless motivating functionalities", account_name: "Devbug", assigned_to: "Jordain Nazair", status: "Assigned", created_on: now()-11.5, updated_on: now()-1.8, days_since_created: 171),
+                      a!map(id:311, priority: "Medium", name: "Adaptive logistical frame", account_name: "Devbug", assigned_to: "Skye Mahaddie", status: "Assigned", created_on: now()-10.61, updated_on: now()-1.1, days_since_created: 199),
+                      a!map(id:343, priority: "Medium", name: "Business-focused hybrid projection", account_name: "Devbug", assigned_to: "Giorgi Bazoge", status: "Assigned", created_on: now()-9.57, updated_on: now()-1.47, days_since_created: 23),
+                      a!map(id:373, priority: "Medium", name: "Adaptive background instruction set", account_name: "Devbug", assigned_to: "Hetti Castanares", status: "Assigned", created_on: now()-9.11, updated_on: now()-1.21, days_since_created: 276),
+                      a!map(id:384, priority: "Medium", name: "Universal real-time structure", account_name: "Devbug", assigned_to: "Corette Mordey", status: "Assigned", created_on: now()-7.44, updated_on: now()-1.39, days_since_created: 74),
+                      a!map(id:442, priority: "Medium", name: "Enterprise-wide 6th generation forecast", account_name: "Devbug", assigned_to: "Justin Ricci", status: "Assigned", created_on: now()-6.53, updated_on: now()-1.99, days_since_created: 7),
+                      a!map(id:540, priority: "Medium", name: "Implemented client-server open system", account_name: "Devbug", assigned_to: "Gifford Reames", status: "Assigned", created_on: now()-6.42, updated_on: now()-1.71, days_since_created: 126),
+                      a!map(id:541, priority: "Medium", name: "Enterprise-wide explicit projection", account_name: "Devbug", assigned_to: "Brittni Handley", status: "Assigned", created_on: now()-5.17, updated_on: now()-1.85, days_since_created: 157),
+                      a!map(id:558, priority: "Medium", name: "Horizontal scalable initiative", account_name: "Devbug", assigned_to: "Adah Crumby", status: "Assigned", created_on: now()-5, updated_on: now()-1.29, days_since_created: 364)
+                    },
+                    columns: {
+                      a!gridColumn(
+                        label: "Case#",
+                        sortField: "id",
+                        value: fv!row.id
+                      ),
+                      a!gridColumn(
+                        label: "Name",
+                        sortField: "name",
+                        value: fv!row.name
+                      ),
+                      a!gridColumn(
+                        label: "Account",
+                        sortField: "account_name",
+                        value: fv!row.account_name
+                      ),
+                      a!gridColumn(
+                        label: "Assignee",
+                        sortField: "assigned_to",
+                        value: fv!row.assigned_to
+                      ),
+                      a!gridColumn(
+                        label: "Status",
+                        sortField: "status",
+                        value: fv!row.status
+                      ),
+                      a!gridColumn(
+                        label: "Created",
+                        sortField: "created_on",
+                        value: datetext(fv!row.created_on, "default"),
+                        align: "END"
+                      ),
+                      a!gridColumn(
+                        label: "Updated",
+                        sortField: "updated_on",
+                        value: datetext(fv!row.updated_on, "default"),
+                        align: "END"
+                      )
+                    },
+                    pageSize: 10,
+                    initialSorts: {
+                      a!sortInfo(
+                        field: "days_since_created",
+                        ascending: false
+                      )
+                    },
+                    pagingSaveInto: fv!pagingInfo,
+                    showWhen: not(isnull(local!selectedAccount)),
+                    validations: {},
+                    spacing: "DENSE",
+                    borderStyle: "LIGHT",
+                    shadeAlternateRows: true
+                  )
+                }
+              ),
+{% endhighlight %}
+[Line 289-408] Second column chart & grid
+This column is similarly configured to the first, except for the chart, which is only showing one dimension of data. It shows a list of cases open more than five days (starting line 291), so the single series only needs to loop through that list to generate the links (starting line 302) for it.
+{% highlight sail linenos start_line=289 %}
+              a!columnLayout(
+                contents: {
+                  a!barChartField(
+                    label: "Cases Open for 5 Days or More",
+                    instructions: "Click on a bar to see additional details",
+                    categories: a!forEach(
+                      items: local!casesOpenMoreThanFiveDays.data,
+                      expression: "Case#" & fv!item.id & " (" & fv!item.account_name & ")"
+                    ),
+                    series: {
+                      a!chartSeries(
+                        label: "# of Days Open",
+                        data: tointeger(local!casesOpenMoreThanFiveDays.data.days_since_created),
+                        links: a!forEach(
+                          items: tointeger(local!casesOpenMoreThanFiveDays.data.days_since_created),
+                          expression: a!dynamicLink(
+                            value: index(local!casesOpenMoreThanFiveDays.data, "id")[fv!index],
+                            saveInto: {local!caseId}
+                          )
+                        ),
+                        color: "SKYBLUE"
+                      )
+                    },
+                    showWhen: isnull(local!caseId),
+                    yAxisTitle: "# of Days Open",
+                    stacking: "NONE",
+                    showLegend: false,
+                    showDataLabels: true,
+                    showTooltips: true
+                  ),
+                  a!richTextDisplayField(
+                    labelPosition: "COLLAPSED",
+                    value: {
+                      a!richTextItem(
+                        text: {
+                          a!richTextIcon(icon: "arrow-left"),
+                          " ",
+                          a!richTextItem(text: "Back to chart")
+                        },
+                        link: a!dynamicLink(saveInto: {a!save(local!caseId, null)}),
+                        linkStyle: "STANDALONE"
+                      )
+                    },
+                    showWhen: not(isnull(local!caseId))
+                  ),
+                  a!columnsLayout(
+                    columns: {
+                      a!columnLayout(
+                        contents: {
+                          a!textField(
+                            label: "Name",
+                            value: local!case.name,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "ID",
+                            value: local!case.id,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "Assigned To",
+                            value: local!case.assigned_to,
+                            readOnly: true
+                          )
+                        }
+                      ),
+                      a!columnLayout(
+                        contents: {
+                          a!textField(
+                            label: "Type",
+                            value: local!case.type,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "Status",
+                            value: local!case.status,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "Created By",
+                            value: local!case.created_by & " on " & datetext(local!case.created_on, "default"),
+                            readOnly: true
+                          )
+                        }
+                      ),
+                      a!columnLayout(
+                        contents: {
+                          a!textField(
+                            label: "Account",
+                            value: local!case.account_name,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "Priority",
+                            value: local!case.priority,
+                            readOnly: true
+                          ),
+                          a!textField(
+                            label: "Updated On",
+                            value: datetext(local!case.updated_on, "default") & " (open for " & local!case.days_since_created & " days)",
+                            readOnly: true
+                          )
+                        }
+                      )
+                    },
+                    showWhen: not(isnull(local!caseId))
+                  )
+                }
+              )
+            },
+            stackWhen: {
+              "PHONE",
+              "TABLET_PORTRAIT"
+            }
+          )
+        }
+      )
+    }
+  )
+}
+{% endhighlight %}

@@ -1,0 +1,45 @@
+
+layout: function
+title: a!httpResponse_17r4() Function
+space: function_page
+excerpt: "Returns an HTTP Response object for use in a Web API."
+category: function_page
+fncname: a!httpResponse_17r4
+fncexample: "Click on the function name for examples."
+fnccat: System
+evolved_fncname: a!httpResponse
+evolved_reason: "Can now return documents through Web APIs so that other systems can access Appian documents."
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: statusCode
+    types: Number(Integer)
+    description: |
+       The status code of the response. Default is "200" meaning successful completion of the request.
+  - keyword: headers
+    types: List of HttpHeader
+    description: |
+        A list of headers for the response. Built with a!httpHeader().
+  - keyword: body
+    types: Text
+    description: |
+       The body of the response.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+HTTP Response
+Examples
+```sail 
+a!httpResponse_17r4(
+    statusCode: 200,
+    headers: {
+      a!httpHeader(name: "content-type", value: "application/json")
+    },
+    body: a!toJson(value: local!user)
+  )
+```
+See also: Web APIs, a!httpheader()

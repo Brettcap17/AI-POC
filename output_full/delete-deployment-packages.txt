@@ -1,0 +1,33 @@
+
+layout: basic
+title: Delete Deployment Packages
+topic-group: C
+type: Concept
+weight: 500
+
+Overview
+This page describes how to delete both prepared and deployed packages.
+Delete a prepared package
+A prepared package is defined as the package you prepare during development. 
+We recommend that you delete prepared packages in your source environment once the packages have been successfully deployed. This practice allows you to keep your applications clean, so long-running or unused packages don't build up over time. If your team works in sprints, you can also delete multiple packages in bulk at the end of each sprint or release.
+The Enable Periodic Cleanup of Deployment Packages option in the Admin Console does not clean up prepared packages. However, if you choose to autmatically delete a package after a successful direct deployment or manual export, the prepared package is deleted along with the deployed package.
+You can also manually delete a prepared package in the packages list.
+To manually delete a prepared package:
+
+View the packages list.
+Select the checkbox next to the package name.
+Click DELETE.
+   {:.screenshot}
+In the confirmation dialog, click DELETE. Appian deletes the package and removes it from the package list. This deletion does not delete the objects you added to the package, but it does delete any database scripts you added to the package.
+
+Delete a deployed package
+During deployment, Appian keeps a ZIP file of the package contents at the time of deployment. This ZIP file is sometimes referred to as a deployed package or a deployment package. You can access this deployed package through the Deploy view.
+Deleting a deployed package does not affect the original objects in the application. Keep in mind, however, that if you delete a succesfully deployed package that you only constructed during compare and deploy, you will delete any database scripts or plug-ins you added at that time.
+It is a maintenance best practice to delete a deployed package as soon as it is no longer needed:
+
+
+You can choose to automatically delete the deployed package during a direct deployment or a manual export. 
+
+
+A system administrator can configure the Enable Periodic Cleanup of Deployment Packages option to automatically delete deployed packages after a certain number of days. This option does not delete prepared packages.
+

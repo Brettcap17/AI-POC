@@ -1,0 +1,30 @@
+
+layout: function
+title: sqrt() Function
+space: function_page
+excerpt: "Returns the square root(s) of the specified number(s)."
+category: function_page
+fncname: sqrt
+fncexample: "sqrt(25)"
+fncresult: "5"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal Array
+    description: |
+      A number or array of numbers, the square root(s) of which will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+sqrt(2.25) returns 1.5 

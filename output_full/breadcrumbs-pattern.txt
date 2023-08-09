@@ -1,0 +1,118 @@
+
+layout: pattern
+title: Breadcrumbs Pattern
+excerpt: The breadcrumbs pattern is a good example of breadcrumb-style navigation.
+reftype: pattern
+sr-tags:
+  - Formatting
+
+Breadcrumbs are useful for showing users their location within an organizational hierarchy. This page explains the design structure of the breadcrumbs pattern.
+Breadcrumbs are useful for showing users their location within an organizational hierarchy. They may also contain links to allow users to navigate to other levels of the hierarchy. Breadcrumbs should not be used for showing navigation history. If a user reaches a view by following links from multiple other views, the breadcrumb should always show the same hierarchy. Use the "Strong" style to indicate the current page and the "Standalone" link style for the preceding pages.
+Since implementations of breadcrumbs vary widely based on the scenario, this pattern only demonstrates the recommended styling approach.
+{:.screenshot}
+Design structure
+The main components in this pattern are rich text display items and a rich text display field. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+Pattern expression
+When you drag and drop the breadcrumbs pattern onto your interface, 46 lines of expressions will be added to the section where you dragged it.
+{% sailbox 600 %}
+{
+  a!localVariables(
+    local!currentNodeId: 4,
+    / This variable would normally be retrieved with a rule like rule!getBreadcrumbsForIdentifier(identifier: local!currentNodeId). /
+    local!nodes: a!forEach(
+      items: enumerate(local!currentNodeId)+1,
+      expression: choose(
+        fv!item,
+        a!map(name: "Home", identifier: 1),
+        a!map(name: "My Documents", identifier: 2),
+        a!map(name: "Strategy", identifier: 3),
+        a!map(name: "2018 Road Map", identifier: 4)
+      )
+    ),
+    {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!forEach(
+            items: local!nodes,
+            expression: if(
+              fv!isLast,
+              a!richTextItem(
+                text: fv!item.name,
+                style: "STRONG"
+              ),
+              {
+                a!richTextItem(
+                  text: fv!item.name,
+                  / The saveInto in this link would run the query or rule necessary to navigate the user to *
+                   * the node in the breadcrumbs that they just clicked on.                                  /
+                  link: a!dynamicLink(value: fv!item.identifier, saveInto: local!currentNodeId),
+                  linkStyle: "STANDALONE"
+                ),
+                a!richTextItem(
+                  text: "  /  ",
+                  color: "SECONDARY"
+                )
+              }
+            )
+          )
+        }
+      )
+    }
+  )
+}
+{% endsailbox %}
+[Line 1-14] Define local variables
+At the top of the pattern, local variables are set up to define the breadcrumb nodes. The sample data in local!nodes should be replaced with a rule.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!currentNodeId: 4,
+    / This variable would normally be retrieved with a rule like rule!getBreadcrumbsForIdentifier(identifier: local!currentNodeId). /
+    local!nodes: a!forEach(
+      items: enumerate(local!currentNodeId)+1,
+      expression: choose(
+        fv!item,
+        a!map(name: "Home", identifier: 1),
+        a!map(name: "My Documents", identifier: 2),
+        a!map(name: "Strategy", identifier: 3),
+        a!map(name: "2018 Road Map", identifier: 4)
+      )
+    ),
+{% endhighlight %}
+[Line 15-46] Define breadcrumb nodes
+There is only one component for this pattern, which is the rich text display field. Breadcrumb functionality can vary substantially, but we recommend using a saveInto in the a!dynamicLink() (line 32) to run a query or rule to navigate to other nodes in the breadcrumb.
+{% highlight sail linenos start_line=15 %}
+    {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!forEach(
+            items: local!nodes,
+            expression: if(
+              fv!isLast,
+              a!richTextItem(
+                text: fv!item.name,
+                style: "STRONG"
+              ),
+              {
+                a!richTextItem(
+                  text: fv!item.name,
+                  / The saveInto in this link would run the query or rule necessary to navigate the user to *
+                   * the node in the breadcrumbs that they just clicked on.                                  /
+                  link: a!dynamicLink(value: fv!item.identifier, saveInto: local!currentNodeId),
+                  linkStyle: "STANDALONE"
+                ),
+                a!richTextItem(
+                  text: "  /  ",
+                  color: "SECONDARY"
+                )
+              }
+            )
+          )
+        }
+      )
+    }
+  )
+}
+{% endhighlight %}

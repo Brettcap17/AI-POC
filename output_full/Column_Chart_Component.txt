@@ -1,0 +1,276 @@
+
+layout: function
+title: Column Chart Component
+category: function_page
+compatibility: -crf, -om
+excerpt: Displays numerical data as vertical bars. Use a column chart to graphically display data that changes over time.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!columnChartField
+fncsubcat: Charts
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: categories
+    name: Categories
+    types: List of Text String
+    description: Text to display on the X-Axis next to each column.
+  - keyword: series
+    name: Series
+    types: List of ColumnChartSeries
+    description: Array of data series created with a!chartSeries().
+  - keyword: xAxisTitle
+    name: X-Axis Title
+    types: Text
+    description: Title for the independent (horizontal) axis.
+  - keyword: yAxisTitle
+    name: Y-Axis Title
+    types: Text
+    description: Title for the dependent (vertical) axis.
+  - keyword: yAxisMin
+    name: Min Y-Axis
+    types: Number (Decimal)
+    description: Determines the minimum displayed point on the vertical axis.
+  - keyword: yAxisMax
+    name: Max Y-Axis
+    types: Number (Decimal)
+    description: Determines the maximum displayed point on the vertical axis.
+  - keyword: stacking
+    name: Stacking
+    types: Text
+    description: |
+      Determines if series values display as separate bars, stacked within one bar to show the sum of series values, or stacked to a height of 100% to show the contribution to the whole within each category. Valid values: "NONE" (default), "NORMAL", "PERCENT_TO_TOTAL".
+  - keyword: referenceLines
+    name: Reference Lines
+    types: List of Variant
+    description: Array of reference line values for each threshold to be defined on the chart. Configured using a!chartReferenceLine().
+  - keyword: showLegend
+    name: Show legend
+    types: Boolean
+    description: |
+      Determines if a color legend displays below the chart. Default: true.
+  - keyword: showDataLabels
+    name: Show data labels
+    types: Boolean
+    description: |
+      Determines if data values are displayed on each column. Default: false.
+  - keyword: showTooltips
+    name: Show tooltips
+    types: Boolean
+    description: |
+      Determines if a tooltip displays the data value for a column. Default: true.
+  - keyword: allowDecimalAxisLabels
+    name: Allow decimal axis labels
+    types: Boolean
+    description: |
+      Allows dependent (vertical) values to display as decimal numbers instead of integers. Default: false.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: colorScheme
+    name: Color scheme
+    types: Any type
+    description: |
+      Determines which color scheme to use in the chart. Use one of the following valid values: "CLASSIC" (default), "MIDNIGHT", "OCEAN", "MOSS", "BERRY", "PARACHUTE", "RAINFOREST", "SUNSET" or define a custom color scheme using a!colorSchemeCustom. See Chart Color Scheme for color scheme examples.
+  - keyword: height
+    name: Height
+    types: Text
+    description: |
+      Determines the chart height. Valid values: "MICRO", "SHORT", "MEDIUM" (default), "TALL". See Chart Heights for guidance on using the "MICRO" size.
+  - keyword: xAxisStyle
+    name: X-Axis Style
+    types: Text
+    description: |
+      Determines how to display the labels and axis separators for the X-Axis. Valid values: "STANDARD" (default), "NONE".
+  - keyword: yAxisStyle
+    name: Y-Axis Style
+    types: Text
+    description: |
+      Determines how to display the labels, axis separators, and grid lines for the Y-Axis. Valid values: "STANDARD" (default), "MINIMAL", "NONE".
+  - keyword: data
+    name: Data
+    types: Any type
+    description: Reference to the record type used for the source of this chart. Can accept a!recordData or a record type reference.
+  - keyword: config
+    name: Chart Configuration
+    types: ColumnChartConfig
+    description: |
+      Configures how to display data on the chart, including fields used for calculations and grouping, using a!columnChartConfig().
+  - keyword: refreshAlways
+    name: Refresh Always
+    types: Boolean
+    description: |
+      When true, chart data will be refreshed after each user interaction and each interval refresh. Default: false.
+  - keyword: refreshAfter
+    name: Refresh After
+    types: List of Text String
+    description: |
+      Refreshes chart data each time a specified event completes. Valid values: "RECORD_ACTION".
+  - keyword: refreshInterval
+    name: Refresh After an Interval of Time
+    types: Number (Decimal)
+    description: |
+      How often chart data gets refreshed in minutes. When null, chart data will not be refreshed on an interval. Valid values: "0.5", "1", "2", "3", "4", "5", "10", "30", and "60". 
+  - keyword: refreshOnReferencedVarChange
+    name: Refresh on Reference Variable Change
+    types: Boolean
+    description: |
+      When true, chart data will be refreshed each time the value of any variable referenced in the data parameter is updated. To refresh chart data when another variable that is not used in the data parameter changes, use refreshOnVarChange. Default: true. 
+  - keyword: refreshOnVarChange
+    name: Refresh on Variable Change
+    types: Any Type
+    description: |
+      Refreshes chart data each time any of these specific variables change. This allows you to refresh the chart data when a variable that is not referenced in the data parameter is updated. You can define a single variable (e.g. refreshOnVarChange: local!var1) or a list of variables (e.g. refreshOnVarChange: {local!var1, local!var2}). 
+reftype: sailcomponent
+scdisplayname: Column Chart
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} If trend is more important than specific values, consider using a line chart.
+See also:
+
+Line Chart
+Bar Chart
+Pie Chart
+Area Chart
+Scatter Chart
+Chart Series
+Charts design guidance
+Chart Color Schemes
+Configure Charts Using Records
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Configuration
+There are two ways to configure a column chart:
+
+Set a record type as the data source and define fields to display on the chart.
+Perform your own query and define lists of data within the categories and series.
+
+If you have a record type that uses a database as the source, or a record type with data sync enabled, we recommend using the record type as the source of your chart. This configuration is easier because Appian will perform the query for you and display the results directly in the chart.
+If your record type uses a web service as the source and does not have data sync enabled, use the categories and series to construct the chart manually.
+Using record data
+Configuring a column chart using a record type as the source requires using two parameters: data and config. Once you provide a record type in the data parameter and provide the fields in the config parameter, the chart displays the results.
+See Chart Configuration Using Record Data for details on using a record type as the source. See Build Reports from Records for examples of reports created with different charts.
+Using categories and series
+When using categories and series, you must provide the list of data labels and values directly to these parameters. 
+Categories
+
+The order of items in the categories array determines the display order of categories on the chart with the left-most item in the array appearing on the far left of the x-axis.
+For each null or empty item in the array passed to categories, [Category #] displays on the x-axis with # as the index number in the categories array of the null or empty item. For example, [Category 1].
+The index of each item in the categories array must match with the index of its series data value.
+
+Series
+
+A single series item produces a bar for each categories item with all bars the same color. The data parameter should contain a list of values that match the size of the list for categories.
+Use a!chartSeries() to create the Chart Series array.
+When you have multiple series items, Appian recommends setting showLegend to true, so user's know what each color represents. When you only have one series item, you can use the label or instructions fields to tell users what the data represents.
+If the series argument has a non-null label value paired with a 0, null, or empty data value, the data value still displays in the legend.
+If the series argument has a null or empty label value paired with a non-null data value, the label value displays as [Series #] with # as the index number of the data value. For example, [Series 1].
+If series.data values are small and less than a whole number, Appian recommends settings allowDecimalAxisLabels to true.
+Multiple series items when stacking is PERCENT_TO_TOTAL also shows a single bar for each category, but bars have a total height of 100%. Each value shows the percent contribution to the total within each category.
+
+Series and stacking
+
+Multiple series items when stacking is NONE or null produces a set of bars for each categories item - one bar for each series item with each bar in that set a different color. The order of the label items determine the display order of the columns in each set with the first label item appearing at the top of the set.
+Multiple series items when stacking is NORMAL produces a single bar for each categories item with each series item displayed as a different segment of the bar in a different color, so they appear stacked on top of each other. The order of the series.label items determine the display order of the bar segments with the first series.label item appearing furthest from the axis.
+
+Usage considerations
+Chart height and background color
+
+Column charts with a height of "TALL", "MEDIUM" or "SHORT" will show a scroll bar if too many categories are provided. "MICRO" charts will only show scroll bars on mobile devices; on a web browser, these charts will adjust to fit the size of the column.
+When the chart is placed in a colored card, the chart background will match the color of the card. Text labels and lines in the chart will also adjust if a dark background color is used. See the SAIL Design System for best practices on using charts with background colors.
+
+Chart data and stacking
+
+If data contains a!recordData or a record type reference, the categories and series parameters are ignored.
+The Percent to Total stacking will also update the axes and tooltips to show with a percentage. Also, the minimum and maximum y-axes values refer to percentages. For example, yAxisMax: 50 would set the maximum y-axis at 50%.
+
+Chart refresh behavior
+
+You can define a!refreshVariable parameters directly in the chart without creating additional local variables. The only exception being refreshOnVarChange, which refreshes the chart after a specific local variable has changed.
+When you use a record type as the source of your chart, use the refresh parameters in the chart instead of using local variables and the a!refreshVariable() function. This is because the refresh behavior will automatically apply to the fields specified in the data parameter of the chart.
+If you're not using a record type as the source of your chart, it's recommended to use local variables and the a!refreshVariable() function to define refresh behavior since you won't use the data parameter to configure your chart. 
+
+INCLUDE PAGE: Using Charts in Portals
+Examples
+The examples below demonstrate how to configure your charts using categories and series. For examples on using record data, see Chart Configuration Using Record Data.
+Single series column chart with label, y-axis title, and tooltips
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %} 
+a!columnChartField(
+  label: "Most Tasks",
+  categories: {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"},
+  series: {
+    a!chartSeries(label: "Tasks", data: {34, 30, 30, 27, 24, 19, 18, 16})
+  },
+  yAxisTitle: "Tasks",
+  showLegend: false,
+  showTooltips: true
+)
+{% endsailbox %}
+Multiple series column chart with label, x-axis title, y-axis title, and legend
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %} 
+a!columnChartField(
+  label: "2012 Tempo Usage Trends",
+  categories: {"Qt 1", "Qt 2", "Qt 3", "Qt 4"},
+  series: {
+    a!chartSeries(label: "IT", data: {92, 94, 93, 95}),
+    a!chartSeries(label: "Human Services", data: {84, 83, 85, 86}),
+    a!chartSeries(label: "Sales", data: {70, 63, 90, 72}),
+    a!chartSeries(label: "Marketing", data: {90, 70, 90, 90})
+  },
+  colorScheme: "SUNSET",
+  xAxisTitle: "Quarter",
+  yAxisTitle: "% Active",
+  showLegend: true
+)
+{% endsailbox %}
+Multiple series column chart with label, x-axis title, stacking, legend, and data labels
+INCLUDE PAGE: SAIL intro
+{% sailbox 860 %} 
+a!columnChartField(
+  label: "Defect Tickets",
+  categories: {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+  series: {
+    a!chartSeries(label: "Internal", data: {3, 1, 2, 2, 2, 1, 0, 1, 0, 1, 0, 1}),
+    a!chartSeries(label: "Customer", data: {4, 3, 3, 2, 4, 2, 1, 2, 0, 0, 1, 2})
+  },
+  colorScheme: "MOSS",
+  yAxisTitle: "Number of Tickets Logged",
+  stacking: "NORMAL",
+  showLegend: true,
+  showDataLabels: true
+)
+{% endsailbox %}
+
+appian-style-note
+Column charts with more than 10 points of data in a series can cause performance issues on the Appian Android application.

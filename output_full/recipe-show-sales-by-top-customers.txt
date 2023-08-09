@@ -1,0 +1,283 @@
+
+layout: "pattern"
+title: "Top Customers and Their Latest Order"
+topic: record_reports
+topic-group: A
+reftype: "sailrecipe"
+weight: 200
+excerpt: "This pattern illustrates how to create a grid that shows the top paying customers, their latest order, and their total sum of sales."
+sr-tags:
+  - Records
+  - Reports
+  - Grids
+
+Sales executives at the Appian Retail company want to know who are their top paying customers this year so they can send 10 of them exclusive promotions for products purchased in their latest order.
+To show the top paying customers, you'll use the pattern on this page to create a read-only grid that displays the customer name, their total sales, and a link to their latest order. You'll also add a filter on the grid so executives can filter the list of customers by a range of total sales.
+The report will look like this:
+{% include zoompic.html url="images/sales-by-top-customers.png" %}
+Setup
+INCLUDE PAGE: Styled Icon Table
+
+Customer record type: Contains individual customers who purchase products. For example, Terry Duffy.
+Order record type:  Contains order information like the order number, date, status, and whether it was purchased online or in stores. For example, order number SO43659 was purchased in stores on 5/31/2019 and the order is closed.
+
+Create this pattern
+To create this pattern, you will:
+1. Create a grid with customers and their orders.
+2. Limit and sort orders to only return the latest order.
+3. Add a custom record field on the Customer record type to calculate total sales per customer.
+4. Display the total sales per customer on the grid.
+5. Sort the grid by the highest paying customer.
+6. Add a user filter to filter the grid by total sales.
+Step 1: Create a grid with customers and their orders {#step-1}
+First, you need to create the read-only grid using the Customer record type.
+To create the grid:
+1. In the Appian Retail application, go to the Build view.
+1. Click NEW > Interface.
+1. From the PALETTE, drag a READ-ONLY GRID component into the interface.
+1. From Data Source, select RECORD TYPE and search for the Customer record type. The grid populates with a Name column and an empty Latest Order column.
+1. Click the Latest Order column to configure the display value.
+1. From Display Value, use the dropdown to hover over the order relationship and select the orderNumber field. The field will display as order.orderNumber.
+{% include zoompic.html url="images/one-to-many-data-pattern.png" %}
+
+Step 2: Limit and sort the related data {#step-2}
+Right now, up to 10 related customer orders appear in each row of the grid column. This is because the Customer record type has a one-to-many relationship with the Order record type (i.e. one customer can have many orders).
+Since executives only want to see the latest order, you can sort and limit the one-to-many data using the a!relatedRecordData() function. To allow executives to quickly reference the latest order, you'll also add a record link to the latest order.
+To limit and sort the related data:
+1. Return to the Read-only Grid component configuration. 
+2. Click   FILTER RELATED RECORDS.
+3. Hover over Related Record Data and click Edit as Expression .
+4. Replace the existing expression with the following:
+    > appian-style-note
+    > These record type references are specific to the Appian Retail application. If you're following along in the Appian Retail application, you can copy and paste this expression without updating the record type references.
+```sail
+{
+a!relatedRecordData(
+    relationship: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order',
+    limit: 1,
+    sort: a!sortInfo(
+    field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+    ascending: false
+    )
+ )
+}
+```
+
+In the expression, notice that the *sort* starts from `recordType!Order` instead of using a relationship reference (`recordType!Customer.relationships.order...`). This is because you've already specified the record type relationship in the *relationship* parameter, so you don't need to reference it again in the sort. This same behavior applies if you want to add a filter.
+
+
+Click OK. Only the latest order appears in the grid column.
+
+Now that the latest order appears, you'll add a record link so executives can quickly view information about that order.
+To add a record link:
+1. Click the Latest Order column.
+2. Hover over Display Value and click Edit as Expression .
+3. Replace the existing expression with the following:
+```sail
+a!linkField(
+  links: {
+    a!recordLink(
+      label: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order.fields.{3f2ba6f1-4afd-4a21-afd1-f399eb6c18e0}orderNumber'],
+      recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+      identifier: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order.fields.{262bb249-cf34-4171-a573-54831d0958dd}orderId']
+    )
+  }
+)
+```
+
+
+Click OK.
+
+Click SAVE CHANGES.
+s
+
+
+Step 3: Calculate total sales per customer {#step-3}
+Now that you can see customers and their latest order, you need to calculate the sum of orders for each customer. 
+Since there's a one-to-many relationship between the Customer and Order record type, you can create a custom record field using the Aggregate Related Record Fields template to calculate and store this value. 
+Custom record fields allow you to transform existing data into new fields in the record type. This makes it easy to build your reports since you can define your calculations once and seamlessly reuse them in your charts, grids, and queries. 
+To create an aggregated custom record field:
+1. In the Appian Retail application, open the Customer record type.
+2. Click NEW CUSTOM RECORD FIELD.
+3. From SELECT A TEMPLATE, choose Aggregate Related Record Fields.
+4. Click NEXT.
+5. For Field, use the dropdown to hover over the order relationship and select the subTotal field. The field will display as order.subTotal.
+6. For Aggregation Function, select Sum of.
+7. To add a filter on the aggregation, turn on the Filter related record values? toggle and configure the following:
+   - For Field, select orderDate.
+   - For Operator, select Date Range.
+   - For Value, select Year-to-Date.
+8. Click TEST to verify the results.
+{% include zoompic.html url="images/sum-of-sales.png" %}
+
+
+Click NEXT.
+For Name, enter salesYTD.
+Click CREATE. The custom record field now displays as another field in the record type.
+Click SAVE CHANGES.
+
+Step 4: Display total sales per customer on the grid {#step-4}
+Now, you'll reference the custom record field as a new column in the grid. To display the value in a dollar amount, you'll use the dollar() function.
+To add the total sales per customer on the grid:
+1. Return to your interface.
+2. In the Read-only Grid component configuration, click  ADD COLUMN.
+3. Click Grid Column to configure the column label and display value.
+4. For Label, enter Total Sales (YTD).
+5. Hover over Display Value and click Edit as Expression .
+6. In the Display Value dialog, enter the expression below. This expression will display the custom record field values in a dollar amount, and any null values will appear as a hyphen.
+>appian-style-note
+> You cannot copy and paste this expression since your custom record field will have a different UUID. Use this as a reference only.
+
+```sail
+if(
+  isnull(fv!row[recordType!Customer.fields.salesYTD]),
+  "-",
+  dollar(fv!row[recordType!Customer.fields.salesYTD])
+)
+```
+
+
+Click OK.
+
+Step 5: Sort the grid by the highest paying customer {#step-5}
+To show the highest paying customers at the top of the grid, you'll sort the grid by the salesYTD custom record field.
+To sort the grid:
+1. Return to the Read-Only Grid component configuration.
+2. For Initial Sorts, click  ADD SORT. 
+3. For Field, select salesYTD.
+4. For Order, keep the default selection of Descending.
+5. Click TEST in the title bar to preview the sort.
+6. Return to the Read-Only Grid component configuration.
+7. Expand the LAYOUT section of the Read-only Grid configuration.
+8. In Label, enter Top Customers This Year.
+9. Click SAVE CHANGES.
+{% include zoompic.html url="images/sort-sales-by-top-customers.png" %}
+Step 6: Add a user filter to filter the grid by total sales {#step-6}
+In this final step, you'll create a user filter to allow sales executives to filter the list of top paying customers by a range of total sales. Once you create the user filter, you can easily reuse it on the read-only grid.
+To create the user filter:
+1. Return to the Customer record type.
+2. Go to Search and User Filters.
+3. In the User Filters section, click  New User Filter. The Create New User Filter dialog appears.
+4. In Name, enter Total Sales.
+5. In Label, enter "Total Sales".
+6. In Field, select salesYTD.
+7. Under List Configuration, click  New Option. The Edit Filter Option dialog appears.
+8. In Option Label, enter "Between 0 and 1 Million".
+9. In Operator, select between.
+10. In Value, enter 1.
+11. In Value 2, enter 1000000.
+12. Click SAVE FILTER OPTION.
+13. Click  New Option and configure the rest of the list options:
+|Option Label|Operator|Value|Value 2|
+|-|-|-|-|
+|`"Between 1 and 2 Million"`|**between**|`1000001`|`2000000`|
+|`"Between 2 and 3 Million"`|**between**|`2000001`|`3000000`|
+
+The user filter should look like this:
+
+{% include zoompic.html url="images/user-filter-report-recipe.png" %}
+
+
+Click OK.
+Click SAVE CHANGES.
+Close the Customer record type.
+
+Now that you have the user filter, you can add it to your grid.
+To add the user filter to your grid:
+1. Return to your interface.
+2. In the Read-only Grid component configuration, under User Filters, click  ADD USER FILTER.
+>appian-style-tip
+> If the button is disabled, refresh your interface.
+
+
+From the dropdown, select the Total Sales user filter.
+
+Click SAVE CHANGES.
+{% include zoompic.html url="images/use-user-filters-report-recipe.gif" %}
+
+
+Full expression
+The resulting expression will look like this:
+
+appian-style-note
+To copy and paste this expression into an interface in the Appian Retail application, you must complete step 3 to create the custom record field, and step 6 to create the user filter in this expression.
+Once you create the custom record field and the user filter, you'll need to update the references to those objects in the expression. 
+
+sail
+{
+  a!gridField(
+    label: "Top Customers This Year",
+    labelPosition: "ABOVE",
+    instructions: "",
+    data: a!recordData(
+      recordType: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer',
+      relatedRecordData: {
+        a!relatedRecordData(
+          relationship: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order',
+          limit: 1,
+          sort: a!sortInfo(
+            field: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order.fields.{fbcc99f6-1ddf-4923-903b-18122a1737c6}orderDate',
+            ascending: false
+          )
+        )
+      }
+    ),
+    columns: {
+      a!gridColumn(
+        label: "Name",
+        sortField: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{ab3f9d64-6b2e-4bd6-9289-a03dc5e7d386}person.fields.{120551bc-43ca-4057-8d03-dd69fcd018ed}fullName',
+        value: a!linkField(
+          links: {
+            a!recordLink(
+              label: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{ab3f9d64-6b2e-4bd6-9289-a03dc5e7d386}person.fields.{120551bc-43ca-4057-8d03-dd69fcd018ed}fullName'],
+              recordType: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer',
+              identifier: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.fields.{aaa21651-214a-4462-918f-fbe369e86b94}customerId']
+            )
+          }
+        )
+      ),
+      a!gridColumn(
+        label: "Latest Order",
+        sortField: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order.fields.{3f2ba6f1-4afd-4a21-afd1-f399eb6c18e0}orderNumber',
+        value: a!linkField(
+          links: {
+            a!recordLink(
+              label: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order.fields.{3f2ba6f1-4afd-4a21-afd1-f399eb6c18e0}orderNumber'],
+              recordType: 'recordType!{ad898682-e651-4b2d-af67-47c1fcb1171f}Order',
+              identifier: fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.relationships.{0143bf2f-ae73-4534-bf44-8448c1c5f4f1}order.fields.{262bb249-cf34-4171-a573-54831d0958dd}orderId']
+            )
+          }
+        ),
+        align: "START"
+      ),
+      a!gridColumn(
+        label: "Total Sales (YTD)",
+        sortField: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.fields.{638ff838-ebde-414a-b03b-80edc6302228}salesYTD',
+        value: if(
+          isnull(
+            fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.fields.{638ff838-ebde-414a-b03b-80edc6302228}salesYTD']
+          ),
+          "-",
+          dollar(
+            fv!row['recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.fields.{638ff838-ebde-414a-b03b-80edc6302228}salesYTD']
+          )
+        ),
+        align: "START"
+      )
+    },
+    initialSorts: {
+      a!sortInfo(
+        field: 'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.fields.{638ff838-ebde-414a-b03b-80edc6302228}salesYTD',
+        ascending: false
+      )
+    },
+    validations: {},
+    refreshAfter: "RECORD_ACTION",
+    userFilters: {
+      'recordType!{1b00c9c1-c2a1-455c-b204-1e6ec5c448a1}Customer.filters.{6782ffe5-648a-4585-8d4e-3515b43e2816}Total Sales',
+      null
+    },
+    showSearchBox: true,
+    showRefreshButton: true
+  )
+}

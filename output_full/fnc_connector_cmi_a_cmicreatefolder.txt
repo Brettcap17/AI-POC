@@ -1,0 +1,83 @@
+
+layout: function
+title: a!cmiCreateFolder() Function
+space: function_page
+excerpt: "Creates a folder in the CMIS target system."
+category: function_page
+fncname: a!cmiCreateFolder
+fncsubcat: "CMIS"
+fncexample: "Click on the function name for examples."
+fnccat: Connector
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: atomPubUrl
+    types: Text
+    description: |
+      The Atom Pub URL of the CMIS target system.
+  - keyword: repositoryId
+    types: Text
+    description: |
+      The repository id on the CMIS target system.
+  - keyword: parentId
+    types: Text
+    description: |
+      The object id of the CMIS folder which will be the parent of the new folder. Use null for root.
+  - keyword: properties
+    types: Any Type
+    description: |
+      The CMIS folder properties, given as a dictionary. The string "cmis:" will automatically be included in the key name if no colon is present in key name. Example: {name: "test name", description: "test description"} 
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Writer, bind().
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+This function returns a writer and must be used with the bind() function.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Create a new folder in CMIS
+sail 
+=load(
+  local!folderName,
+  local!cmiCreateFolderWriter: bind(
+    null,
+    a!cmiCreateFolder(
+      scsExternalSystemKey: cons!CMIS_SCS_KEY,
+      usePerUserCredentials: true,
+      atomPubUrl: cons!CMIS_URL,
+      repositoryId: cons!CMIS_REPO_ID,
+      /* Creates the folder in the root directory */
+      /* Replace with the parent folder's id to create under a different folder */
+      parentId: null,
+      properties: _
+    )
+  ),
+  {
+      a!textField(
+        label: "Folder Name",
+        value: local!folderName,
+        saveInto: local!folderName
+      ),
+      a!buttonArrayLayout(
+        buttons: {
+          a!buttonWidget(
+            label: "Create Folder",
+            value: {name: local!folderName},
+            saveInto: local!cmiCreateFolderWriter
+          )
+        }
+      )
+  }
+)

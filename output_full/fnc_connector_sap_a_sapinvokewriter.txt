@@ -1,0 +1,12 @@
+
+layout: function
+title: a!sapInvokeWriter() Function [Deprecated]
+space: no_toc
+depver: 16.3
+category: function_page
+fncname: a!sapInvokeWriter
+fnccat: "一Deprecated一"
+reftype: function
+
+This feature has been deprecated, and will be removed in a future release of Appian. Instead, use the a!sapInvokeWithCommit() smart service function
+For information about the a!sapInvokeWriter() function, see the Appian 16.3 documentation.

@@ -1,0 +1,36 @@
+
+layout: function
+title: averagetasklagtimeforprocessmodel() Function
+category: function_page
+excerpt: 'Returns the average elapsed time in days between task assignment and task acceptance for all assigned, accepted, and completed tasks in processes for the specified process model.'
+fnccat: Scripting
+fncexample: averagetasklagtimeforprocessmodel(4)
+fncname: averagetasklagtimeforprocessmodel
+fncresult: '0.4155682319223637'
+space: function_page
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: Id
+    types: Integer
+    description: |
+      The Id number of the process model.
+  - keyword: includeSubProcessData
+    types: Boolean
+    description: |
+      Controls whether data from subprocesses are included in the completion time averages.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Usage considerations
+The current user must hold viewer rights or higher authority for the specified process model, in order to execute this function.
+If you do not provide a value for the includeSubProcessData parameter, the default value is taken from the current context or set to false if no subprocesses available.
+For example, if the function is used on a Web Content with Process Details Channel and the channel's context includes subprocesses, these subprocesses are included by default.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+averagetasklagtimeforprocessmodel(4) returns 0.4155682319223637

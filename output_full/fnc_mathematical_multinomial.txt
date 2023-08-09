@@ -1,0 +1,30 @@
+
+layout: function
+title: multinomial() Function
+space: function_page
+excerpt: "Adds the specified integers and divides the factorial of the sum by the factorial of the individual numbers."
+category: function_page
+fncname: multinomial
+fncexample: "multinomial(1, 2, 3)"
+fncresult: "60"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: integer
+    types: Decimal Array
+    description: |
+      A number or set of numbers that will be factored into the multinomial.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+multinomial(2,3,4) returns 1260

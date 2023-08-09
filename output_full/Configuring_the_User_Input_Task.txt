@@ -1,0 +1,65 @@
+
+layout: basic
+title: User Input Task
+excerpt: The User Input Task activity is used to assign a task to a user and/or group. Interfaces are associated within a User Input Task to capture data from a form into a process.
+reftype: smart_service
+sscat: Human_Tasks
+ssicon: User_Input_Task.png
+ssparentcat: Workflow
+
+
+
+
+ 
+The User Input Task is an activity that assigns a task to be completed (using a form) to a user or a group. 
+To configure the User Input Task activity, right-click the User Input Task node in the designer canvas, then select Properties — OR — double-click the node on the designer canvas. The Configure User Input Task dialog displays. 
+To speed up development, Appian can preconfigure this smart service for you. Search for your interface object, and drag and drop the interface object to the process model canvas. The User Input Task node is automatically created and configured to reference that interface object. Open the process node's properties to further configure its behavior.
+
+appian-style-tip
+To configure the activity as a quick task, see also: Creating a Quick Task.  
+
+General tab
+The General tab allows you to name and describe the node.
+Enter a new name for the node, by typing it in the Name field. 
+
+When additional languages are enabled, a tab for each language appears on the General tab. 
+If so, the Name field must be populated for each language. 
+Otherwise (should you ever need to troubleshoot an instance running in a different language) you will be unable to distinguish between nodes in your process reports and alerts. 
+
+Additional configuration options
+To configure the remaining options for the User Input Task, complete the following:
+
+Select the Assignment Tab and assign the task to a user or group. 
+Go to the Forms tab.
+Select an interface using search or browse.
+Leave the Allow users to save a draft of in-progress tasks checkbox selected if you would like to give users the ability to save a draft of the task before submission. This is only applicable if you are saving user inputs into Activity Class Parameters.
+Select Capture location on submission (only supported in Appian Mobile) if you would like to capture the location from where the user submits the task when using the Appian Mobile application.
+
+Configuring inputs
+
+From the Data tab, under the Inputs section, create process variables for storing your node input data.
+Select the New Process Variable button next to the Save Into list. 
+Type the name of the process variable in the Name field.  
+
+Capturing task submission location
+When the option Capture location on submission (only supported in Appian Mobile) is enabled, Submission Location result data is available in the Outputs section of the Data tab. Submission Location has the following fields: 
+ - location: The geographical location from where the task is submitted. This is only available when the task is submitted from Appian Mobile application. It has the following fields: 
+   - latitude: The latitude, measured in degrees.
+   - longitude: The longitude, measured in degrees.
+   - altitude: The altitude, measured in meters.
+   - horizontalAccuracy: The radius of uncertainty for the location, expressed in meters.
+   - verticalAccuracy: The uncertainty in the altitude value of the location, expressed in meters.
+ - isAvailable: Indicates whether location is captured for the submitted task. Returns true if location is captured, false otherwise.
+ - errorStatus: Indicates the reason for missing location. This field is only populated if the isAvailable is false. It can have one of the following values:
+   - NOT_AUTHORIZED: Indicates that access to location services was denied by the user from the mobile application.
+   - NOT_AVAILABLE: Indicates that the location could not be obtained.
+   - NOT_SUPPORTED: Indicates that the task was submitted from web or from an older version of the mobile application.
+   - DISABLED_BY_ADMINISTRATOR: Indicates that the system administrator has disabled the 'Enable Location Capture' option from the Appian Administrator Console.
+To reference the submission location elsewhere in the process model, the Submission Location result must be mapped to a process variable:
+
+In the Data tab, select the Outputs section.
+In the Results list, select the Submission Location output. 
+In the Result Properties section, save the output in a process variable of type LocationResult. You can also create a new process variable to store the submission location by clicking on the New process variable button.
+
+Form-based approvals
+You can configure a form with approve or deny buttons that store a value when the form is submitted. To do this, use the Button component to store a value when the user submits your form. For example, true for Approve or false for Deny.

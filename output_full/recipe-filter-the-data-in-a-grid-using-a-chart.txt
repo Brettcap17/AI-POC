@@ -1,0 +1,126 @@
+
+layout: pattern
+title: Filter the Data in a Grid Using a Chart
+excerpt: Display an interactive pie chart with selectable sections so that a user may filter the results in a grid.
+offline_not_recommended: 'true'
+reftype: sailrecipe
+sr-tags:
+  - Charts
+  - Grids
+  - Filtering
+  - Records
+
+This interface has two main components: (1) a grid listing all of a company’s employees, and (2) a pie chart with dynamic link sections capable of filtering the grid by department.
+{:.screenshot}
+This scenario demonstrates:
+
+How to use an expression to add links to each slice of the pie chart and use those links to filter grid data.
+How to use multiple datasubsets.
+
+Create this pattern
+This recipe uses references to record types and record fields. To use this recipe, you will need to update the references to record types and record fields in your application.
+sail
+a!localVariables(
+  local!chartDataSubset: a!queryRecordType(
+    recordType: recordType!Employee,
+    /* Grouping on department then counting the total ids in that group
+    for the pie chart to size. This returns an array of departments
+    with the total number of employees in that department. It looks
+    like this: { {department:Engineering, id: 6}...} */
+    fields: a!aggregationFields(
+      groupings: a!grouping(
+        field: recordType!Employee.fields.department,
+        alias: "department"
+      ),
+      measures: a!measure(
+        field: recordType!Employee.fields.id,
+        function: "COUNT",
+        alias: "id_measure"
+      )
+    ),
+    pagingInfo: a!pagingInfo(
+      startIndex: 1,
+      batchSize: 5000,
+      sort: a!sortInfo(
+        field: "department",
+        ascending: true
+      )
+    )
+  ),
+  /* local!selectedDepartment holds the name of the selected pie chart section. */
+  local!selectedDepartment,
+  a!sectionLayout(
+    contents: {
+      a!pieChartField(
+        series: a!forEach(
+          items: local!chartDataSubset.data,
+          expression: a!chartSeries(
+            label: fv!item.department,
+            data: fv!item.id,
+            links: a!dynamicLink(
+              /* The dynamic link stores the department value into local!selectedDepartment. */
+              value: fv!item.department,
+              saveInto: local!selectedDepartment
+            )
+          )
+        ),
+        colorScheme: "MIDNIGHT"
+      ),
+      a!linkField(
+        labelPosition: "COLLAPSED",
+        links: a!dynamicLink(
+          label: "Show all employees",
+          value: null,
+          saveInto: { local!selectedDepartment }
+        ),
+        showWhen: not(isnull(local!selectedDepartment))
+      ),
+      a!gridField(
+        label: if(
+          isnull(local!selectedDepartment),
+          "All Employees",
+          "Employees in " & local!selectedDepartment
+        ),
+        emptyGridMessage: "No employees meet this criteria",
+        data: a!recordData(
+          recordType: recordType!Employee,
+          /* Filter the department column based on the value of local!selectedDepartment. */
+          filters: a!queryLogicalExpression(
+            operator: "AND",
+            filters: a!queryFilter(
+              field: recordType!Employee.fields.department,
+              operator: "=",
+              value: local!selectedDepartment
+            ),
+            ignorefilterswithemptyvalues: true
+          )
+        ),
+        columns: {
+          a!gridColumn(
+            label: "First Name",
+            sortField: recordType!Employee.fields.firstName,
+            value: fv!row[recordType!Employee.fields.firstName]
+          ),
+          a!gridColumn(
+            label: "Last Name",
+            sortField: recordType!Employee.fields.lastName,
+            value: fv!row[recordType!Employee.fields.lastName]
+          ),
+          a!gridColumn(
+            label: "Title",
+            sortField: recordType!Employee.fields.title,
+            value: fv!row[recordType!Employee.fields.title]
+          )
+        }
+      )
+    }
+  )
+)
+Test it out
+
+Click a slice of the chart. The grid below the chart will be filtered to display only employees for that department.
+Click the "Show all employees" link. The grid will display all employees.
+
+Notable implementation details
+
+Notice that when the grid is filtered, we are not querying the department field. This allows us to only query the data that we plan on displaying in the grid.

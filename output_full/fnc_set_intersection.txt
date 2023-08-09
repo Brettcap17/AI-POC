@@ -1,0 +1,57 @@
+
+layout: function
+title: intersection() Function
+space: function_page
+excerpt: "Returns only those elements that appear in all of the given arrays."
+category: function_page
+fncname: intersection
+fncsubcat: Set
+fncexample: "intersection({10, 20, 30}, {20, 30, 40})"
+fncresult: "{20, 30}"
+fnccat: Array
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: array1
+    types: Any Type Array
+    description: |
+      Array to intersect.
+  - keyword: array2
+    types: Any Type Array
+    description: |
+      Array to intersect.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array, matching the type of the inputs
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+Find the values that are common in two integer arrays
+intersection({1, 2, 3, 4}, {3, 4, 5, 6}) returns an array with 3, 4
+Find the values that are common in two text arrays
+Values are matched case sensitively:
+intersection({"a", "b", "A"}, {"a", "c"}) returns an array with a
+To match items case insensitively, use the lower() function on both inputs.
+A value is returned for each match:
+intersection({"a", "b", "a"}, {"a"}) returns an array with a, a
+Types of the arrays must match
+intersection({"a"}, {1}) returns the following error message: Invalid types, can only act on data of the same type.
+Use either the conversion functions or the cast() function to convert to the appropriate type.
+Empty or null arrays
+When one of the arrays is empty, or no common values are found, an empty array of the same type as the inputs is returned:
+intersection({1}, tointeger({})) returns an empty integer array.
+intersection({"a"}, {"b"}) returns an empty text array.
+Null values in the array are matched and returned:
+intersection({1, null, 3}, {1, null, 4}) returns an array with 1, <null>
+Compare more than two arrays
+An unlimited number of arrays can be compared, and the values common to all of them are returned:
+intersection({1, 2}, {2, 3}, {2, 4}) returns an array with 2
+Scalar inputs
+Scalar inputs are cast to arrays:
+intersection(1, 1) returns an array with 1

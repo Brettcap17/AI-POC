@@ -1,0 +1,220 @@
+
+layout: function
+title: Dropdown Component
+category: function_page
+compatibility: -crf
+excerpt: Displays a list of choices for the user to select one item and saves a value based on the selected choice.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!dropdownField
+fncsubcat: Selection
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values:
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the field should display as potentially editable but grayed out. Default: false.
+  - keyword: choiceLabels
+    name: Choice Labels
+    types: List of Text String
+    description: Array of options for the user to select.
+  - keyword: choiceValues
+    name: Choice Values
+    types: List of Variant
+    description: Array of values associated with the available choices.
+  - keyword: placeholder
+    name: Placeholder
+    types: Text
+    description: Text to display when nothing is selected and the value is null.
+  - keyword: value
+    name: Selected Value
+    types: Any Type
+    description: Value of the choice to display as selected.
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: Validation errors to display below the field when the value is not null.
+  - keyword: saveInto
+    name: Save Selection To
+    types: List of Save
+    description: |
+      One or more variables that are updated with the choice value when the user changes the selection. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See this recipe for more information about how to use validation groups.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: |
+      Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: searchDisplay
+    name: Search Display
+    types: Text
+    description: |
+      Determines when a search box displays above the options. Valid values: "AUTO" (default), "ON", "OFF". When set to "AUTO", the search box displays if there are more than 11 options.
+reftype: sailcomponent
+scdisplayname: Dropdown
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+If the user may select none, one, or many of the choices, use either the checkbox component or a multiple dropdown component.
+If there aren't many choices and users would benefit from easily seeing them all at once, consider using radio buttons.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the placeholder parameter
+
+To allow users on web to clear the selected value, text must be specified for the placeholder parameter. Users can always clear the value on the Appian for Mobile application.
+Passing a null value to the dropdown's Selected Value parameter causes the placeholder text to appear selected. The Placeholder and Selected Value parameter cannot both be null.
+
+Using the choiceLabels and choiceValues parameters
+
+Options display in the same order as defined in the Choice Labels parameter. The Choice Labels parameter cannot be null.
+Choice Values cannot contain nulls or duplicate values.
+The Choice Labels list and Choice Values list must be the same length.
+
+Dropdowns vs pickers
+
+If you are trying to decide whether to use a dropdown with search or a picker component, keep in mind that the dropdown search runs client-side and the performance cost of loading options happens on initial load whereas the picker search runs server-side and the performance cost of loading options happens while the user is searching. For small sets of options, we recommend using the dropdown component.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Dropdown with the first choice selected by default and search on auto
+Since the searchDisplay parameter is set to AUTO and the number of choiceValues  is less than 12, no search box will be displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!localVariables(
+  local!language: "en_US",
+  a!dropdownField(
+    label: "Language",
+    instructions: "In which language are you most proficient?",
+    choiceLabels: {
+      "English",
+      "Spanish",
+      "French",
+      "German"
+    },
+    choiceValues: {
+      "en_US",
+      "es_ES",
+      "fr_FR",
+      "de_DE"
+    },
+    value: local!language,
+    saveInto: local!language,
+    placeholder: "Select a language",
+    searchDisplay: "AUTO"
+  )
+)
+{% endsailbox %}
+Since the searchDisplay parameter is set to AUTO and the number of choiceValues  is more than 11, a search box will be displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!localVariables(
+  local!language: "en_US",
+  a!dropdownField(
+    label: "Language",
+    instructions: "In which language are you most proficient?",
+    choiceLabels: {
+      "English (US)",
+      "Arabic",
+      "Chinese (Simplified)",
+      "Chinese (Traditional)",
+      "Spanish",
+      "French",
+      "German",
+      "Japanese",
+      "Korean",
+      "Polish",
+      "Portuguese",
+      "Russian"
+    },
+    choiceValues: {
+      "en_US",
+      "ar",
+      "zh_CN",
+      "zh_HK",
+      "es_ES",
+      "fr_FR",
+      "de_DE",
+      "ja",
+      "ko",
+      "pl",
+      "pt",
+      "ru"
+    },
+    value: local!language,
+    saveInto: local!language,
+    placeholder: "Select a language",
+    searchDisplay: "AUTO"
+  )
+)
+{% endsailbox %}
+Dropdown with no choice selected by default and search on
+Since the searchDisplay parameter is set to ON, even though the number of choiceValues  is less than 12, a search box will be displayed.
+INCLUDE PAGE: SAIL intro
+{% sailbox 600 %}
+a!localVariables(
+  local!language: null,
+  a!dropdownField(
+    label: "Language",
+    instructions: "In which language are you most proficient?",
+    choiceLabels: {
+      "English",
+      "Spanish",
+      "French",
+      "German"
+    },
+    choiceValues: {
+      "en_US",
+      "es_ES",
+      "fr_FR",
+      "de_DE"
+    },
+    value: local!language,
+    saveInto: local!language,
+    placeholder: "Select a language",
+    searchDisplay: "ON"
+  )
+)
+{% endsailbox %}

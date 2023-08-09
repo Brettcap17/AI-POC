@@ -1,0 +1,40 @@
+
+layout: function
+title: xpathdocument() Function
+space: function_page
+excerpt: "This function finds information in an XML document stored in Appian's document management system."
+category: function_page
+fncname: xpathdocument
+fncexample: "xpathdocument(cons!my_xml_document, \"//temp/text()\") & \" degrees today\""
+fncresult: "Collab"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: docId
+    types: Integer
+    description: |
+      The Appian Document Id of the XML file or Content Item (Document).
+  - keyword: expression
+    types: Text
+    description: |
+      The XPath Expression to evaluate.
+  - keyword: prefix
+    types: Text
+    description: |
+      Prefix used if the XML document has a default namespace.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: torecord()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+The prefix value must be in your XPath expression and has a default value of ns.
+The function supports XPath 1.0 queries.
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+xpathdocument( cons!ProcessModelAthena , "/process_model_port/pm/pvs/pv[1]/name" ) returns Collab

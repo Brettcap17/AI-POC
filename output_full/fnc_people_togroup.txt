@@ -1,0 +1,33 @@
+
+layout: function
+title: togroup() Function
+space: function_page
+excerpt: "Converts a value to Group."
+category: function_page
+fncname: togroup
+fncexample: "togroup(1)"
+fncresult: "[Group:1]"
+fnccat: People
+compatibility: -crf, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+       Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Group
+Usage considerations
+When operating on arrays, it is not necessary to use apply with togroup. If multiple parameters are passed, or one parameter is an Array, togroup will parameters return a Group Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+togroup(1) returns [Group:1]
+togroup(1,2) and togroup({1,2}) both return {[Group:1],[Group:2]}

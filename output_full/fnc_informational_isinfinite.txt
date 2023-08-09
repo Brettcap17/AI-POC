@@ -1,0 +1,29 @@
+
+layout: function
+title: isinfinite() Function
+category: function_page
+excerpt: 'Tests given numbers against positive and negative infinity, returning true if the number is infinite, false if the number is not infinite.'
+fnccat: Informational
+fncexample: 'isinfinite(1.5, 1.1)'
+fncname: isinfinite
+fncresult: false; false
+parameters:
+  - keyword: number
+    types: Number (Decimal)
+    description: Number to test against infinity.
+reftype: function
+space: function_page
+compatibility: +pe, +pr
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+isinfinite(100) returns false

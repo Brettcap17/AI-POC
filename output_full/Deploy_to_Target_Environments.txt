@@ -1,0 +1,499 @@
+
+layout: basic
+title: Deploy to Target Environments
+permalink: Deploy_to_Target_Environments.html
+topic-group: C
+weight: 400
+
+Overview
+This page outlines the various methods to deploy a package from one environment to another, and which method is best for each type of environment.
+When you deploy a package, changes are taken from the source environment and moved to the target environment. Some common deployment paths include:
+| Source Environment | Target Environment |
+|--------------------|-----------------------------------|
+| Development        |  Test                             |
+| Development 1      |  Development 2                    |
+| Break Fix / Hotfix |  Development                      |
+| Test               |  Production                       |
+The optimal approach depends on the security considerations of your source and target environments, as well as the type of changes you have. Whether you are deploying one or more applications, packages, environment specific data, Admin Console settings, or a mix of these can impact how you decide to deploy.
+There are three methods for deploying a package in Appian:
+
+Compare and deploy (direct): Directly deploy applications, packages, plug-ins, and database scripts with guided steps.
+Programmatic via APIs (external): Customize your own deployment process with our native APIs.
+Export and import (manual): Manually import and export applications and packages between environments.
+
+Additional logic can be run after direct or external deployments by configuring a post-deployment process.
+For auditing purposes, you can always find all changes introduced to an application in the Deploy view.
+
+appian-style-note
+If you're an Appian RPA customer, remember you'll need to package and deploy robotic processes separately from applications. Learn how to deploy robotic processes and apps.
+
+Before you begin deployment
+Before you begin your deployment, we recommend the following actions.
+Determine what needs to be deployed
+If you're unsure about what you should deploy, check the table below to see which best matches your use case.
+INCLUDE PAGE: Deployment Change Types Table
+
+appian-style-note
+To deploy database scripts and plug-ins directly to a target environment, the Allow deployments with plug-ins and Allow deployments with database scripts settings must be enabled for the target environment. Learn more about deployment settings in the Admin Console.
+
+Check deployment readiness
+Check that your deployment contents are prepared and ready to be sent to your target environment. If you're deploying a package, make sure that you've properly prepared it for deployment.
+Determine the best time to deploy
+For production environments, we recommend performing any deployment activities, including inspections, during off-peak hours. If necessary, a maintenance window can be scheduled in the Admin Console. Also, consider adding a post-deployment process to your application to automate tasks and make your development lifecycle more efficient.
+Back up your production objects
+If you are moving complete applications from a staging environment to a production environment, take standard precautions to ensure continuity by creating a backup of your production objects. If the deployment should fail for any reason, this allows you to restore the previous state of the application.
+To create a backup of your production objects, export all of the existing objects associated with your application.
+Compare and deploy across connected environments {#compare-and-deploy}
+Compare and deploy is the easiest and recommended method of deployment. If your DevOps infrastructure is set up, you can enable these connected environments to interact and directly deploy changes from one to another without manually downloading and uploading ZIP files. For deployments to higher environments such as Production, you can require a review process by enabling it in the Admin Console
+The compare and deploy feature guides you through a few straightforward steps:
+
+Select your target environment.
+Select the items you want to deploy. These include your application or package, as well as application configurations, database scripts, and plug-ins.
+Inspect your deployment for internal issues.
+Review your deployment settings. This step allows you to upload an import customization file if needed. 
+Deploy to your target environment.
+
+Step 1: Select the target environment {#select-the-target-environment}
+In the first step of compare and deploy, you'll select the environment where you want to deploy your application or package.
+To start compare and deploy:
+
+Go to the Build view of your application.
+In the deployment actions bar, click COMPARE AND DEPLOY.
+Select the target environment to deploy to.
+Click NEXT.
+
+{:.screenshot}
+If you don't see any connected environments available, see DevOps infrastructure to learn more about setting up connected environments for deployments.
+Step 2: Prepare the deployment {#prepare-the-deployment}
+The Prepare Deployment step helps you get all the objects, application configurations, database scripts, and plug-ins together for deployment and review any changes that have been made to objects.
+In the Prepare Deployment step, you can:
+
+See all objects within your application or package.
+Manage the application configurations, objects, database scripts, or plug-ins in the deployment.
+View the statuses for application configurations, objects, and plug-ins.
+Review changes to objects.
+
+The Prepare Deployment step compares the objects in the application in your current environment to the target environment. Learn more about package comparison.
+Your Prepare Deployment workflow depends on what you want to deploy:
+
+
+If your application is new to the target environment, you can either deploy the entire application or deploy a package. This initial deployment will always include the application configurations needed to ensure a smooth deployment to your target.
+
+
+If your application already exists in the target environment, select the corresponding option to continue:
+
+
+| Option | Description |
+  | - | - |
+  | Deploy a package | Select this option to deploy the entire application or deploy a package. With this option you can deploy a package with objects, application configurations, database scripts, and/or plug-ins. A package can contain any or all of the contents listed. |
+  | Deploy only database scripts and plugins | Select this option to deploy database scripts or plug-ins without a package. With this option, you can add database scripts and plugins to the deployment. This functionality is only available through the compare and deploy workflow. |
+
+appian-style-note
+You can deploy only an import customization file without any objects. To do so, select Deploy a package at this point, then complete the steps described in Shortcut: Deploy only import customization.
+
+Prepare an application
+Deployment of an entire application always includes the application configurations.
+To prepare an entire application for deployment:
+
+Select All Application Objects from the Package dropdown list.
+Review the contents of the application:
+Click on the status of objects or application configurations for more information.
+Resolve issues as needed.
+(Optional) Add database scripts or plug-ins.
+Click NEXT to continue to the Inspect Deployment step.
+
+{:.screenshot}
+Prepare a package
+Learn how to create a package.
+To prepare a package for deployment:
+
+Select a package from the Package dropdown list.
+Review the package contents:
+Click on the status of objects, application configurations, or plug-ins for more information.
+Resolve issues as needed.
+  {:.screenshot}
+(Optional) Remove design objects from the package:
+In the objects grid, select an object.
+Click REMOVE FROM PACKAGE.
+(Optional) Add design objects to the package:
+Deselect Only view objects in package. The objects grid updates to display all objects in the application.
+In the objects grid, select the object(s) you want to add.
+Click ADD TO PACKAGE.
+(Optional) Add or remove application configurations.
+(Optional) Add database scripts or plug-ins.
+Click NEXT to continue to the Inspect Deployment step.
+
+
+appian-style-note
+When you add items to, or remove items from, a package during the Prepare Deployment step, Appian saves those changes to the original package.
+
+Add or remove application configurations {#add-application-configurations}
+Application configurations are a category of settings that apply to the application on a global level. These configurations are not design objects, but may rely on design objects to function. Learn more about application configurations.
+The deployed package always includes application configurations that you cannot remove during compare and deploy if either of the following is true:
+- Your application is new to the target environment.
+- You're preparing to deploy the entire application to the target environment.
+However, if you're deploying a package for an application that already exists in the target environment, you can do any of the following during compare and deploy:
+- If the status of the application configurations is Changed or Conflict Detected, click the status to review the current application configurations compared to the configurations present in the target environment.
+  - Added configurations are highlighted in green.
+  - Deleted configurations are highlighted in red.
+  - Collapsed sections contain unchanged configurations. You can click sections to expand them.
+- Click ADD TO PACKAGE to add application configurations to the deployment and associated package.
+- Click REMOVE FROM PACKAGE to remove application configurations from both the deployment and the package.
+
+appian-style-note
+When you add or remove application configurations from a package during compare and deploy, Appian saves those changes to the original package.
+
+{:.screenshot}
+If you're done working with application configurations, click NEXT to continue to the Inspect Deployment step.
+Add or remove database scripts {#add-db-scripts}
+Database scripts can be deployed on their own or included within the deployment of an application or package.
+Database scripts are not exported along with packages and application objects, so skip this step if you do not have permission to deploy directly to the target environment.
+
+appian-style-tip
+Learn how to add database scripts to a package during development.
+
+To deploy database scripts:
+
+Click DATABASE SCRIPTS.
+Select a Data Source. If you added database scripts to the package during development, this value defaults to the data source you configured previously.
+If a data source connected system is a part of your deployment, the associated data source will not display in the list. You must deploy database scripts separately from their connected system.
+Click UPLOAD to add a database script.
+In the Database Scripts list:
+If you want to remove any scripts, select the checkbox next to the script in the list, then click REMOVE FROM PACKAGE.
+If you're deploying multiple scripts, click the order arrows to change the execution order.
+  {:.screenshot}
+
+
+appian-style-tip
+Any database scripts you added to the package during development will be present in this list.
+appian-style-note
+When you add or remove database scripts during the Prepare Deployment step, Appian saves those changes to the original package.
+
+
+Click NEXT to continue to the Inspect Deployment step.
+
+If you're deploying a database script that changes a database related to a record type with sync enabled, the deployment may require an import customization file to trigger a sync after deployment of the script in the target environment. Learn more about triggering a sync in the target environment.
+Appian must be able to successfully run the scripts before it can attempt to deploy the objects. If an error occurs during script execution, the deployment will stop. To resolve script errors, refer to the deployment log for further details.
+Add plug-ins {#add-plugins}
+Plug-ins can be deployed on their own or included within the deployment of an application or package.
+Deploying plug-ins with a package is only necessary under specific conditions. Learn more about these conditions before continuing.
+Plug-ins are not exported along with packages and application objects, so skip this step if you do not have permission to deploy directly to the target environment.
+
+appian-style-tip
+Learn how to add plug-ins to a package during development.
+
+To deploy plug-ins:
+
+Click PLUG-INS. By default, the grid displays plug-ins that have been added to the package during development.
+(Optional) Filter the grid by selecting a status from the dropdown list.
+Verify that the package includes the referenced plug-ins you want to be included. To do this, compare the Show plug-ins in package list to the Show plug-ins referenced in package list. By default, the referenced plug-ins list shows plug-ins with a Changed or New status only.
+Add referenced plug-ins to the package:
+Select Show plug-ins referenced in package.
+Select one or more plug-ins in the referenced plug-ins list.
+Click ADD TO PACKAGE.
+Add unreferenced plug-ins to the package:
+Select Show plug-ins in environment. The grid displays all plug-ins installed in the current environment.
+Select one or more plug-ins in the list.
+Click ADD TO PACKAGE.
+Remove plug-ins from the package:
+Select any grid display option.
+Select one or more plug-ins in the plug-ins list.
+Click REMOVE FROM PACKAGE.
+
+{:.screenshot}
+
+Click NEXT and continue on to the Inspect Deployment step.
+
+Step 3: Inspect the deployment {#inspect-the-package}
+Before you can review any inspect results you may encounter deployment errors. If present, these errors interrupt inspection and block it from continuing until they are resolved. A deployment error represents a breaking issue in an object definition that, if not resolved, will result in an incomplete deployment. Address the issues in the grid before continuing your inspection.
+{:.screenshot}
+During inspection, Appian checks the items of your package for security warnings, failing test cases, and missing precedents. This step eliminates most manual checks and helps you to identify and resolve issues with the objects in your package.
+Inspection only applies to Appian objects, application configurations, and the import customization file. Database scripts and plug-ins should be reviewed separately before deployment. Note that if a database script or plug-in fails during deployment, Appian will attempt to rollback changes. For more information on resolving problems with your deployment, see the deployment log.
+To inspect your package for deployment:
+
+If there are no issues to resolve, click NEXT to continue to the review deployment step.
+If there are any warnings for security or test cases, click Review and resolve the issues.
+If there are any missing precedents, select the missing object and click ADD TO PACKAGE.
+Once the issues are resolved, click Inspect Again.
+Continue until all issues are resolved, then click NEXT.
+
+{:.screenshot}
+
+appian-style-note
+Warnings are informational and are simply meant to call attention to potential issues before deployment. Warnings will not block your deployment.
+
+Step 4: Review deployment details {#review-details}
+Your deployment is almost ready to go. All that's left is to review a few high-level details for the Deploy view and, if needed, to add an import customization file.
+{:.screenshot}
+In this review step, you can modify the following properties:
+
+
+
+Property
+Description
+
+
+
+
+Name
+The name of the deployment as it will appear in the Deploy view. Also, the name of the deployed package you can download.
+
+
+Description
+A brief description of the deployment as it will appear in the Deploy view. 
+
+
+Delete package after deployment
+Select this checkbox to delete the deployed package once deployment is complete. If the deployment is successful, this option also deletes the prepared package you might have used as a source for the deployment.
+
+
+Import Customization File
+
+The import customization file you want to include in this deployment. If the package you selected for this deployment contains an import customization file, the file you added displays in this pane.
+You can do the following in this pane:
+
+To add an import customization file, click UPLOAD and select a .properties file.
+To remove the import customization file from the deployment, click the  icon next to the file. This action also removes the import customization file from the prepared package you might have used as a source for the deployment.
+To download the existing file, click the file link.
+To download a template file, click Download Import Customization File Template. Appian reuses the deployment name as the template file name. This template file will include placeholder properties for any objects in the deployment that can be customized with an import customization file. If there are no objects of that type in the deployment, the template file contains instructions only.
+
+
+
+
+
+Step 5: Deploy {#deploy}
+At this point, your workflow depends on your security and infrastructure:
+
+Deploy now if you have Administrator permissions for the application and the target environment has enabled direct deployments. This action affects your target environment.
+Export instead if you don't have Administrator permissions for the application, or the target environment does not allow direct deployments. The export action does not affect your target environment.
+
+Deploy now
+To complete your direct deployment:
+
+Edit the deployment name and description if necessary.
+Click DEPLOY.
+(Optional) Click Download Package to download the deployed package.
+
+
+appian-style-note
+The downloaded package contains any design objects and application configurations that you selected for deployment. The download does not include any database scripts or plug-ins that you associated with the deployment.
+
+
+(Optional) Click Download Export Log to download a record of the deployment.
+Click View Deployment Details to see the deployment status in the Deploy view of the current environment.
+
+A confirmation dialog will appear once the deployment has been sent to the target environment.
+Once your deployment is in progress, the deployment details will be available on the Deploy view of both the source and target environments. Deployment details are only visible to system administrators and users with Administrator permissions for the application (application administrators).
+{:.screenshot}
+If your deployment requires review, application administrators and users in the reviewer group will receive an email about the pending deployment. They can approve or reject deployments in the deployments details view.
+Export instead
+To export the design objects and application configurations you selected and evaluated for deployment:
+
+Edit the deployment name and description if necessary.
+Click Export.
+Click Download Package.
+
+
+appian-style-note
+The exported package contains only design objects and application configurations selected for deployment. The export does not include the database scripts or plug-ins associated with the deployment.
+
+
+(Optional) Click Download Export Log to download a record of the export.
+Click Go to <target environment>.
+Inspect and import the package manually.
+
+Step 6: Deploy to another environment {#deploy-to-another-environment}
+Once a package has been successfully deployed, you can reuse it for another environment. This is helpful for deploying packages to higher environments after testing your changes in a lower environment. The same set of changes will be applied to ensure that you are making consistent updates across all of your environments.
+This option is available to system administrators and application administrators for any completed, incoming deployments. The same objects and database scripts (in the same order) that were originally deployed will be used for the new deployment, but you can update the import customization file.
+To reuse a successfully-deployed package:
+
+In the navigation pane, click DEPLOY view. By default, the INCOMING tab is active.
+Click the name of the package you want to deploy.
+Under ACTION, click DEPLOY TO ANOTHER ENVIRONMENT.
+
+{:.screenshot}
+
+Select a target environment to deploy to.
+Click NEXT.
+Inspect the deployment:
+If there are no missing precedents to resolve, click NEXT to continue.
+If there are any missing precedents, select the missing object and click ADD TO PACKAGE.
+Once the missing precedents are resolved, click INSPECT AGAIN.
+Continue until all missing precedents are resolved, then click NEXT.
+appian-style-note
+Inspection of a reused package checks the objects and application configurations in your package for missing precedents only.
+
+
+Review the details:
+Edit the deployment Name and Description if necessary.
+
+Upload an import customization file if appropriate.
+
+appian-style-note
+Because values in an import customization file are specific to an individual environment, we do not automatically reuse the file from the previous environment where the package successfully deployed. This approach allows you to specify the values for the new target environment with an appropriate import customization file. You can always download the import customization file from the previous deployment in the Deploy view.
+
+
+
+Click DEPLOY. A confirmation dialog will display once the deployment has been sent to the target environment.
+
+
+For system administrators and application administrators, deployment details will be available on the Deploy view of both the source and target environments. To access the view quickly, click View Deployment Details in the confirmation dialog.
+If your deployment requires review, reviewers will receive an email about the pending deployment
+Shortcut: Deploy only import customization {#shortcut-deploy-icf}
+To deploy only an import customization file:
+
+Create a package that contains an import customization file but no objects.
+Select the target environment.
+Prepare the package:
+Select Deploy a package. 
+Select the package you created.
+Click NEXT. The Inspection Step displays an empty state, because there are no objects to inspect.
+Click NEXT. The Review Step displays the import customization file from the package.
+Click DEPLOY.
+
+Programmatic deployments via APIs {#prodlink-external-deployment-apis}
+Appian has native deployment APIs that can be called from external tools, such as Jenkins. There are five endpoints that allow you to inspect and deploy packages, import customization files, and database scripts.
+These APIs allow you to programmatically trigger deployments and integrate your Appian release into an automated pipeline. You can set up your pipeline once and run it the exact same way for all future deployments, saving time and avoiding manual errors.
+In order to programmatically deploy Admin Console settings or tightly integrate with a version control system to store and retrieve package files, use the Automated Deployment Manager. For more information on setting it up, see the DevOps Quick Start Guide.
+Manual export and import
+You can manually export a package from the source environment and then import it into the target environment. Import and export details are available in the Deploy view of every environment.
+
+Appian recommends using manual export and import if you do not have connected environments added to your infrastructure.
+The successful import of your package can depend on managing certain additional files and settings. For example, you may need to add an import customization file during import. Be sure to evaluate and manage these package dependencies for each import. 
+All manual imports occur asynchronously. This means that Appian queues your import as a background process, allowing you to continue development in Appian Designer while the system processes the import. You can review the status of your import from the Deploy view and an email will be sent when the import completes.
+Export
+Once you've checked your application for missing precedents, you're ready to export your package.
+Export an application
+When you export an application, the exported package includes application configurations and all associated objects. In addition to the package, you can optionally download an import customization file.
+To export an application:
+
+In the Applications view, select your application.
+Click EXPORT.
+Select Application in the dropdown list.
+In the Export Application dialog, review or edit the file name.
+Click EXPORT.
+When the export is complete, click DOWNLOAD PACKAGE to download the ZIP file. 
+If your application contains objects with environment-specific or sensitive values, click Download Import Customization File. If the prepared package you used as a source for the deployment contained an import customization file, Appian provides you with that file for download.
+Click CLOSE to close the dialog.
+
+
+appian-style-tip
+You can also download an application by selecting Export App in the Build view .
+
+Export a package
+
+appian-style-note
+An exported package can contain any design objects or application configurations you've added to the package. However, the exported package doesn't include database scripts or plug-ins you've added to the package.
+
+To export a package:
+
+Open the Export Package dialog in any of the following ways:
+In the Build view, click VIEW PACKAGES.
+In the packages list, select the checkbox next to the package name.
+Click EXPORT.
+
+
+In the BUILD view, select your package from the dropdown menu in the deployment actions bar.
+Click EXPORT PACKAGE.
+
+
+(Optional) In the Export Package dialog, click REMOVE FROM PACKAGE to remove the application configurations from the package.
+Review the design objects included in the export package. As needed, click  next to objects you want to remove.
+(Optional) Edit the File Name property.
+(Optional) Select Delete after export to automatically delete the package once the export completes.
+Click EXPORT.
+Download the files you need:
+Click DOWNLOAD PACKAGE to download the ZIP file.
+If your application contains objects with environment-specific or sensitive values, click Download Import Customization File.
+(Optional) Click Download Export Log to download a record of the export.
+Click CLOSE to close the export dialog.
+
+
+appian-style-tip
+Exported packages will be automatically deleted after 30 days and will no longer be available for download as attachments. You can change the number of days before export package cleanup in the Admin Console Settings.
+
+Inspect and import
+Since you can't undo an import, you should always inspect a package before completing the import to check for warnings or missing precedents. At the same time as inspecting the package, you can also review the status of package items compared to those items in the target environment.
+Importing a package at the environment level adds the objects to the specific application.
+Importing an application into another application will add objects to that specific application. You can remove them by selecting the imported objects and clicking REMOVE FROM APP in the toolbar.
+If the package you're importing includes design objects or application configurations that already exist in the target environment, the imported version overwrites the existing version.
+To inspect and import a package:
+
+Depending on your package type, click one of the following buttons in your target environment:
+Application: In the Applications view, click IMPORT.
+Packages: In the application, click IMPORT PACKAGE.
+Admin Console settings: In the Admin Console, click IMPORT.
+Upload your exported ZIP file and related import customization file if applicable.
+Click INSPECT and review the inspection results.
+Click IMPORT PACKAGE.
+
+Export and import multiple packages across applications
+
+appian-style-note
+An exported package contains design objects and application configurations only. The export doesn't include database scripts or plug-ins you've added to the package during development.
+
+To export packages from different applications:
+
+In the Applications view, select With Packages in the applications toolbar.
+Select all the applications with packages you want to include.
+In the applications toolbar, click EXPORT.
+Select Packages from the dropdown list.
+(Optional) In the Export Packages dialog, edit the File Name of the combined package.
+Select a package from each application.
+(Optional) Verify the contents of the combined package:
+Click View all package contents.
+Review the list of items in the package. Appian informs you if the source packages include application configurations.
+Click CLOSE to return to the Export Packages dialog.
+When your review of the package is complete, click EXPORT.
+Download the files you need:
+Click DOWNLOAD PACKAGE to download the ZIP file.
+
+If your application contains objects with environment-specific or sensitive values, click Download Import Customization File.
+
+appian-style-note
+The template import customization file contains all properties needed by objects in the selected packages. This template file does not reflect any import customization files you may have added to individual packages, so you'll likely want to reconcile this template file with the files you've added to the packages.
+
+
+
+(Optional) Click Download Export Log to download a record of the export.
+
+Click CLOSE.
+
+{:.screenshot}
+The IMPORT option in the Applications view handles packages with multiple applications. When your import contains multiple packages, Appian adds the corresponding objects and application configurations to the appropriate applications in the target environment.
+Security
+Source environment
+Developers with viewer access to an application and objects are able to create, compare, and inspect packages across environments, and manually export them. Application administrators and system administrators on the source environment are the only roles able to directly deploy to the target using compare and deploy.
+Target environment
+Before using compare and deploy, a system administrator account must be specified when setting up deployment configuration in the Admin Console. The Deploy As account must be in the service account role.
+When manually importing a package, you must ensure that you can administer the application and the objects that it contains:
+
+For new objects, the user must be able to create an object on the environment. For example, only a System Administrator has the rights to create a Public group (non-system administrators can only create Public groups within groups that they administer).
+For existing objects, the user must already be an administrator of the object.
+
+The Last Modified By field displays the user who most recently modified the object and the time at which it happened. If the object supports versioning, the Last Modified By information of previous versions are not affected.
+Best Practice: Regardless of deployment method, we recommend using a group for each application called <Application_Name>_Administrators.
+
+Create the group on the source environment, and export it (in an application package) to the target machine prior to importing the main application. The group must be deployed in an application package in order for Appian to recognize it as the same group on both environments.
+Before exporting the application, add this group to all object rolemaps. Assign Administrator rights to this group.
+Temporarily add the users (or user) who imports the application on the target environment to this group before performing an import.
+After the import, remove users from the <Application_Name>_Administrators group, as needed.
+
+Deploying security rolemaps with exported objects
+When objects are deployed to another Appian environment, the deployed objects contain a reference to the users and groups listed in their rolemaps. For example, an exported Knowledge Center contains the list of users and groups with rights to the Knowledge Center.
+Rolemap deployment rules:
+
+A user or group is only included in the rolemap of a deployed object if at least one of the two conditions below is true.
+The group is present in the import package or on the target server.
+The user exists on the target server and is not deactivated. All other users are dropped.
+When importing an object that already exists on the target server (identified by UUID), the resulting rolemap of the object is what's defined in the import package.
+Some objects can be configured to inherit their rolemaps from their parent. This configuration is preserved when the object is exported and imported. If the configuration of the object in the import package differs from what's on the target server, the setting in the import package is used.
+
+Object behavior in target environments
+If an object already exists on the target environment (an object exists there with the same UUID), then:
+
+A new version is created, if the object supports versioning. A new version is created even if the only modification was to its rolemap.
+The object in the package overwrites the object in the target, if the object does not support versioning.
+
+Because objects in a deployment aren't updated simultaneously, users may see some inconsistencies in their application behavior as objects are updated. For example, during a lengthy deployment, a constant may be updated but the process model that references the constant has not been updated yet.
+During deployments that include a record type with sync enabled, the record type must successfully sync in that environment before it will be available. This may mean that your record type will be unavailable to users, processes, or APIs until the import is complete. For more information on record types with sync enabled, see Data Sync in Appian Records.

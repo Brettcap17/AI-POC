@@ -1,0 +1,37 @@
+
+layout: function
+title: tointervalds() Function
+space: function_page
+excerpt: "Converts a value to Interval (Day to Second)."
+category: function_page
+fncname: tointervalds
+fncexample: "tointervalds(\"11h 10m 30s\")"
+fncresult: "111030::00:00:00.000"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Interval (Day to Second)
+Usage considerations
+Limitations
+The duration data type is not available for storing activity classes or process variables, but it is useful for reporting process and task metrics.
+Using the value parameter
+The value parameter accepts Integer, Decimal, Text, fixed, Boolean, Time, Date, Datetime, timestamp, complex, fraction, and Array data types.
+Understanding results
+Multiple parameters return an Interval (Day to second) Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+tointervalds("11h 10m 30s") returns 111030::00:00:00.000

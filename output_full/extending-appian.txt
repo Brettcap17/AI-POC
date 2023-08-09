@@ -1,0 +1,25 @@
+
+layout: "basic"
+title: "Extending Appian"
+
+Developers can extend Appian using plug-ins. You can find existing plug-ins on the Appian AppMarket, or create your own. Read on to find out more.
+Types of plug-ins
+As a developer you can create plug-ins that add new capabilities to the Appian platform. Each type of plug-in extends a specific part of Appian.
+Integration SDK
+The Integration SDK lets developers extend Appian's low-code integration capabilities. Whether you want to make it easy for designers to connect to backend data services using the guided experience of connected systems or you want to let users interact with another system directly from an Appian interface, the Integration SDK provides all the tools, documentation, and examples you'll need to succeed.
+Integration SDK Plug-ins:
+
+Connected Systems
+Components
+
+Suite API
+The Appian platform provides a suite of capabilities for managing processes, documents, users, groups, and more. The Appian Suite API gives plug-ins access to use those capabilities in new ways, creating powerful new features for Appian applications.
+Suite Plug-ins:
+
+Smart Services
+Functions
+Data Types
+Servlets
+
+Appian RPA
+Libraries are custom code snippets you can use to integrate common operations into your robotic processes.

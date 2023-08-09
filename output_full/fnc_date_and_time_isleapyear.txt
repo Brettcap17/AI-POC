@@ -1,0 +1,30 @@
+
+layout: function
+title: isleapyear() Function
+space: function_page
+excerpt: "Returns a Boolean value for whether the given year is a leap year."
+category: function_page
+fncname: isleapyear
+fncexample: "isleapyear(1996)"
+fncresult: "True"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: year
+    types: Integer
+    description: |
+      The year to test whether or not it qualifies as a leap year.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+isleapyear(1996) returns True

@@ -1,0 +1,188 @@
+
+layout: function
+title: a!match() Function
+category: function_page
+excerpt: Evaluates the value against multiple conditions and returns a value based on a match. If no match is found, the default is returned. For example, if "a" then "b" else "c".
+fnccat: Logical
+fncexample: Click on the function name for examples.
+fncname: a!match
+parameters:
+  - keyword: value
+    types: Any Type
+    description: The value to match. This value can be accessed in other parameters using the function variable fv!value. This parameter is required.
+  - keyword: equals
+    types: Any Type
+    description: |
+      This value is considered a match if it equals the value parameter. This parameter is best to use when evaluating literal values (for example, 1, "Red", etc.) Text values are case sensitive, so the casing must match that of the value parameter.
+  - keyword: whenTrue
+    types: Boolean
+    description: |
+      The expression considered a match if it evaluates to true. You can use the fv!value variable to reference the value parameter in your expression. For example, fv!value > 100.
+  - keyword: then
+    types: Any Type
+    description: |
+      The value to return when the equals or whenTrue parameter matches the value parameter. If you use multiple condition pairs, only the first match will be returned. You can use the fv!value variable to reference the value parameter in your expression.
+  - keyword: default
+    types: Any Type
+    description: |
+      The value to return if there are no equals or whenTrue parameters that match the value parameter. You can use the fv!value variable to reference the value parameter in your expression. This parameter is required.
+space: function_page
+reftype: function
+
+Function
+a!match( value, equals, then, whenTrue, then, default )
+{{ page.excerpt }}
+See also: if()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Configuring a!match()
+The a!match() function allows you to specify a series of condition pairs using equal and then, or whenTrue and then. 
+
+The combination of the equal and then parameters allow you to specify that: if the value parameter equals x, then y. The function syntax here could look like: a!match(value, equals, then, equals, then, default)
+
+For example, if the selected radio button is "Bar chart", then display a bar chart. If the selected radio button is "Column chart", then display a column chart. See Using the equals and then parameters to see this example's configuration.
+
+The combination of the whenTrue and then parameters allow you to specify that: If the value parameter evaluates to true, then x. The function syntax here could look like: a!match(value, whenTrue, then, whenTrue, then, default)
+
+For example, if a case is closed within 10 days, then display "Less than 10 days." If a case is closed between 30 and 60 days, then display "Between 30 and 60 days." See Using the whenTrue and then parameters to see this example configuration.
+You can use a combination of these condition pairs within your expression to create more complex logic as well. For example, you could use the following function syntax: a!match(value, equals, then, equals, then, whenTrue, then, default). See Using the equals, whenTrue, and then parameters to see an expression using both equal and whenTrue parameters.
+As you configure your expression, note that you can use an unlimited number of conditions pairs and that keywords are required.
+Evaluation order
+Unlike most functions, a!match() does not always evaluate all of its parameters. 
+The function will only evaluate equals and whenTrue parameters until it finds a match to the value parameter. After it finds a match, the following then parameter will be evaluated and any remaining parameters will be ignored.
+For example, in the function below, there are three arguments:
+- If the case priority is low, then display a down arrow icon. 
+- If the case priority is medium, then display an up arrow icon. 
+- If the case priority is high, then display a double up arrow icon. 
+sail
+a!localVariables(
+  local!casePriority: "Medium",
+  a!match(
+    value: local!casePriority,
+    equals: "Low",
+    then: a!stampField(
+      labelPosition: "COLLAPSED",
+      icon: "angle-down",
+      contentColor: "STANDARD"
+    ),
+    equals: "Medium",
+    then: a!stampField(
+      labelPosition: "COLLAPSED",
+      icon: "angle-up",
+      contentColor: "STANDARD"
+    ),
+    equals: "High",
+    then: a!stampField(
+      labelPosition: "COLLAPSED",
+      icon: "angle-double-up",
+      contentColor: "STANDARD",
+      backgroundColor: "NEGATIVE"
+    ),
+    default: "No Priority"
+  )
+)
+Since a case can only have one priority level, the function will only evaluate until a match is found. In this example, the function will only evaluate to the second equals and then condition pair since the case priority level is "Medium." This means that the third condition pair and the default parameter will be ignored.
+Examples
+The following examples illustrate the different configurations you can make with the a!match() function. 
+Copy and paste these examples into an Appian Interface to see the results.
+Using the equals and then parameters
+In this example, you have three radio buttons: "Bar", "Column", and "Pie". Depending on the radio button selection, you want the corresponding chart to appear. If there is no radio button selected, you want to display the text "No chart type selected."
+```sail
+a!localVariables(
+  local!options: { "Bar", "Column", "Pie" },
+  local!selection,
+  a!sectionLayout(
+    contents: {
+      a!radioButtonField(
+        label: "Chart Type",
+        labelPosition: "ABOVE",
+        choiceLabels: local!options,
+        choiceValues: local!options,
+        value: local!selection,
+        saveInto: local!selection,
+        choiceLayout: "STACKED",
+        validations: {}
+      ),
+      a!match(
+        value: local!selection,
+        equals: "Bar",
+        then: a!barChartField(
+          categories: { "Category 1", "Category 2", "Category 3" },
+          series: {
+            a!chartSeries(label: "Chart Series", data: { 1, 2, 3 })
+          },
+    ),
+    equals: "Column",
+    then: a!columnChartField(
+      categories: { "Category 1", "Category 2", "Category 3" },
+      series: {
+        a!chartSeries(label: "Chart Series", data: { 1, 2, 3 })
+      },
+
+    ),
+    equals: "Pie",
+    then: a!pieChartField(
+      series: {
+        a!chartSeries(label: "Chart Series 1", data: 1),
+        a!chartSeries(label: "Chart Series 2", data: 2),
+        a!chartSeries(label: "Chart Series 3", data: 3)
+      },
+
+    ),
+    default: a!textField(
+      value: "No chart type selected.",
+      readOnly: true
+    )
+  )
+}
+
+)
+)
+```
+Using the whenTrue and then parameters
+In this example, you want to display a label indicating the range of days a case has been open. If a case does not evaluate to one of the following labels, display the label "Error."
+sail
+a!localVariables(
+  local!caseCreatedOn: date(2021, 11, 15),
+  a!sectionLayout(
+    contents: {
+      a!richTextDisplayField(
+        value: a!match(
+          value: tointeger(today() - local!caseCreatedOn),
+          whenTrue: fv!value <= 30,
+          then: "Less than 30 days",
+          whenTrue: and(fv!value > 30, fv!value <= 60),
+          then: "Between 30 and 60 days",
+          whenTrue: fv!value > 60,
+          then: "More than 60 days",
+          default: "Error."
+        )
+      )
+    }
+  )
+)
+Using the equals, whenTrue, and then parameters
+In this example, you want to display a label indicating the number of items in a customer's shopping cart. If the number of items doesn't equal any of the following conditions, return "Unknown."
+sail
+a!localVariables(
+  local!cartSize: 5,
+  a!sectionLayout(
+    contents: {
+      a!richTextDisplayField(
+        value: a!match(
+          value: local!cartSize,
+          equals: 0,
+          then: "Your cart is empty.",
+          equals: 1,
+          then: "1 item in cart.",
+          whenTrue: fv!value > 1,
+          then: fv!value & " items in cart.",
+          default: "Unknown."
+        )
+      )
+    }
+  )
+)

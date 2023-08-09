@@ -1,0 +1,34 @@
+
+layout: "basic"
+title: "Support Multiple Languages"
+topic-group: "C"
+weight: 5
+
+Overview
+If you plan to distribute your plug-in to designers in multiple languages, follow this page to learn how to internationalize designer-facing text.
+Internationalizing name and description of the template
+Use resource bundles to internationalize the template's name and description.  Create a resource bundle with the keys <className>.name and <className>.description. This file should be located in the resources of your plugin.
+Example resources_en_US.properties
+HelloWorldConnectedSystem.name=Hello Connected System
+HelloWorldConnectedSystem.description=An intro connected system
+HelloWorldIntegration.name=Hello Integration
+HelloWorldIntegration.description=My first integration
+Be careful about the naming of these properties. <className> is case sensitive and must match the name of your Integration and Connected System classes. If the name or description are not defined then no value will appear in the UI.
+Internationalizing labels, tooltips and errors
+The developer of the connected system plug-in is responsible for internationalizing display values and error messages. In every call to the template, we provide locale information in the ExecutionContext. This locale information can be used along with resource bundles to internationalize display values and errors.
+java
+ResourceBundle myResources = ResourceBundle.getBundle("MyResources", executionContext.getDesignerLocale());
+All errors returned by the execute() method should not be internationalized. Designers will use these error messages to determine behavior. To provide an internationalized error for display, the developer must pass internationalized error information through the diagnostics. The diagnostics will be displayed when designers are testing their Integration.
+java
+IntegrationError internationalizedError = getInternationalizedError(e,
+   executionContext.getDesignerLocale());
+IntegrationError nonInternationalizedError = getError(e, executionContext.getExecutionLocale());
+IntegrationDesignerDiagnostic diagnostic = IntegrationDesignerDiagnostic.builder()
+    .addErrorDiagnostic(INTERNATIONALIZED)
+    .build();
+return IntegrationResponse.forError(NOT INTERNATIONALIZED)
+    .withDiagnostic(diagnostic)
+.build();
+Note on the Unicode-based properties file
+Languages with Unicode characters (for example, Arabic, Chinese, Japanese, Russian, and any characters with character accents) need to be recorded using escaped Unicode. If they are not, the translations will not render properly on Appian.
+For example, Ƃ would be represented as U+0182 in the properties file.

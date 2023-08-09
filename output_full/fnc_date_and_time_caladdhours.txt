@@ -1,0 +1,52 @@
+
+layout: function
+title: caladdhours() Function
+space: function_page
+excerpt: "This function adds a given number of hours to a Date and Time plus any non-working hours (as designated on the process calendar) and returns the resulting Date and Time."
+category: function_page
+fncname: caladdhours
+compatibility: -portal, -om, +pe, +pr
+fncexample: "caladdhours(datetime(2011, 12, 13, 12, 0, 0), 12)"
+fncresult: "12/14/2011 4:00 PM GMT"
+fnccat: Date_and_Time
+reftype: function
+parameters:
+  - keyword: start_datetime
+    types: Date and Time
+    description: |
+      The starting Date and Time.
+  - keyword: number
+    types: Integer
+    description: |
+      The number of net work hours to be added to the starting Date and Time.
+  - keyword: calendar_name
+    types: Text
+    description: |
+      This optional parameter accepts the name of a system calendar; otherwise, the default calendar is used.
+
+
+appian-style-tip
+Check out the new Date and Time function a!addDateTime(). It does everything caladdhours() does but offers more flexibility. You can also use the new a!subtractDateTime() function to subtract an increment of time from a specified start date.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date and Time
+Usage considerations
+General considerations
+The function only returns Date and Time values that fall within the working time defined in the process calendar.
+It also calculates results across daylight saving time boundaries.
+This function is commonly used in process events, like Start Events or Timer Events.
+Using the start_datetime parameter
+If the start_datetime value is a non-working time, adding 0 hours returns the same Date and Time given as the start_datetime; adding 1 or more hours returns the next working time plus that many work hours.
+Using the calendar_name parameter
+Passing a calendar name allows you to calculate working hours using an alternate system calendar, if you have multiple calendars configured.
+See also: Process Calendar Settings
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+caladdhours(datetime(2011,12,13,12,0,0),12) returns 12/14/2011 4:00 PM GMT +00:00

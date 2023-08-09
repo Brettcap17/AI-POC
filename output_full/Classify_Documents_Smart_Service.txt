@@ -1,0 +1,59 @@
+
+layout: basic
+title: Classify Documents Smart Service
+proxy-topic: ia
+excerpt: The Classify Documents smart service lets you integrate your AI skill into your process. This smart service takes documents as its input, uses custom artifical intelligence models to analyze those documents, and then returns a prediction of the document type.
+reftype: smart_service
+ssparentcat: Automation_Services
+sscat: AI_Skills
+ssicon: Classify_Documents.png
+weight: 500
+type: Reference
+
+Overview
+The Classify Documents smart service lets you integrate your AI skill into your process. This smart service takes documents as its input, uses custom artifical intelligence models to analyze those documents, and then returns a prediction of the document type. The smart service also returns data on its level of confidence, based on thresholds you can configure.
+The smart service uses the model you have published within the AI Skill.
+Permissions
+The user who executes the process model doesn't need to have access to the AI skill being called by the Classify Documents smart service. However, without those permissions, some smart service configuration options are masked.
+To properly view the results, you need to have permission to the document being analyzed.
+Properties
+
+Category: AI Skills
+Icon: 
+Assignment options: Unattended
+
+Configuration options
+Setup tab
+The Setup tab allows you to select or create an AI skill.
+
+Select AI Skill: Search or browse to select an AI skill.
+Edit AI Skill: Open the selected AI skill. This button is only shown when a skill is selected. Users with viewer access will see the View AI Skill button instead and will be able to open the skill in read-only mode.
+
+Data tab
+Node inputs
+|Name|Data Type|Description|Required|Multiple|
+|-|-|-|-|-|
+|Documents|Document|List of documents to classify|Y|Y|
+|Confidence Threshold|Number (Decimal)|Optional parameter that can be set as a number between 0 and 100 to be consistent with other components that take percentages|N|N|
+Node outputs
+The smart service returns three lists of documents, organized based on the confidence threshold you set. Each list contains the document and the document type. The skill's published model also outputs a confidence value for each document type prediction it makes.
+|Output|Data Type|Multiple|Description|
+|-|-|-|-|
+|Above Threshold|Map|Y|Returns document (or id), classification, and confidence classified above threshold value when set|
+|Below Threshold|Map|Y|Returns document (or id), classification, and confidence below threshold value when set|
+|Failed|Map|Y|Returns document (or id), error code, and error details of the documents that don't get classified|
+Usage considerations
+Activity chaining is supported.
+Runtime behavior
+At run-time, the smart service calls a machine learning inference API end point.
+Possible error messages
+Error code/message captured in the “Failed” output may appear for any of the following reasons:
+
+Invalid document format. Use PDFs as inputs.
+Duplicate documents. Use unique documents as input.
+Document is too large.
+Invalid document, such as an empty document or corrupted PDF.
+Document has been deleted. Reconfigure the smart service to use existing documents.
+
+If you see the following error, it is because the Classify Documents smart service is referring to an AI Skill design object that no longer exists. Reconfigure the smart service to use an existing AI Skill.
+There is a problem with the task "Classify Documents" in the process "process_model_name". The underlying AI Skill object has been deleted or is otherwise invalid. Please confirm the node's configuration and try again.

@@ -1,0 +1,405 @@
+
+layout: "pattern"
+title: "User List Pattern"
+excerpt: "The user list pattern retrieves all the users in a specified group and displays them in a single column."
+reftype: "pattern"
+sr-tags: ["Looping"]
+
+Each user's name and title appears next to their profile picture which uses the "avatar" style. Paging controls are provided at the bottom for browsing longer lists of users.
+This pattern is also useful for:
+
+Learning how to show a list of data using alternate representations to a Read-Only Grid
+Understanding how to create custom paging controls
+
+Design structure
+The main components in this pattern are rich text headers, side by side layouts, and a rich text link. The image below displays how the pattern looks on a blank interface with callouts of the main components. You can examine the entire expression or jump down to the subsections below with referenced line numbers to see a detailed breakdown of the main components.
+{:.screenshot style="width:50%"}
+Pattern expression
+When you drag and drop the user list pattern onto your interface, 178-lines of expressions will be added to the section where you dragged it.
+sail
+{
+  a!localVariables(
+    local!userListPagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5, sort: a!sortInfo(field: "user", ascending: true)),
+    local!users: a!forEach(
+      /* This directly references the ID of the Designers group. Instead of an ID, a constant *
+       * should be used to reference the group you want to pull users from.                   */
+      items: getdistinctusers(togroup(6)),
+      expression: {user: fv!item}
+    ),
+    /* Since we're retrieving users from an Appian group instead of a query, we make our own datasubset */
+    local!pagedUsers: todatasubset(local!users, local!userListPagingInfo),
+    {
+      {
+        a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextHeader(
+              text: "Team Members",
+              size: "MEDIUM"
+            )
+          }
+        ),
+        a!forEach(
+          items: local!pagedUsers,
+          expression: a!sideBySideLayout(
+            items: {
+              a!sideBySideItem(
+                item: a!imageField(
+                  images: { a!userImage(user: fv!item.user, link: a!userRecordLink(user: fv!item.user)) },
+                  size: "SMALL",
+                  style: "AVATAR"
+                ),
+                width: "MINIMIZE"
+              ),
+              a!sideBySideItem(
+                item: a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      /* This should be whatever you would use to display a user's name.  */
+                      text: user(fv!item.user, "firstName") & " " & user(fv!item.user, "lastName"),
+                      link: a!userRecordLink(user: fv!item.user),
+                      linkStyle: "STANDALONE",
+                      style: "STRONG"
+                    ),
+                    char(10),
+                    a!richTextItem(
+                      text: user(fv!item.user, "titleName"),
+                      color: "SECONDARY"
+                    )
+                  }
+                )
+              )
+            },
+            alignVertical: "MIDDLE"
+          )
+        ),
+        a!richTextDisplayField(
+          value: {
+            a!richTextIcon(
+              icon: "angle-double-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(local!userListPagingInfo.startIndex, 1),
+                  a!save(
+                    local!pagedUsers,
+                    /* Since we're retrieving users from an Appian group instead of a query, we make our own datasubset */
+                    todatasubset(arrayToPage: local!users, pagingConfiguration: local!userListPagingInfo)
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo.startIndex,
+                    if(
+                      local!userListPagingInfo.startIndex - local!userListPagingInfo.batchSize < 1,
+                      1,
+                      local!userListPagingInfo.startIndex - local!userListPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextItem(
+              text: {
+                local!userListPagingInfo.startIndex,
+                " - ",
+                if(
+                  local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 > local!pagedUsers.totalCount,
+                  local!pagedUsers.totalCount,
+                  local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1
+                )
+              },
+              size: "MEDIUM",
+              style: "STRONG"
+            ),
+            a!richTextItem(
+              text: {
+                " of ",
+                fixed(local!pagedUsers.totalCount, 0)
+              },
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextIcon(
+              icon: "angle-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo,
+                    a!pagingInfo(
+                      startIndex: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize,
+                      batchSize: local!userListPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-double-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo.startIndex,
+                    /* When jumping to the last page, make sure that the startIndex is an even multiple of batch size. *
+                     * This ensures that you have the same last page as if you had gotten there one page at a time.    */
+                    if(
+                      mod(local!pagedUsers.totalCount, local!userListPagingInfo.batchSize) = 0,
+                      local!pagedUsers.totalCount - local!userListPagingInfo.batchSize + 1,
+                      local!pagedUsers.totalCount - mod(local!pagedUsers.totalCount, local!userListPagingInfo.batchSize) + 1
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            )
+          }
+        )
+      }
+    }
+  )
+}
+[Lines 1-11] Define paging info, users, and pages users
+At the top of the pattern, local variables set up the following:
+local!userListPagingInfo: Paging info for the list.
+local!users: The list of users to display.
+local!pagedUsers: Formatted datasubset of the list of users.
+{% highlight sail linenos start_line=1 %}
+{
+  a!localVariables(
+    local!userListPagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5, sort: a!sortInfo(field: "user", ascending: true)),
+    local!users: a!forEach(
+      / This directly references the ID of the Designers group. Instead of an ID, a constant *
+       * should be used to reference the group you want to pull users from.                   /
+      items: getdistinctusers(togroup(6)),
+      expression: {user: fv!item}
+    ),
+    / Since we're retrieving users from an Appian group instead of a query, we make our own datasubset /
+    local!pagedUsers: todatasubset(local!users, local!userListPagingInfo),
+{% endhighlight %}
+[Lines 12-22] Use a rich text header to style the list label
+The first visible component is a rich text display field with a rich text header to label the list.
+{% highlight sail linenos start_line=12 %}
+   {
+      {
+        a!richTextDisplayField(
+          labelPosition: "COLLAPSED",
+          value: {
+            a!richTextHeader(
+              text: "Team Members",
+              size: "MEDIUM"
+            )
+          }
+        ),
+{% endhighlight %}
+[Lines 23-57] Use a!forEach() to loop over the list of users
+Then, we use a!forEach() to loop over the list of users. Each user is represented by a single a!sideBysideLayout() containing two rich text display fields. The first contains a!imageField() displaying the user's profile picture in the avatar style. The second contains two rich text items displaying the user's name and title.
+{% highlight sail linenos start_line=23 %}
+        a!forEach(
+          items: local!pagedUsers,
+          expression: a!sideBySideLayout(
+            items: {
+              a!sideBySideItem(
+                item: a!imageField(
+                  images: { a!userImage(user: fv!item.user, link: a!userRecordLink(user: fv!item.user)) },
+                  size: "SMALL",
+                  style: "AVATAR"
+                ),
+                width: "MINIMIZE"
+              ),
+              a!sideBySideItem(
+                item: a!richTextDisplayField(
+                  labelPosition: "COLLAPSED",
+                  value: {
+                    a!richTextItem(
+                      / This should be whatever you would use to display a user's name.  /
+                      text: user(fv!item.user, "firstName") & " " & user(fv!item.user, "lastName"),
+                      link: a!userRecordLink(user: fv!item.user),
+                      linkStyle: "STANDALONE",
+                      style: "STRONG"
+                    ),
+                    char(10),
+                    a!richTextItem(
+                      text: user(fv!item.user, "titleName"),
+                      color: "SECONDARY"
+                    )
+                  }
+                )
+              )
+            },
+            alignVertical: "MIDDLE"
+          )
+        ),
+{% endhighlight %}
+[Lines 58-178] Use a rich text display field to display paging controls
+Paging controls at the bottom are provided by a single richTextDisplayField with 5 richTextItems:
+
+Double angle brackets to page to the first page
+Single angle bracket to page to the previous page
+Count of the current and total users
+Single angle bracket to page to the next page
+Double angle brackets to page to the last page
+
+
+appian-style-tip
+These paging controls are built with generic expressions that can handle any set of paged data.
+
+{% highlight sail linenos start_line=58 %}
+               a!richTextDisplayField(
+          value: {
+            a!richTextIcon(
+              icon: "angle-double-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(local!userListPagingInfo.startIndex, 1),
+                  a!save(
+                    local!pagedUsers,
+                    / Since we're retrieving users from an Appian group instead of a query, we make our own datasubset /
+                    todatasubset(arrayToPage: local!users, pagingConfiguration: local!userListPagingInfo)
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo.startIndex,
+                    if(
+                      local!userListPagingInfo.startIndex - local!userListPagingInfo.batchSize < 1,
+                      1,
+                      local!userListPagingInfo.startIndex - local!userListPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextItem(
+              text: {
+                local!userListPagingInfo.startIndex,
+                " - ",
+                if(
+                  local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 > local!pagedUsers.totalCount,
+                  local!pagedUsers.totalCount,
+                  local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1
+                )
+              },
+              size: "MEDIUM",
+              style: "STRONG"
+            ),
+            a!richTextItem(
+              text: {
+                " of ",
+                fixed(local!pagedUsers.totalCount, 0)
+              },
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextIcon(
+              icon: "angle-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo,
+                    a!pagingInfo(
+                      startIndex: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize,
+                      batchSize: local!userListPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-double-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!userListPagingInfo.startIndex,
+                    / When jumping to the last page, make sure that the startIndex is an even multiple of batch size. *
+                     * This ensures that you have the same last page as if you had gotten there one page at a time.    /
+                    if(
+                      mod(local!pagedUsers.totalCount, local!userListPagingInfo.batchSize) = 0,
+                      local!pagedUsers.totalCount - local!userListPagingInfo.batchSize + 1,
+                      local!pagedUsers.totalCount - mod(local!pagedUsers.totalCount, local!userListPagingInfo.batchSize) + 1
+                    )
+                  )
+                },
+                showWhen: local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!userListPagingInfo.startIndex + local!userListPagingInfo.batchSize - 1 < local!pagedUsers.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            )
+          }
+        )
+      }
+    }
+  )
+}
+{% endhighlight %}

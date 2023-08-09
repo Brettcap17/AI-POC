@@ -1,0 +1,189 @@
+
+layout: function
+title: a!pickerFieldRecords_22r1
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: 'Displays an autocompleting input for the selection of one or more records, filtered by a single record type. Suggestions and picker tokens use the title of the record.'
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!pickerFieldRecords_22r1
+fncsubcat: Pickers
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text to display as the field label.
+  - keyword: labelPosition
+    name: Label Position
+    types: Text
+    description: |
+      Determines where the label appears. Valid values: 
+        - "ABOVE" (default) Displays the label above the component.
+        - "ADJACENT" Displays the label to the left of the component.
+        - "COLLAPSED" Hides the label. The label will still be read by screen readers; see accessibility considerations for more information.
+        - "JUSTIFIED" Aligns the label alongside the component starting at the edge of the page.
+  - keyword: instructions
+    name: Instructions
+    types: Text
+    description: Supplemental text about this field.
+  - keyword: helpTooltip
+    name: Help Tooltip
+    types: Text
+    description: Displays a help icon with the specified text as a tooltip. The tooltip displays a maximum of 500 characters. The help icon does not show when the label position is "COLLAPSED".
+  - keyword: placeholder
+    name: Placeholder
+    types: Text
+    description: Text to display in the field when it is empty. Does not show if the field is read only.
+  - keyword: maxSelections
+    name: Maximum Selections
+    types: Number (Integer)
+    description: |
+      Maximum number of allowed selections. Once this number is reached, further selections are blocked until a selection is removed.
+  - keyword: recordType
+    name: Record Type
+    types: RecordType
+    description: |
+      Required, singular. Filters picker to select records of this type.
+  - keyword: filters
+    name: Filters
+    types: List of QueryFilter
+    description: List of filters to apply when searching for records.
+  - keyword: value
+    name: Display Value
+    types: Any Type
+    description: |
+      Array of currently selected records. This will be either a List of Text or a List of Number (Integer), depending on the recordType selected.
+  - keyword: saveInto
+    name: Save Input To
+    types: List of Save
+    description: One or more variables that are updated with the array of selected records when the user selects or removes a record. Use a!save() to save a modified or alternative value to a variable.
+  - keyword: required
+    name: Required
+    types: Boolean
+    description: |
+      Determines if a value is required to submit the form. Default: false.
+  - keyword: requiredMessage
+    name: Required Message
+    types: Text
+    description: |
+      Custom message to display when the field's value is required and not provided.
+  - keyword: readOnly
+    name: Read-only
+    types: Boolean
+    description: |
+      Determines if the field should display as not editable. Default: false.
+  - keyword: disabled
+    name: Disabled
+    types: Boolean
+    description: |
+      Determines if the field should display as potentially editable but grayed out. Default: false.
+  - keyword: validations
+    name: Validations
+    types: List of Text String
+    description: Validation errors to display below the field when the value is not null.
+  - keyword: validationGroup
+    name: Validation Group
+    types: Text
+    description: |
+      When present, this field is only validated when a button in the same validation group is pressed. See the documentation for more information about how to use validation groups.
+  - keyword: accessibilityText
+    name: Accessibility Text
+    types: Text
+    description: Additional text to be announced by screen readers. Used only for accessibility; produces no visible change.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+  - keyword: showRecordLinks
+    name: Show Record Links
+    types: Boolean
+    description: |
+      Determines whether selected records display links to their summary views. Default: true.   
+reftype: sailcomponent
+scdisplayname: Record Picker
+space: sail_component
+evolved_fncname: a!pickerFieldRecords
+evolved_reason: "Updated the filters parameter so it can now accept a single logical expression or a list of query filters to determine which records appear in the picker"
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Suggestions and permissions
+
+Suggestions are based on the fields used in the record title. This is equivalent to the search functionality in a feed-style record list.
+If you are having trouble getting your record picker to work for a service-backed record type, make sure the record list search is working correctly. See the Service-Backed Record Type Tutorial for an example of how to configure this.
+Only records that the viewing user has permissions to see appear in the suggestions list, as determined by the default filters in the record type.
+
+Selections and placeholders
+
+Any nulls in the array passed to selected records are not displayed. A [Not Available] token is displayed for any invalid identifiers in the selected records array.
+The component always saves an array regardless of how many selections have been made.
+By default, all selected record tokens include a link to the record unless showRecordLinks is false. Consider setting showRecordLinks to false when selecting reference data from the picker. See Select a record from a record type without a link to the record for an example.
+This picker cannot be used to selected records of a rule-backed record type (deprecated).
+Whether placeholder text clears on focus or input varies by device and browser. 
+
+Examples
+Record type object references are specific to each environment. If you copy and paste these examples into an interface, they will not evaluate. Use them as a references only.
+Select a record from a record type
+sail 
+a!localVariables(
+  local!storedRecord,
+  a!pickerFieldRecords(
+    label: "Choose an Employee Record",
+    /* For the "recordType" parameter below, replace the record type reference (recordType!Employee)  
+     * with a valid record type reference in your environment. 
+     */
+    recordType: recordType!Employee,
+    value: local!storedRecord,
+    saveInto: local!storedRecord
+  )
+)
+Displays the following:
+{:.screenshot}
+Select a record from a record type with a filter
+sail 
+a!localVariables(
+  local!storedRecord,
+  a!pickerFieldRecords(
+    label: "Choose an Employee Record",
+    /* For the "recordType" parameter below, replace the record type reference (recordType!Employee)  
+     * with a valid record type reference in your environment. 
+     */
+    recordType: recordType!Employee,
+    filters:{ 
+      a!queryFilter(
+        field: "department",
+        operator: "=",
+        value: "Engineering"
+      )
+    },
+    value: local!storedRecord,
+    saveInto: local!storedRecord
+  )
+)
+Displays the following:
+{:.screenshot}
+Select a record from a record type without a link to the record
+sail
+a!localVariables(
+  local!storedRecord,
+    a!pickerFieldRecords(
+      label: "Choose a Case Priority",
+    /* For the "recordType" parameter below, replace the record type reference (recordType!Priority)  
+     * with a valid record type reference in your environment. 
+     */
+      recordType: recordType!Priority,
+      value: local!storedRecord,
+      saveInto: local!storedRecord,
+    /* Since the Priority record type only contains reference data (the different case priority levels), 
+     * we can hide the record links to prevent users from navigating to their summary views.
+     */
+      showRecordLinks: false,
+    )
+)
+Displays the following:
+{:.screenshot}

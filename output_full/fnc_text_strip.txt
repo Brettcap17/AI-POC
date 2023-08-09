@@ -1,0 +1,32 @@
+
+layout: function
+title: strip() Function
+category: function_page
+excerpt: 'Returns the provided text, minus any characters considered printable. Printable characters are the 95 printable ASCII characters plus three special characters: BACKSPACE (0x08), TAB (0x09), and NEWLINE (0x0a).'
+fnccat: Text
+fncexample: strip("this text is stripped")
+fncname: strip
+fncresult: '[empty result]'
+space: function_page
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: text
+    types: Text
+    description: |
+      The text to be "stripped" for printing purposes.
+
+INCLUDE PAGE: US English Only Text Function
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: stripwith(), clean()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+strip("this text is stripped") returns [empty result]

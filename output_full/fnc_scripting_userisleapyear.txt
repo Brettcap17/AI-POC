@@ -1,0 +1,28 @@
+
+layout: function
+title: userisleapyear() Function
+space: function_page
+excerpt: "This functions lets you know if a given year is a leap year in the user preferred calendar."
+category: function_page
+fncname: userisleapyear
+fncexample: "userisleapyear(2021)"
+fncresult: "false"
+fnccat: Scripting
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: year
+    types: Number
+    description: |
+      The year to test whether or not it qualifies as a leap year.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+You can copy and paste these examples into the Expression Rule Designer to see how this works.
+userisleapyear(2007) returns false

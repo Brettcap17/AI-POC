@@ -1,0 +1,33 @@
+
+layout: function
+title: topeople() Function
+space: function_page
+excerpt: "Converts a value to People."
+category: function_page
+fncname: topeople
+fncexample: "topeople(1, \"john.doe\")"
+fncresult: "{[Group:1], john.doe}"
+fnccat: People
+compatibility: -crf, ~portal, ~om, +pe, +pr
+reftype: function
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+       Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+People
+Usage considerations
+The value parameter accepts Text, User, Group and People types.
+When operating on arrays, it is not necessary to use apply with topeople. If multiple parameters are passed, or one parameter is an Array, topeople will return a People Array.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+topeople(1, "john.doe") returns {[Group:1], john.doe}

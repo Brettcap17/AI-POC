@@ -1,0 +1,119 @@
+
+layout: pattern
+title: Display Multiple Files in a Grid
+excerpt: Show a dynamic number of files in a grid and edit certain file attributes.
+reftype: sailrecipe
+sr-tags:
+  - Document Management
+  - Grids
+
+For this recipe, were are giving our users the ability to update the file name, description, and an associative field for the file "Category". However, designers can modify this recipe to modify various types of document metadata.
+
+This scenario demonstrates:
+
+How to handle an array of documents in an editable grid for file verification and attribute editing
+How to use a!forEach() in an interface component
+
+Setup
+Before we can see this recipe in the live view, we will need to create a Constant that holds an array of documents. To do this:
+
+Upload a few files into Appian
+Create a constant of type Document named UC_DOCUMENTS and select the multiple checkbox. Select the files you just uploaded as the value.
+
+Expression
+sail 
+a!localVariables(
+  /* 
+  * local!files are stored in a constant here. However, this source would typically come from  
+  * process data or queried from a relational database. local!fileMap simulates a data
+  * structure that would typically hold file metadata.
+  */
+  local!files: cons!DOCUMENT_GIF_IMAGE,
+  local!fileMap: a!forEach(
+    items: local!files,
+    expression: a!map(
+      file: fv!item,
+      fileCategory: "",
+      newFileName: document(fv!item, "name"),
+      newFileDescription: document(fv!item, "description")
+    )
+  ),
+  a!sectionLayout(
+    contents: {
+      a!gridLayout(
+        label: "Example: Display Multiple Files in a Grid",
+        totalCount: count(local!files),
+        headerCells: {
+          a!gridLayoutHeaderCell(label: "File"),
+          a!gridLayoutHeaderCell(label: "Name"),
+          a!gridLayoutHeaderCell(label: "Description"),
+          a!gridLayoutHeaderCell(label: "Category"),
+          a!gridLayoutHeaderCell(label: "Size (KB)", align: "RIGHT")
+        },
+        columnConfigs: {
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 3),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 3),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 3),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 2),
+          a!gridLayoutColumnConfig(width: "DISTRIBUTE", weight: 2),
+        },
+        rows: a!forEach(
+          items: local!fileMap,
+          expression: a!gridRowLayout(
+            contents: {
+              a!linkField(
+                /* Labels are not visible in grid cells but are necessary to meet accessibility requirements */
+                label: "File" & fv!index,
+                links: a!documentDownloadLink(
+                  label: document(fv!item.file,"name") & "." & document(fv!item.file,"extension"),
+                  document: fv!item.file
+                ),
+                value: fv!item.newFileName,
+                readOnly: true
+              ),
+              a!textField(
+                label: "File Name " & fv!index,
+                value: fv!item.newFileName,
+                saveInto: fv!item.newFileName
+              ),
+              a!textField(
+                label: "Description " & fv!index,
+                value: fv!item.newFileDescription,
+                saveInto: fv!item.newFileDescription,
+                readOnly: false
+              ),
+              a!dropdownField(
+                label: "category " & fv!index,
+                placeholder: "-- Please Select--",
+                choiceLabels: { "Resume", "Cover Letter", "Other" },
+                choiceValues: { "Resume", "Cover Letter", "Other" },
+                value: fv!item.fileCategory,
+                saveInto: fv!item.fileCategory
+              ),
+              a!textField(
+                label: "title " & fv!index,
+                value: round(document(fv!item.file, "size") / 1000),
+                align: "RIGHT",
+                readOnly: true
+              )   
+            },
+            id: fv!index
+          )
+        ),
+        rowHeader: 2
+      ),
+      a!textField(
+        label: "Value of Document Dictionary",
+        readOnly: true,
+        value: local!fileMap
+      )
+    }
+  )
+)
+Test it out
+
+Set the category of a file to Resume. Notice that the category is applied to the map created in local!fileMap
+
+Notable implementation details
+
+While this recipe uses local variable for their stand-alone capability, you will typically be interaction with a CDT or datasubset data structure when working with file attributes. In these cases, the data would typically be passed in via a rule input or query.

@@ -1,0 +1,88 @@
+
+layout: function
+title: Rename Users Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Rename Users Node allows you to rename existing users on the system while executing your process application.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!renameUsers
+fncsubcat: Identity_Management
+parameters:
+  - keyword: oldUsernames
+    types: List of Text String
+    description: The current username of the user.
+  - keyword: newUsernames
+    types: List of Text String
+    description: The new username of the user.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Change_User_Type.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} Users will be notified via email when their usernames have changed, and all username changes are tracked in the User Management Log.
+Note that during a bulk rename, if any one username change fails, the node will pause by exception and none of the given usernames will be changed. Additionally, it is not possible for a user to rename themselves.
+Permissions needed
+Only system administrators can run this smart service.
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Recommendations
+It is recommended to use the smart service or the related a!renameUsers() expression function to update usernames, instead of directly through the Admin Console.
+This is especially critical for scenarios where usernames are stored in an external system, including a business data source, where no other system is responsible for updating those usernames during a rename. It is important to build workflows that can both update the username within Appian and properly call for updates to external data sources, as well, in order to avoid service disruptions in existing applications.
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node inputs
+
+
+ Input
+ Data Type
+ Description
+ Required
+ Multiple
+
+
+Old Usernames
+Text
+The current username to be changed. A username must match an existing username, including case. For example, if john.doe exists, you cannot enter JOHN.doe.
+Yes
+Yes
+
+
+New Usernames
+Text
+The new username that will take effect. A username can only contain letters, numbers, and the following special characters: @ . _ - '. A username cannot match an existing username, regardless of case. For example, if john.doe already exists, you cannot enter JOHN.doe.
+Yes
+Yes
+
+
+Executing Bulk Renames
+In order to successfully execute a bulk rename, two equal-sized lists of users must be be passed into the two node inputs. The first item in the first list, for old usernames, corresponds to the first item in the second list, for new usernames. If any one username is invalid in either of the lists, the ode will pause by exception and none of the given usernames will be changed.
+See also: View and Update Users
+Node outputs
+None
+a!renameUsers()
+The Rename Users smart service is available as an expression function that can be executed inside a saveInto on a component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+During a bulk rename, if any one username change fails, the expression will fail and none of the given usernames will be changed. Additionally, it is not possible for a user to rename themselves.

@@ -1,0 +1,322 @@
+
+layout: basic
+title: Libraries
+proxy-topic: rpa_custom_code
+proxy-topic-group: Custom Code
+proxy-weight: 800
+topic-group: D
+weight: 100
+
+
+appian-style-tip
+Libraries are used in custom code development for Appian RPA.
+
+There's no need to reinvent the wheel when you're developing a robotic process in Appian RPA. Developers can leverage existing code to integrate common operations into their robotic processes. These pieces of code are known as libraries and help you develop robotic processes more quickly and predictably.
+This page describes libraries in the context of Appian RPA, including how and where libraries are used in a robotic process lifecycle. Throughout the Appian RPA documentation, you'll see libraries mentioned during development and within the RPA console. This page also walks you through the steps to create a workflow library, add it to the RPA console, and use it in a robotic process.  
+What is a library?
+A library is a set of code and classes to complete common tasks. Sometimes referred to as "nanobots," libraries are designed to be reusable in a robotic process or across multiple robotic processes. You can develop libraries for your specific use case or use libraries built by other developers. Think of libraries as building blocks to help you code a robotic process faster.
+In the file system, libraries appear as .jar files.
+Types of libraries
+In Appian RPA, you'll work with workflow libraries often. You can develop custom workflow libraries to use in your robotic processes.
+You'll also use code libraries, such as traditional Maven dependencies, in Appian RPA processes. You are probably familiar with these if you've done Java development before.
+In Appian RPA, you'll use workflow libraries and code libraries for different purposes. Workflow libraries are useful when you have reusable Java functions that need to be shared across robotic processes. Instead of having duplicate code within your bots, you can define a workflow library and define actions within your robotic process workflow that reference that library. For example, if you have multiple robotic processes that need to get the same information out of your customer relationship management (CRM) system, that is a good candidate to be defined as a workflow library. Code libraries are used to help developers do the things they need to do in Java. An example of a code library is Log4j, which is a Maven Central library that can be used to help with Java logging.
+Library versions
+Like any piece of a big project, you'll need to edit or maintain library code from time to time. Maven requires artifacts to have certain metadata declared in the file when deployed to the repository. This metadata assists in better organization, dependency management, and version control. Maven uses this metadata with the pom.xml file to assemble and manage the pieces of your project. More on artifacts and metadata.
+Each time you create or update a library, you'll need to push it to the console repository for the changes to appear in Appian RPA. Development practices may require you to update the version number to help track when major changes are introduced.
+In Appian RPA, a library's version comprises three digits:
+
+The first digit in the version number identifies the major version. This value is incremented for significant changes such as new methods or changed methods that impact backwards compatibility.
+The second digit in the version number identifies the minor version. This value is incremented for changes such as code refactors that don't impact backwards compatibility.
+The third digit in the version number identifies the hotfix. This value is incremented for small changes such as bug fixes.
+
+When you share a robotic process to another Appian RPA environment, libraries are bundled to help streamline the process. When you import a workflow library or robotic process package, Appian RPA inspects the package on import to the new environment to determine if any of the libraries already exist.
+More on deploying code
+More on deploying robotic processes and apps
+Manage Appian RPA workflow libraries
+Manage workflow libraries within the Robotic Processes tab in the Appian RPA console. Here, you can see the list of existing workflow libraries, edit a workflow library, or add a workflow library. You can also import and export libraries to share them without using an IDE.
+Manage workflow libraries
+On the Robotic processes tab, click the Workflow libraries icon:
+{:.screenshot}
+On the Workflow libraries page, you can manage the libraries available for the robotic processes in the console.
+List of workflow libraries
+Here you'll see a list of the workflow libraries defined within the console, along with actions you can perform. Appian RPA comes with a local Maven repository where you'll deploy code, including libraries. You can add a workflow library in Appian RPA using the Workflow library editor.
+{:.screenshot}
+The list contains multiple columns:
+
+Repository: Maven repository where workflow library is located. If empty, the workflow library will be searched in the repository list defined for the console.
+Group: Identifier for the group of the Maven artifact associated with the workflow library.
+Artifact: Identifier of the Maven artifact associated with the workflow library.
+Version: Version of the Maven artifact associated with the workflow library.
+Main class: The main class to execute, or the input class to the workflow library.
+Actions: Delete the workflow library or update it by refreshing the Maven artifact from the repository.
+
+Together, the Group, Artifact, and Version create the Maven coordinate for the library.
+Workflow library editor
+Use the Workflow library editor to add new workflow libraries within the console or edit existing ones. When you code a new workflow library, you'll need to add it to the List of workflow libraries. This is a necessary step before you can associate libraries with actions in the robotic process workflow.
+{:.screenshot}
+To add a new workflow library:
+
+Click New to clear the form. This ensures you don't edit an existing workflow library.
+Fill the fields with the new workflow library information.
+Click Save.
+
+To edit a workflow library:
+
+Click on the workflow library you want to edit in the List of workflow libraries. Its data appears in the form.
+Edit the data.
+Click Save to save your changes.
+
+To delete a workflow library:
+
+In the List of workflow libraries, find the workflow library entry you want to delete.
+Click Delete library in the Actions column.
+
+Export a workflow library
+You can export a workflow library from Appian RPA to share. This packages the project along with all private dependencies, eliminating the need to use an IDE or Maven.
+To export a workflow library:
+
+In the Appian RPA console, go to the Robotic Processes tab.
+
+Click Workflow libraries in the toolbar.
+{:.screenshot}
+
+
+In the List of workflow libraries, locate the library you want to export.
+
+Click Export library in that workflow library's Actions column.
+Appian RPA packages the library and downloads as a ZIP file. The package's file name is formatted as <groupId> - <artifactId> - <version>.zip to provide key version-control details.
+
+Import a workflow library
+Appian RPA lets you quickly and easily import a workflow library from the AppMarket or other sources, without needing to use an IDE or Maven.
+To import a workflow library:
+
+In the Appian RPA console, go to the Robotic Processes tab.
+Click Workflow libraries in the toolbar.
+On the List of workflow libraries page, click Import Library in the toolbar.
+Click Upload to browse for the workflow library package on your computer, or drag and drop the file. The package must be a ZIP file.
+Click Import. Appian RPA begins to process the workflow library and add it to the console and local repository.
+
+Your imported workflow library may overwrite an existing one under certain conditions. Specifically:
+
+If you import a workflow library with a new major version (first number in the series), it will be imported separately from the existing workflow library. The new workflow library and the existing workflow library will both remain in Appian RPA. The status in the inspection window will say New major version.
+If you import a workflow library with the same major version as one that already exists, the existing workflow library will be overwritten. Appian RPA will ask you to confirm this is what you want to do. Any robotic process that referenced the existing library will be updated to reference the newly imported workflow library. The status in the inspection window will say Changed.
+
+See Versioning your workflow library for a description of how to increment your workflow library's version numbers to properly anticipate import behavior.
+Create a workflow library in Appian RPA
+If you're comfortable working with Java and want to create a set of reusable workflow libraries and custom methods, follow the steps in this section.
+
+Create a robotic process in the Appian RPA console. Choose the Blank template and take note of the default values in the Group and Version fields.
+The source code downloads to your computer. Add it to the directory where you can access it with your IDE.
+Within the src/main/java/com/appian/robot/core/template folder, open the .java file. You can also create a new one. If you create a new java file, delete the original one.
+Implement the INano interface and add the @Nano annotation to the class. 
+
+For each custom method you create, use these annotations:
+
+
+Use the @JidokaMethod annotation to create a method in your custom workflow library. The name and description you add here will be visible in the console when you associate the method with an action in the workflow. For example:
+java
+@JidokaMethod(name = "Set Cell Value", description = "Initializes Excel to Powerpoint workflow.") 
+
+
+Use the @JidokaNestedParameter annotation to create custom parameters which also appear in the console. For example:
+java
+@JidokaNestedParameter(
+        id = "firstDropdown",
+        name = "First Dropdown",
+        placeholderText = "Choose an option",
+        type = EJidokaParameterType.ENUMERATOR,
+        choiceValues = {"text box", "credential", "check box", "radio button"}
+),
+@JidokaNestedParameter(
+        id = "textbox1",
+        name = "Text Value",
+        placeholderText = "This box should be populated with 'text1`",
+        rendition = {EJidokaParameterRendition.LABEL_DISPLAY_HIDDEN},
+        groupId = "1",
+        colWidth = 33,
+        validate = "textbox1 == 'text1'",
+        dependsOn = "firstDropdown == 'text box'",
+        validateMsg = "Please enter 'text1'"
+),
+2. When you're finished developing the methods in your custom workflow library, save and push the workflow library as you would a robotic process.
+
+
+
+
+After you push the workflow library with the custom input, a user can configure the action using the inputs your specified in the code. 
+{% comment %}
+The following screenshot shows the action configuration when the user select Text Box in the First Dropdown menu:
+{:.screenshot style="width:80%"}
+The field labels use the name parameter, and the user sees the validateMsg when the input doesn't match what's expected.
+{% endcomment %}
+Create custom inputs
+You can create custom inputs such as checkboxes, radio buttons, variable pickers, and drop-downs to be used with your workflow library when its added as an action in the robotic process workflow. When you create and publish a workflow library with custom inputs, you make it easier for other developers as they configure a robotic process using low-code actions. These custom inputs are created via enum classes within the JidokaNestedParameters annotation. The optional elements vary by the type of input you create. A full list of optional elements is available in the Javadocs.
+The EOptionsService modifier populates the input options using information from the Appian RPA console. For example, optionsService = EOptionsService.CREDENTIAL lists credential entries that have been added to the Appian RPA environment. You can use other module configurations as these enum constants, such as ATTRIBUTE_TO_RETURN, BROWSER_TYPE, and CONTROL_TYPE. See the Javadocs for a full list.
+The following code shows examples of how to create custom input fields in your workflow library:
+```java
+package com.appian.robot.core.template;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.novayre.jidoka.client.api.EJidokaParameterRendition;
+import com.novayre.jidoka.client.api.EJidokaParameterType;
+import com.novayre.jidoka.client.api.EOptionsService;
+import com.novayre.jidoka.client.api.IJidokaServer;
+import com.novayre.jidoka.client.api.INano;
+import com.novayre.jidoka.client.api.JidokaFactory;
+import com.novayre.jidoka.client.api.JidokaMethod;
+import com.novayre.jidoka.client.api.JidokaNestedParameter;
+import com.novayre.jidoka.client.api.JidokaParameter;
+import com.novayre.jidoka.client.api.SDKParameterMap;
+import com.novayre.jidoka.client.api.annotations.Nano;
+@Nano
+public class RobotBlankTemplate implements INano {
+@JidokaMethod(paths = {
+        "sample-low-code-action"
+    },
+    name = "Sample Low-code Action",
+    description = "A sample to show the capabilities of the low-code actions")
+public void sampleLowCodeAction(
+    @JidokaParameter(
+        name = "All Parameters",
+        type = EJidokaParameterType.NESTED,
+        nestedParameters = {
+            @JidokaNestedParameter(
+                id = "firstDropdown",
+                name = "First Dropdown",
+                placeholderText = "Choose an option",
+                type = EJidokaParameterType.ENUMERATOR,
+                choiceValues = {
+                    "text box",
+                    "credential",
+                    "check box",
+                    "radio button"
+                }
+            ),
+            @JidokaNestedParameter(
+                id = "textbox1",
+                name = "Text Value",
+                placeholderText = "This box should be populated with 'text1`",
+                rendition = {
+                    EJidokaParameterRendition.LABEL_DISPLAY_HIDDEN
+                },
+                groupId = "1",
+                colWidth = 33,
+                validate = "textbox1 == 'text1'",
+                dependsOn = "firstDropdown == 'text box'",
+                validateMsg = "Please enter 'text1'"
+            ),
+            @JidokaNestedParameter(
+                id = "textbox2",
+                name = "Text Value 2",
+                groupId = "1",
+                colWidth = 33,
+                dependsOn = "firstDropdown == 'text box'"
+            ),
+            @JidokaNestedParameter(
+                id = "textbox3",
+                name = "Text Value 3",
+                groupId = "1",
+                colWidth = 33,
+                dependsOn = "firstDropdown == 'text box'"
+            ),
+            @JidokaNestedParameter(
+                id = "checkbox",
+                name = "Check box items",
+                multiple = true,
+                rendition = {
+                    EJidokaParameterRendition.OPTIONS_EXPAND_VERTICALLY
+                },
+                type = EJidokaParameterType.ENUMERATOR,
+                dependsOn = "firstDropdown == 'check box'",
+                choiceValues = {
+                    "One",
+                    "Two",
+                    "Three"
+                }
+            ),
+            @JidokaNestedParameter(
+                id = "radiobutton",
+                name = "Radio Button Items",
+                rendition = {
+                    EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY
+                },
+                type = EJidokaParameterType.ENUMERATOR,
+                dependsOn = "firstDropdown == 'radio button'",
+                choiceValues = {
+                    "A",
+                    "B",
+                    "C"
+                }
+            ),
+            @JidokaNestedParameter(
+                id = "credentialsDropdown",
+                name = "Credentials Dropdown",
+                placeholderText = "List of credentials",
+                type = EJidokaParameterType.ENUMERATOR,
+                dependsOn = "firstDropdown == 'credential'",
+                instructionalText = "Credentials available for this robot",
+                optionsService = EOptionsService.CREDENTIAL
+            ),
+            @JidokaNestedParameter(
+                id = "variablePicker",
+                name = "Workflow Variable Picker",
+                type = EJidokaParameterType.VARIABLE_PICKER,
+                variablePickerType = "{http://www.appian.com/ae/types/2009}Text"
+            )
+        }
+    ) SDKParameterMap parameters) throws Exception {
+    debug(parameters);
+}
+
+/**
+ * Prints object's JSON representation.
+ *
+ * @param object
+ */
+private void debug(Object object) {
+    IJidokaServer < ? > server = (IJidokaServer < ? > ) JidokaFactory.getServer();
+    String objectJson;
+    try {
+        objectJson = object == null ? "NULL" : new ObjectMapper().writeValueAsString(object);
+    } catch (Exception e) {
+        objectJson = "ERROR PROCESSING OBJECT TO JSON";
+    }
+    server.debug(String.format("CLASS: %s, JSON: %s", object == null ? "-" : object.getClass(), objectJson));
+}
+
+}
+```
+Versioning your workflow library
+If you update an existing workflow library, you'll want to increment some of its version numbers to indicate whether you made a major or minor change. This is a standard practice, as noted above. Follow these recommendations for versioning so the workflow library imports as expected when you share it with others:
+
+If you are importing a workflow library which isn't backwards compatible, the major version must be incremented. This prevents existing versions of the same workflow library from being overwritten when the new workflow library is imported.
+Keep previous versions of workflow libraries available. By having the earlier version available, your workflow library can be recovered if there's an issue importing a new version of it.
+
+Add the workflow library in the console
+Next, navigate to the console to configure the workflow library and prepare it for use in a robotic process:
+
+Go to the Robotic Processes page in the Appian RPA console.
+Click Workflow libraries in the toolbar.
+You'll see a list of workflow libraries available in the console. To add a new one, scroll down to the Workflow library editor.
+Click New to clear the form and add a new entry.
+Fill in the fields:
+Repository: Choose the repository where the workflow library exists.
+Group: Use the value you noted when you created the robotic process. This information is also stored in the pom.xml file.
+Artifact: Go to the robotic process's pom.xml file to locate this value.
+Version: Use the value you noted when you created the robotic process. This information is also stored in the pom.xml file.
+Main class: The name space and class of the workflow library you created. Once set, click the icon and Appian RPA shows a list of available classes to choose from. If you entered it incorrectly, it will show an error.
+Notes: Any additional information you want to appear with the workflow library.
+
+
+Click Save to save the new entry.
+
+Now you're ready to use the workflow library in a robotic process.
+Use a workflow library in a robotic process
+By now you know a library is a set of code used to achieve a smaller common task in your overall robotic process. After you identify or develop the library you want to use in your robotic process, it's time to set it up in the workflow.
+
+In the Appian RPA console, go to the robotic process configuration.
+Go to the Task tab.
+Scroll to the bottom of the Actions Palette.
+Click and drag the action to the workflow.
+Continue building your workflow.
+
+As you learn more about libraries, you might find it helpful to integrate logging to detect when issues occur in the execution of a robotic process. Add logging to your code to print informative messages in the execution log. You can then refer to the execution log if your robotic process doesn't execute successfully.

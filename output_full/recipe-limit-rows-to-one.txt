@@ -1,0 +1,66 @@
+
+layout: pattern
+title: Limit Grid Selection to One Row
+excerpt: Limit the number of rows that can be selected to one.
+reftype: sailrecipe
+sr-tags:
+  - Validation
+  - Grids
+  - Records
+
+This is a simplified version of the Limit Grid Selection pattern.
+{:.screenshot}
+Expression
+When the user clicks to select rows in the grid, the grid saves only the last selection. It uses the index() function to return a single item from the array of selected rows, and uses the length() function to determine the index of the last item in the array.
+sail
+a!localVariables(
+  local!selection,
+  local!selectedRows,
+  {
+    /* Grids with selection should always have a secondary display of that selection
+       when there is paging so users are always able to see their selections even when
+       that selection is not on the current, visible page. */
+    a!gridField(
+      label: "Single Selection",
+      labelPosition: "ABOVE",
+      data: recordType!Employee,
+      columns: {
+        a!gridColumn(
+          label: "ID",
+          sortField: recordType!Employee.fields.id,
+          value: fv!row[recordType!Employee.fields.id],
+          align: "END",
+          width: "ICON"
+        ),
+        a!gridColumn(
+          label: "Name",
+          sortField: recordType!Employee.fields.lastName,
+          value: fv!row[recordType!Employee.fields.firstName] & " " & fv!row[recordType!Employee.fields.lastName]
+        ),
+        a!gridColumn(
+          label: "Title",
+          sortField: recordType!Employee.fields.title,
+          value: fv!row[recordType!Employee.fields.title]
+        )
+      },
+      pageSize: 5,
+      selectable: true,
+      selectionstyle: "ROW_HIGHLIGHT",
+      selectionvalue: local!selection,
+      selectionSaveInto: {
+        /* Here we save fv!selectedRows to local!selectedRows. To ensure that only a
+           single row is selected when the user clicks too quickly, we use the index()
+           function to return only the last selected value. */
+        a!save(local!selectedRows, index(fv!selectedRows, length(fv!selectedRows), null)),
+        a!save(local!selection, index(save!value, length(save!value), null))
+      },
+      validations: {},
+      showSearchBox: false,
+      showRefreshButton: false,
+      recordActions: {}
+    )
+  }
+)
+Test it out
+
+Select multiple rows and note that only the last selection persists.

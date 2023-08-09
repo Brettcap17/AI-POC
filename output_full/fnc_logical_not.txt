@@ -1,0 +1,29 @@
+
+layout: function
+title: not() Function
+category: function_page
+excerpt: 'Converts true into false, and false into true.'
+fnccat: Logical
+fncexample: 'not(true(), false())'
+fncname: not
+fncresult: 'false, true'
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Boolean
+    description: A Boolean or array of Booleans to be toggled.
+space: function_page
+reftype: function
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+not(isleapyear(1996),isleapyear(1997)) returns false, true

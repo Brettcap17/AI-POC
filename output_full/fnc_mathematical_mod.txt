@@ -1,0 +1,34 @@
+
+layout: function
+title: mod() Function
+space: function_page
+excerpt: "Returns the remainder of dividend when divided by the divisor."
+category: function_page
+fncname: mod
+fncexample: "mod(40, 15)"
+fncresult: "10"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: dividend
+    types: Decimal Array
+    description: |
+      The number that will serve as the dividend in the modulus calculation.
+  - keyword: divisor
+    types: Decimal Array
+    description: |
+      The number that will serve as the divisor or base in the modulus calculation.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Number
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+mod(8,3) returns 2 

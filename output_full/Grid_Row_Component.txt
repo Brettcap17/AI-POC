@@ -1,0 +1,58 @@
+
+layout: function
+title: Editable Grid Row Component
+category: function_page
+compatibility: -crf
+excerpt: Displays a row of components within an editable grid (a!gridLayout).
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!gridRowLayout
+fncsubcat: Grids
+parameters:
+  - keyword: contents
+    name: Contents
+    types: List of Variant
+    description: |
+      Array of components to display in the grid cell. Supported components: Barcode, Checkboxes, Date, Date & Time, Dropdown, Decimal, Encrypted Text, File Upload, Image, Integer, Link, Multiple Dropdown, Paragraph, Pickers, Progress Bar, Radio Buttons, Rich Text, and Text.
+  - keyword: id
+    name: Identifier
+    types: Any Type
+    description: Value that uniquely identifies this row for selection.
+  - keyword: selectionDisabled
+    name: Selection disabled
+    types: Boolean
+    description: |
+      When selection is enabled, determines if the selection checkbox is disabled for this row. Default: false.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the row is displayed in the grid. When set to false, the row is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Editable Grid Row
+scsubcat: Editable_Grid_Elements
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a row of components within an editable grid.
+See also: Grids design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Component behavior
+
+Some interface component configurations do not take effect when placed in a grid cell. Refer to the grid layout section for details.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Grid row
+This example needs to be used with the a!gridLayout() function for it to display anything. Examples that you can see in action are available in the Grid Layout component section.
+sail 
+a!gridRowLayout(
+  contents: {
+    a!textField(
+      value: "Cell"
+    )
+  }
+)

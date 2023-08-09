@@ -1,0 +1,161 @@
+
+layout: pattern
+title: Searching on Multiple Columns
+excerpt: Display a grid populated based on search criteria specified by end users.
+offline_not_recommended: true
+reftype: sailrecipe
+sr-tags:
+  - Grids
+  - Filtering
+  - Reports
+
+
+appian-style-tip
+If the data source for a read-only grid is a record type, the grid will automatically add a search box above the grid that searches across all fields. This pattern is still useful if you want to limit which of the displayed columns you want to search, or if the data source for your grid is not a record type. 
+
+Search criteria, when left blank, are not included in the query. To hide the search box on your grid, set the value of the showSearchBox parameter to "false". 
+
+This scenario demonstrates:
+
+How to store values from multiple fields to filter query results.
+
+Expression
+```sail
+a!localVariables(
+  / In a real app, these values should be held in the database or in a constant. /
+  local!allDepartments: {"Corporate", "Engineering", "Finance", "HR", "Professional Services", "Sales"},
+  / These local variables store filter values. /
+  local!lastName,
+  local!title,
+  local!department,
+  / The value of this variable is false if any of the filter variables are not null. /
+  local!noFiltersApplied: all(fn!isnull, {local!lastName, local!title, local!department}),
+  a!sectionLayout(
+    contents: {
+      a!columnsLayout(
+        columns: {
+          a!columnLayout(
+            contents: {
+              / Refreshing after KEYPRESS means the filter is applied to the grid every
+                 time the user presses a key. For large data sets where performance is an
+                 issue, you could refresh after the user leaves the field (UNFOCUS)./
+              a!textField(
+                label: "Last Name",
+                value: local!lastName,
+                saveInto: local!lastName,
+                refreshAfter: "KEYPRESS"
+              ),
+              a!textField(
+                label: "Title",
+                value: local!title,
+                saveInto: local!title,
+                refreshAfter: "KEYPRESS"
+              ),
+              a!dropdownField(
+                label: "Department",
+                placeholder: "All Departments",
+                choiceLabels: local!allDepartments,
+                choiceValues: local!allDepartments,
+                value: local!department,
+                saveInto: local!department
+              ),
+              a!buttonLayout(
+                primaryButtons: {
+                  a!buttonWidget(
+                    label: "Clear",
+                    saveInto: {
+                      local!lastName,
+                      local!title,
+                      local!department
+                    },
+                    disabled: local!noFiltersApplied
+                  )
+                }
+              )
+            }
+          ),
+          a!columnLayout(
+            contents: {
+              a!gridField(
+                label: "Read-only Grid",
+                labelPosition: "ABOVE",
+                data: a!queryEntity(
+                  entity: cons!EMPLOYEE_ENTITY,
+                  query: a!query(
+                    selection: a!querySelection(
+                      columns: {
+                        a!queryColumn(field: "lastName"),
+                        a!queryColumn(field: "title"),
+                        a!queryColumn(field: "department")
+                      }
+                    ),
+                    logicalExpression: a!queryLogicalExpression(
+                      operator: "AND",
+                      filters: {
+                        /* The 'includes' operator compares strings and will return partial matches,
+                           which is how most searching filters work.
+                       The filter will also reevaluate anytime the associated local variables
+                       change. To use a button to search instead, make sure the search string
+                       saves to a different local variable first. */
+                    a!queryFilter(
+                      field: "lastName",
+                      operator: "includes",
+                      value: local!lastName
+                    ),
+                    a!queryFilter(
+                      field: "title",
+                      operator: "includes",
+                      value: local!title
+                    ),
+                    a!queryFilter(
+                      field: "department",
+                      operator: "=",
+                      value: local!department
+                    )
+                  },
+                  ignoreFiltersWithEmptyValues: true
+                ),
+                pagingInfo: fv!pagingInfo
+              ),
+              fetchTotalCount: true
+            ),
+            columns: {
+              a!gridColumn(
+                label: "Last Name",
+                sortField: "lastName",
+                value: fv!row.lastName
+              ),
+              a!gridColumn(
+                label: "Title",
+                sortField: "title",
+                value: fv!row.title
+              ),
+              a!gridColumn(
+                label: "Department",
+                sortField: "department",
+                value: fv!row.department
+              )
+            },
+            pagesize: 5,
+            initialsorts: a!sortInfo(
+              field: "lastName",
+              ascending: true
+            )
+          )
+        }
+      )
+    }
+  )
+}
+
+)
+)
+```
+Test it out
+
+Select Sales in the department dropdown. The list of employees in the grid is now limited to those in the Sales department.
+Click the Clear button. On the Last name field, enter "Johnson". The grid now contains only employees whose last name contains "Johnson".
+
+Notable implementation details
+
+Fields are set to refresh after keypress. As soon as an end user types in a value the filter will evaluate and reduce the datasubset. If this pattern is not desired, you should attempt to only evaluate after unfocus, or use a search button that performs the evaluation.

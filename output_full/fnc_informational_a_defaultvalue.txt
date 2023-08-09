@@ -1,0 +1,44 @@
+
+layout: function
+title: a!defaultValue Function
+category: function_page
+excerpt: 'Returns a default value when the specified value is null or empty. When there are multiple default parameters, each parameter is evaluated in order and the first non-null and non-empty default will be returned. Null, "", and {} are all considered null or empty values.'
+fnccat: Informational
+fncexample: 'a!defaultValue( null, date(2021,10,1), null)'
+fncname: a!defaultValue
+fncresult: '2021-10-01'
+parameters:
+  - keyword: value
+    types: Any Type
+    description: Value to be returned if not null or empty.
+  - keyword: default
+    types: Any Type
+    description: Default value to return when value is null or empty.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: if(), isnull()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type
+Usage considerations
+Using default values
+
+This function accepts multiple default parameters, and each parameter will be evaluated in order until the first non-null and non-empty default is returned. For example, a!defaultValue("", null, "N/A") returns "N/A".
+If you add a list of values as a default value, they will be treated as a single value. For example, a!defaultValue({1, null, 3}, 4) would return {1, null, 3}. 
+A list of nulls or empty text are not considered null or empty. For example, a!defaultValue({null, null, null}, 3) returns {null, null, null}, and a!defaultValue({"", "", ""}, 3) returns {"", "", ""}.
+An empty list is considered null or empty. For example, a!defaultValue({}, 3) returns 3.
+
+Examples
+
+a!defaultValue(null, 1) returns 1
+a!defaultValue(1, “default”) returns 1
+a!defaultValue({}, "default") returns "default"
+a!defaultValue("", "default") returns "default"
+a!defaultValue(null, "") returns ""
+a!defaultValue(null, "", {}) returns {}
+a!defaultValue({null, null, 1, null}, {2, 3, 4, 5}) returns {null, null, 1, null}

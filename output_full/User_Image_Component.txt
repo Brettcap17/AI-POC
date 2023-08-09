@@ -1,0 +1,59 @@
+
+layout: function
+title: User Image
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Displays the profile photo of the user.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!userImage
+fncsubcat: Display
+parameters:
+  - keyword: user
+    name: User
+    types: User
+    description: The user whose profile photo will be shown.
+  - keyword: altText
+    name: Alternate Text
+    types: Text
+    description: |
+      Alternate text of the image used for the image's alt attribute and read by screen readers; see accessibility considerations for more information. 
+  - keyword: caption
+    name: Caption
+    types: Text
+    description: Text to display in mouseovers.
+  - keyword: link
+    name: Link
+    types: Link
+    description: |
+      Link that determines the behavior of an image when clicked. Create links with:
+        - a!authorizationLink() 
+        - a!documentDownloadLink() 
+        - a!dynamicLink()
+        - a!newsEntryLink()
+        - a!processTaskLink() 
+        - a!recordLink()
+        - a!reportLink() 
+        - a!startProcessLink()
+        - a!submitLink() 
+        - a!userRecordLink() 
+        - a!safeLink()
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the image is displayed in the component. When set to false, the image is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: User Image
+scsubcat: Image_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+Displays a user's profile photo for use in an image field, rich text field, tree browser field, billboard layout or grid column in a Read-Only Grid.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using the user parameter
+
+When no user is provided, the default profile picture is shown.

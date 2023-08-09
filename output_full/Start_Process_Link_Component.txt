@@ -1,0 +1,70 @@
+
+layout: function
+title: Start Process Link
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to start a process and navigates the user through any initial chained forms.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!startProcessLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text associated with this link.
+  - keyword: processModel
+    name: Process Model
+    types: 'Process Model'
+    description: The process model to start. You must provide a constant referencing the process model or a process model UUID.
+  - keyword: processParameters
+    name: Process Parameters
+    types: Dictionary
+    description: A dictionary containing the parameters for the process model and their values.
+  - keyword: bannerMessage
+    name: Banner Message
+    types: Text
+    description: |
+      The text shown in the banner when a process starts successfully after completing any initial chained forms. When not provided, no banner is displayed.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the link is displayed in the component. When set to false, the link is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Start Process Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Users are shown the start form or first chained attended node and any subsequent chained forms. When the user submits the last form, the chain completes and the original interface is reloaded. Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+Starting Processes From an Interface
+Process Model Type
+Link, Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using start process links offline
+
+Start process links will not function on the mobile application on a form that is configured to be available offline.
+
+Examples
+Since process model constants are specific to each system, this example does not evaluate in your Test Rules interface. Use it only as a reference.
+Start process link that passes parameter data to the process model
+sail 
+a!linkField(
+  links: {
+    a!startProcessLink(
+      label: "Update Customer Details",
+      processModel: cons!UPDATE_CUSTOMER_DETAILS_PM,
+      processParameters: {
+        customerId: ri!customer.id
+      },
+      bannerMessage: "Updated details for " & ri!customer.name
+    )
+  }
+)

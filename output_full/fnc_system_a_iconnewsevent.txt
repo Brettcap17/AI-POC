@@ -1,0 +1,38 @@
+
+layout: function
+title: a!iconNewsEvent() Function
+category: function_page
+excerpt: 'Returns the specified image from a list of standard news event icons in one of six colors: blue, green, gray, orange, purple, or red.'
+fnccat: System
+fncexample: Click on the function name for examples.
+fncname: a!iconNewsEvent
+compatibility: -crf, ~portal, -om
+parameters:
+  - keyword: icon
+    types: Text
+    description: |
+      The key from the table of the icon to be returned.
+  - keyword: color
+    types: Text
+    description: |
+      The key from the color table to be returned. Default color is blue.
+reftype: function
+space: function_page
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} 
+See also: Post System Event to Feed Smart Service, DocumentImage
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Document
+Usage considerations
+Supported use case
+News event icons can be used as the icon for a news event or on an interface within a document image.
+Available Colors
+The table below shows a sample of each color.
+INCLUDE PAGE: News Color Table
+Available Icons
+The table below shows a sample of each icon.
+INCLUDE PAGE: News Icon Table

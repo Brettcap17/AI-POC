@@ -1,0 +1,37 @@
+
+layout: function
+title: difference() Function
+space: function_page
+excerpt: "Returns the values in array1 and not in array2."
+category: function_page
+fncname: difference
+fncsubcat: Set
+fncexample: "difference({10, 20, 30, 40}, {30, 40})"
+fncresult: "{10, 20}"
+fnccat: Array
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: array1
+    types: Any Type Array
+    description: |
+      Initial array of values.
+  - keyword: array2
+    types: Any Type Array
+    description: |
+      Array of values to remove from array1.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Any Type Array
+Usage considerations
+If all values are removed from array1, an empty list is returned.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+difference({1, 2, 3, 4}, {3, 4}) returns 1, 2

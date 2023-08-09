@@ -1,0 +1,59 @@
+
+layout: pattern
+title: Aggregate Data and Display in a Chart
+excerpt: 'Aggregate data, specifically the total number of employees in a given department, to display in a pie chart.'
+reftype: sailrecipe
+sr-tags:
+  - Reports
+  - Charts
+  - Query Data
+  - Records
+
+{:.screenshot}
+This scenario demonstrates:
+
+How to aggregate data and display in a pie chart.
+
+Create this pattern
+You can easily create this pattern in Design Mode when you use a record type as the source of your chart. 
+To create this pattern in Design Mode:
+
+Open a new or empty interface object.
+From the PALETTE, drag a Pie Chart component into the interface.
+From Data Source, select RECORD TYPE and search for the Employee record type.
+Under Primary Grouping, select the department field.
+Under Measure, use the dropdown to select Count of, then select the id field.
+Under Style, use the dropdown to select Pie.
+
+{% include zoompic.html url="images/pie-chart-config.gif" %}
+Your resulting expression will look something like this:
+sail
+{
+  a!pieChartField(
+    data: recordType!Employee,
+    config: a!pieChartConfig(
+      primaryGrouping: a!grouping(
+        field: recordType!Employee.fields.department,
+        alias: "department_primaryGrouping"
+      ),
+      measures: {
+        a!measure(
+          function: "COUNT",
+          field: recordType!Employee.fields.id,
+          alias: "id_count_measure1"
+        )
+      },
+      dataLimit: 100
+    ),
+    label: "Pie Chart",
+    labelPosition: "ABOVE",
+    colorScheme: "CLASSIC",
+    style: "PIE",
+    seriesLabelStyle: "ON_CHART",
+    height: "MEDIUM",
+    refreshAfter: "RECORD_ACTION"
+  )
+}
+Notable implementation details
+
+This chart will aggregate on the entire data set. To aggregate and filter a chart, see Aggregate Data using a Filter and Display in a Chart.

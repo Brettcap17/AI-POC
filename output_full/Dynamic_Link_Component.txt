@@ -1,0 +1,64 @@
+
+layout: function
+title: Dynamic Link
+category: function_page
+compatibility: -crf
+excerpt: Defines a link that triggers updates to one or more variables.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!dynamicLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: value
+    name: Value
+    types: Any Type
+    description: The value that is saved when the user clicks the link.
+  - keyword: saveInto
+    name: Save Value To
+    types: Save Array
+    description: |
+      One or more variables that are updated with the link's value when the user clicks it. Use a!save(target, value) to save a modified or alternative value to a variable.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Dynamic Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also: Link, Read-Only Grid, Images, Buttons and link design guidance
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Using dynamic links with the link field component
+
+To display a single link or array of links, use inside the Link Field component. To display a link in a grid, use inside a Grid Text Column. To add a link to an image, use inside a document or web image. To add a link to a chart series, use inside the a!chartSeries() function. To add a link to an image, use inside a document, user, or web image.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Dynamic link that saves into a local variable
+{% sailbox 500 %} 
+a!localVariables(
+  local!priority,
+  a!linkField(
+    label: "Link Field",
+    instructions: if(isnull(local!priority), null, "local!priority is " & local!priority),
+    links: {
+      a!dynamicLink(
+        label: "Set priority to high",
+        value: "High",
+        saveInto: local!priority
+      )
+    }
+  )
+)
+{% endsailbox %}

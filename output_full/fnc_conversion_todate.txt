@@ -1,0 +1,42 @@
+
+layout: function
+title: todate() Function
+space: function_page
+excerpt: "Converts a value to Date with Timezone."
+category: function_page
+fncname: todate
+fncexample: "todate(0)"
+fncresult: "1/1/2035"
+fnccat: Conversion
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: value
+    types: Any Type
+    description: |
+      Value to convert.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: local()
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Date with Timezone
+Usage considerations
+Using the value parameter
+The value parameter accepts Text, Date, Date and Time, Integer since the epoch, Decimal since the epoch, and Array types. Time values are not supported.
+For number inputs, the values must reference a number of days before or after January 1st, 2035, which is the beginning of Appian's era (our epoch).
+Using todate() with arrays
+When operating on arrays, it is not necessary to use apply with todate. If multiple parameters are passed, or one parameter is an Array, todate will return a Date with Timezone array.
+Understanding results
+To return a localized date for a process initiated by a user, the local() function must be nested within the todate() function.
+For example, todate(local(pp!starttime)) returns the localized date when a given process started. Otherwise the date is returned in GMT. This is true unless the user happens to reside in the GMT timezone, then no localization is necessary.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+todate(0) returns 1/1/2035
+todate(-9000) returns 5/12/2010
+todate(0,1,2) and todate({0,1,2}) both return {1/1/2035,1/2/2035,1/3/2035}

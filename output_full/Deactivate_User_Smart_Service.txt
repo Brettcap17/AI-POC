@@ -1,0 +1,60 @@
+
+layout: function
+title: Deactivate User Smart Service
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: The Deactivate User smart service allows you to select an existing user and disable them from the system.
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!deactivateUser
+fncsubcat: Identity_Management
+parameters:
+  - keyword: user
+    types: User
+    description: The user to deactivate.
+  - keyword: onSuccess
+    types: Any Type
+    description: A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse().
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+sscat: Identity_Management
+ssicon: Deactivate_User.png
+ssparentcat: Automation_Services
+
+Overview
+{{ page.excerpt }} Deactivated users are still present in the system, but will not be able to log in. You must be a System Administrator or the Administrator user account in order to perform this task. 
+
+appian-style-caution
+The Deactivate User node can only be run with System Administrator rights. Attempting to run this node without sufficient user rights causes a runtime exception that pauses the process and sends an alert to the Process Administrator.
+
+The Administrator user account cannot be deactivated using this smart service.
+The Deactivate User node is located under Appian Smart Services > Identity Management in the Process Modeler Palette.
+Properties
+
+
+Category: Identity Management
+
+
+Icon: 
+
+
+Assignment Options: Attended/Unattended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+The Data tab displays the node inputs and node outputs for the service node. You can add additional inputs and outputs, if needed. 
+Node inputs
+The default input is:
+| Input | Data Type | Required | Multiple |
+| - | - | - | - |
+| User | User | Yes | No |
+a!deactivateUser()
+The Deactivate User smart service is available as an expression function that can be executed inside a saveInto parameter on an interface component or as part of a Web API.
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}

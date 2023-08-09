@@ -1,0 +1,30 @@
+
+layout: function
+title: factdouble() Function
+space: function_page
+excerpt: "The double factorial of specified number (mathematically n!!)."
+category: function_page
+fncname: factdouble
+fncexample: "factdouble(3)"
+fncresult: "3"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Integer
+    description: |
+      A number, the double factorial of which will be returned. The number must be an integer between 0 and 300, inclusive.
+
+Functions
+{% include fncsyntax.html %}
+{{ page.excerpt }} Returns a decimal even though the factorial is an integer.
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal 
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+fact(6) returns 48 

@@ -1,0 +1,114 @@
+
+layout: function
+title: Authorization Link
+category: function_page
+compatibility: -crf, -om, -portal
+excerpt: Defines a link to authorize a user for a connected system that uses OAuth 2.0 Authorization Code grant.
+fnccat: Interface_Component
+fncexample: Click on the function name for examples.
+fncname: a!authorizationLink
+fncsubcat: Action
+parameters:
+  - keyword: label
+    name: Label
+    types: Text
+    description: Text displayed as the link name the user clicks on.
+  - keyword: connectedSystem
+    name: Connected System
+    types: Connected System
+    description: |
+      Connected system used to generate the authorization link. Provide the connected system value returned by an integration when the response indicates that the user needs to authorize.
+  - keyword: showWhen
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the component is displayed on the interface. When set to false, the component is hidden and is not evaluated. Default: true.
+reftype: sailcomponent
+scdisplayname: Authorization Link
+scsubcat: Link_Types
+space: sail_component
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }} Links can be used in charts, grids, hierarchy browsers, images, link fields, milestones, pickers, and rich text.
+See also:
+
+OAuth 2.0: Authorization Code Grant
+Link,
+Read-Only Grid,
+Images,
+Buttons and link design guidance
+
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Usage considerations
+Authorizing users & getting data
+
+Be sure to read through the external system's documentation to understand what is returned when the user needs to authorize or reauthorize
+For integrations getting data, use dot notation. For integrations writing data use fv!connectedSystem.
+If the mobile user is signed in as one user in the mobile browser and a different user in the mobile app, authorization will fail.
+
+Opening authorization links
+
+A link created by a!authorizationLink() opens in a new browser window.
+For mobile, a link created by a!authorizationLink() will open the device's default browser
+Authorization links are made for mobile, so you don't need to worry about the user not being signed-in in the mobile browser.
+
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+When connecting with OAuth, integrations can either get data from or post data to another system
+Integrations retrieving data
+Assuming that the integration used a custom error message that returned Access_token when an access token was missing, the following interface expression will provide an authorization link.
+sail 
+a!localVariables(
+  local!integrationResult: rule!EXAMPLE_OAuthIntegration(),
+  a!linkField(
+    label: "Example Authorization Link",
+    /* show when */
+    showWhen: local!integrationResult.error.message = "Access_token",
+    links: a!authorizationLink(
+      label: "Authorize",
+      connectedSystem: local!integrationResult.connectedSystem
+    )
+  )
+)
+Integrations writing data
+If the integration is writing data to another system via OAuth, the integration would be called as a result of a save. These types of integrations, by default, return onSuccess and onError. fv!connectedSystem is returned when there's an error and can be retrieved through the onError parameter and used to populate the authorization link field. 
+sail 
+a!localVariables(
+  local!results,
+  local!connectedSystem,
+  local!verify,
+  a!sectionLayout(
+    contents: a!columnsLayout(
+      columns: {
+        a!columnLayout(
+          contents: {
+            a!buttonLayout(
+              secondaryButtons: {
+                a!buttonWidget(
+                  label: "Save Changes",
+                  saveInto: {
+                    a!save( local!verify, true),
+                    rule!EXAMPLE_OAuthIntegration(
+                      onSuccess: a!save( local!results, fv!result),
+                      onError: a!save( local!connectedSystem, fv!connectedSystem)
+                    )
+                  }
+                )
+              }
+            ),
+            a!linkField(
+              label: "Authorization After Write Attempt",
+              showWhen: and(not(isnull(local!connectedSystem)), not(isnull(local!verify))),
+              links: a!authorizationLink(
+                label: "Authorize",
+                connectedSystem: local!connectedSystem
+              )
+            )
+          }
+        )
+      }
+    )
+  )
+)

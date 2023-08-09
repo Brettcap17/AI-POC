@@ -1,0 +1,110 @@
+
+layout: function
+title: a!sblCreate() Function
+category: function_page
+excerpt: Creates a new record in Siebel.
+fnccat: Connector
+fncexample: Click on the function name for examples.
+fncname: a!sblCreate
+fncsubcat: Siebel
+space: function_page
+compatibility: -crf, ~portal, ~om
+reftype: function
+parameters:
+  - keyword: scsExternalSystemKey
+    types: Text
+    description: |
+      The key from the Third Party Credentials admin console page that corresponds to the set of credentials that should be used to authenticate.
+  - keyword: usePerUserCredentials
+    types: Boolean
+    description: |
+      If true the credentials set in the Third-Party Credentials settings page by the current user running the expression will be used. If false the site-wide credential values will be used.
+  - keyword: hostname
+    types: Text
+    description: |
+      The application server host of the SAP server (ASHOST). The value can be an IP address, a fully-qualified domain name, or SAP's router string format. For example, "/H/sap_router/W/password/H/app_host/S/service_port".
+  - keyword: port 
+    types: Number (Integer)
+    description: |
+      The port the Siebel server is listening on. For example, 2321.
+  - keyword: enterpriseApp 
+    types: Text
+    description: |    
+      The enterprise application of the target system. For example, "SBA_82".
+  - keyword: appManager 
+    types: Text
+    description: |
+      The active application manager of the target system. For example, "SSEObjMgr_enu".
+  - keyword: language 
+    types: Text
+    description: |
+      The target system language. For example, "enu".
+  - keyword: parameters 
+    types: Any Type
+    description: |
+      The record to create, given as a dictionary with the field structure of the Siebel Business Component and Business Object to create.
+  - keyword: fieldValues 
+    types: Any Type
+    description: |
+      The field values of the new record to create, given as a dictionary with the field names based on the fields of the Business Object and values set to the desired new field values.           
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Writer, bind().
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Writer
+This function returns a writer and must be used with the bind() function.
+Examples
+Copy and paste an example into an Appian Expression Editor to experiment with it.
+Create a new order in Siebel
+sail 
+=load(
+  local!orderNumber,
+  local!status,
+  local!sblCreateWriter: bind(
+    null,
+    a!sblCreate(
+      scsExternalSystemKey: cons!SBL_SCS_KEY,
+      usePerUserCredentials: true,
+      hostname: cons!SBL_HOSTNAME,
+      port: cons!SBL_PORT,
+      enterpriseApp: cons!SBL_APP,
+      appManager: cons!SBL_APP_MANAGER,
+      language: cons!SBL_LANGUAGE,
+      parameters: {
+        'Order Entry (Sales)': {
+          'Order Entry - Orders': {}
+        }
+      },
+      fieldValues: _
+    )
+  ),
+  {
+      a!textField(
+        label: "Order Number",
+        value: local!orderNumber,
+        saveInto: local!orderNumber
+      ),
+      a!dropdownField(
+        label: "Status",
+        placeholder: "--- Select Status ---",
+        choiceLabels: cons!SIEBEL_STATUS,
+        choiceValues: cons!SIEBEL_STATUS,
+        value: local!status,
+        saveInto: local!status
+      ),
+      a!buttonArrayLayout(
+        a!buttonWidget(
+          label: "Create in Siebel",
+          value: {
+            'Order Number': local!orderNumber,
+            Status: local!status
+          },
+          saveInto: local!sblCreateWriter
+        )
+      )
+  }
+)

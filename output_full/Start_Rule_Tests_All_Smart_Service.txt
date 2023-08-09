@@ -1,0 +1,105 @@
+
+layout: function
+title: Start Rule Tests (All)
+category: function_page
+compatibility: '~portal, -om, -crf'
+excerpt: Executes test cases configured for all expression rules within an Appian system from web APIs and Interfaces
+fnccat: Smart_Service
+fncexample: Click on the function name for examples.
+fncname: a!startRuleTestsAll
+fncsubcat: Testing
+parameters:
+  - keyword: onSuccess
+    types: Any Type
+    description: 'A list of saves or an HTTP response to execute after the smart service executes successfully. Created with a!save() or a!httpResponse(). The test-run ID of the executed test run is available in the function variable fv!testRunId. This can be used to query information about the test run with a!testRunStatusForId() and a!testRunResultForId().'
+  - keyword: onError
+    types: Any Type
+    description: A list of saves or an HTTP response to execute when the smart service does not execute successfully. Created with a!save() or a!httpResponse().
+reftype: smart_service
+space: function_page
+sscat: Test_Management
+ssicon: Start_Rules_Test_All.png
+ssparentcat: Automation_Services
+
+Overview
+The Start Rule Tests (All) smart service executes the test cases configured for all expression rules within an Appian system. To limit the testing to specific applications, see Start Rule Tests (Applications). 
+For additional context on how this smart service can be used to perform automated testing, see Automated Testing for Expression Rules.
+Activating this smart service in the process model starts an asynchronous test run of all test cases within Appian. It immediately returns a test-run ID that can be used with the a!testRunResultForId() function to retrieve the results when the test run is finished. To check on the status of a test run, use the test-run ID with the a!testRunStatusForId() function.
+The image below shows a simple workflow that starts a test run, then periodically checks on the status of the test run until the test is completed. 
+
+The script task, Get Test Status, which calls the a!testRunStatusForId() function,  starts on a scheduled delay of 1 minute. If the test status is not COMPLETE, the process model loops back to the Get Test Status script task, until the status is COMPLETE. 
+At this point, the results of the test are retrieved by the Get Test Results script task, by calling the a!testRunResultForId() function. 
+To learn more about reading test results, see Parsing Batch Test Results for Expression Rules.
+Permissions needed
+The Start Rule Tests (All) smart service only executes the tests for the expression rules to which the user has at least viewer rights.
+When initiating this smart service from a process model, you can adjust the user context used to run the smart service from the assignment tab.
+When calling the a!startRuleTestsAll() function from a web API, you can specify different credentials to be used by this function. See Web APIs for more information.
+Getting test status or test results via a!testRunStatusForId() or a!testRunResultForId() can only be performed by the user who initiated the test. In addition, users of type administrator can fetch test results for all users.
+Properties
+
+Category: Test Management
+Icon:  
+Assignment Options: This smart service can be either attended or unattended (default)
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+Data tab
+Node outputs
+
+Name
+Data Type
+Description
+
+Test-run ID
+Number (Integer)
+This unique id can be used by the a!testRunStatusForId() and the a!testRunResultForId() functions.
+
+
+See also: Number (Integer)
+a!startRuleTestsAll()
+{{ page.excerpt }}
+Syntax
+{% include fncsyntax.html %}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Save
+Example
+This example shows a web API returning a test-run ID for a test run of all expression rules in a system.
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see how this works.
+sail 
+a!localVariables(
+  local!testRunId,
+  local!testRunResult,
+  {
+    a!buttonLayout(
+      secondaryButtons: {
+        a!buttonWidget(
+          label: "Run Test (All)",
+          saveInto: a!startRuleTestsAll(
+            onSuccess: a!save(local!testRunId, fv!testRunId),
+            onError: {}
+          )
+        ),
+        a!buttonWidget(
+          label: "Refresh",
+          saveInto: a!save(local!testRunResult, a!testRunResultForId(local!testRunId))
+        )
+      }
+    ), 
+    a!textField(
+      label: "Test-run ID",
+      readOnly: true,
+      value: local!testRunId
+    ),
+    a!paragraphField(
+      label: "Test Result",
+      value: local!testRunResult
+    )
+  }
+) 
+Related functions
+
+a!startRuleTestsApplications()
+a!testRunStatusForId()
+a!testRunResultForId()

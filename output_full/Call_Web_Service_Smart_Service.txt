@@ -1,0 +1,221 @@
+
+layout: basic
+title: Call Web Service Smart Service
+excerpt: The Call Web Service Smart Service allows you to integrate data from web services within your process and automatically create a custom data type with it.
+reftype: smart_service
+sscat: Integrations_&_APIs
+ssicon: Call_Web_Service.png
+ssparentcat: Automation_Services
+
+Overview
+The Call Web Service Smart Service allows you to integrate data from web services within your process and automatically create a custom data type with it. This allows for more flexible mapping of web service inputs and outputs. 
+
+The error messages returned by this activity may help diagnosis problems you could encounter during process design and execution. 
+When creating a custom data type, there are certain restrictions on the data types that can be created. 
+If you encounter an unavailable web service or a request timeout (503 or 408 error) at runtime, the call is automatically retried.
+See also: Automatic Error Handling
+Permissions needed
+The user must be a member of the Process Model Creators group in order to configure the WSDL URL for this smart service.
+Properties
+
+
+Category: Integrations & APIs
+
+
+Icon: 
+
+
+Assignment Options: Unattended/Attended
+
+
+Configuration options
+This section contains tab configuration details specific to this smart service. For more information about common configurations see the Process Node Properties page.
+
+appian-style-note
+If you need to connect to this web service using a proxy server that configuration can be enabled in the Admin Console.
+
+The following configurations options are available to choose your web service:
+
+WSDL URL: Type in or select the URL from the UDDI directory if using a static WSDL URL. If the UDDI directory is not configured, no listings (other than an empty Appian listing) are displayed in the Choose a WSDL URL dialog. Always use a static WSDL URL in the following scenarios:
+Initially configuring your web service calls.
+Selected a web service that creates a new custom data type for handling process data.
+Importing a process model that includes a Call Web Service Smart Service that uses a custom data type, which doesn't already exist.
+Use a dynamic WSDL URL...: If the WSDL URL used for your web service is different at runtime (when the Appian smart service connects to the web service), select this checkbox, then configure the following:
+
+Dynamic WSDL URL: Type in, use the Expression Editor, or select the dynamic WSDL URL from the UDDI directory.
+
+appian-style-note
+If using a dynamic WSDL URL, you must create your data structures at design time.
+
+
+
+Authentication required: If the web service requires credentials, select this checkbox, then configure the following:
+
+
+Username, Password, and Domain: Credentials for the WSDL URL. (Use the optional domain field for NTLM.)
+ 
+
+appian-style-note
+Remote web services can temporarily cache the provided credentials after being called from the smart service the first time. It is important to always provide credentials to web services that require authentication, even if you find that testing the web service without sending credentials works. The credentials might be cached on the remote server.
+- HTTP Header: If the web service requires additional HTTP headers to be added to the request, specify the key/value pairs. Type or enter an expression for your Key and Value pairs array notation or Process Variable that accepts multiple values (an Array). A format based on the following example is required even if one key/value pair is provided: ={"key1","key2"} and ={"value1","value2"})
+  - When the process model is validated, if the key/value pairs are not in the correct format, the following validation error message displays: Invalid HTTP Header <Keys/Values> provided in ... [node name]. Keys and Values must be expressed in array notation or as Process Variables that accept multiple values (an Array).
+
+
+
+Once you've configured these settings, click Get Services to test the URL. 
+
+appian-style-note
+RPC/encoded service styles are not supported, and instead you must use RPC/literal or Document/literal encodings. If you know the WSDL is valid, and you receive an Invalid WSDL exception, check to ensure that the <definition> or the <description> element appears within the first 2 KB of data in the WSDL file. WSDL versions 1.1 and 2.0 and SOAP 1 versions .1 and 1.2 are supported. Appian reads and parses the WSDL using Apache AXIS2. It is validated against WS-I Basic Profile 1.1. 
+
+If the WSDL URL validates, the following fields appear:
+
+
+Service: The web service(s) listed in the WSDL are displayed. If multiple services are available, select the desired service.
+
+
+Endpoint: The particulars of a service, which include the Endpoint name and the binding (Endpoint Address is not supported). If multiple Endpoints are available for a service, select the desired Endpoint.
+
+
+Binding: The Endpoint binding, which is either HTTP or SOAP. It is taken from the Endpoint and cannot be selected. 
+
+
+Operation: The available web service operations. If multiple operations are available, select the desired operation. 
+
+
+Automatically creating data types
+Any custom data type used by the web service selected as the Operation are created if they are explicitly defined in the WSDL. System data types are mapped to standard Appian data types. 
+Any data type creation errors or warnings are commonly due to custom data type creation restrictions. If the service requires authentication and header information, the Service Invocation Options group box appears.
+See also: Supported XSD Elements and JPA Annotations
+If a WSDL references custom data types that aren't explicitly defined (assumed to be known by the web service publisher) you must define the missing data types in an XSD file and have an Appian system administrator import the XSD.
+Custom data types automatically created from WSDLs should always be added to and deployed with the application package. 
+See also: Application Deployment
+
+appian-style-note
+When using the Call Web Service node, the custom data types are generated when the node is configured for the first time and the model is saved and published. Appian does not recreate the custom data types on every execution of the web service.
+
+Updating WSDL data types
+If the WSDL definition changes such that the data types need to be updated, click the "Refresh Services" button on the node. Clicking this button will update the existing data types to match the new WSDL definition and update all of the dependents of the data types to point to the new versions. The process model needs to be published for these changes to take effect. Clicking "Refresh Services" and not publishing the process model can have unintended performance consequences. Dependent data stores' schema will not be updated with this change, even if automatic schema updates are enabled.
+Alternatively, republishing the process model will accomplish the same thing.
+You can also download the XSD from the Data Type Designer or copy the XSD from the WSDL URL, then make manual edits and import the XSD. We do not recommend this approach, but if the WSDL definition contains complex content restrictions, you will need to do remove them before creating the new version of the data type.
+
+appian-style-note
+If you delete WSDL data types, your data types will be automatically refreshed after internal caches expire or after an application server restart. If fields were changed or removed, you could see behavior changes in dependent objects after this refresh. Therefore, you should never delete WSDL data types. 
+
+Security
+Data transferred using web services are only encrypted when the web service is running over HTTPS. Appian recommends all sensitive or confidential data be encrypted. Application-level security is the responsibility of each customer.
+The call web service node supports TransportBinding policy assertions that require HTTPS, requiring a client certificate or specific authentication schemes listed below.  Web service security settings must allow username, password, and/or domain authentication.
+Authentication
+Web service providers that support basic auth, digest, NTLM, or WS-Security UsernameToken 1.1 or 1.0 authentication are supported. For UsernameToken authentication, username-only, username and plaintext password, and username and password digest are supported.
+Transport layer authentication mechanisms (basic auth, digest, NTLM, client certificate) may be declared by the WSDL using TransportBinding WS-Policy assertions, however such a declaration is not required. Any WS-Policy assertions for these transport layer authentication mechanisms that are not declared as TransportBinding WS-Policy assertions are not supported. 
+In order to use WS-Security UsernameToken, it must be declared in the WSDL as a WS-Policy assertion.  If the WSDL contains multiple policy alternatives in an ExactlyOne element, the first alternative supported by Appian will be selected.
+
+SAML, LDAP, x509, UsernameToken derived key, SignedSupportingTokens, or other authentication schemes are not supported within the context of this smart service, but it may be possible to integrate with these systems using smart service plug-ins.
+Client certificate/mutual SSL authentication can be enabled by uploading client certificates in the Admin Console.
+Services that use self-signed or internal SSL certificates can be enabled by uploading trusted server certificates in the Admin Console.
+
+Note: Web service providers that use the Apache Rampart library earlier than version 1.7 may produce a WSDL that is invalid in terms of how the UsernameToken assertion is presented.  This can lead to the Call Web Service smart service interpreting the WSDL as requesting the username and plain text password to be sent instead of a digest/hashed password.  See the Apache issue tracking item RAMPART-384 for more details. 
+Providing crendentials for UsernameToken authentication
+If the WSDL for the web service declares that UsernameToken is supported for authentication, a "WSDL Policy" section will be revealed on the setup tab.  Credentials can be provided in one of two ways:
+
+Using the "Custom Username Token" inputs to provide literal values or expressions for the Username and Password inputs.
+By checking the "Use Predefined Credentials" checkbox and then selecting the external system from the dropdown. The credentials registered to that external system in the Secure Credentials Store will be used at runtime.  The attributes configured in the Secure Credentials Store for the username and password must be named username and password respectively in order for them to be detected and used by the Call Web Service smart service for UsernameToken credentials.  A radio button toggle is provided to allow selection between the site-wide credentials for the external system, or the per-user credentials of the assignee that executes the smart service.  If the credentials of the assignee are selected, the node must be attended or will pause by exception during execution. 
+
+Consuming Appian process models
+You can connect to a single Appian process model published as a web service. Only one process model per Appian installation can be consumed by the call web service activity. The same name/namespace are used to expose the parameters for all models. 
+Unsupported XSD constructs
+WSDLs that utilize data types with the following XSD constructs result in CDTs that ignore the construct:
+
+Enumerations
+Simple Types with Attributes
+Occurrence constraint lists (which are simplified to multiple or single values)
+
+Unsupported web services
+The following types of web service cannot be called using this smart service: 
+
+RESTful APIs without WSDL files are not supported (RESTful APIs with WSDLs that use HTTP binding are supported).
+Attachments
+Web services that require HTTP version 1.1 or higher. The node only supports version 1.0.
+RPC/Encoded services 
+WSDLs that utilize data types containing the following XSD constructs return an error if you attempt to to configure specific operations that use them.
+xsd:union
+Choice Groups
+Substitution Groups
+Mixed Content
+Notification or Solicit-Response message exchange pattern operations.
+See W3C Message Exchange Patterns
+WS-Policy elements that are not marked as optional or related to supported TransportBinding or UsernameToken policies.
+WS-Policy ExactlyOne elements that contain any unsupported policy assertions.  You can work around this by editing the WSDL to remove any unsupported elements and rehosting it.
+
+For more information about specific XSD elements and whether or not they are supported, see the Supported XSD and JPA Annotations page.
+Node inputs
+Most of the node inputs take their value from the configurations you made on the Setup tab. 
+Any custom data types created for the web service automatically appear as Node Inputs. Node Inputs for custom data types include nested elements. Click + to view the elements of a custom Node Input and enter your web service inputs in to the Value field of each element. 
+The following node input is available for configuration regardless of the web service.
+
+Name 
+Data Type 
+Description 
+Required
+Multiple
+
+Pause Node on HTTP Error
+Boolean
+Determines whether the smart service should pause by exception if it receives an HTTP error.  Default is true.  If set to false and an HTTP error occurs, the node completes and populates the node outputs for HTTP Error Occurred and HTTP Status Code as well as any other configured.
+No
+No
+
+
+Node outputs
+Most of the node outputs on the Outputs tab depend on the web service you're using. The node outputs below are the only ones that are available by default.
+
+Name 
+Data Type 
+Description 
+
+HTTP Error Occurred
+Boolean
+true if an HTTP error occurred, otherwise false. 
+
+
+HTTP Status Code
+Integer
+The HTTP status code that was returned. 
+
+
+If an HTTP error occurs and you allow the node to complete, you can use these outputs to determine how the process handles the error, such as incorporating an escalation into a later part of the process design.  For those error responses that are handled by automatic retry (408 and 503), the node will complete or pause by exception after the final retry has failed.
+.NET data sets
+Some .NET-based web services return a .NET DataSet type object. Since the structure of the DataSet object is not known until runtime (it’s not explicitly defined in the WSDL), this smart service allows you to map the result to a process variable of type Text that contains an XML representation of the DataSet object. 
+The xpathsnippet() expression function can then be used to navigate and extract relevant data from the DataSet. This function does not accept UTF-16 encoded data. If the .NET DataSet is UTF-16, use the substitute() function to replace any references to UTF-16 with UTF-1. 
+For example: substitute(ac!GetWeatherSoapOut.GetWeatherResult,"utf-16", "utf-8") 
+See also: xpathsnippet() and substitute()
+Large data sets 
+Ensure that the space used by the Process Execution and Process Analytics engines is used only for valuable data - not for any extraneous data returned the web service.
+When you expect to return a large amount of data, place this smart service into a subprocess along with other nodes used to parse the data, then configure the subprocess in the following manner: 
+
+It should pass only the relevant subset of data back to the parent process.  
+It should either delete or archive relatively soon after completion.
+
+When using a large data set in other process nodes, you might need to adjust the limits on how much data can be entered into a field. 
+See also: Configuring a Subprocess Activity
+Collecting values from nested arrays of an array
+To save values from a nested array of web service data, you must save the parent object into a process variable. This is possible, even if the imported custom data type remains hidden. 
+
+Select the parent element or record of the unavailable nested array. 
+The warning listed in the interface regarding nested multiples does not apply to the parent object. In this example it only refers to the child Result versus the parent Results. You can select an array, but multiple records within it are outside the reach of this view.    The Result Properties display for a Node Output or the Field Properties display for a Node Input. 
+Click the button to create a new variable. 
+The New Process Variable dialog displays with the Type field disabled and the data type listed of the element or record you're saving.
+Since you're saving an array that contains an array, ensure the Multiple Values checkbox is selected. 
+Name your process variable and click OK.
+
+Keep in mind that the web service created a data type used to catch the web service data in Node Inputs or Node Outputs and for the process variable. This data type cannot be used for other process variables, rule inputs, or data in other nodes until the data type is made available in pickers.
+Saving elements to a process variable
+In order to handle certain values from a web service, you may want to create a new variable that matches the node containing the desired data.
+
+The Call Web Service Smart Service automatically creates the data types used by your web service, which can be unhidden for the creation of a process variable that matches the desired node.
+After the process variable is created, that data type can be safely hidden without impacting your new process variable.
+See also
+
+Supported XSD Elements and JPA Annotations
+Configuring Web Service Connections
+Referencing Data Types
+Smart Services Library

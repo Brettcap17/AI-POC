@@ -1,0 +1,41 @@
+
+layout: function
+title: a!testRunResultForId() Function
+space: function_page
+excerpt: "Provided a test-run ID, this function returns a TestRunResult data type containing the results of a rule test run. If the status of the test is IN PROGRESS, TestRunResult will contain only results for completed tests; if the status is COMPLETE, TestRunResult contains all test results."
+category: function_page
+fncname: a!testRunResultForId
+fncsubcat: Testing
+fncexample: "Click on the function name for examples."
+fnccat: Smart_Service
+compatibility: -crf, ~portal, -om
+reftype: function
+parameters:
+  - keyword: testRunId
+    types: Integer
+    description: |
+      The test-run ID returned when executing a test on a system or applications.
+
+See a!testRunStatusForId(), a!startRuleTestsAll(), a!startRuleTestsApplications() for additional information on other testing functions. See Parsing Batch Test Results for Expression Rules for details on parsing a TestRunResult data type.
+Test results will be grouped by application. Expression rules that are not part of any application, will be grouped in a separate ApplicationTestResult structure with the name Other Objects.
+Changes made to expression rules after a test run has started will not be reflected on the test results for that test run.
+Test results will not reflect changes that were made to expression rules after the test run has started. 
+Test case execution times out after one minute. As a result, an error status will be set for that particular test case in the test results and other test cases can continue to be executed. The execution of an application or system test doesn't time out.
+Test runs can only be queried by the same user who initiated the test, or by a user of type System Administrator. 
+Results from a test run expire after 7 days. After 7 days, an error will be returned indicating that the test run has been deleted. If you'd like to persist this data for a longer period of time, you will need to write this data into a table in your business data source.
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Example
+a!testRunStatusForId(25)
+Where 25 is a valid test-run ID.
+See the Common Uses section of Expression Rule Testing Functions page for more examples.
+See Also
+
+a!startRuleTestsApplications()
+a!startRuleTestsAll()
+a!testRunStatusForId()

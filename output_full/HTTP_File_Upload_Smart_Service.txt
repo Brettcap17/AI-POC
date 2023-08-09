@@ -1,0 +1,13 @@
+
+layout: "basic"
+title: "HTTP File Upload Smart Service [Deprecated]"
+depver: 19.1
+excerpt: "The HTTP File Upload smart service allows you to upload an Appian Document to an external system over HTTP."
+reftype: smart_service
+space: "no_toc"
+ssicon: "Deprecated.gif"
+ssparentcat: "一Deprecated一"
+
+This feature has been deprecated, and will be removed in a future release of Appian.
+Now, designers can use an Integration Object when they want to send a document from Appian to an external system over HTTP.
+For information about the HTTP File Upload Smart Service, see the Appian 18.4 documentation.

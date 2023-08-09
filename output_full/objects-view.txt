@@ -1,0 +1,282 @@
+
+layout: basic
+title: Objects View
+topic: Designer
+topic-group: Designer Space
+type: Reference
+weight: 303
+
+Overview
+This page describes what you can do in the Objects view in Appian Designer.
+To access this view, click Objects in the navigation pane at the environment level.
+Purpose
+The Objects view displays all design objects and plug-ins present in your Appian environment. This view is useful for finding a specific object quickly, so you can view and edit the object, or add the object to your application.
+Elements
+The following image highlights the elements that make up this view:
+{% include zoompic.html url="images/objects-view-annotated.png" alt="screenshot of the Objects view in Appian Designer" border="-nb" style="width:67%;" %}
+
+
+
+#
+Element
+Available Actions
+
+
+
+
+1
+Header bar
+Learn more about the header bar.
+
+
+2
+Navigation pane
+Learn more about the navigation pane.
+
+
+3
+Tabs
+Go to the following tabs:
+
+The ALL OBJECTS tab displays all of the design objects to which you have access in this environment.
+The PLUG-INS tab displays all of the plug-ins that have been installed in this environment.
+
+Each tab features a filter pane and a grid.
+
+
+4
+Filter pane
+Search and filter objects or plug-ins in the grid.
+
+
+5
+Toolbar
+
+
+Add objects to an application.
+Change object security.
+View object relationships.
+Delete an object.
+Edit object properties.
+View object versions.
+Upload a new document version.
+Rename an object.
+Download documents.
+View process model documentation.
+View plug-in dependents.
+Compare a plug-in across connected environments.
+
+
+
+
+6
+Grid
+
+
+View the objects grid.
+Open an object.
+View the plug-ins grid.
+
+
+
+
+
+View the objects grid
+To view the objects grid, click Objects in the navigation pane. The ALL OBJECTS tab is open by default.
+INCLUDE PAGE: objects-grid
+Manage objects
+In the ALL OBJECTS tab, you can perform the actions described below.
+Open an object
+To open an object, click the object name in the grid.
+Add objects to an application
+In the Objects view, you can add objects to any application for which you have at least Editor permissions.
+To add objects to an application:
+
+In the objects grid, select one or more objects. 
+In the toolbar, click ADD TO APP.
+In the Add to Application dialog, enter an application name, then select the application from the dropdown list.
+Click ADD TO APPLICATION.
+
+Change object security
+In the Objects view, you can adjust the security of any object for which you have at least Administrator permissions.
+In this view, you can change security for one object at a time only.  To edit object security in bulk, use the Security Summary.
+To change an object's security:
+
+In the objects grid, select an object.
+In the toolbar, click SECURITY.
+In the security dialog, set the permission levels for users and groups as needed.
+Click SAVE CHANGES. 
+
+View object relationships
+In the Objects view, you can view the relationships for any object where you have at least Viewer permissions.
+To view the relationships for an object:
+
+In the objects grid, select an object.
+In the toolbar, click the appropriate action:
+To view the objects that need the selected object to function, click DEPENDENTS. An analysis of the dependent objects displays.
+To view the objects that the selected object needs to function, click PRECEDENTS. An analysis of the precedent objects displays.
+
+Learn more about object relationships. 
+Delete an object
+Some object deletions require the system administrator role:
+- Only system administrators can delete data types, group types, or multiple objects.
+- Only a system administrator can delete a folder that has contents. Deleting the folder deletes all of its contents.
+To delete an object in the Objects view:
+
+In the objects grid, select an object.
+In the toolbar, click DELETE.
+If you selected a single object:
+Review the list of objects dependent on this object. These objects would be impacted by the deletion.
+To continue, click DELETE ANYWAY.
+If you selected multiple objects:
+Review the list of objects included in the deletion.
+To continue, click I understand that this action cannot be undone.
+Click DELETE.
+(Optional) Track deleted objects in the deletions log.
+
+Edit object properties
+You can edit properties for any document, folder, or group object for which you have Editor permissions.
+To edit object properties from the Objects view:
+
+In the objects grid, select an object.
+In the toolbar, click MORE > Properties.
+In the properties dialog, make your edits.
+Click SAVE.
+
+You can edit the properties of other object types by opening the object. 
+View object versions
+Versions are only supported for a certain set of objects. To see which objects are supported, see Managing Object Versions.
+To view object versions from the Objects view:
+
+In the objects grid, select an object.
+In the toolbar, click MORE > Versions. The Versions dialog appears.
+(Optional) Compare previous object versions with the latest version. Learn more about object versions.
+
+Upload a new document version
+If you upload a new version of a document in the Objects view, the new version of the object will retain the same local ID, but will point to a different file.
+To upload a new document version:
+
+In the objects grid, select a document object.
+In the toolbar, click MORE > New Version.
+In the Upload New Version dialog, drag and drop a file into the box or click UPLOAD, navigate to, and select a file.
+(Optional) Edit the File Type, Name, or Description properties of the object.
+Click UPLOAD.
+
+Rename an object
+In the Objects view, you can rename the following objects:
+
+Constant
+Decision
+Expression rule
+Integration
+Interface
+
+If you rename an object in the Objects view, the system also updates any expression that's calling the object with the new object name.
+To rename an object:
+
+In the objects grid, select a constant, decision, expression rule, integration, or interface object.
+In the toolbar, click MORE > Rename.
+In the Rename dialog, enter a New Name.
+Click RENAME.
+
+You can rename other types of objects elsewhere in Appian Designer. Learn more about renaming objects.
+Download documents
+To download documents in the Objects view:
+
+In the objects grid, select one or more document object.
+In the toolbar, click MORE > Download. The selected document or documents download to your computer according to your browser's settings.
+
+View process model documentation
+To view a process model documentation report:
+
+In the objects grid, select a process model object.
+In the toolbar, click MORE > Download. The report for the selected process model opens in a new tab or window.
+
+Learn more about process model documentation.
+View the plug-ins grid
+
+appian-style-note
+All plug-ins are use-at-your-own-risk, and their functionality is not guaranteed by Appian. All plug-ins should be tested thoroughly. For more details about individual plug-ins, visit the Appian AppMarket.
+
+Plug-ins are pre-configured to offer specific functionality in your application. Developers in the Appian community create plug-ins and make them available in the Appian AppMarket. Plug-ins can be very useful in building applications, but because Appian doesn't create plug-ins, we can't guarantee them. We recommend that you thoroughly test any plug-in you plan to install in your environment. 
+Plug-ins can be composed of Appian design objects or custom code. You cannot modify plug-ins installed in your environment. Your system administrator may need to update a plug-in if the creator releases a new version in the Appian AppMarket.
+To view the plug-ins grid, click Objects in the navigation pane, then go to the PLUG-INS tab. The grid is sorted alphabetically by default. 
+The information in the plug-ins grid is provided by the plug-in manifest file when you install a plug-in.
+
+appian-style-note
+If a user changes the access to a plug-in, then there will be an audit log message that will track the username of the user making the change, the previous value, and the new value.
+
+In the plug-ins grid, the first column enables you to select a plug-in. The other columns in the grid include the following:
+| Column | Description |
+| - | - | 
+| Name | The name of the plug-in. |
+| Version | The version number of the plug-in. |
+| Description| The description of the plug-in as written by the plug-in creator. |
+| Modules | The modules that the plug-in contains, categorized by the following types: Components, Connected System, Data Types, Functions, Servlets, and Smart Services. |
+You can change the grid list as follows:
+
+Refresh: To see the most up-to-date list of plug-ins, click the refresh button  in the toolbar.
+Search: Search by the name of the plug-in or the related modules.
+Filter: In the filter pane, select how you want to filter the list: by the type of module or the status of the plug-in version.
+
+
+appian-style-tip
+You can also view the plug-in list in the Appian Administration Console.
+
+Manage plug-ins
+In the PLUG-INS tab, you can perform the actions described below.
+View plug-in dependents
+Dependents are design objects that rely on the plug-in and its modules to function.
+To view a plug-in's dependents:
+
+In the PLUG-INS tab, select a plug-in.
+In the toolbar, click DEPENDENTS. The plug-ins tab displays a list of objects in the environment that rely on the plug-in to function.
+(Optional) In the left pane, search for an object by name or filter the list of objects by the LAST MODIFIED value.
+(Optional) Click All Plug-ins in the page breadcrumbs to return to the full plug-ins list. 
+
+View version status
+For Appian Cloud customers, the system automatically verifies your installed plug-ins against the applications listed in the AppMarket. The system then displays the results of this verification as version status indicators in the Version column of the plug-ins list. 
+Version statuses include:
+| Version Status | Description | Indicator in List |
+| - | - | -|
+| Not listed in AppMarket | The system could not find the plug-in listed in the AppMarket. This means that either the plug-in was removed from the AppMarket or it was custom built by your organization. If your organization did not build this plug-in, we recommended removing it from your environment. |  |
+| Update available | The version installed in your environment is different than the latest version of the plug-in listed in the AppMarket. We recommend updating the plug-in to take advantage of security updates and enhancements. |  |
+| Up-to-date| The version installed in your environment matches the latest version of the plug-in listed in the AppMarket. |
+To filter the plug-ins list by version status, use the VERSION STATUS filters in the filters pane.
+Compare a plug-in across environments
+This option is only available if you have enabled connected environments.
+To compare a plug-in across environments:
+
+In the plug-ins list, select a plug-in.
+In the toolbar, click COMPARE ACROSS ENVIRONMENTS.
+Select another environment where you want to compare the plug-in. The comparison report opens in a new window or tab. 
+
+Learn more about comparing objects across environments.
+
+appian-style-tip
+You can also compare plug-ins across environments in the Appian Administration Console.
+
+Delete a plug-in
+Only system administrators can delete plug-ins. To delete a plug-in:
+
+In the plug-ins list, select a plug-in.
+In the toolbar, click DELETE. The system identifies any design objects that depend on the plug-in you want to delete.
+(Optional) Resolve object dependencies before continuing. 
+Click DELETE.
+
+You can track deleted plug-ins in the deletions log.
+Update a plug-in
+Only system administrators can update plug-ins. To update the plug-in to the latest AppMarket version:
+
+In the plug-ins list, select a plug-in.
+In the toolbar, click UPDATE.
+
+Make sure to regression test the latest version update with your application and environment. If you need to revert your plug-in for any reason, you can do so within three months of the update.
+Revert a plug-in
+Only system administrators can revert plug-ins. You can only revert to the previously installed version of the plug-in, and can only revert within three months of updating the plug-in.
+To revert the plug-in to the previous version installed in this environment:
+
+In the plug-ins list, select a plug-in.
+In the toolbar, click REVERT.
+
+Note that you can only revert a plug-in to the previous version within three months of updating a plug-in.

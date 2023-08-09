@@ -1,0 +1,114 @@
+
+layout: pattern
+title: Configure Buttons with Conditional Requiredness
+excerpt: Present two buttons to the end user and only make certain fields required if the user clicks a particular button
+offline_not_recommended: false
+reftype: sailrecipe
+sr-tags:
+  - Validation
+
+
+This scenario demonstrates:
+
+How to use validation groups to evaluate particular fields on a form
+How to use the requiredMessage parameter to set custom required messages
+
+Expression
+sail
+a!localVariables(
+  /*
+   * All of these local variables could be combined into the employee CDT and passed into
+   * a process model via a rule input
+   */
+  local!firstName,
+  local!lastName,
+  local!department,
+  local!title,
+  local!phoneNumber,
+  local!startDate,
+  /*  
+   * local!isFutureHire is a placeholder variable used to set the validation group trigger.
+   * When isFutureHire is set to true, a user can skip phone number and start date.
+   */
+  local!isFutureHire,
+  a!formLayout(
+    label: "Example: Add Employee with Conditional Requiredness",
+    contents: {
+      a!textField(
+       label: "First Name",
+        value: local!firstName,
+        saveInto: local!firstName,
+        required: true
+      ),
+      a!textField(
+        label: "Last Name",
+        value: local!lastName,
+        saveInto: local!lastName,
+        required: true
+      ),
+     a!dropdownField(
+        label: "Department",
+        placeholder: "-- Select a Department -- ",
+        choiceLabels: { "Corporate", "Engineering", "Finance", "Human Resources", "Professional Services", "Sales" },
+        choiceValues: { "Corporate", "Engineering", "Finance", "Human Resources", "Professional Services", "Sales" },
+        value: local!department,
+        saveInto: local!department,
+        required: true
+      ),
+     a!textField(
+        label: "Title",
+        value: local!title,
+        saveInto: local!title,
+        required: true
+      ),
+     /*
+      * When a field has a validation group set, the required parameter and any validations
+      * are deferred until the validation group is triggered by a button or link.
+      */
+     a!textField(
+        label: "Phone Number",
+        placeholder: "555-456-7890",
+        value: local!phoneNumber,
+        saveInto: local!phoneNumber,
+        required:true,
+        requiredMessage:"A phone number is needed if you're going to onboard this employee",
+        validationGroup:"Future_Hire"
+      ),
+     a!dateField(
+        label: "Start Date",
+        value: local!startDate,
+        saveInto: local!startDate,
+        required:true,
+        requiredMessage:"A start date is needed if you're going to onboard this employee",
+        validationGroup:"Future_Hire"
+      )
+    },
+    buttons: a!buttonLayout(
+      primaryButtons: {
+        a!buttonWidget(
+          label: "Submit Future Onboarding",
+          style: "SECONDARY",
+          value: true,
+          saveInto: local!isFutureHire,
+          submit: true
+        ),
+        a!buttonWidget(
+          label: "Onboard Employee Now",
+          value: false,
+          saveInto: local!isFutureHire,
+          submit: true,
+          validationGroup: "Future_Hire"
+        )
+      }
+    )
+  )
+)
+Test it out
+
+Click Onboard Employee without entering any comments. Notice that the custom required message that we configured using the requiredMessage parameter shows up rather than the generic product message.
+Click Submit Future Onboarding without entering any comments.
+
+Notable Implementation Details
+
+validationGroup can have any string that you define.
+For ease of implementation, these values are being saved into individual local variables. To use this form in a process, these local variables should be replaced with rule inputs.

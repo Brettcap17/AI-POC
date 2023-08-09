@@ -1,0 +1,30 @@
+
+layout: function
+title: ln() Function
+space: function_page
+excerpt: "Returns the natural logarithm of the specified number, which is the power that e must be raised to in order to equal the specified number."
+category: function_page
+fncname: ln
+fncexample: "ln(e())"
+fncresult: "1"
+fnccat: Mathematical
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number in which the natural logarithm will be returned.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Decimal
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+ln(10) returns 2.30258

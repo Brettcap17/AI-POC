@@ -1,0 +1,43 @@
+
+layout: function
+title: fixed() Function
+space: function_page
+excerpt: "Rounds the specified number off to a certain number of decimals and returns it as text, with optional commas."
+category: function_page
+fncname: fixed
+fncexample: "fixed( 7.36819 )"
+fncresult: "7.37"
+fnccat: Text
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: number
+    types: Decimal
+    description: |
+      The number that the fixed function will prepare for display.
+  - keyword: decimals
+    types: Number
+    description: |
+      The number of digits after the decimal that will be maintained. 2 by default.
+  - keyword: no_commas
+    types: Boolean
+    description: |
+      Enter false to display commas, true to hide them.  False by default.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+fixed(7.36819) returns 7.37
+fixed(7.36819, 3) returns 7.368
+fixed(7.36819, 4) returns 7.3682
+fixed(7000.36819, 4) returns 7,000.3682
+fixed(7000.36819, 4, true) returns 7000.3682
+fixed(7000.36819, 4, 0) returns 7,000.3682

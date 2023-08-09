@@ -1,0 +1,76 @@
+
+layout: "basic" 
+title: "Column Overlay" 
+space: "sail_component" 
+reftype: "sailcomponent" 
+excerpt: "Displays a vertical column overlay for use in billboard layout." 
+category: "function_page" 
+compatibility: -crf
+fncname: "a!columnOverlay" 
+fncsubcat: "Layouts" 
+fncexample: "Click on the function name for examples." 
+fnccat: "Interface_Component"
+scsubcat: Layout_Elements
+scdisplayname: "Column Overlay"
+parameters:
+  - keyword: alignVertical 
+    name: Vertical Alignment 
+    types: Text
+    description: |
+      Determines vertical alignment of all content within the overlay. Valid values: "TOP" (default), "MIDDLE", and "BOTTOM". 
+  - keyword: position 
+    name: Position
+    types: Text
+    description: |
+      Determines where the column overlay appears. Valid values: "START" (default), "CENTER", "END".
+  - keyword: width 
+    name: Width
+    types: Text
+    description: |
+      Determines the column overlay width. Valid values: "NARROW", "MEDIUM" (default), "WIDE". 
+  - keyword: contents 
+    name: Contents 
+    types: Any Type
+    description: |
+      The interface to display in the overlay. Accepts layouts and display components. Supported layouts and components: Box, Button, Card, Columns, Image, Link, Milestone, Progress Bar, Rich Text, Section, Side By Side. 
+  - keyword: showWhen 
+    name: Visibility
+    types: Boolean
+    description: |
+      Determines whether the overlay is displayed on the interface. When set to false, the overlay is hidden and is not evaluated. Default: true.
+  - keyword: style 
+    name: Style
+    types: Text
+    description: |
+      Determines the overlay style. Valid values: "DARK" (default), "SEMI_DARK", "NONE", "SEMI_LIGHT", "LIGHT". 
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+See also: Billboard
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Examples
+Copy and paste an example into the INTERFACE DEFINITION in EXPRESSION MODE to see it displayed.
+Column overlay with intro message
+sail
+a!billboardLayout(
+  backgroundcolor: "#073763",
+  marginBelow: "STANDARD",
+  overlay: a!columnOverlay(
+    alignvertical: "MIDDLE",
+    contents: {
+      a!richTextDisplayField(
+        labelPosition: "COLLAPSED",
+        value: {
+          a!richTextItem(text: {"Hello, " & user(loggedinuser(), "firstName") & "."}, size: "MEDIUM"),
+          char(10),
+          a!richTextItem(text: {"What do you need help with?"}, size: "LARGE")
+        },
+        align: "CENTER"
+      )
+    },
+    style: "DARK"
+  )
+)
+Displays the following:

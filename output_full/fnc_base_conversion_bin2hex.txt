@@ -1,0 +1,39 @@
+
+layout: function
+title: bin2hex() Function
+space: function_page
+excerpt: "Converts a Binary number as text to a Hex number as text."
+category: function_page
+fncname: bin2hex
+compatibility: ~portal, ~om, +pe, +pr
+fncexample: "bin2hex(1100100)"
+fncresult: "64"
+fnccat: Base_Conversion
+reftype: function
+parameters:
+  - keyword: value
+    types: Text
+    description: |
+      Binary value as text to convert, such as 1100100. 
+  - keyword: place
+    types: Number
+    description: |
+      The number of places to return.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Text
+Usage considerations
+Using the value parameter
+Invalid digits for a value parameter, including signs, are ignored.
+Using the place parameter
+The default value for place is however many places are necessary to represent the number.
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+bin2hex(1100100) returns 64

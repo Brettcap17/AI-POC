@@ -1,0 +1,34 @@
+
+layout: function
+title: lastndays() Function
+space: function_page
+excerpt: "Returns a Boolean value for whether the given date is within the last given number of days."
+category: function_page
+fncname: lastndays
+fncexample: "lastndays(date(2011, 12, 13), 6)"
+fncresult: "False"
+fnccat: Date_and_Time
+reftype: function
+compatibility: +pe, +pr
+parameters:
+  - keyword: date
+    types: Date
+    description: |
+      The base date.
+  - keyword: n
+    types: "Number(Integer)"
+    description: |
+      The number of days to test.
+
+Function
+{% include fncsyntax.html %}
+{{ page.excerpt }}
+Parameters
+{% include parameter_table.html parameters=page.parameters header=page.reftype %}
+Returns
+Boolean
+Examples
+{% expressionbox %}
+{{ page.fncexample }}
+{% endexpressionbox %}
+lastndays(date(2013,2,15), 6) returns False when today's date is 2013/2/28.

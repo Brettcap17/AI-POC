@@ -1,0 +1,155 @@
+
+layout: pattern
+title: Browse Hierarchical Data
+reftype: sailrecipe
+sr-tags: ["Hierarchical Data"]
+excerpt: Display a hierarchical data browser.
+offline_not_recommended: true
+
+This columns browser shows regions, account executives located in each region, and the customers associated with each account executive. Regions, account executives, and customers each have a different display configuration.
+
+This scenario demonstrates:
+
+How to display data in a columns browser
+How to dynamically retrieve data for each column depending on the level of the hierarchy
+How to dynamically configure the display of each node depending on the type of data displayed in the hierarchy
+
+Setup
+For this recipe, you'll need a hierarchical data set. Create the following three custom data types with corresponding fields.
+EXAMPLE_Region
+
+id (Number (Integer))
+name (Text)
+
+EXAMPLE_AccountExec
+
+id (Number (Integer))
+firstName (Text)
+lastName (Text)
+regionId (Number (Integer))
+
+EXAMPLE_Customer
+
+id (Number (Integer))
+name (Text)
+accountExecId (Number (Integer))
+
+These data types have a hierarchical relationship. Note how EXAMPLE_AccountExec has a field for region and EXAMPLE_Customer has a field for account executive. 
+Expression
+sail 
+a!localVariables(
+  /*
+  This is sample data for the recipe. In your columns browser component, 
+  you'll use data from other sources, like records or entities.
+  */
+  local!regions:{
+    'type!{urn:com:appian:types}EXAMPLE_Region'( id: 1, name: "North America" ),
+    'type!{urn:com:appian:types}EXAMPLE_Region'( id: 2, name: "South America" ),
+    'type!{urn:com:appian:types}EXAMPLE_Region'( id: 3, name: "EMEA" ),
+    'type!{urn:com:appian:types}EXAMPLE_Region'( id: 4, name: "APAC" )
+  },
+  local!accountExecs:{
+    'type!{urn:com:appian:types}EXAMPLE_AccountExec'( id: 1, firstName: "Susan",  lastName: "Taylor", regionId: 1 ),
+    'type!{urn:com:appian:types}EXAMPLE_AccountExec'( id: 2, firstName: "Sharon", lastName: "Hill",   regionId: 3 ),
+    'type!{urn:com:appian:types}EXAMPLE_AccountExec'( id: 3, firstName: "Kevin",  lastName: "Singh",  regionId: 2 ),
+    'type!{urn:com:appian:types}EXAMPLE_AccountExec'( id: 4, firstName: "Daniel", lastName: "Lewis",  regionId: 3 )
+  },
+  local!customers:{
+    'type!{urn:com:appian:types}EXAMPLE_Customer'( id: 1, name: "Lebedev",         accountExecId: 2 ),
+    'type!{urn:com:appian:types}EXAMPLE_Customer'( id: 2, name: "Parsec Express",  accountExecId: 3 ),
+    'type!{urn:com:appian:types}EXAMPLE_Customer'( id: 3, name: "Dengar Dynamics", accountExecId: 2 ),
+    'type!{urn:com:appian:types}EXAMPLE_Customer'( id: 4, name: "Almach",          accountExecId: 1 )
+  },
+  local!path,
+  local!selection,
+  a!sectionLayout(
+    contents:{
+      a!hierarchyBrowserFieldColumns(
+        label: "Interface Recipe: Columns Browser",
+        /*
+        This data comes from a local variable for the recipe. Substitute your
+        rule here when you make your own columns browser component.
+        */
+        firstColumnValues: local!regions,
+        /*
+        This is where you specify how a node appears in the browser given
+        its type. If the node is a region, show the name field. If the node 
+        is an account executive, show the first name and last name fields.
+        */
+        nodeConfigs: if(
+          typeof(fv!nodeValue) = 'type!{urn:com:appian:types}EXAMPLE_Region',      
+          a!hierarchyBrowserFieldColumnsNode(
+            id: fv!nodeValue.id,
+            label: fv!nodeValue.name,
+            image: a!documentImage(document: a!iconIndicator("HARVEY_0"))
+          ),
+          if(
+            typeof(fv!nodeValue) = 'type!{urn:com:appian:types}EXAMPLE_AccountExec',
+            a!hierarchyBrowserFieldColumnsNode(
+              id: fv!nodeValue.id,
+              label: fv!nodeValue.firstName & " " & fv!nodeValue.lastName,
+              image: a!documentImage(document: a!iconIndicator("HARVEY_50"))
+            ),
+            if(
+              typeof(fv!nodeValue)='type!{urn:com:appian:types}EXAMPLE_Customer',
+              a!hierarchyBrowserFieldColumnsNode(
+                id: fv!nodeValue.id,
+                label: fv!nodeValue.name,
+                image: a!documentImage(document: a!iconIndicator("HARVEY_100")),
+                isDrillable: false
+              ),
+              {}
+            )
+          )
+        ),
+        pathValue: local!path,
+        pathSaveInto: local!path,
+        nextColumnValues: if(     
+          /*
+          Check to see if the node is a region. If so, look up account 
+          executives for that region. Substitute your type and rule here.
+          */    
+          typeof(fv!nodeValue)='type!{urn:com:appian:types}EXAMPLE_Region',
+          index(local!accountExecs, wherecontains(fv!nodeValue.id, local!accountExecs.regionId), {}),
+          if(          
+            /*
+            Check to see if the node is an account executive. If so, look up customers 
+            for that account executive. Substitute your type and rule here.
+            */       
+            typeof(fv!nodeValue)='type!{urn:com:appian:types}EXAMPLE_AccountExec',
+            index(local!customers, wherecontains(fv!nodeValue.id, local!customers.accountExecId), {}),
+            {}
+          )
+        ),
+        selectionValue: local!selection,
+        selectionSaveInto: local!selection,
+        height: "SHORT"
+      ),
+      a!textField(
+        label: "path",
+        instructions: typename(typeof(local!path)),
+        value: local!path,
+        readOnly: true
+      ),
+      a!textField(
+        label: "selection",
+        instructions: typename(typeof(local!selection)),
+        value: local!selection,
+        readOnly: true
+      )
+    }
+  )
+)
+Test it out
+
+The resulting display in the live view shows one column of regions. Click different regions in that column to change path and selection.
+Select EMEA region. Account executives should appear in the next column.  
+Select Sharon Hill. Sharon Hill's customer accounts should appear.
+
+Notable implementation details
+
+The data provided here is loaded into local variables. Refer to the comments in the example interface to substitute your own data and queries. For heterogenous data sets like this example, remember to specify how each type should retrieve its next column values and how each type should be displayed. 
+The images shown in this example are simple icons configured with a!iconIndicator. You can use this function or provide different document or web images. Choose icons that makes sense for your data to create a compelling visual experience in your interfaces.
+nodeConfigs is configured using a!hierarchyBrowserFieldColumnsNode(). This determines how items in the hierarchy are displayed. In this snippet, it determines how regions are displayed. 
+nextColumnValues determines what appears in the next column based on the type of the current node, fv!nodeValue.
+The customer nodes are configured not to be drillable because we know that this column is the end of the hierarchy.
