@@ -18,7 +18,7 @@ def process_text():
     text_input = data['text']
     print(text_input)
     # Process the text_input here
-    context = vss(text_input, "backend/output_full")
+    context = vss(text_input, "output_full")
     model.start()
     output = model.ask_question(text_input, context[1])
     result = {'message': output}
