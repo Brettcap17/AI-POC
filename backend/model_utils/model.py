@@ -1,7 +1,5 @@
 import requests
 from secrets import api_key
-import together
-
 
 model = "llama-2-7b-chat"
 CONTEXT_STORED = 5
@@ -83,15 +81,3 @@ def format_prompt(question):
     prompt += f"Question: {question}<|END|>"
 
     return prompt.strip()
-
-
-if __name__ == "__main__":
-
-    start()
-
-    while True:
-        output = ask_question(input())
-        print(output)
-
-
-    stop()

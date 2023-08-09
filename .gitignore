@@ -1,3 +1,4 @@
 secrets.txt
-model_together/secrets.py
-model_together/__pycache__/
+backend/model_utils/secrets.py
+backend/__pycache__
+frontend/node_modules
