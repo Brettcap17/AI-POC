@@ -5,4 +5,3 @@ backend/venv
 frontend/node_modules
 node_modules
 **/__pycache__
-
