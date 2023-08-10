@@ -55,11 +55,17 @@ const ChatMessage = ({ message }) => {
               ))
               : null}
           </p>
-
           <p className="source">
-            <a href={message.source} target="_blank" rel="noopener noreferrer">
-              {message.source}
-            </a>
+            {message.source ? (
+              message.source.split(';').map((link, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && ' '}
+                  <a href={link.trim()} target="_blank" rel="noopener noreferrer">
+                    {link.trim()}
+                  </a>
+                </React.Fragment>
+              ))
+            ) : ("")}
           </p>
         </div>
       </div>
@@ -173,9 +179,7 @@ function ChatApp() {
           <Grid item xs={2}>
             <></>
           </Grid>
-
           <Grid xs={8}>
-
             <ChatContainer ref={chatContainerRef}>
               <Stack>
                 {messages.map((message) => (
