@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import time
 import sys
+import re
 
 def get_link(top_two):
     links = []
@@ -26,8 +27,7 @@ def vss(question, dir_path):
             file_contents = ""
             with open(os.path.join(dir_path, file_path), "r") as f:
                 for line in f:
-                    stripped_line = line.strip()
-                    file_contents += stripped_line
+                    file_contents += line
             filenames[file_path] = file_contents
     #Add question to file bank for comparison
     filenames['question'] = question
@@ -51,30 +51,28 @@ def vss(question, dir_path):
     top_five = temp.index[-6:-1]
 
     segmented = {}
-    size = 1000
+    words = 500
+    size = words*6
     for i in top_five:
         text = filenames[i]
-        words = text.split(' ')
-        j = 0
         k = 1
-        if(len(words) <= size):
-            segmented[i] = text
-            continue
-        while j+size < len(words):
-            segmented[i + ' ' + str(k)] = ' '.join(words[j:j+size])
-            j += size
+        while len(text) > size: 
+            cutoff = text.find('.', size)
+            if cutoff == -1: break
+            segmented[i + ' ' + str(k)] = text[:cutoff]
             k += 1
-        segmented[i + ' ' + str(k)] = ' '.join(words[-size:])
+            text = text[cutoff+1:]
+        segmented[i + ' ' + str(k)] = text
     segmented['question'] = question
 
-    #Run the Count vectorizor and similarity matrix for the smaller segments of the docs
+    #Run the Count vectorizer and similarity matrix for the smaller segments of the docs
     count_vectorizer2 = CountVectorizer()
     vector_matrix2 = count_vectorizer2.fit_transform(list(segmented.values()))
     vector_matrix2
-    start_time = time.time()
+    #start_time = time.time()
     cosine_similarity_matrix2 = cosine_similarity(vector_matrix2)
     df2 = create_dataframe(cosine_similarity_matrix2, list(segmented.keys()))
-    end_time = time.time()
+    #end_time = time.time()
     #print("Asked question: ", question)
     #print("Total time (in sec):", end_time-start_time)
     #with pd.option_context('display.max_rows', None, 'display.max_columns', None):
@@ -93,3 +91,5 @@ def vss(question, dir_path):
 
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
     return (get_link(top_two), final_context)    
+
+#print(vss("How do I manage user tiered permissions?", 'output_full'))
