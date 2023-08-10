@@ -23,7 +23,7 @@
   align-self: flex-end;
 }
 
-.bot {
+.appie {
   background-color: #77c2fe;
   margin-right: 25%;
   align-self: flex-start;
@@ -32,4 +32,9 @@
 .chat-input input {
   flex: 1;
   padding: 6px;
+}
+
+.container {
+  display: flex;
+  align-items: center; /* Vertically center items */
 }
