@@ -26,6 +26,15 @@ Due to the model context limitations, we need to narrow down Appian Documentatio
 
 We use the [Count Vectorizer](https://www.geeksforgeeks.org/using-countvectorizer-to-extracting-features-from-text/) algorithm quickly extract semantic meaning in real time from the user's question and Appian documentation and store them as embedding vectors. We can then use [cosine similarity](https://www.pinecone.io/learn/vector-similarity/) between the user's question vector and the Appian documentation vectors to find the section of Appian Docs which is most relevant to the user question. This is then fed into the Language Model as context.
 
+
+# Run the app
+1. Make [Together API](https://api.together.xyz) account and store your API key
+2. Make a `secrets.py` file in `backend/model_utils/` and paste the following line `api_key = "<YOUR API KEY>"`
+3. In `backend/`, run `pip3 install -r requirements.txt`.
+4. Then run `app.py` from the `backend/` directory by running `python3 app.py`.
+5. In a new terminal, enter the `frontend/` directory and run `npm start` to start the front end.
+    - You may need to install node and/or react using `brew`
+
 # Converter Script
 To run the converter script, you will need to install the following depedencies:
  - `pip install bs4`
