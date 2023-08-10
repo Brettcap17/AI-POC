@@ -31,18 +31,24 @@ const initialMessages = [
 const ChatMessage = ({ message }) => {
   return (
     <div className={`message ${message.sender.toLowerCase()}`}>
-      <span className="sender">{message.sender}:</span>
+      <span className="sender">
+        <strong>{message.sender}</strong>
+        :</span>
       <p className="text">{message.text}</p>
-      <p className="source">{message.source}</p>
+      <p className="source">
+        <a href={message.source} target="_blank" rel="noopener noreferrer">
+          {message.source}
+        </a>
+      </p>
     </div>
   );
 };
 
 const CustomButton = styled(Button)`
-  background-color: #000000; /* Your custom color */
-  color: white; /* Text color */
+  background-color: #2824f4; /* Your custom color */
+  color: red; /* Text color */
   &:hover {
-    background-color: #000000; /* Change color on hover */
+    background-color: black; /* Change color on hover */
   }
   margin: 10px
 `;
@@ -54,7 +60,7 @@ function ChatApp() {
   const chatContainerRef = useRef(null);
   const buttonStyle = {
     margin: '10px 10px 10px 0px',// Add margin around the button
-    };
+  };
   const [messages, setMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState("");
 
@@ -116,13 +122,22 @@ function ChatApp() {
     setNewMessage("");
   }
 
+  const handleEndClick = async () => {
+    await fetch("/end", {
+      method: "POST",
+    });
+
+    setMessages([]);
+    setNewMessage("");
+  }
+
   return (
     <>
-    <div className="container" style={{borderBottom: "1px solid #cccc" }}>
-      <img src={appianChatLogo} alt="Appian Chat Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
-      <h1 style={{ textAlign: "center", fontSize: "40px", flexGrow: "1" }}>appie</h1>
-    </div>
-    <MainContainer>
+      <div className="container" style={{ borderBottom: "1px solid #cccc" }}>
+        <img src={appianChatLogo} alt="Appian Chat Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
+        <h1 style={{ textAlign: "center", fontSize: "40px", flexGrow: "1", marginLeft: "-200px" }}>appie</h1>
+      </div>
+      <MainContainer>
         <Grid container spacing={2}>
           <Grid item xs={2}>
             <></>
@@ -158,9 +173,12 @@ function ChatApp() {
               <CustomButton variant="contained" size="large" onClick={handleSendMessage} disabled={loadingSendMessage} style={buttonStyle}>
                 {loadingSendMessage ? <CircularProgress size={24} /> : 'Send'}
               </CustomButton>
-                <Button variant="outlined" size="large" onClick={handleClearClick}>
-                  Clear
-                </Button>
+              <Button variant="outlined" size="large" onClick={handleClearClick} style={buttonStyle}>
+                Clear
+              </Button>
+              <Button variant="outlined" size="large" onClick={handleEndClick} style={buttonStyle}>
+                End
+              </Button>
             </Grid>
           </Grid>
 

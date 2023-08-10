@@ -18,15 +18,17 @@
 }
 
 .user {
-  background-color: #97a1d9;
+  background-color: #1c69ee;
   margin-left: 25%;
   align-self: flex-end;
+  color: white;
 }
 
 .appie {
-  background-color: #77c2fe;
+  background-color: #e9e9eb;
   margin-right: 25%;
   align-self: flex-start;
+  color: black;
 }
 
 .chat-input input {
@@ -37,4 +39,10 @@
 .container {
   display: flex;
   align-items: center; /* Vertically center items */
+}
+
+.appie a {
+  color: #007bff; /* Link color */
+  text-decoration: underline; /* Underline to indicate a link */
+  cursor: pointer; /* Show pointer cursor on hover */
 }
