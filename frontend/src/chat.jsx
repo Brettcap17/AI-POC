@@ -71,7 +71,7 @@ const CustomButton = styled(Button)`
 function ChatApp() {
 
   const [loadingSendMessage, setLoadingSendMessage] = useState(false);
-  const appianLogo = process.env.PUBLIC_URL + '/appian-logo4.jpeg'
+  const appianLogo = process.env.PUBLIC_URL + '/appian-white.png'
 
 
   const chatContainerRef = useRef(null);
