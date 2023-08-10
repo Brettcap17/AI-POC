@@ -38,8 +38,12 @@ def process_text():
 @app.route('/clear_history', methods=['POST'])
 def clear_history():
     model.clear_chat_history()
-
     return {'message': "Cleared"}
+
+@app.route('/end', methods=['POST'])
+def end_session():
+    model.stop()
+    return {'message': "Session Ended"}
 
 if __name__ == '__main__':
     model.start()

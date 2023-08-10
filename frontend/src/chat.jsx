@@ -1,15 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import {styled} from "styled-components";
+import { styled } from "styled-components";
 import Grid from "@mui/material/Unstable_Grid2";
 import Stack from "@mui/material/Stack";
 import { TextField, Button } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const MainContainer = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100dvh;
+  width: max;
+  height: max;
   background-color: #white;
   transition: background-color 0.2s linear;
 `;
@@ -18,30 +19,48 @@ const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 70vh; /* Max height for the chat container */
-  width: 100%;
+  width: max;
   overflow-y: auto; /* Add a scrollbar when content overflows */
 `;
 
 // A mock array of messages
 const initialMessages = [
-  { id: 1, sender: "Bot", text: "How can I help you?" },
+  { id: 1, sender: "appie", text: "How can I help you?" },
 ];
 
 const ChatMessage = ({ message }) => {
   return (
     <div className={`message ${message.sender.toLowerCase()}`}>
-      <span className="sender">{message.sender}:</span>
+      <span className="sender">
+        <strong>{message.sender}</strong>
+        :</span>
       <p className="text">{message.text}</p>
-      <p className="source">{message.source}</p>
+      <p className="source">
+        <a href={message.source} target="_blank" rel="noopener noreferrer">
+          {message.source}
+        </a>
+      </p>
     </div>
   );
 };
 
+const CustomButton = styled(Button)`
+  background-color: #2824f4; /* Your custom color */
+  color: red; /* Text color */
+  &:hover {
+    background-color: black; /* Change color on hover */
+  }
+  margin: 10px
+`;
+
 function ChatApp() {
 
-
+  const [loadingSendMessage, setLoadingSendMessage] = useState(false);
+  const appianChatLogo = process.env.PUBLIC_URL + '/appian-logo.png'
   const chatContainerRef = useRef(null);
-
+  const buttonStyle = {
+    margin: '10px 10px 10px 0px',// Add margin around the button
+  };
   const [messages, setMessages] = useState(initialMessages);
   const [newMessage, setNewMessage] = useState("");
 
@@ -63,27 +82,35 @@ function ChatApp() {
       text: newMessage,
     };
 
-    setMessages([...messages, userMessageObj])
+    setMessages([...messages, userMessageObj]);
     setNewMessage("");
+    setLoadingSendMessage(true);
 
-    const response = await fetch("/process_text", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: newMessage }),
-    });
+    try {
+      const response = await fetch("/process_text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: newMessage }),
+      });
 
-    const responseMessage = await response.json();
+      const responseMessage = await response.json();
 
-    const responseMessageObj = {
-      id: messages.length + 2,
-      sender: "Bot",
-      text: responseMessage.message,
-      source: responseMessage.source,
-    };
+      const responseMessageObj = {
+        id: messages.length + 2,
+        sender: "appie",
+        text: responseMessage.message,
+        source: responseMessage.source,
+      };
 
-    setMessages([...messages, userMessageObj, responseMessageObj]);
+      setMessages([...messages, userMessageObj, responseMessageObj]);
+    } catch (error) {
+      // error
+      console.error('Error sending message', error)
+    } finally {
+      setLoadingSendMessage(false)
+    }
   };
 
   const handleClearClick = async () => {
@@ -95,62 +122,73 @@ function ChatApp() {
     setNewMessage("");
   }
 
+  const handleEndClick = async () => {
+    await fetch("/end", {
+      method: "POST",
+    });
+
+    setMessages([]);
+    setNewMessage("");
+  }
+
   return (
     <>
-      <Grid container spacing={2} alignItems="center" justify="center">
-        <Grid item xs={12}>
-          {/* Add Appian Logo */}
-          <h1 style={{ textAlign: "center" }}>APPIAN CHAT</h1>
-        </Grid>
-      </Grid>
-        <MainContainer>
+      <div className="container" style={{ borderBottom: "1px solid #cccc" }}>
+        <img src={appianChatLogo} alt="Appian Chat Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
+        <h1 style={{ textAlign: "center", fontSize: "40px", flexGrow: "1", marginLeft: "-200px" }}>appie</h1>
+      </div>
+      <MainContainer>
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <></>
+          </Grid>
 
-          <Grid container spacing={2}>
-            <Grid xs={2}>
-              <></>
+          <Grid xs={8}>
+            <ChatContainer ref={chatContainerRef}>
+              <Stack>
+                {messages.map((message) => (
+                  <ChatMessage key={message.id} message={message} />
+                ))}
+              </Stack>
+
+            </ChatContainer>
+
+            <Grid item xs={9}>
+              <TextField
+                autoFocus
+                fullWidth
+                id="filled-basic"
+                label="Enter Prompt"
+                variant="filled"
+                value={newMessage}
+                onChange={handleNewMessageChange}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    handleSendMessage();
+                  }
+                }}
+              />
             </Grid>
-
-            <Grid xs={8}>
-              <ChatContainer ref={chatContainerRef}>
-                <Stack>
-                  {messages.map((message) => (
-                    <ChatMessage key={message.id} message={message} />
-                  ))}
-                </Stack>
-
-              </ChatContainer>
-
-              <Grid item xs={10}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  id="filled-basic"
-                  label="Enter Prompt"
-                  variant="filled"
-                  value={newMessage}
-                  onChange={handleNewMessageChange}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      handleSendMessage();
-                    }
-                  }} />
-              </Grid>
-              <Grid item xs={2}>
-                <Button variant="contained" size="large" onClick={handleSendMessage}>
-                  Send
-                </Button>
-                <Button variant="outlined" size="large" onClick={handleClearClick}>
-                  Clear
-                </Button>
-              </Grid>
-            </Grid>
-
-            <Grid xs={2}>
-              <></>
+            <Grid item xs={3}>
+              <CustomButton variant="contained" size="large" onClick={handleSendMessage} disabled={loadingSendMessage} style={buttonStyle}>
+                {loadingSendMessage ? <CircularProgress size={24} /> : 'Send'}
+              </CustomButton>
+              <Button variant="outlined" size="large" onClick={handleClearClick} style={buttonStyle}>
+                Clear
+              </Button>
+              <Button variant="outlined" size="large" onClick={handleEndClick} style={buttonStyle}>
+                End
+              </Button>
             </Grid>
           </Grid>
 
-        </MainContainer></>
+          <Grid xs={2}>
+            <></>
+          </Grid>
+
+        </Grid>
+
+      </MainContainer></>
   );
 };
 
