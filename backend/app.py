@@ -31,11 +31,11 @@ def process_text():
     return jsonify(result)
 
 
-# Need to create a button which calls this!
 @app.route('/clear_history', methods=['POST'])
 def clear_history():
     model.clear_chat_history()
 
+    return {'message': "Cleared"}
 
 if __name__ == '__main__':
     model.start()
