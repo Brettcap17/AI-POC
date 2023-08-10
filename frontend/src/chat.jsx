@@ -25,6 +25,7 @@ const ChatMessage = ({ message }) => {
     <div className={`message ${message.sender.toLowerCase()}`}>
       <span className="sender">{message.sender}:</span>
       <p className="text">{message.text}</p>
+      <p className="source">{message.source}</p>
     </div>
   );
 };
@@ -62,6 +63,7 @@ function ChatApp() {
       id: messages.length + 2,
       sender: "Bot",
       text: responseMessage.message,
+      source: responseMessage.source,
     };
 
     setMessages([...messages, userMessageObj, responseMessageObj]);

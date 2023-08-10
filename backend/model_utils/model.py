@@ -81,6 +81,19 @@ def format_prompt(question, context):
 
     return prompt.strip()
 
+
+def get_chat_history():
+    history_string = ""
+    for (question_past, answer) in stored_messages:
+        history_string += f"{question_past}\n"
+        history_string += f"{answer}\n"
+    return history_string
+
+
+def clear_chat_history():
+    stored_messages = []
+
+
 # if __name__ == "__main__":
 #     start()
 #     print(ask_question("Can you summarize this documentation for me?"))

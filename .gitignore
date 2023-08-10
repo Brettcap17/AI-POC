@@ -1,5 +1,7 @@
 secrets.txt
 backend/model_utils/secrets.py
 backend/__pycache__
+backend/venv
 frontend/node_modules
 **/__pycache__
+
