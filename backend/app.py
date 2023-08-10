@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from vss_utils.similarity import vss
 from model_utils.model import LlamaThread
+from vss_utils.similarity import vss
+import model_utils.model as model
 
 
 app = Flask(__name__)
@@ -16,13 +18,14 @@ def hello():
 def process_text():
     data = request.json
     text_input = data['text']
-    
+
     # Get Context
     chat_history = model.get_chat_history()
     chat_history += f"{text_input}\n"
     context = vss(chat_history, "output_full")
 
     # Get Model Response
+    model.start()
     output = model.ask_question(text_input, context[1])
     result = {'message': output, 'source': context[0]}
     return jsonify(result)
