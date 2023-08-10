@@ -36,25 +36,17 @@ def process_text():
     output = model.ask_question(text_input, context[1])
     
     def output_format(output):
-        while output.find('Answer:') != -1: 
+        for i in range(4): 
             output = output.removeprefix('Answer:')
         if output.find('<|END|>') != -1:
             output = output[:output.find('<|END|>')]
         if output.find('Question:') != -1:
             output = output[:output.find('Question:')]
-        outputcopy = list(output)
-        j = 1
-        for i in range(len(output)):
-            if output[i].isnumeric() and int(output[i]) == j:
-                outputcopy.insert(i+j-1, '\n')
-                j+= 1
-        output = ''.join(outputcopy)
-        print(output)
         return output   
     
     output = output_format(output)
     result = {'message': output, 'source': context[0]}
-    return jsonify(result)
+    return result
 
 
 @app.route('/clear_history', methods=['POST'])
