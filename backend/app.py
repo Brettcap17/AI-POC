@@ -16,7 +16,7 @@ def hello():
 def process_text():
     data = request.json
     text_input = data['text']
-    
+
     # Get Context
     chat_history = model.get_chat_history()
     chat_history += f"{text_input}\n"

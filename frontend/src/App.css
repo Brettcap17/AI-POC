@@ -18,13 +18,13 @@
 }
 
 .user {
-  background-color: #aaf;
+  background-color: #97a1d9;
   margin-left: 25%;
   align-self: flex-end;
 }
 
 .bot {
-  background-color: red;
+  background-color: #77c2fe;
   margin-right: 25%;
   align-self: flex-start;
 }
