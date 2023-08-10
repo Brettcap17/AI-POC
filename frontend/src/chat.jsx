@@ -100,19 +100,6 @@ function ChatApp() {
       <Grid xs={3}>
         <></>
       </Grid>
-
-      <Grid xs={8}>
-        {/* <div className="input-area">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            value={newMessage}
-            onChange={handleNewMessageChange}
-          />
-
-          <button onClick={handleSendMessage}>Send</button>
-        </div> */}
-      </Grid>
     </Grid>
   );
 };
