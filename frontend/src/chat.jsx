@@ -18,7 +18,7 @@ export const MainContainer = styled.main`
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 66vh; /* Max height for the chat container */
+  height: 70vh; /* Max height for the chat container */
   width: max;
   overflow-y: auto; /* Add a scrollbar when content overflows */
 `;
@@ -42,10 +42,20 @@ const ChatMessage = ({ message }) => {
           <img src={userlogo} alt="Profile" style={{ width: "28px", height: "28px", marginRight: "5px", marginBottom: "-8px" }} />
         ) : null}
         <span className="sender">
-            <strong>{message.sender}</strong>
-            :</span>
+          <strong>{message.sender}</strong>
+          :</span>
         <div className="message-text">
-          <p className="text">{message.text}</p>
+          <p className="text">
+            {message && message.text
+              ? message.text.split('\n').map((line, index, array) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index !== array.length - 1 && <br />}
+                </React.Fragment>
+              ))
+              : null}
+          </p>
+
           <p className="source">
             <a href={message.source} target="_blank" rel="noopener noreferrer">
               {message.source}
@@ -151,8 +161,8 @@ function ChatApp() {
   return (
     <>
       <div className="container" style={{ backgroundColor: "#020A51", borderBottom: "1px solid #cccc", marginBottom: "10px", display: "flex", alignItems: "center" }}>
-        <img src={appianLogo} alt="Appian Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
-        <div style={{ flex: 1, textAlign: "center"}}>
+        <img src={appianLogo} alt="Appian Logo" style={{ width: "100px", height: "auto", padding: "10px", marginLeft: "5px" }} />
+        <div style={{ flex: 1, textAlign: "center" }}>
           <Stack direction="row" marginLeft="39vw" alignItems="center">
             <h1 style={{ fontSize: "40px", color: "white", marginBottom: "10px" }}>appie</h1>
           </Stack>
@@ -165,6 +175,7 @@ function ChatApp() {
           </Grid>
 
           <Grid xs={8}>
+
             <ChatContainer ref={chatContainerRef}>
               <Stack>
                 {messages.map((message) => (
@@ -188,7 +199,7 @@ function ChatApp() {
                     handleSendMessage();
                   }
                 }}
-                style={{padding: '10px 0px'}}
+                style={{ padding: '10px 0px' }}
               />
             </Grid>
             <Grid item xs={3}>
@@ -203,7 +214,6 @@ function ChatApp() {
               </Button>
             </Grid>
           </Grid>
-
           <Grid xs={2}>
             <></>
           </Grid>

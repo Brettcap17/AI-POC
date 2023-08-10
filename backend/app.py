@@ -42,7 +42,7 @@ def process_text():
             output = output[:output.find('<|END|>')]
         if output.find('Question:') != -1:
             output = output[:output.find('Question:')]
-        return output   
+        return output
     
     output = output_format(output)
     result = {'message': output, 'source': context[0]}
