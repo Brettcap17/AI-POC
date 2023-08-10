@@ -86,6 +86,15 @@ function ChatApp() {
     setMessages([...messages, userMessageObj, responseMessageObj]);
   };
 
+  const handleClearClick = async () => {
+    await fetch("/clear_history", {
+      method: "POST",
+    });
+
+    setMessages([]);
+    setNewMessage("");
+  }
+
   return (
     <>
       <Grid container spacing={2} alignItems="center" justify="center">
@@ -129,6 +138,9 @@ function ChatApp() {
               <Grid item xs={2}>
                 <Button variant="contained" size="large" onClick={handleSendMessage}>
                   Send
+                </Button>
+                <Button variant="outlined" size="large" onClick={handleClearClick}>
+                  Clear
                 </Button>
               </Grid>
             </Grid>
