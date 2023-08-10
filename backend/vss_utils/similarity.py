@@ -92,4 +92,4 @@ def vss(question, dir_path):
         return None  
 
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
-    return (get_link(top_two), final_context)    
+    return (get_link(top_two), final_context)
