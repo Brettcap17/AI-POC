@@ -27,6 +27,7 @@ def process_text():
     # Get Model Response
     model.start()
     output = model.ask_question(text_input, context[1])
+    output = output.removeprefix('Answer:')
     result = {'message': output, 'source': context[0]}
     return jsonify(result)
 
