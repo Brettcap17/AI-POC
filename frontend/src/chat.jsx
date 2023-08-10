@@ -153,9 +153,8 @@ function ChatApp() {
       <div className="container" style={{ backgroundColor: "#020A51", borderBottom: "1px solid #cccc", marginBottom: "10px", display: "flex", alignItems: "center" }}>
         <img src={appianLogo} alt="Appian Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
         <div style={{ flex: 1, textAlign: "center"}}>
-          <Stack direction="row" marginLeft="36vw" alignItems="center">
+          <Stack direction="row" marginLeft="39vw" alignItems="center">
             <h1 style={{ fontSize: "40px", color: "white", marginBottom: "10px" }}>appie</h1>
-            <img src={appielogo} alt="Appian Logo" style={{ width: "40px", height: "45px", padding: "10px" }} />
           </Stack>
         </div>
       </div>
