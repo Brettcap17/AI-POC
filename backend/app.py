@@ -23,6 +23,9 @@ def process_text():
     chat_history = model.get_chat_history()
     chat_history += f"{text_input}\n"
     context = vss(chat_history, "output_full")
+    if context is None:
+        result = {'message': "I am sorry, I cannot understand your question. Please try rephrasing.", 'source': ""}
+        return jsonify(result)
 
     # Get Model Response
     model.start()

@@ -3,6 +3,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import os
 import pandas as pd
 import time
+import sys
 
 def get_link(top_two):
     links = []
@@ -82,5 +83,13 @@ def vss(question, dir_path):
     #Return the text of the two highest ranking questions
     temp2 = df2.loc[:, ['question']].sort_values(by=['question'])
     top_two = temp2.index[-3:-1]
+
+    print(df2.loc[:, ['question']].sort_values(by=['question'], ascending=False), file=sys.stderr)
+
+    # if only bad score, return nothing
+    score_threshold = 0.25
+    if (len(temp2[temp2["question"] > score_threshold]) <= 1): # if number of docs above the threshold is less than 1
+        return None  
+
     final_context = segmented[top_two[0]] + '\n' + segmented[top_two[1]]
     return (get_link(top_two), final_context)    
