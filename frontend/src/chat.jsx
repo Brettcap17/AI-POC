@@ -18,7 +18,7 @@ export const MainContainer = styled.main`
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 70vh; /* Max height for the chat container */
+  height: 66vh; /* Max height for the chat container */
   width: max;
   overflow-y: auto; /* Add a scrollbar when content overflows */
 `;
@@ -28,21 +28,36 @@ const initialMessages = [
   { id: 1, sender: "appie", text: "How can I help you?" },
 ];
 
+const appielogo = process.env.PUBLIC_URL + '/appie_logo.jpeg'
+const userlogo = process.env.PUBLIC_URL + '/user-icon.png'
+
 const ChatMessage = ({ message }) => {
   return (
     <div className={`message ${message.sender.toLowerCase()}`}>
-      <span className="sender">
-        <strong>{message.sender}</strong>
-        :</span>
-      <p className="text">{message.text}</p>
-      <p className="source">
-        <a href={message.source} target="_blank" rel="noopener noreferrer">
-          {message.source}
-        </a>
-      </p>
+      <div className="message-content">
+        {message.sender === "appie" ? (
+          <img src={appielogo} alt="Profile" style={{ width: "28px", height: "28px", marginRight: "5px", marginBottom: "-5px" }} />
+        ) : null}
+        {message.sender === "User" ? (
+          <img src={userlogo} alt="Profile" style={{ width: "28px", height: "28px", marginRight: "5px", marginBottom: "-8px" }} />
+        ) : null}
+        <span className="sender">
+            <strong>{message.sender}</strong>
+            :</span>
+        <div className="message-text">
+          <p className="text">{message.text}</p>
+          <p className="source">
+            <a href={message.source} target="_blank" rel="noopener noreferrer">
+              {message.source}
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
+
+
 
 const CustomButton = styled(Button)`
   background-color: #2824f4; /* Your custom color */
@@ -56,7 +71,9 @@ const CustomButton = styled(Button)`
 function ChatApp() {
 
   const [loadingSendMessage, setLoadingSendMessage] = useState(false);
-  const appianChatLogo = process.env.PUBLIC_URL + '/appian-logo.png'
+  const appianLogo = process.env.PUBLIC_URL + '/appian-logo4.jpeg'
+
+
   const chatContainerRef = useRef(null);
   const buttonStyle = {
     margin: '10px 10px 10px 0px',// Add margin around the button
@@ -133,9 +150,14 @@ function ChatApp() {
 
   return (
     <>
-      <div className="container" style={{ borderBottom: "1px solid #cccc" }}>
-        <img src={appianChatLogo} alt="Appian Chat Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
-        <h1 style={{ textAlign: "center", fontSize: "40px", flexGrow: "1", marginLeft: "-200px" }}>appie</h1>
+      <div className="container" style={{ backgroundColor: "#020A51", borderBottom: "1px solid #cccc", marginBottom: "10px", display: "flex", alignItems: "center" }}>
+        <img src={appianLogo} alt="Appian Logo" style={{ width: "100px", height: "auto", padding: "10px" }} />
+        <div style={{ flex: 1, textAlign: "center"}}>
+          <Stack direction="row" marginLeft="36vw" alignItems="center">
+            <h1 style={{ fontSize: "40px", color: "white", marginBottom: "10px" }}>appie</h1>
+            <img src={appielogo} alt="Appian Logo" style={{ width: "40px", height: "45px", padding: "10px" }} />
+          </Stack>
+        </div>
       </div>
       <MainContainer>
         <Grid container spacing={2}>
@@ -167,6 +189,7 @@ function ChatApp() {
                     handleSendMessage();
                   }
                 }}
+                style={{padding: '10px 0px'}}
               />
             </Grid>
             <Grid item xs={3}>
