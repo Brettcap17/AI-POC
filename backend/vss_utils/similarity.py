@@ -82,8 +82,6 @@ def vss(question, dir_path):
     temp2 = df2.loc[:, ['question']].sort_values(by=['question'])
     top_two = temp2.index[-3:-1]
 
-    print(df2.loc[:, ['question']].sort_values(by=['question'], ascending=False), file=sys.stderr)
-
     # if only bad score, return nothing
     score_threshold = 0.25
     if (len(temp2[temp2["question"] > score_threshold]) <= 1): # if number of docs above the threshold is less than 1

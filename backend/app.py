@@ -13,6 +13,10 @@ model = LlamaThread("llama-2-7b-chat")
 def hello():
     return "Hello"
 
+@app.after_request
+def treat_as_plain_text(response):
+    response.headers["content-type"] = "text/plain"
+    return response
 
 @app.route('/process_text', methods=['POST'])
 def process_text():
@@ -30,9 +34,19 @@ def process_text():
     # Get Model Response
     model.start()
     output = model.ask_question(text_input, context[1])
-    output = output.removeprefix('Answer:')
+    
+    def output_format(output):
+        for i in range(4): 
+            output = output.removeprefix('Answer:')
+        if output.find('<|END|>') != -1:
+            output = output[:output.find('<|END|>')]
+        if output.find('Question:') != -1:
+            output = output[:output.find('Question:')]
+        return output   
+    
+    output = output_format(output)
     result = {'message': output, 'source': context[0]}
-    return jsonify(result)
+    return result
 
 
 @app.route('/clear_history', methods=['POST'])
