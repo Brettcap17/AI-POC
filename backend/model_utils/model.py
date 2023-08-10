@@ -52,7 +52,9 @@ class LlamaThread:
             response = requests.post(url, json=payload, headers=headers)
             if response.status_code == 200 and "choices" in response.json()["output"]:
 
-                answer = response.json()["output"]["choices"][0]["text"]
+                answer = str(response.json()["output"]["choices"][0]["text"])
+                if "<|END|>" in answer:
+                    answer.replace("<|END|>", "")
 
                 # Try to adjust context size dynamically
                 if len(self.stored_messages) > CONTEXT_STORED:
@@ -89,8 +91,9 @@ class LlamaThread:
         history_string = ""
         for (question_past, answer) in self.stored_messages:
             history_string += f"{question_past}\n"
-            if "<END>" in answer:
-                answer.replace("<END>", "")
+            answer = str(answer)
+            if "<|END|>" in answer:
+                answer.replace("<|END|>", "")
             history_string += f"{answer}\n"
         return history_string
 
@@ -100,19 +103,14 @@ class LlamaThread:
 
 
 
-def get_chat_history():
+def get_chat_history(self):
     history_string = ""
-    for (question_past, answer) in stored_messages:
+    for (question_past, answer) in self.stored_messages:
         history_string += f"{question_past}\n"
         history_string += f"{answer}\n"
     return history_string
 
 
-def clear_chat_history():
-    stored_messages = []
+def clear_chat_history(self):
+    self.stored_messages = []
 
-
-# if __name__ == "__main__":
-#     start()
-#     print(ask_question("Can you summarize this documentation for me?"))
-#     stop()
