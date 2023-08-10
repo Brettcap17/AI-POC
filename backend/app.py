@@ -25,6 +25,7 @@ def process_text():
     context = vss(chat_history, "output_full")
 
     # Get Model Response
+    model.start()
     output = model.ask_question(text_input, context[1])
     result = {'message': output, 'source': context[0]}
     return jsonify(result)
