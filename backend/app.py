@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request
 from vss_utils.similarity import vss
-import model_utils.model as model
+from model_utils.model import LlamaThread
 
 
 app = Flask(__name__)
+model = LlamaThread("llama-2-7b-chat")
 
 # Testing Endpoint
 @app.route('/hello')
@@ -22,7 +23,6 @@ def process_text():
     context = vss(chat_history, "output_full")
 
     # Get Model Response
-    model.start()
     output = model.ask_question(text_input, context[1])
     result = {'message': output, 'source': context[0]}
     return jsonify(result)
@@ -35,4 +35,5 @@ def clear_history():
 
 
 if __name__ == '__main__':
+    model.start()
     app.run(port=5000, debug=True)
