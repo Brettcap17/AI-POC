@@ -13,7 +13,7 @@ def get_link(top_two):
         else: temp = i[:-4]
         links.append(f'https://docs.appian.com/suite/help/23.2/{temp}.html')
     if links[0] == links[1]: return links[0]
-    return links[0] + ' ' + links[1]
+    return links[0] + ';' + links[1]
 
 def create_dataframe(matrix, tokens):
     df = pd.DataFrame(data=matrix, index=tokens, columns=tokens)
