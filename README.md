@@ -6,12 +6,12 @@ An AI-POC designed to assist team POC's, making workflows more efficient and red
 2. Run Vector Similarity Search on question and all of Appian Docs to find the chunk of text with the most relevant content.
 3. Format a Large Language Model prompt with the context, chat history, and most recent question.
 4. Pass the prompt to the Meta Llama2-7B large language model.
-5. Respond with the Models response and Appian Documentation source.
+5. Respond with the Model's response and Appian Documentation source.
 
 ## Why
 
 ### Context Approach
-We decided against fine tuning the model on Appian documentation for security purposes. This allows this approach to be applied to searching Appian Internal Documentation in the future. By providing all information as model context, the model takes a reading comprehension approach and answers the user’s question using the context provided. The context information is not physically stored in the models parameters ensuring data security.
+We decided against fine tuning the model on Appian documentation for security purposes. This allows this approach to be applied to searching Appian Internal Documentation in the future. By providing all information as model context, the model takes a reading comprehension approach and answers the user’s question using the context provided. The context information is not physically stored in the model's parameters ensuring data security.
 
 ### Model Selection
 We wanted to use open source language models for the purpose of security and transparency. With an open source model, Appian can host the model and keep all data internal.
@@ -24,7 +24,7 @@ We resorted to using a chat fine tuned version of the regular [Llama2 model](htt
 ### Vector Similarity
 Due to the model context limitations, we need to narrow down Appian Documentation to just the section that has content most similar to the question the user asked. We used a technique known as vector similarity search to accomplish this.
 
-We use the [Count Vectorizer](https://www.geeksforgeeks.org/using-countvectorizer-to-extracting-features-from-text/) algorithm quickly extract semantic meaning in real time from the user question and Appian documentation and store them as embedding vectors. We can then use [cosine similarity](https://www.pinecone.io/learn/vector-similarity/) between the user question vector and the Appian documentation vectors to find the section of Appian Docs which is most relevant to the user question. This is then fed into the Language Model as context.
+We use the [Count Vectorizer](https://www.geeksforgeeks.org/using-countvectorizer-to-extracting-features-from-text/) algorithm quickly extract semantic meaning in real time from the user's question and Appian documentation and store them as embedding vectors. We can then use [cosine similarity](https://www.pinecone.io/learn/vector-similarity/) between the user's question vector and the Appian documentation vectors to find the section of Appian Docs which is most relevant to the user question. This is then fed into the Language Model as context.
 
 # Converter Script
 To run the converter script, you will need to install the following depedencies:
