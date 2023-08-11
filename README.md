@@ -37,8 +37,6 @@ We use the [Count Vectorizer](https://www.geeksforgeeks.org/using-countvectorize
     - You may need to install node and/or react using `brew`
 
 # Converter Script
-To run the converter script, you will need to install the following depedencies:
- - `pip install bs4`
+To run the converter script, you will need to have the backend dependencies installed (`pip3 install -r requirements.txt`).
 
- Run the converter script from the `./src` directory by running `python3 converter.py`.
- You can change the output directory by changing the `outputDir` variable of the script.
+The converter script takes markdown files and converts them to plain text. This is necessary for the Vector Similarity Search to conduct a search. The converter script starts at `inputDir` and searches through all directories _exactly one level below_ for any markdown files. It converts markdown files (and only markdown files) into .txt files and writes all the files to the same `outputDir`. Note that the script will not recursively convert markdown files in any directories more than one level below `inputDir`.

@@ -4,13 +4,14 @@ import os
 
 def main():
   outputDir = '../output'
+  inputDir = '../docs/collection_docs/'
 
   if not os.path.exists(outputDir):
     os.mkdir(outputDir)
 
-  dirs = os.listdir('../docs/collection_docs/')
+  dirs = os.listdir(inputDir)
   for dir in dirs:
-    dir ='../docs/collection_docs/' + dir + '/'
+    dir = inputdir + dir + '/'
     for file in os.listdir(dir):
       print(dir + file)
       if file.endswith('.md'):
